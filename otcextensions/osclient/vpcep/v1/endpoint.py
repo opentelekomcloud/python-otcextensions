@@ -11,6 +11,7 @@
 # under the License.
 #
 """VPC Endpoint Service v1 action implementations"""
+
 import logging
 
 from osc_lib import exceptions
@@ -27,79 +28,77 @@ LOG = logging.getLogger(__name__)
 
 
 _formatters = {
-    'active_status': format_columns.ListColumn,
-    'tags': cli_utils.YamlFormat,
-    'whitelist': format_columns.ListColumn,
-    'route_tables': format_columns.ListColumn,
+    "active_status": format_columns.ListColumn,
+    "tags": cli_utils.YamlFormat,
+    "whitelist": format_columns.ListColumn,
+    "route_tables": format_columns.ListColumn,
 }
 
 
 def _get_columns(item):
     column_map = {}
     hidden = [
-        'location',
+        "location",
     ]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class ListEndpoints(command.Lister):
 
-    _description = _('List VPC Endpoints.')
-    columns = ('Id', 'Endpoint Service Name', 'Status', 'Is Enabled')
+    _description = _("List VPC Endpoints.")
+    columns = ("Id", "Endpoint Service Name", "Status", "Is Enabled")
 
     def get_parser(self, prog_name):
         parser = super(ListEndpoints, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--id',
-            metavar='<id>',
-            help=_('ID of the VPC endpoint.'),
+            "--id",
+            metavar="<id>",
+            help=_("ID of the VPC endpoint."),
         )
         parser.add_argument(
-            '--service-name',
-            metavar='<service_name>',
-            dest='endpoint_service_name',
-            help=_('Name of the VPC endpoint service.'),
+            "--service-name",
+            metavar="<service_name>",
+            dest="endpoint_service_name",
+            help=_("Name of the VPC endpoint service."),
         )
         parser.add_argument(
-            '--sort-key',
-            metavar='{created_at, updated_at}',
+            "--sort-key",
+            metavar="{created_at, updated_at}",
             type=lambda s: s.lower(),
-            choices=['created_at', 'updated_at'],
-            help=_('Sorting field of the VPC endpoint list.'),
+            choices=["created_at", "updated_at"],
+            help=_("Sorting field of the VPC endpoint list."),
         )
         parser.add_argument(
-            '--sort-dir',
-            metavar='{asc, desc}',
+            "--sort-dir",
+            metavar="{asc, desc}",
             type=lambda s: s.lower(),
-            choices=['asc', 'desc'],
-            help=_('Sorting order of the VPC endpoint list.'),
+            choices=["asc", "desc"],
+            help=_("Sorting order of the VPC endpoint list."),
         )
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
-            help=_('Limit number of VPC endpoints.'),
+            help=_("Limit number of VPC endpoints."),
         )
         parser.add_argument(
-            '--offset',
-            metavar='<offset>',
+            "--offset",
+            metavar="<offset>",
             type=int,
-            help=_('Endpoints after this offset will be queried.'),
+            help=_("Endpoints after this offset will be queried."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.vpcep
         args_list = [
-            'id',
-            'endpoint_service_name',
-            'limit',
-            'offset',
-            'sort_key',
-            'sort_dir',
+            "id",
+            "endpoint_service_name",
+            "limit",
+            "offset",
+            "sort_key",
+            "sort_dir",
         ]
         params = {}
         for arg in args_list:
@@ -116,85 +115,79 @@ class ListEndpoints(command.Lister):
 
 
 class CreateEndpoint(command.ShowOne):
-    _description = _(
-        'Create a VPC endpoint for accessing a VPC endpoint service.'
-    )
+    _description = _("Create a VPC endpoint for accessing a VPC endpoint service.")
 
     def get_parser(self, prog_name):
         parser = super(CreateEndpoint, self).get_parser(prog_name)
         parser.add_argument(
-            '--service-id',
-            metavar='<service_id>',
-            dest='endpoint_service_id',
-            help=_('ID of the Vpc endpoint service.'),
+            "--service-id",
+            metavar="<service_id>",
+            dest="endpoint_service_id",
+            help=_("ID of the Vpc endpoint service."),
         )
         parser.add_argument(
-            '--router-id',
-            metavar='<router_id>',
-            dest='vpc_id',
+            "--router-id",
+            metavar="<router_id>",
+            dest="vpc_id",
             required=True,
-            help=_(
-                'ID of the vpc/router where the VPC endpoint is to be created.'
-            ),
+            help=_("ID of the vpc/router where the VPC endpoint is to be created."),
         )
         parser.add_argument(
-            '--network-id',
-            metavar='<network_id>',
-            dest='subnet_id',
+            "--network-id",
+            metavar="<network_id>",
+            dest="subnet_id",
             required=True,
-            help=_('ID of the network created in the vpc/router.'),
+            help=_("ID of the network created in the vpc/router."),
         )
         parser.add_argument(
-            '--port-ip',
-            metavar='<port_ip>',
-            help=_(
-                'IP address for accessing the associated VPC endpoint service.'
-            ),
+            "--port-ip",
+            metavar="<port_ip>",
+            help=_("IP address for accessing the associated VPC endpoint service."),
         )
         parser.add_argument(
-            '--route-tables',
-            metavar='<route_tables>',
-            dest='routetables',
-            nargs='+',
-            help=_('Lists the IDs of route tables.'),
+            "--route-tables",
+            metavar="<route_tables>",
+            dest="routetables",
+            nargs="+",
+            help=_("Lists the IDs of route tables."),
         )
         parser.add_argument(
-            '--whitelist',
-            metavar='<whitelist>',
-            nargs='+',
-            help=_('Whitelist for controlling access to the VPC endpoint.'),
+            "--whitelist",
+            metavar="<whitelist>",
+            nargs="+",
+            help=_("Whitelist for controlling access to the VPC endpoint."),
         )
         parser.add_argument(
-            '--specification-name',
-            metavar='<specification_name>',
-            help=_('Name of the VPC endpoint specifications.'),
+            "--specification-name",
+            metavar="<specification_name>",
+            help=_("Name of the VPC endpoint specifications."),
         )
         parser.add_argument(
-            '--description',
-            metavar='<description>',
-            help=_('Description of the VPC endpoint.'),
+            "--description",
+            metavar="<description>",
+            help=_("Description of the VPC endpoint."),
         )
         parser.add_argument(
-            '--tags',
-            metavar='key=<tag-key>,value=<tag-value>',
+            "--tags",
+            metavar="key=<tag-key>,value=<tag-value>",
             action=parseractions.MultiKeyValueAction,
-            dest='tags',
-            required_keys=['key', 'value'],
+            dest="tags",
+            required_keys=["key", "value"],
             help=_(
-                'Example: \n'
-                '--tags key=test-key,value=test-value\n'
-                'Repeat option to provide multiple tags.'
+                "Example: \n"
+                "--tags key=test-key,value=test-value\n"
+                "Repeat option to provide multiple tags."
             ),
         )
         parser.add_argument(
-            '--enable-dns',
-            action='store_true',
-            help=('Whether to create a private domain name. default (false)'),
+            "--enable-dns",
+            action="store_true",
+            help=("Whether to create a private domain name. default (false)"),
         )
         parser.add_argument(
-            '--enable-whitelist',
-            action='store_true',
-            help=('Whether access control is enabled.'),
+            "--enable-whitelist",
+            action="store_true",
+            help=("Whether access control is enabled."),
         )
         return parser
 
@@ -202,17 +195,17 @@ class CreateEndpoint(command.ShowOne):
         client = self.app.client_manager.vpcep
 
         args_list = [
-            'endpoint_service_id',
-            'subnet_id',
-            'vpc_id',
-            'port_ip',
-            'tags',
-            'whitelist',
-            'routetables',
-            'enable_dns',
-            'enable_whitelist',
-            'specification_name',
-            'description',
+            "endpoint_service_id",
+            "subnet_id",
+            "vpc_id",
+            "port_ip",
+            "tags",
+            "whitelist",
+            "routetables",
+            "enable_dns",
+            "enable_whitelist",
+            "specification_name",
+            "description",
         ]
         attrs = {}
         for arg in args_list:
@@ -229,14 +222,14 @@ class CreateEndpoint(command.ShowOne):
 
 
 class ShowEndpoint(command.ShowOne):
-    _description = _('Show VPC endpoint details.')
+    _description = _("Show VPC endpoint details.")
 
     def get_parser(self, prog_name):
         parser = super(ShowEndpoint, self).get_parser(prog_name)
         parser.add_argument(
-            'endpoint',
-            metavar='<endpoint>',
-            help=_('ID of the VPC endpoint.'),
+            "endpoint",
+            metavar="<endpoint>",
+            help=_("ID of the VPC endpoint."),
         )
         return parser
 
@@ -251,15 +244,15 @@ class ShowEndpoint(command.ShowOne):
 
 class DeleteEndpoint(command.Command):
 
-    _description = _('Delete VPC endpoint(s).')
+    _description = _("Delete VPC endpoint(s).")
 
     def get_parser(self, prog_name):
         parser = super(DeleteEndpoint, self).get_parser(prog_name)
         parser.add_argument(
-            'endpoint',
-            metavar='<endpoint>',
-            nargs='+',
-            help=_('ID of vpc endpoint(s) to delete.'),
+            "endpoint",
+            metavar="<endpoint>",
+            nargs="+",
+            help=_("ID of vpc endpoint(s) to delete."),
         )
         return parser
 
@@ -272,15 +265,13 @@ class DeleteEndpoint(command.Command):
             except Exception as e:
                 result += 1
                 LOG.error(
-                    _(
-                        'Failed to delete VPC endpoint with '
-                        'ID "%(endpoint)s": %(e)s'
-                    ),
-                    {'endpoint': endpoint, 'e': e},
+                    _("Failed to delete VPC endpoint with " 'ID "%(endpoint)s": %(e)s'),
+                    {"endpoint": endpoint, "e": e},
                 )
         if result > 0:
             total = len(parsed_args.endpoint)
-            msg = _(
-                '%(result)s of %(total)s VPC endpoint(s) failed to delete.'
-            ) % {'result': result, 'total': total}
+            msg = _("%(result)s of %(total)s VPC endpoint(s) failed to delete.") % {
+                "result": result,
+                "total": total,
+            }
             raise exceptions.CommandError(msg)

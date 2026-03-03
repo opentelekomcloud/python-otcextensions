@@ -11,17 +11,16 @@
 # under the License.
 from openstack import _log
 from openstack import resource
-
 from otcextensions.sdk import sdk_resource
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class Backup(sdk_resource.Resource):
 
-    base_path = '/backups'
-    resource_key = 'backup'
-    resources_key = 'backups'
+    base_path = "/backups"
+    resource_key = "backup"
+    resources_key = "backups"
     service_expectes_json_type = True
 
     # capabilities
@@ -33,29 +32,29 @@ class Backup(sdk_resource.Resource):
     # project_id = resource.URI('project_id')
     #: Backup id
     #: Type: uuid*
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Instance id
-    instance_id = resource.Body('instance_id')
+    instance_id = resource.Body("instance_id")
     #: Instance id alt
-    instance = resource.Body('instance')
+    instance = resource.Body("instance")
     #: Backup created time
-    created = resource.Body('created')
+    created = resource.Body("created")
     #: Data store information
     #: *Type: dict*
-    datastore = resource.Body('dataStore', type=dict)
+    datastore = resource.Body("dataStore", type=dict)
     #: Data backup description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Back file name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Back file size in GB
     #: *Type:int*
-    size = resource.Body('size', type=int)
+    size = resource.Body("size", type=int)
     #: Backup status
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Finished time
-    updated = resource.Body('updated')
+    updated = resource.Body("updated")
     #: Backup type
-    backuptype = resource.Body('backuptype')
+    backuptype = resource.Body("backuptype")
 
     # @classmethod
     # def new(cls, **attrs):
@@ -67,15 +66,15 @@ class Backup(sdk_resource.Resource):
 
 class BackupPolicy(sdk_resource.Resource):
 
-    base_path = '/instances/%(instance_id)s/backups/policy'
-    resource_key = 'policy'
+    base_path = "/instances/%(instance_id)s/backups/policy"
+    resource_key = "policy"
 
     # capabilities
     allow_update = True
     allow_get = True
 
     #: instaceId
-    instance_id = resource.URI('instance_id')
+    instance_id = resource.URI("instance_id")
     # project_id = resource.URI('project_id')
 
     # Properties
@@ -84,14 +83,14 @@ class BackupPolicy(sdk_resource.Resource):
     #:  Its value range is 0 to 35. If this parameter is 0,
     #:  the automated backup policy is not set.
     #: *Type: int*
-    keepday = resource.Body('keepday', type=int)
+    keepday = resource.Body("keepday", type=int)
     #: Start time
     #:  Indicates the backup start time that has been set.
     #:  The backup task will be triggered within one hour
     #:  after the backup start time.
     #:  The current time is the UTC time.
     #: *Type: string*
-    starttime = resource.Body('starttime')
+    starttime = resource.Body("starttime")
 
     # @classmethod
     # def new(cls, **attrs):
@@ -100,8 +99,7 @@ class BackupPolicy(sdk_resource.Resource):
     #         x_language='en-us', **attrs)
 
     # use put to create, but we don't require id
-    def update(self, session, prepend_key=True,
-               endpoint_override=None, headers=None):
+    def update(self, session, prepend_key=True, endpoint_override=None, headers=None):
         """Create a remote resource based on this instance.
 
         Method is overriden, because PUT without ID should be used
@@ -117,8 +115,10 @@ class BackupPolicy(sdk_resource.Resource):
                  :data:`Resource.allow_create` is not set to ``True``.
         """
         self.update_no_id(
-            session, prepend_key,
+            session,
+            prepend_key,
             # endpoint_override=endpoint_override,
-            headers=headers)
+            headers=headers,
+        )
 
         return None

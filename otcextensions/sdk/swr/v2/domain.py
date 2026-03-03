@@ -13,8 +13,9 @@ from openstack import resource
 
 
 class Domain(resource.Resource):
-    base_path = 'manage/namespaces/%(namespace)s/' \
-                'repositories/%(repository)s/access-domains'
+    base_path = (
+        "manage/namespaces/%(namespace)s/" "repositories/%(repository)s/access-domains"
+    )
 
     # capabilities
     allow_create = True
@@ -27,38 +28,38 @@ class Domain(resource.Resource):
 
     #: Organization namespace
     #: *Type:str*
-    namespace = resource.URI('namespace')
+    namespace = resource.URI("namespace")
     #: Image repository name
     #: *Type:str*
-    repository = resource.URI('repository')
+    repository = resource.URI("repository")
     #: Name of the account used for image sharing
     #: *Type:str*
-    access_domain = resource.Body('access_domain', type=str)
+    access_domain = resource.Body("access_domain", type=str)
     #: Currently, only the read permission is supported
     #: *Type:str*
-    permit = resource.Body('permit', type=str)
+    permit = resource.Body("permit", type=str)
     #: Valid until (UTC). If the sharing is permanent, the value is forever.
     #: Otherwise, the sharing is valid until 00:00:00 of the next day
     #: *Type:str*
-    deadline = resource.Body('deadline', type=str)
+    deadline = resource.Body("deadline", type=str)
     #: Description
     #: *Type:str*
-    description = resource.Body('description', type=str)
+    description = resource.Body("description", type=str)
     #: Creator ID
     #: *Type:str*
-    creator_id = resource.Body('creator_id')
+    creator_id = resource.Body("creator_id")
     #: Name of the creator
     #: *Type:str*
-    creator_name = resource.Body('creator_name')
+    creator_name = resource.Body("creator_name")
     #: Time when an image is created. It is the UTC standard time
     #: *Type:str*
-    created_at = resource.Body('created')
+    created_at = resource.Body("created")
     #: Time when an image is updated. It is the UTC standard time
     #: *Type:int*
-    updated_at = resource.Body('updated')
+    updated_at = resource.Body("updated")
     #: Status
     #: *Type:bool*
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Whether account exist
     #: *Type:bool*
-    exist = resource.Body('exist')
+    exist = resource.Body("exist")

@@ -12,17 +12,16 @@
 import uuid
 
 import openstack
-
 from otcextensions.tests.functional import base
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestContainer(base.BaseFunctionalTest):
     uuid_v4 = uuid.uuid4().hex[:8]
-    bucket_name = 'obs-test-' + uuid_v4
-    object_name = f'obs{uuid_v4}.object'
-    folder_name = f'folder{uuid_v4}/'
+    bucket_name = "obs-test-" + uuid_v4
+    object_name = f"obs{uuid_v4}.object"
+    folder_name = f"folder{uuid_v4}/"
     data = str(uuid.uuid4())
     container = None
     object = None
@@ -32,30 +31,23 @@ class TestContainer(base.BaseFunctionalTest):
         self.client = self.conn.obs
         self.container = self.client.create_container(
             name=self.bucket_name,
-            storage_acl='public-read-write',
-            storage_class='STANDARD'
+            storage_acl="public-read-write",
+            storage_class="STANDARD",
         )
         self.object = self.client.create_object(
-            container=self.container,
-            name=self.object_name,
-            data=self.data
+            container=self.container, name=self.object_name, data=self.data
         )
         self.folder = self.client.create_object(
-            container=self.container,
-            name=self.folder_name
+            container=self.container, name=self.folder_name
         )
 
     def test_01_get_object(self):
-        object = self.client.get_object(
-            self.object_name,
-            container=self.container
-        )
+        object = self.client.get_object(self.object_name, container=self.container)
         self.assertIsNotNone(object)
 
     def test_02_get_object_metadata(self):
         object = self.client.get_object_metadata(
-            self.object_name,
-            container=self.container
+            self.object_name, container=self.container
         )
 
         self.assertIsNotNone(object)

@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts model v1 action implementations"""
+
 import logging
 
 from osc_lib import exceptions
@@ -40,9 +41,7 @@ _formatters = {
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 def translate_response(func):
@@ -88,9 +87,10 @@ class DeleteModel(command.Command):
                 )
         if result > 0:
             total = len(parsed_args.model)
-            msg = _(
-                "%(result)s of %(total)s Model(s) failed " "to delete."
-            ) % {"result": result, "total": total}
+            msg = _("%(result)s of %(total)s Model(s) failed " "to delete.") % {
+                "result": result,
+                "total": total,
+            }
             raise exceptions.CommandError(msg)
 
 
@@ -235,10 +235,7 @@ class CreateModel(command.ShowOne):
         parser.add_argument(
             "--model-metrics",
             metavar="<model_metrics>",
-            help=_(
-                "Model precision, which is read from the "
-                "configuration file."
-            ),
+            help=_("Model precision, which is read from the " "configuration file."),
         )
         parser.add_argument(
             "--apis",
@@ -397,9 +394,7 @@ class ListModels(command.Lister):
             metavar="<model_version>",
             help=_("Model version."),
         )
-        parser.add_argument(
-            "--status", metavar="<status>", help=_("Model status.")
-        )
+        parser.add_argument("--status", metavar="<status>", help=_("Model status."))
         parser.add_argument(
             "--model-type",
             metavar="<model_type>",

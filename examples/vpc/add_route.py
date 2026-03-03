@@ -13,18 +13,19 @@
 """
 Add Route to VPC Peering Connection
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
     "type": "peering",
     "nexthop": "peering-uuid",
     "destination": "192.168.100.0/24",
-    "vpc_id": "local-router-uuid"
+    "vpc_id": "local-router-uuid",
 }
 
 route = conn.vpc.add_route(**attrs)

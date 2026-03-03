@@ -88,8 +88,6 @@ class TestDatasetSample(base.TestCase):
             "samples": ["sample1-id", "sample2-id"],
             "delete_source": True,
         }
-        url = utils.urljoin(
-            sot.base_path % {"dataset_id": dataset_id}, "delete"
-        )
+        url = utils.urljoin(sot.base_path % {"dataset_id": dataset_id}, "delete")
         self.sess.post.assert_called_with(url, json=json_body)
         self.assertEqual(rt, sot)

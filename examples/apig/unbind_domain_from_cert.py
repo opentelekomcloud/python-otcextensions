@@ -13,16 +13,12 @@
 """
 Unbind domain to SSL certificate
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "certificate_ids": ["cert_id"]
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"certificate_ids": ["cert_id"]}
 conn.apig.unbind_domain_from_certificate(
-    gateway="gateway_id",
-    group="group_id",
-    domain="domain_id",
-    **attrs
+    gateway="gateway_id", group="group_id", domain="domain_id", **attrs
 )

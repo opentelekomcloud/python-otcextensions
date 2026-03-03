@@ -13,10 +13,11 @@
 """
 Delete VPC Route By ID
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 vpc_id = "vpc-uuid"
 conn.vpc.delete_vpc(vpc_id)

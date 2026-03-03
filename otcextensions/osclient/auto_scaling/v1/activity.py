@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''AS Activity Log v1 action implementations'''
+"""AS Activity Log v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -22,37 +23,43 @@ LOG = logging.getLogger(__name__)
 
 
 class ListAutoScalingActivityLogs(command.Lister):
-    _description = _('List AutoScaling Activity Logs')
+    _description = _("List AutoScaling Activity Logs")
     columns = (
-        'ID', 'status', 'description',
-        'instance_value', 'desire_value',
-        'start_time', 'end_time')
+        "ID",
+        "status",
+        "description",
+        "instance_value",
+        "desire_value",
+        "start_time",
+        "end_time",
+    )
 
     def get_parser(self, prog_name):
         parser = super(ListAutoScalingActivityLogs, self).get_parser(prog_name)
         parser.add_argument(
-            '--group',
-            metavar='<group>',
-            required=True,
-            help=_('AS Group ID or name')
+            "--group", metavar="<group>", required=True, help=_("AS Group ID or name")
         )
         parser.add_argument(
-            '--start-time',
-            metavar='<start_time>',
-            help=_('Specifies the start time for querying scaling '
-                   'action logs. Format: `YYYY-MM-DDThh:mm:ssZ`')
+            "--start-time",
+            metavar="<start_time>",
+            help=_(
+                "Specifies the start time for querying scaling "
+                "action logs. Format: `YYYY-MM-DDThh:mm:ssZ`"
+            ),
         )
         parser.add_argument(
-            '--end-time',
-            metavar='<end_time>',
-            help=_('Specifies the end time for querying scaling '
-                   'action logs. Format: `YYYY-MM-DDThh:mm:ssZ`')
+            "--end-time",
+            metavar="<end_time>",
+            help=_(
+                "Specifies the end time for querying scaling "
+                "action logs. Format: `YYYY-MM-DDThh:mm:ssZ`"
+            ),
         )
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
-            help=_('Specifies the batch size of the records for pagination')
+            help=_("Specifies the batch size of the records for pagination"),
         )
 
         return parser
@@ -62,11 +69,11 @@ class ListAutoScalingActivityLogs(command.Lister):
 
         args = {}
         if parsed_args.limit:
-            args['limit'] = parsed_args.limit
+            args["limit"] = parsed_args.limit
         if parsed_args.start_time:
-            args['start_time'] = parsed_args.start_time
+            args["start_time"] = parsed_args.start_time
         if parsed_args.end_time:
-            args['end_time'] = parsed_args.end_time
+            args["end_time"] = parsed_args.end_time
 
         group = client.find_group(parsed_args.group, ignore_missing=False)
 
@@ -74,8 +81,11 @@ class ListAutoScalingActivityLogs(command.Lister):
 
         return (
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
         )

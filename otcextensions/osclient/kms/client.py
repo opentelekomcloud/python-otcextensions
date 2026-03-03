@@ -14,11 +14,10 @@ import logging
 
 from otcextensions import sdk
 
-
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '1.0'
-API_VERSION_OPTION = 'os_kms_api_version'
+DEFAULT_API_VERSION = "1.0"
+API_VERSION_OPTION = "os_kms_api_version"
 API_NAME = "kms"
 API_VERSIONS = {
     "1.0": "openstack.connection.Connection",
@@ -31,12 +30,11 @@ def make_client(instance):
 
     conn = instance.sdk_connection
 
-    if getattr(conn, 'kms', None) is None:
-        LOG.debug('OTC extensions are not registered. Do that now')
+    if getattr(conn, "kms", None) is None:
+        LOG.debug("OTC extensions are not registered. Do that now")
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('KMS client initialized using OpenStack OTC SDK: %s',
-              conn.kms)
+    LOG.debug("KMS client initialized using OpenStack OTC SDK: %s", conn.kms)
     return conn.kms
 
 

@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''DMS Product specification action implementations'''
+"""DMS Product specification action implementations"""
 
 from osc_lib import utils
 from osc_lib.command import command
@@ -19,10 +19,18 @@ from otcextensions.i18n import _
 
 
 class ListProduct(command.Lister):
-    _description = _('List Product specs')
-    columns = ('spec_code', 'engine_name', 'engine_version', 'tps', 'storage',
-               'partition_num', 'product_id', 'availability_zones',
-               'unavailable_zones')
+    _description = _("List Product specs")
+    columns = (
+        "spec_code",
+        "engine_name",
+        "engine_version",
+        "tps",
+        "storage",
+        "partition_num",
+        "product_id",
+        "availability_zones",
+        "unavailable_zones",
+    )
 
     def get_parser(self, prog_name):
         parser = super(ListProduct, self).get_parser(prog_name)
@@ -34,8 +42,14 @@ class ListProduct(command.Lister):
 
         data = client.products()
 
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns,
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
         return table

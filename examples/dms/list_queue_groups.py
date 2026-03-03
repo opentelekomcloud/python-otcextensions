@@ -13,11 +13,12 @@
 """
 List all Queues Groups
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-queue_id = 'queue_id'
+queue_id = "queue_id"
 for raw in conn.dms.groups(queue_id):
     print(raw)

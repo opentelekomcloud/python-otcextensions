@@ -11,6 +11,7 @@
 #   under the License.
 #
 """Formatters for cli outputs"""
+
 import datetime
 
 import yaml
@@ -22,7 +23,7 @@ class literal(str):
 
 
 def literal_presenter(dumper, data):
-    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='>')
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=">")
 
 
 yaml.add_representer(literal, literal_presenter)
@@ -33,7 +34,7 @@ def scrub_dict(d):
     for k, v in d.items():
         if isinstance(v, dict):
             v = scrub_dict(v)
-        if v not in ('', None, {}):
+        if v not in ("", None, {}):
             new_dict[k] = v
     return new_dict
 
@@ -41,7 +42,7 @@ def scrub_dict(d):
 def wrap_text(s):
     length = 100
     if isinstance(s, str) and len(s) >= length:
-        return '\n'.join([s[i:i + length] for i in range(0, len(s), length)])
+        return "\n".join([s[i : i + length] for i in range(0, len(s), length)])
     return s
 
 
@@ -55,7 +56,7 @@ class UnixTimestampFormatter(cliff_columns.FormattableColumn):
 
     def human_readable(self):
         if self._value is None:
-            return ''
+            return ""
 
         # Convert Unix timestamp to GMT+1
         gmt_offset = 1
@@ -64,35 +65,25 @@ class UnixTimestampFormatter(cliff_columns.FormattableColumn):
         else:
             self._value = self._value / 1000
         timestamp = datetime.datetime.fromtimestamp(self._value)
-        timezone_offset = datetime.timezone(
-            datetime.timedelta(hours=gmt_offset)
-        )
+        timezone_offset = datetime.timezone(datetime.timedelta(hours=gmt_offset))
         timestamp_gmt = timestamp.astimezone(timezone_offset)
 
         # Format the timestamp as a string with the timezone offset
-        timezone_offset_str = timestamp_gmt.strftime('%z')
+        timezone_offset_str = timestamp_gmt.strftime("%z")
         timezone_offset_formatted = (
-            f'GMT{timezone_offset_str[:3]}:{timezone_offset_str[3:]}'
+            f"GMT{timezone_offset_str[:3]}:{timezone_offset_str[3:]}"
         )
-        return (
-            timestamp_gmt.strftime('%Y-%m-%d %H:%M:%S ')
-            + timezone_offset_formatted
-        )
+        return timestamp_gmt.strftime("%Y-%m-%d %H:%M:%S ") + timezone_offset_formatted
         # Format GMT+1 timestamp as string
 
 
 class YamlFormat(cliff_columns.FormattableColumn):
     def remove_null_values(self, data):
         if isinstance(data, dict):
-            if (
-                'record_delimiter' in data.keys()
-                and '\n' in data['record_delimiter']
-            ):
-                data['record_delimiter'] = '\\n'
+            if "record_delimiter" in data.keys() and "\n" in data["record_delimiter"]:
+                data["record_delimiter"] = "\\n"
             return {
-                k: self.remove_null_values(v)
-                for k, v in data.items()
-                if v is not None
+                k: self.remove_null_values(v) for k, v in data.items() if v is not None
             }
         elif isinstance(data, list):
             return [self.remove_null_values(v) for v in data if v is not None]

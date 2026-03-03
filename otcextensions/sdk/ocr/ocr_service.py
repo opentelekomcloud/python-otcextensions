@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.ocr.v2 import _proxy
 
 
 class OcrService(service_description.ServiceDescription):
     """The Optical Character Recognition (OCR) service."""
 
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+    supported_versions = {"2": _proxy.Proxy}

@@ -11,15 +11,14 @@
 # under the License.
 
 import uuid
-from otcextensions.sdk.function_graph.v2 import function
-from otcextensions.sdk.function_graph.v2 import version
-from otcextensions.sdk.function_graph.v2 import alias
 
 from openstack import _log
-
+from otcextensions.sdk.function_graph.v2 import alias
+from otcextensions.sdk.function_graph.v2 import function
+from otcextensions.sdk.function_graph.v2 import version
 from otcextensions.tests.functional.sdk.function_graph import TestFg
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestFunctionAlias(TestFg):
@@ -32,55 +31,37 @@ class TestFunctionAlias(TestFg):
         assert isinstance(self.function, function.Function)
 
         self.publish_attrs = {
-            'version': 'new-version',
-            'description': 'otce',
+            "version": "new-version",
+            "description": "otce",
         }
 
-        self.publish = self.client.publish_version(
-            self.function, **self.publish_attrs
-        )
+        self.publish = self.client.publish_version(self.function, **self.publish_attrs)
         assert isinstance(self.publish, version.Version)
 
-        self.alias_attrs = {
-            'name': 'a1',
-            'version': 'new-version'
-        }
-        self.alias = self.client.create_alias(
-            self.publish.func_urn, **self.alias_attrs
-        )
+        self.alias_attrs = {"name": "a1", "version": "new-version"}
+        self.alias = self.client.create_alias(self.publish.func_urn, **self.alias_attrs)
         assert isinstance(self.alias, alias.Alias)
         self.ID = self.alias.name
-        self.addCleanup(
-            self.client.delete_function,
-            self.function
-        )
-        self.addCleanup(
-            self.client.delete_alias,
-            self.function,
-            self.alias
-        )
+        self.addCleanup(self.client.delete_function, self.function)
+        self.addCleanup(self.client.delete_alias, self.function, self.alias)
 
     def test_function_aliases(self):
-        elist = list(self.client.aliases(
-            func_urn=self.function.func_urn))
-        self.assertIn(self.alias_attrs['name'], elist[0].name)
+        elist = list(self.client.aliases(func_urn=self.function.func_urn))
+        self.assertIn(self.alias_attrs["name"], elist[0].name)
 
     def test_function_published_versions(self):
-        vlist = list(self.client.versions(
-            func_urn=self.function.func_urn))
-        self.assertIn(self.publish_attrs['version'], vlist[1].version)
+        vlist = list(self.client.versions(func_urn=self.function.func_urn))
+        self.assertIn(self.publish_attrs["version"], vlist[1].version)
 
     def test_get_function_alias(self):
-        a = self.client.get_alias(
-            self.function, self.alias)
+        a = self.client.get_alias(self.function, self.alias)
         self.assertIn(self.ID, a.id)
 
     def test_update_function_alias(self):
         attrs = {
-            'version': 'new-version',
-            'description': 'new',
+            "version": "new-version",
+            "description": "new",
         }
-        updated = self.client.update_alias(
-            self.function, self.alias, **attrs)
-        self.assertIn(attrs['version'], updated.version)
-        self.assertIn(attrs['description'], updated.description)
+        updated = self.client.update_alias(self.function, self.alias, **attrs)
+        self.assertIn(attrs["version"], updated.version)
+        self.assertIn(attrs["description"], updated.description)

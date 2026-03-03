@@ -13,9 +13,10 @@
 """
 Disable public access
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.disable_public_access('gateway_id')
+conn.apig.disable_public_access("gateway_id")

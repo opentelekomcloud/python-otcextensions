@@ -20,49 +20,71 @@ class TestListTrace(fakes.TestCTS):
     objects = fakes.FakeTrace.create_multiple(3)
 
     columns = (
-        'id', 'name', 'user', 'service_type', 'type',
-        'resource_type', 'resource_name', 'resource_id',
-        'source_ip', 'level', 'time'
+        "id",
+        "name",
+        "user",
+        "service_type",
+        "type",
+        "resource_type",
+        "resource_name",
+        "resource_id",
+        "source_ip",
+        "level",
+        "time",
     )
 
     columns_long = (
-        'id', 'name', 'type', 'user', 'service_type',
-        'resource_type', 'resource_name', 'resource_id',
-        'source_ip', 'level', 'time', 'request', 'response'
+        "id",
+        "name",
+        "type",
+        "user",
+        "service_type",
+        "resource_type",
+        "resource_name",
+        "resource_id",
+        "source_ip",
+        "level",
+        "time",
+        "request",
+        "response",
     )
 
     data = []
     data_long = []
 
     for s in objects:
-        data.append((
-            s.id,
-            s.name,
-            s.user,
-            s.service_type,
-            s.type,
-            s.resource_type,
-            s.resource_name,
-            s.resource_id,
-            s.source_ip,
-            s.level,
-            s.time
-        ))
-        data_long.append((
-            s.id,
-            s.name,
-            s.type,
-            s.user,
-            s.service_type,
-            s.resource_type,
-            s.resource_name,
-            s.resource_id,
-            s.source_ip,
-            s.level,
-            s.time,
-            s.request,
-            s.response
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.user,
+                s.service_type,
+                s.type,
+                s.resource_type,
+                s.resource_name,
+                s.resource_id,
+                s.source_ip,
+                s.level,
+                s.time,
+            )
+        )
+        data_long.append(
+            (
+                s.id,
+                s.name,
+                s.type,
+                s.user,
+                s.service_type,
+                s.resource_type,
+                s.resource_name,
+                s.resource_id,
+                s.source_ip,
+                s.level,
+                s.time,
+                s.request,
+                s.response,
+            )
+        )
 
     def setUp(self):
         super(TestListTrace, self).setUp()
@@ -72,116 +94,113 @@ class TestListTrace(fakes.TestCTS):
         self.client.traces = mock.Mock()
 
     def test_list(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.traces.side_effect = [
-            self.objects
-        ]
+        self.client.traces.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.traces.assert_called_once_with(
-            tracker='system'
-        )
+        self.client.traces.assert_called_once_with(tracker="system")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_long(self):
-        arglist = [
-            '--long'
-        ]
+        arglist = ["--long"]
 
-        verifylist = [
-            ('long', True)
-        ]
+        verifylist = [("long", True)]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.traces.side_effect = [
-            self.objects
-        ]
+        self.client.traces.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.traces.assert_called_once_with(
-            tracker='system'
-        )
+        self.client.traces.assert_called_once_with(tracker="system")
 
         self.assertEqual(self.columns_long, columns)
         self.assertEqual(self.data_long, list(data))
 
     def test_list_query(self):
         arglist = [
-            '--tracker', 'trck',
-            '--limit', '1',
-            '--next', '2',
-            '--service_type', '3',
-            '--resource_type', '4',
-            '--resource_id', '5',
-            '--resource_name', '6',
-            '--trace_name', '7',
-            '--trace_id', '8',
-            '--level', 'NORMAL',
-            '--user', '9',
-            '--start_time', '1970-01-01T00:00:00',
-            '--end_time', '1970-01-01T00:00:00',
+            "--tracker",
+            "trck",
+            "--limit",
+            "1",
+            "--next",
+            "2",
+            "--service_type",
+            "3",
+            "--resource_type",
+            "4",
+            "--resource_id",
+            "5",
+            "--resource_name",
+            "6",
+            "--trace_name",
+            "7",
+            "--trace_id",
+            "8",
+            "--level",
+            "NORMAL",
+            "--user",
+            "9",
+            "--start_time",
+            "1970-01-01T00:00:00",
+            "--end_time",
+            "1970-01-01T00:00:00",
         ]
 
         verifylist = [
-            ('tracker', 'trck'),
-            ('limit', 1),
-            ('next', 2),
-            ('service_type', '3'),
-            ('resource_type', '4'),
-            ('resource_id', '5'),
-            ('resource_name', '6'),
-            ('trace_name', '7'),
-            ('trace_id', '8'),
-            ('level', 'NORMAL'),
-            ('user', '9'),
-            ('start_time', '1970-01-01T00:00:00'),
-            ('end_time', '1970-01-01T00:00:00'),
+            ("tracker", "trck"),
+            ("limit", 1),
+            ("next", 2),
+            ("service_type", "3"),
+            ("resource_type", "4"),
+            ("resource_id", "5"),
+            ("resource_name", "6"),
+            ("trace_name", "7"),
+            ("trace_id", "8"),
+            ("level", "NORMAL"),
+            ("user", "9"),
+            ("start_time", "1970-01-01T00:00:00"),
+            ("end_time", "1970-01-01T00:00:00"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.traces.side_effect = [
-            self.objects
-        ]
+        self.client.traces.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.traces.assert_called_once_with(
-            level='NORMAL',
+            level="NORMAL",
             limit=1,
             next=2,
-            res_id='5',
-            res_name='6',
-            res_type='4',
-            service_type='3',
+            res_id="5",
+            res_name="6",
+            res_type="4",
+            service_type="3",
             to=0,
-            trace_id='8',
-            trace_name='7',
-            tracker='trck',
-            user='9',
+            trace_id="8",
+            trace_name="7",
+            tracker="trck",
+            user="9",
             **{
-                'from': 0,
+                "from": 0,
             }
         )
 

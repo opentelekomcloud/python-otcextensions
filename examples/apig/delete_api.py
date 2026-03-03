@@ -13,11 +13,9 @@
 """
 Delete API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-conn.apig.delete_api(
-    gateway="gateway_id",
-    api="env_id"
-)
+conn = openstack.connect(cloud="otc")
+conn.apig.delete_api(gateway="gateway_id", api="env_id")

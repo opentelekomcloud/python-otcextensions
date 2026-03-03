@@ -13,11 +13,12 @@
 """
 Get resource tags
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-ft = conn.functiongraph.get_resource_tags(function='func_urn')
+ft = conn.functiongraph.get_resource_tags(function="func_urn")

@@ -10,17 +10,18 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Unbind policy from CBR vault
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-policy = 'name_or_id'
-vault = 'name_or_id'
+policy = "name_or_id"
+vault = "name_or_id"
 policy = conn.cbr.find_policy(policy)
 vault = conn.cbr.find_vault(vault)
 conn.cbr.unbind_policy(vault=vault.id, policy=policy.id)

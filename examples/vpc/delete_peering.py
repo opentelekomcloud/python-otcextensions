@@ -13,10 +13,11 @@
 """
 Delete VPC Peering by id or name
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 peering = "peering_id"

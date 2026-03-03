@@ -13,33 +13,33 @@ from openstack import resource
 
 
 class Message(resource.Resource):
-    base_path = '/notifications/topics/%(topic_urn)s/publish'
+    base_path = "/notifications/topics/%(topic_urn)s/publish"
 
     # capabilities
     allow_create = True
 
     #: Message ID, which is unique
-    message_id = resource.Body('message_id')
+    message_id = resource.Body("message_id")
     #: Request ID, which is unique.
-    request_id = resource.Body('request_id')
+    request_id = resource.Body("request_id")
     #: Message subject, which is used as the email
     #: subject when you publish email messages.
-    subject = resource.Body('subject')
+    subject = resource.Body("subject")
     #: Message content.
     #: The message content is a UTF-8-coded character string of
     #: no more than 256 KB. For SMS subscribers, if the content
     #: exceeds 256 bytes, the system will divide it into multiple
     #: messages and send only the first two.
-    message = resource.Body('message')
+    message = resource.Body("message")
     #: Message structure, which contains JSON character strings.
     #: Specify protocols in the structure, which can be http,
     #: https, email, dms, and sms.
-    message_structure = resource.Body('message_structure')
+    message_structure = resource.Body("message_structure")
     #: Message template name, which can be obtained according
     #: to Querying Message Templates
-    message_template_name = resource.Body('message_template_name')
+    message_template_name = resource.Body("message_template_name")
     #: Time-to-live (TTL) of a message, specifically, the maximum time
     #: period for retaining the message in the system
-    time_to_live = resource.Body('time_to_live')
+    time_to_live = resource.Body("time_to_live")
     #: Resource identifier of a topic, which is unique
-    topic_urn = resource.URI('topic_urn')
+    topic_urn = resource.URI("topic_urn")

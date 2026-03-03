@@ -13,13 +13,13 @@
 """
 List all servers of a Dedicated Host
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-host = 'name_or_id'
+host = "name_or_id"
 host = conn.deh.find_host(name_or_id=host)
 for server in conn.deh.servers(host=host):
     print(server)

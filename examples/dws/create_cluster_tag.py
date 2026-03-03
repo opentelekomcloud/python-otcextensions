@@ -13,18 +13,16 @@
 """
 Create a new tag for a specified DWS cluster.
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-cluster_id = 'cluster-uuid'
-tag = {
-    'key': 'example_key',
-    'value': 'example_value'
-}
+cluster_id = "cluster-uuid"
+tag = {"key": "example_key", "value": "example_value"}
 
 result = conn.dws.create_cluster_tag(cluster_id, tag)
 print(result)

@@ -13,13 +13,12 @@
 """
 Modify gateway spec
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "spec_id": "PROFESSIONAL"
-}
+attrs = {"spec_id": "PROFESSIONAL"}
 
 conn.apig.modify_gateway_spec("gateway_id", **attrs)

@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts service v1 action implementations"""
+
 import logging
 
 from osc_lib import exceptions
@@ -50,9 +51,7 @@ _formatters = {
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class ListServices(command.Lister):
@@ -610,9 +609,7 @@ class UpdateService(command.ShowOne):
             if val:
                 config[arg] = val
 
-        service = client.find_service(
-            parsed_args.service, ignore_missing=False
-        )
+        service = client.find_service(parsed_args.service, ignore_missing=False)
         if service.infer_type == "real-time":
             for arg in ("weight", "cluster_id"):
                 val = getattr(parsed_args, arg)
@@ -679,9 +676,7 @@ class ShowService(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        service = client.find_service(
-            parsed_args.service, ignore_missing=False
-        )
+        service = client.find_service(parsed_args.service, ignore_missing=False)
         data = client.get_service(service.id)
 
         display_columns, columns = _get_columns(data)
@@ -759,9 +754,7 @@ class DeleteService(command.Command):
                 )
         if result > 0:
             total = len(parsed_args.service)
-            msg = _(
-                "%(result)s of %(total)s Service(s) failed " "to delete."
-            ) % {
+            msg = _("%(result)s of %(total)s Service(s) failed " "to delete.") % {
                 "result": result,
                 "total": total,
             }

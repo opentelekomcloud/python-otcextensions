@@ -19,17 +19,17 @@ from otcextensions.osclient.modelartsv2.v2 import dataset_export_task
 from otcextensions.tests.unit.osclient.modelartsv2.v2 import fakes
 
 _COLUMNS = (
-    'created_at',
-    'export_format',
-    'export_params',
-    'export_type',
-    'id',
-    'path',
-    'progress',
-    'status',
-    'task_id',
-    'updated_at',
-    'version_format',
+    "created_at",
+    "export_format",
+    "export_params",
+    "export_type",
+    "id",
+    "path",
+    "progress",
+    "status",
+    "task_id",
+    "updated_at",
+    "version_format",
 )
 
 
@@ -79,9 +79,7 @@ class TestListDatasetExportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_dataset.assert_called_with(
-            "dataset-id", ignore_missing=False
-        )
+        self.client.find_dataset.assert_called_with("dataset-id", ignore_missing=False)
         self.client.api_mock.assert_called_with(self._dataset)
 
         self.assertEqual(self.column_list_headers, columns)
@@ -114,9 +112,7 @@ class TestListDatasetExportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_dataset.assert_called_with(
-            "dataset-id", ignore_missing=False
-        )
+        self.client.find_dataset.assert_called_with("dataset-id", ignore_missing=False)
         self.client.api_mock.assert_called_with(
             self._dataset, limit=1, offset=2, export_type=0
         )
@@ -141,9 +137,7 @@ class TestShowDatasetExportTask(fakes.TestModelartsv2):
         self.cmd = dataset_export_task.ShowDatasetExportTask(self.app, None)
 
         self.client.find_dataset = mock.Mock(return_value=self._dataset)
-        self.client.get_dataset_export_task = mock.Mock(
-            return_value=self.object
-        )
+        self.client.get_dataset_export_task = mock.Mock(return_value=self.object)
 
     def test_show_no_options(self):
         arglist = []
@@ -173,12 +167,8 @@ class TestShowDatasetExportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_dataset.assert_called_with(
-            "dataset-id", ignore_missing=False
-        )
-        self.client.get_dataset_export_task.assert_called_with(
-            self._dataset, "task-id"
-        )
+        self.client.find_dataset.assert_called_with("dataset-id", ignore_missing=False)
+        self.client.get_dataset_export_task.assert_called_with(self._dataset, "task-id")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

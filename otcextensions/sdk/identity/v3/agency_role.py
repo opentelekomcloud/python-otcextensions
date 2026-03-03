@@ -11,14 +11,15 @@
 # under the License.
 
 from openstack import resource
-
 from otcextensions.sdk.identity.v3 import _bad_base as _base
 
 
 class AgencyRole(_base.BadBaseResource):
-    resources_key = 'roles'
-    base_path = ('/v3.0/OS-AGENCY/%(role_ref_type)ss/%(role_ref_id)s'
-                 '/agencies/%(agency_id)s/roles')
+    resources_key = "roles"
+    base_path = (
+        "/v3.0/OS-AGENCY/%(role_ref_type)ss/%(role_ref_id)s"
+        "/agencies/%(agency_id)s/roles"
+    )
 
     # capabilities
     allow_commit = True
@@ -27,19 +28,19 @@ class AgencyRole(_base.BadBaseResource):
     allow_list = True
 
     # Properties
-    role_ref_type = resource.URI('role_ref_type')
-    role_ref_id = resource.URI('role_ref_id')
-    agency_id = resource.URI('agency_id')
+    role_ref_type = resource.URI("role_ref_type")
+    role_ref_id = resource.URI("role_ref_id")
+    agency_id = resource.URI("agency_id")
 
     #: Directory where a role locates.
-    catalog = resource.Body('catalog')
+    catalog = resource.Body("catalog")
     #: Description of the role.
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: ID of the domain to which a role belongs.
-    domain_id = resource.Body('domain_id')
+    domain_id = resource.Body("domain_id")
     #: Name of a role.
-    name = resource.Body('display_name')
+    name = resource.Body("display_name")
     #: Policy of a role.
-    policy = resource.Body('policy', type=dict)
+    policy = resource.Body("policy", type=dict)
     #: Display mode of a role.
-    type = resource.Body('type')
+    type = resource.Body("type")

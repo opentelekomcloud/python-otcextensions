@@ -13,12 +13,12 @@
 """
 List virtual gateways
 """
+
 import openstack
 from otcextensions import sdk
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='devstack-admin')
+conn = openstack.connect(cloud="devstack-admin")
 sdk.register_otc_extensions(conn)
 
 for gw in conn.dcaas.virtual_gateways():

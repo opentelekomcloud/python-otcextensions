@@ -11,14 +11,13 @@
 # under the License.
 from openstack import proxy
 from openstack import resource
-
 from otcextensions.sdk.dds.v3 import datastore as _datastore
+from otcextensions.sdk.dds.v3 import eip as _eip
 from otcextensions.sdk.dds.v3 import flavor as _flavor
 from otcextensions.sdk.dds.v3 import instance as _instance
 from otcextensions.sdk.dds.v3 import job as _job
-from otcextensions.sdk.dds.v3 import eip as _eip
-from otcextensions.sdk.dds.v3 import recycle_policy as _recycle_policy
 from otcextensions.sdk.dds.v3 import recycle_instance as _recycle_instance
+from otcextensions.sdk.dds.v3 import recycle_policy as _recycle_policy
 
 
 class Proxy(proxy.Proxy):
@@ -30,8 +29,8 @@ class Proxy(proxy.Proxy):
 
         :returns: A generator of supported datastore types
         """
-        for ds in ['DDS-Community']:
-            obj = type('obj', (object,), {'name': ds})
+        for ds in ["DDS-Community"]:
+            obj = type("obj", (object,), {"name": ds})
             yield obj
 
     def datastores(self, datastore_name):
@@ -61,11 +60,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dds.v3.flavor.Flavor`
         """
 
-        return self._list(
-            _flavor.Flavor,
-            region=region,
-            engine_name=engine_name
-        )
+        return self._list(_flavor.Flavor, region=region, engine_name=engine_name)
 
     # ======= Instance =======
     def create_instance(self, **attrs):
@@ -305,9 +300,7 @@ class Proxy(proxy.Proxy):
         or None.
 
         """
-        return self._find(_instance.Instance,
-                          name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_instance.Instance, name_or_id, ignore_missing=ignore_missing)
 
     def instances(self, **params):
         """Return a generator of instances
@@ -332,8 +325,7 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_job.Job, job)
 
-    def wait_job(self, job, status='Completed', failures=None,
-                 interval=20, wait=None):
+    def wait_job(self, job, status="Completed", failures=None, interval=20, wait=None):
         """Wait for the job to complete
 
         :param job: The value can be either the ID of a job or a \
@@ -346,14 +338,14 @@ class Proxy(proxy.Proxy):
 
         """
         if failures is None:
-            failures = ['ERROR']
+            failures = ["ERROR"]
         job = self._find(_job.Job, job, failures=failures)
         if job is not None:
-            return resource.wait_for_status(self, job, status, failures,
-                                            interval, wait)
+            return resource.wait_for_status(self, job, status, failures, interval, wait)
 
-    def wait_normal_instance(self, instance, status='normal',
-                             failures=None, interval=60, wait=None):
+    def wait_normal_instance(
+        self, instance, status="normal", failures=None, interval=60, wait=None
+    ):
         """Wait for normal status of an instance
 
         :param instance: The value can be either the ID of an instance or a \
@@ -368,10 +360,11 @@ class Proxy(proxy.Proxy):
 
         """
         if failures is None:
-            failures = ['ERROR']
+            failures = ["ERROR"]
         instance = self.get_instance(instance)
-        return resource.wait_for_status(self, instance, status,
-                                        failures, interval, wait)
+        return resource.wait_for_status(
+            self, instance, status, failures, interval, wait
+        )
 
     def bind_eip(self, node, public_ip, public_ip_id):
         """Bind an IP to a node
@@ -427,5 +420,6 @@ class Proxy(proxy.Proxy):
 
         """
         base_path = _recycle_instance.RecycleInstance.base_path
-        return self._list(_recycle_instance.RecycleInstance, **params,
-                          base_path=base_path)
+        return self._list(
+            _recycle_instance.RecycleInstance, **params, base_path=base_path
+        )

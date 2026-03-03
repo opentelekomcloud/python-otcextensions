@@ -94,16 +94,12 @@ class LabelAttributeSpec(resource.Resource):
     #: Label attribute type.
     type = resource.Body("type")
     #: List of label attribute values.
-    values = resource.Body(
-        "values", type=list, list_type=LabelAttributeValueSpec
-    )
+    values = resource.Body("values", type=list, list_type=LabelAttributeValueSpec)
 
 
 class LabelSpec(resource.Resource):
     #: Multi-dimensional attribute of a label.
-    attributes = resource.Body(
-        "attributes", type=list, list_type=LabelAttributeSpec
-    )
+    attributes = resource.Body("attributes", type=list, list_type=LabelAttributeSpec)
     #: Label name.
     name = resource.Body("name")
     #: Basic attribute key-value pair of a label, such as color and shortcut
@@ -115,9 +111,7 @@ class LabelSpec(resource.Resource):
 
 class LabelStatsSpec(resource.Resource):
     #: Multi-dimensional attribute of a label.
-    attributes = resource.Body(
-        "attributes", type=list, list_type=LabelAttributeSpec
-    )
+    attributes = resource.Body("attributes", type=list, list_type=LabelAttributeSpec)
     #: Number of labels.
     count = resource.Body("count", type=int)
     #: Label name.
@@ -146,9 +140,7 @@ class DatasetVersionSpec(resource.Resource):
     #: Number of samples with labeled versions.
     annotated_sample_count = resource.Body("annotated_sample_count", type=int)
     #: Number of labeled subsamples.
-    annotated_sub_sample_count = resource.Body(
-        "annotated_sub_sample_count", type=int
-    )
+    annotated_sub_sample_count = resource.Body("annotated_sub_sample_count", type=int)
     #: Whether to clear hard example properties during release.
     clear_hard_property = resource.Body("clear_hard_property", type=bool)
     #: Status code of a preprocessing task such as rotation and cropping.
@@ -184,9 +176,7 @@ class DatasetVersionSpec(resource.Resource):
     #: Whether the current dataset version is used.
     is_current = resource.Body("is_current", type=bool)
     #: Label statistics list of a released version.
-    label_stats = resource.Body(
-        "label_stats", type=list, list_type=LabelStatsSpec
-    )
+    label_stats = resource.Body("label_stats", type=list, list_type=LabelStatsSpec)
     #: Label type of a released version.
     label_type = resource.Body("label_type")
     #: Input path for the manifest file cache during version release.
@@ -203,9 +193,7 @@ class DatasetVersionSpec(resource.Resource):
         "previous_annotated_sample_count", type=int
     )
     #: Total samples of parent versions.
-    previous_total_sample_count = resource.Body(
-        "previous_total_sample_count", type=int
-    )
+    previous_total_sample_count = resource.Body("previous_total_sample_count", type=int)
     #: Parent version ID.
     previous_version_id = resource.Body("previous_version_id")
     #: ID of a preprocessing task such as rotation and cropping.
@@ -299,9 +287,7 @@ class DataSourceSpec(resource.Resource):
     #: Data type.
     data_type = resource.Body("data_type", type=int)
     #: Schema mapping information corresponding to the table data.
-    schema_maps = resource.Body(
-        "schema_maps", type=list, list_type=SchemaMapSpec
-    )
+    schema_maps = resource.Body("schema_maps", type=list, list_type=SchemaMapSpec)
     #: Information required for importing a table data source.
     source_info = resource.Body("source_info", type=SourceInfoSpec)
     #: Whether the first row in the file is a column name.
@@ -344,9 +330,7 @@ class Dataset(_base.Resource):
     #: Number of labeled samples in a dataset.
     annotated_sample_count = resource.Body("annotated_sample_count", type=int)
     #: Number of labeled subsamples.
-    annotated_sub_sample_count = resource.Body(
-        "annotated_sub_sample_count", type=int
-    )
+    annotated_sub_sample_count = resource.Body("annotated_sub_sample_count", type=int)
     #: Whether to enable content labeling for the speech paragraph labeling
     #:  dataset.
     content_labeling = resource.Body("content_labeling", type=bool)
@@ -359,9 +343,7 @@ class Dataset(_base.Resource):
     #: Data format.
     data_format = resource.Body("data_format")
     #: Data source list.
-    data_sources = resource.Body(
-        "data_sources", type=list, list_type=DataSourceSpec
-    )
+    data_sources = resource.Body("data_sources", type=list, list_type=DataSourceSpec)
     #: Sample statistics on a dataset, including the statistics on sample
     #:  metadata.
     data_statistics = resource.Body("data_statistics", type=dict)
@@ -443,15 +425,11 @@ class Dataset(_base.Resource):
     #: Total number of subsamples generated from the parent samples.
     total_sub_sample_count = resource.Body("total_sub_sample_count", type=int)
     #: Number of auto labeling samples to be confirmed.
-    unconfirmed_sample_count = resource.Body(
-        "unconfirmed_sample_count", type=int
-    )
+    unconfirmed_sample_count = resource.Body("unconfirmed_sample_count", type=int)
     #: Time when a dataset is updated.
     update_time = resource.Body("update_time", type=int)
     #: Dataset version information.
-    versions = resource.Body(
-        "versions", type=list, list_type=DatasetVersionSpec
-    )
+    versions = resource.Body("versions", type=list, list_type=DatasetVersionSpec)
     #: Output dataset path, which is used to store output files such as label
     #:  files.
     work_path = resource.Body("work_path")

@@ -19,7 +19,7 @@ EXAMPLE = {
     "id": "db9a9260cd3e4a16a9b5747a65d3ffaa",
     "gateway_id": "eddc4d25480b4cd6b512f270a1b8b341",
     "name": "app_api_key",
-    "updated_at": "2020-08-24T01:17:31.041984021Z"
+    "updated_at": "2020-08-24T01:17:31.041984021Z",
 }
 
 
@@ -27,18 +27,15 @@ class TestGatewayFeatures(base.TestCase):
 
     def test_basic(self):
         sot = gateway_features.GatewayFeatures()
-        self.assertEqual(
-            '/apigw/instances/%(gateway_id)s/features',
-            sot.base_path
-        )
+        self.assertEqual("/apigw/instances/%(gateway_id)s/features", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
 
     def test_make_it(self):
         sot = gateway_features.GatewayFeatures(**EXAMPLE)
-        self.assertEqual(EXAMPLE['config'], sot.config)
-        self.assertEqual(EXAMPLE['enable'], sot.enable)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['gateway_id'], sot.gateway_id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
+        self.assertEqual(EXAMPLE["config"], sot.config)
+        self.assertEqual(EXAMPLE["enable"], sot.enable)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["gateway_id"], sot.gateway_id)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["updated_at"], sot.updated_at)

@@ -12,6 +12,7 @@
 # under the License.
 #
 """Querying Service Update Logs"""
+
 import openstack
 
 openstack.enable_logging(True)

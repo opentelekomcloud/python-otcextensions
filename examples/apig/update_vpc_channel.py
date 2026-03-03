@@ -13,10 +13,11 @@
 """
 Update VPC channel
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "balance_strategy": 1,
     "member_type": "ip",
@@ -24,6 +25,5 @@ attrs = {
     "port": 222,
 }
 updated = conn.apig.update_vpc_channel(
-    gateway="gateway_id",
-    vpc_channel="vpc_channel_id",
-    **attrs)
+    gateway="gateway_id", vpc_channel="vpc_channel_id", **attrs
+)

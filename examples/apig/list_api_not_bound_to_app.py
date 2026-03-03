@@ -13,16 +13,16 @@
 """
 Query Api Not Bound to App
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'app_id': '74593f5c94f64a139db38b61a7705df3',
-    'env_id': 'DEFAULT_ENVIRONMENT_RELEASE_ID'
+    "app_id": "74593f5c94f64a139db38b61a7705df3",
+    "env_id": "DEFAULT_ENVIRONMENT_RELEASE_ID",
 }
 
-result = conn.apig.list_api_not_bound_to_app(gateway="id",
-                                             **attrs)
+result = conn.apig.list_api_not_bound_to_app(gateway="id", **attrs)
 print(list(result))

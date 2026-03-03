@@ -15,8 +15,7 @@ from openstack import utils
 
 class SchedulePolicy(resource.Resource):
     #: whether keep the first backup of current month
-    remain_first_backup_of_curMonth = resource.Body(
-        "remain_first_backup_of_curMonth")
+    remain_first_backup_of_curMonth = resource.Body("remain_first_backup_of_curMonth")
     #: the max backup amount, min value is 2
     rentention_num = resource.Body("rentention_num", type=int)
     #: backup period, valid values, 1..14 (days)
@@ -29,6 +28,7 @@ class SchedulePolicy(resource.Resource):
 
 class BackupPolicy(resource.Resource):
     """Volume BackupPolicy"""
+
     resources_key = "backup_policies"
     base_path = "/backuppolicy"
 
@@ -79,28 +79,27 @@ class BackupPolicyResource(resource.Resource):
     #: Properties
     # backup_policy_id = resource.Body('backup_policy_id')
     resources = resource.Body(
-        'resources', type=list, list_type=BackupPolicyAssociatedResource)
+        "resources", type=list, list_type=BackupPolicyAssociatedResource
+    )
     fail_resources = resource.Body(
-        "fail_resources",
-        type=list, list_type=BackupPolicyAssociatedResource)
+        "fail_resources", type=list, list_type=BackupPolicyAssociatedResource
+    )
     success_resources = resource.Body(
-        "success_resources",
-        type=list, list_type=BackupPolicyAssociatedResource)
+        "success_resources", type=list, list_type=BackupPolicyAssociatedResource
+    )
 
     def _process(self, session, backup_policy_id, link=True, resources=[]):
-        """Link or unlink resources to/from BackupPolicy
-        """
-        _resources = [dict(resource_id=volume_id, resource_type="volume")
-                      for volume_id in resources]
-        body = {
-            "resources": _resources
-        }
+        """Link or unlink resources to/from BackupPolicy"""
+        _resources = [
+            dict(resource_id=volume_id, resource_type="volume")
+            for volume_id in resources
+        ]
+        body = {"resources": _resources}
         if link:
-            body['backup_policy_id'] = backup_policy_id
+            body["backup_policy_id"] = backup_policy_id
             uri = self.base_path
         else:
-            uri = utils.urljoin(
-                self.base_path, backup_policy_id, "deleted_resources")
+            uri = utils.urljoin(self.base_path, backup_policy_id, "deleted_resources")
 
         response = session.post(uri, json=body)
 
@@ -108,19 +107,15 @@ class BackupPolicyResource(resource.Resource):
         success_resources = []
 
         response_json = response.json()
-        for type in ['success_resources', 'fail_resources']:
+        for type in ["success_resources", "fail_resources"]:
             if type in response_json:
                 for res in response_json[type]:
-                    assocResource = \
-                        BackupPolicyAssociatedResource.existing(**res)
+                    assocResource = BackupPolicyAssociatedResource.existing(**res)
                     if assocResource.code:
                         fail_resources.append(assocResource)
                     else:
                         success_resources.append(assocResource)
-        self._update(
-            success_resources=success_resources,
-            fail_resources=fail_resources
-        )
+        self._update(success_resources=success_resources, fail_resources=fail_resources)
 
         return self
 

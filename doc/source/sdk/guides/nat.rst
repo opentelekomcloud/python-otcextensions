@@ -62,7 +62,7 @@ id or an instance of class
 :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`.
 
 .. literalinclude:: ../examples/nat/update_gateway.py
-   :lines: 16-31
+   :lines: 16-27
 
 Delete NAT Gateway
 ^^^^^^^^^^^^^^^^^^

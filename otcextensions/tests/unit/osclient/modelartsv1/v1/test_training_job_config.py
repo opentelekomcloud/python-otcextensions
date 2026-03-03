@@ -156,18 +156,14 @@ class TestCreateTrainingJobConfig(fakes.TestModelartsv1):
     _data = fakes.FakeTrainingJobConfig.create_one()
     columns = _COLUMNS
 
-    data = fakes.gen_data(
-        _data, columns, formatters=training_job_config._formatters
-    )
+    data = fakes.gen_data(_data, columns, formatters=training_job_config._formatters)
 
     def setUp(self):
         super(TestCreateTrainingJobConfig, self).setUp()
 
         self.cmd = training_job_config.CreateTrainingJobConfig(self.app, None)
 
-        self.client.create_training_job_config = mock.Mock(
-            return_value=self._data
-        )
+        self.client.create_training_job_config = mock.Mock(return_value=self._data)
 
     def test_create(self):
         arglist = [
@@ -263,9 +259,7 @@ class TestShowTrainingJobConfig(fakes.TestModelartsv1):
 
         self.cmd = training_job_config.ShowTrainingJobConfig(self.app, None)
 
-        self.client.get_training_job_config = mock.Mock(
-            return_value=self._data
-        )
+        self.client.get_training_job_config = mock.Mock(return_value=self._data)
 
     def test_show_no_options(self):
         arglist = []
@@ -295,9 +289,7 @@ class TestShowTrainingJobConfig(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.get_training_job_config.assert_called_with(
-            self._data.config_name
-        )
+        self.client.get_training_job_config.assert_called_with(self._data.config_name)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -323,9 +315,7 @@ class TestShowTrainingJobConfig(fakes.TestModelartsv1):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
-        self.client.get_training_job_config.assert_called_with(
-            "nonexisting-config"
-        )
+        self.client.get_training_job_config.assert_called_with("nonexisting-config")
 
 
 class TestDeleteTrainingJobConfig(fakes.TestModelartsv1):
@@ -349,9 +339,7 @@ class TestDeleteTrainingJobConfig(fakes.TestModelartsv1):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.delete_training_job_config.assert_called_with(
-            "test-config"
-        )
+        self.client.delete_training_job_config.assert_called_with("test-config")
         self.assertIsNone(result)
 
     def test_multiple_delete(self):

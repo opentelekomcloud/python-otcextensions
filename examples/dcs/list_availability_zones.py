@@ -13,10 +13,11 @@
 """
 List all Distributed Cache Service Availability Zones
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 for az in conn.dcs.availability_zones():

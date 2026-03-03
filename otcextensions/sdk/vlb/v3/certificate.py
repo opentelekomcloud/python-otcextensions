@@ -14,9 +14,9 @@ from openstack import resource
 
 
 class Certificate(resource.Resource):
-    resource_key = 'certificate'
-    resources_key = 'certificates'
-    base_path = '/elb/certificates'
+    resource_key = "certificate"
+    resources_key = "certificates"
+    base_path = "/elb/certificates"
 
     # capabilities
     allow_create = True
@@ -26,30 +26,35 @@ class Certificate(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'name', 'description', 'admin_state_up',
-        'domain', 'type', is_admin_state_up='admin_state_up'
+        "id",
+        "name",
+        "description",
+        "admin_state_up",
+        "domain",
+        "type",
+        is_admin_state_up="admin_state_up",
     )
 
     # Properties
     #: Specifies the private key of the certificate.
-    certificate = resource.Body('certificate')
+    certificate = resource.Body("certificate")
     #: Specifies the time when the certificate was created.
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Provides supplementary information about the certificate.
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Specifies the domain names used by the server certificate.
-    domain = resource.Body('domain')
+    domain = resource.Body("domain")
     #: Specifies the enterprise project ID.
-    enterprise_project_id = resource.Body('enterprise_project_id')
+    enterprise_project_id = resource.Body("enterprise_project_id")
     #: Specifies the time when the certificate expires.
-    expire_time = resource.Body('expire_time')
+    expire_time = resource.Body("expire_time")
     #: Specifies the administrative status of the certificate.
-    is_admin_state_up = resource.Body('admin_state_up', type=bool)
+    is_admin_state_up = resource.Body("admin_state_up", type=bool)
     #: Specifies the private key of the server certificate.
-    private_key = resource.Body('private_key')
+    private_key = resource.Body("private_key")
     #: Specifies the ID of the project where the certificate is used.
-    project_id = resource.Body('project_id')
+    project_id = resource.Body("project_id")
     #: Specifies the certificate type.
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Specifies the time when the certificate was updated.
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")

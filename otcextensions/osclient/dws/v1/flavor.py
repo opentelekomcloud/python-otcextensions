@@ -23,15 +23,15 @@ LOG = logging.getLogger(__name__)
 
 
 class ListFlavors(command.Lister):
-    _description = _('List Flavors (Node Types) of a DWS Cluster')
+    _description = _("List Flavors (Node Types) of a DWS Cluster")
     columns = (
-        'ID',
-        'Name',
-        'Availability Zones',
-        'vCPU',
-        'RAM',
-        'Disk Size',
-        'Disk Type',
+        "ID",
+        "Name",
+        "Availability Zones",
+        "vCPU",
+        "RAM",
+        "Disk Size",
+        "Disk Type",
     )
 
     def take_action(self, parsed_args):

@@ -13,11 +13,13 @@
 """
 List APIs Not Bound with a Request Throttling Policy
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-apis = list(conn.apig.not_bound_throttling_policy_apis(
-    gateway="gateway_id",
-    throttle_id="throttle_id"
-))
+conn = openstack.connect(cloud="otc")
+apis = list(
+    conn.apig.not_bound_throttling_policy_apis(
+        gateway="gateway_id", throttle_id="throttle_id"
+    )
+)

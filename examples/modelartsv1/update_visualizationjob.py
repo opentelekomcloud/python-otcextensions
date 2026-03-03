@@ -12,6 +12,7 @@
 # under the License.
 #
 """Update description of a visualization job."""
+
 import openstack
 
 openstack.enable_logging(True)

@@ -26,21 +26,15 @@ class TestSignature(TestApiG):
             "sign_type": "aes",
             "sign_algorithm": "aes-256-cfb",
         }
-        self.sign = self.client.create_signature(
-            gateway=self.gateway_id,
-            **self.attrs
-        )
+        self.sign = self.client.create_signature(gateway=self.gateway_id, **self.attrs)
 
         self.addCleanup(
-            self.client.delete_signature,
-            gateway=self.gateway_id,
-            sign=self.sign
+            self.client.delete_signature, gateway=self.gateway_id, sign=self.sign
         )
         self.addCleanup(self.delete_gateway())
 
     def test_list_signatures(self):
-        sign = list(self.client.signatures(
-            gateway=self.gateway_id))
+        sign = list(self.client.signatures(gateway=self.gateway_id))
         self.assertEqual(len(sign), 1)
 
     def test_update_signature(self):
@@ -50,8 +44,6 @@ class TestSignature(TestApiG):
             "sign_algorithm": "aes-128-cfb",
         }
         updated = self.client.update_signature(
-            gateway=self.gateway_id,
-            sign=self.sign.id,
-            **attrs
+            gateway=self.gateway_id, sign=self.sign.id, **attrs
         )
         self.assertEqual(updated.sign_algorithm, attrs["sign_algorithm"])

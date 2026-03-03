@@ -13,10 +13,9 @@
 """
 Delete VPC channel
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-conn.apig.delete_vpc_channel(
-    gateway="gateway_id",
-    vpc_channel="vpc_channel_id")
+conn = openstack.connect(cloud="otc")
+conn.apig.delete_vpc_channel(gateway="gateway_id", vpc_channel="vpc_channel_id")

@@ -32,20 +32,15 @@ class TestThrottleBind(TestApiG):
             "time_interval": 1,
             "time_unit": "SECOND",
             "type": 1,
-            "user_call_limits": 60
+            "user_call_limits": 60,
         }
         self.policy = self.client.create_throttling_policy(
-            gateway=self.gateway_id,
-            **self.attrs
+            gateway=self.gateway_id, **self.attrs
         )
 
-        group_attrs = {
-            "name": f"api_group_{self.suffix}",
-            "remark": "API group 1"
-        }
+        group_attrs = {"name": f"api_group_{self.suffix}", "remark": "API group 1"}
         self.group = self.client.create_api_group(
-            gateway=self.gateway_id,
-            **group_attrs
+            gateway=self.gateway_id, **group_attrs
         )
         self.assertIsNotNone(self.group.id)
 
@@ -68,32 +63,26 @@ class TestThrottleBind(TestApiG):
                 "req_uri": "/test/benchmark",
                 "timeout": 5000,
                 "retry_count": "-1",
-                "url_domain": "192.168.189.156:12346"
+                "url_domain": "192.168.189.156:12346",
             },
         }
-        self.api = self.client.create_api(
-            gateway=self.gateway_id,
-            **api_attrs
-        )
+        self.api = self.client.create_api(gateway=self.gateway_id, **api_attrs)
         self.environment = self.client.create_environment(
-            gateway=self.gateway_id,
-            name=f"testPub{self.suffix}",
-            remark="test publish"
+            gateway=self.gateway_id, name=f"testPub{self.suffix}", remark="test publish"
         )
         self.publish = self.client.publish_api(
             gateway=self.gateway_id,
             api=self.api.id,
             env=self.environment,
-            remark="publish"
+            remark="publish",
         )
 
         self.attrs = {
             "throttle_id": self.policy.id,
-            "publish_ids": [self.publish.publish_id]
+            "publish_ids": [self.publish.publish_id],
         }
         self.bind = self.client.bind_throttling_policy(
-            gateway=self.gateway_id,
-            **self.attrs
+            gateway=self.gateway_id, **self.attrs
         )
 
         self.addCleanup(
@@ -109,45 +98,44 @@ class TestThrottleBind(TestApiG):
         self.addCleanup(
             self.client.delete_throttling_policy,
             gateway=self.gateway_id,
-            policy=self.policy
+            policy=self.policy,
         )
-        self.addCleanup(
-            self.client.delete_api,
-            gateway=self.gateway_id,
-            api=self.api
-        )
+        self.addCleanup(self.client.delete_api, gateway=self.gateway_id, api=self.api)
         self.addCleanup(
             self.client.offline_api,
             gateway=self.gateway_id,
             api=self.api.id,
             env=self.environment,
-            remark="offline"
+            remark="offline",
         )
         self.addCleanup(
             self.client.unbind_throttling_policies,
             gateway=self.gateway_id,
-            throttle_bindings=[self.bind.policies[0].id]
+            throttle_bindings=[self.bind.policies[0].id],
         )
 
         self.addCleanup(self.delete_gateway())
 
     def test_list_bound_throttling_policies(self):
-        sign = list(self.client.bound_throttling_policies(
-            gateway=self.gateway_id,
-            api_id=self.api.id
-        ))
+        sign = list(
+            self.client.bound_throttling_policies(
+                gateway=self.gateway_id, api_id=self.api.id
+            )
+        )
         self.assertEqual(len(sign), 1)
 
     def test_list_bound_throttling_policy_apis(self):
-        sign = list(self.client.bound_throttling_policy_apis(
-            gateway=self.gateway_id,
-            throttle_id=self.policy.id
-        ))
+        sign = list(
+            self.client.bound_throttling_policy_apis(
+                gateway=self.gateway_id, throttle_id=self.policy.id
+            )
+        )
         self.assertEqual(len(sign), 1)
 
     def test_list_not_bound_throttling_policy_apis(self):
-        sign = list(self.client.not_bound_throttling_policy_apis(
-            gateway=self.gateway_id,
-            throttle_id=self.policy.id
-        ))
+        sign = list(
+            self.client.not_bound_throttling_policy_apis(
+                gateway=self.gateway_id, throttle_id=self.policy.id
+            )
+        )
         self.assertEqual(len(sign), 0)

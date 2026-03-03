@@ -20,12 +20,8 @@ class TestAccessControl(TestApiG):
         super(TestAccessControl, self).setUp()
         self.create_gateway()
         self.gateway_id = TestAccessControl.gateway.id
-        self.attrs = {
-            "name": "app_demo",
-            "remark": "Demo app"
-        }
-        TestAccessControl.app = self.client.create_app(self.gateway_id,
-                                                       **self.attrs)
+        self.attrs = {"name": "app_demo", "remark": "Demo app"}
+        TestAccessControl.app = self.client.create_app(self.gateway_id, **self.attrs)
         self.assertIsNotNone(self.app.id)
         self.addCleanup(
             self.client.delete_app,
@@ -36,27 +32,28 @@ class TestAccessControl(TestApiG):
     def test_configure_access_control(self):
         attrs = {
             "app_acl_type": "PERMIT",
-            "app_acl_values": ["192.168.0.1",
-                               "192.168.0.5-192.168.0.10",
-                               "192.168.0.100/28"]
+            "app_acl_values": [
+                "192.168.0.1",
+                "192.168.0.5-192.168.0.10",
+                "192.168.0.100/28",
+            ],
         }
         configured = self.client.configure_access_control(
-            gateway=TestAccessControl.gateway.id,
-            app=TestAccessControl.app.id,
-            **attrs)
+            gateway=TestAccessControl.gateway.id, app=TestAccessControl.app.id, **attrs
+        )
         self.assertIsNotNone(configured.app_id)
 
     def test_query_access_control(self):
         found = self.client.access_controls(
-            gateway=TestAccessControl.gateway.id,
-            app=TestAccessControl.app.id)
+            gateway=TestAccessControl.gateway.id, app=TestAccessControl.app.id
+        )
         self.assertIsNotNone(found)
 
     def test_delete_access_control(self):
         self.client.delete_access_control(
-            gateway=TestAccessControl.gateway.id,
-            app=TestAccessControl.app.id)
+            gateway=TestAccessControl.gateway.id, app=TestAccessControl.app.id
+        )
         found = self.client.access_controls(
-            gateway=TestAccessControl.gateway.id,
-            app=TestAccessControl.app.id)
+            gateway=TestAccessControl.gateway.id, app=TestAccessControl.app.id
+        )
         self.assertIsNotNone(found)

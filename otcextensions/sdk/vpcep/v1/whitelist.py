@@ -16,38 +16,38 @@ from openstack import utils
 
 
 class Whitelist(resource.Resource):
-    base_path = '/vpc-endpoint-services/%(endpoint_service_id)s/permissions'
-    resources_key = 'permissions'
+    base_path = "/vpc-endpoint-services/%(endpoint_service_id)s/permissions"
+    resources_key = "permissions"
 
     # capabilities
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'permission', 'sort_key', 'sort_dir', 'limit', 'offset'
+        "permission", "sort_key", "sort_dir", "limit", "offset"
     )
 
     # URI properties
-    endpoint_service_id = resource.URI('endpoint_service_id')
+    endpoint_service_id = resource.URI("endpoint_service_id")
 
     # Properties
     #: Specifies when the whitelist record is added.
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Specifies the description of a whitelist record of a VPC endpoint
     #:  service.
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Specifies the unique ID of the permission.
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Lists the whitelist records.
-    permission = resource.Body('permission')
+    permission = resource.Body("permission")
 
     def _action(self, session, action, domains=[]):
         """Preform actions on the request body."""
-        uri = utils.urljoin(self.base_path % self._uri.attributes, 'action')
+        uri = utils.urljoin(self.base_path % self._uri.attributes, "action")
         for ix, domain in enumerate(domains):
-            if not domain.startswith('iam:domain::'):
-                domains[ix] = 'iam:domain::' + domain
+            if not domain.startswith("iam:domain::"):
+                domains[ix] = "iam:domain::" + domain
 
-        body = {'permissions': domains, 'action': action}
+        body = {"permissions": domains, "action": action}
         response = session.post(uri, json=body)
         exceptions.raise_from_response(response)
         for raw_resource in response.json()[self.resources_key]:
@@ -55,8 +55,8 @@ class Whitelist(resource.Resource):
 
     def add(self, session, domains=[]):
         """Add whitelist."""
-        return self._action(session, 'add', domains)
+        return self._action(session, "add", domains)
 
     def remove(self, session, domains=[]):
         """Remove whitelist."""
-        return self._action(session, 'remove', domains)
+        return self._action(session, "remove", domains)

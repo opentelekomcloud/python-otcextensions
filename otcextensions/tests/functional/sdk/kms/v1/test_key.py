@@ -11,22 +11,19 @@
 # under the License.
 from openstack import _log
 from openstack import exceptions
-
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestKey(base.BaseFunctionalTest):
-    KEY_ALIAS = 'sdkk_test_key'
+    KEY_ALIAS = "sdkk_test_key"
     cmks = []
 
     def setUp(self):
         super(TestKey, self).setUp()
         try:
-            self.cmk = self.conn.kms.create_key(
-                key_alias=TestKey.KEY_ALIAS
-            )
+            self.cmk = self.conn.kms.create_key(key_alias=TestKey.KEY_ALIAS)
         except exceptions.DuplicateResource:
             self.cmk = self.conn.kms.find_key(alias=TestKey.KEY_ALIAS)
 
@@ -38,8 +35,7 @@ class TestKey(base.BaseFunctionalTest):
                 if key.id:
                     self.conn.kms.schedule_key_deletion(key, 7)
         except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
         super(TestKey, self).tearDown()
 
     def test_list(self):

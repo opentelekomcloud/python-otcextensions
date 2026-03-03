@@ -26,26 +26,24 @@ LOG = logging.getLogger(__name__)
 
 
 _formatters = {
-    'floating_ip': format_columns.DictColumn,
-    'endpoints': format_columns.ListDictColumn,
-    'public_endpoints': format_columns.ListDictColumn,
-    'maintenance_window': format_columns.DictColumn,
-    'parameter_group': format_columns.DictColumn,
-    'private_ip': format_columns.ListColumn,
-    'action_progress': format_columns.DictColumn,
-    'public_domain': format_columns.ListColumn,
-    'private_domain': format_columns.ListColumn,
-    'nodes': format_columns.ListDictColumn,
-    'plugins': format_columns.ListDictColumn,
+    "floating_ip": format_columns.DictColumn,
+    "endpoints": format_columns.ListDictColumn,
+    "public_endpoints": format_columns.ListDictColumn,
+    "maintenance_window": format_columns.DictColumn,
+    "parameter_group": format_columns.DictColumn,
+    "private_ip": format_columns.ListColumn,
+    "action_progress": format_columns.DictColumn,
+    "public_domain": format_columns.ListColumn,
+    "private_domain": format_columns.ListColumn,
+    "nodes": format_columns.ListDictColumn,
+    "plugins": format_columns.ListDictColumn,
 }
 
 
 def _get_columns(item):
     column_map = {}
-    hidden = ['location', 'plugins']
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    hidden = ["location", "plugins"]
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 def set_attributes_for_print(obj):
@@ -66,15 +64,15 @@ def translate_response(func):
 
 
 class ListClusters(command.Lister):
-    _description = _('List DWS Clusters.')
+    _description = _("List DWS Clusters.")
     columns = (
-        'ID',
-        'Name',
-        'Num Nodes',
-        'Flavor',
-        'Status',
-        'Version',
-        'Created At',
+        "ID",
+        "Name",
+        "Num Nodes",
+        "Flavor",
+        "Status",
+        "Version",
+        "Created At",
     )
 
     def get_parser(self, prog_name):
@@ -93,130 +91,126 @@ class ListClusters(command.Lister):
 
 
 class CreateCluster(command.ShowOne):
-    _description = _('Create a new DWS cluster instance.')
+    _description = _("Create a new DWS cluster instance.")
 
     def get_parser(self, prog_name):
         parser = super(CreateCluster, self).get_parser(prog_name)
         parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_('Cluster Name.'),
+            "name",
+            metavar="<name>",
+            help=_("Cluster Name."),
         )
         parser.add_argument(
-            '--flavor',
-            metavar='<flavor>',
+            "--flavor",
+            metavar="<flavor>",
             required=True,
-            help=_('DWS Cluster Flavor (Node Type).'),
+            help=_("DWS Cluster Flavor (Node Type)."),
         )
         parser.add_argument(
-            '--availability-zone',
-            metavar='<availability_zone>',
+            "--availability-zone",
+            metavar="<availability_zone>",
             required=True,
-            help=_('Availability Zone.'),
+            help=_("Availability Zone."),
         )
         parser.add_argument(
-            '--num-nodes',
-            metavar='<num_nodes>',
+            "--num-nodes",
+            metavar="<num_nodes>",
             type=int,
             default=3,
             help=_(
-                'Number of cluster Nodes. The value range is 3 to 256. '
-                'For a hybrid data warehouse (standalone), the value is 1.'
+                "Number of cluster Nodes. The value range is 3 to 256. "
+                "For a hybrid data warehouse (standalone), the value is 1."
             ),
         )
         parser.add_argument(
-            '--num-cn',
-            metavar='<num_cn>',
+            "--num-cn",
+            metavar="<num_cn>",
             type=int,
             help=_(
-                'Number of deployed CNs. The value ranges from 2 to the '
-                'number of cluster nodes minus 1. The maximum value is 20 '
-                'and the default value is 3.'
+                "Number of deployed CNs. The value ranges from 2 to the "
+                "number of cluster nodes minus 1. The maximum value is 20 "
+                "and the default value is 3."
             ),
         )
 
-        network_group = parser.add_argument_group('Network Parameters')
+        network_group = parser.add_argument_group("Network Parameters")
         network_group.add_argument(
-            '--router-id',
-            metavar='<router_id>',
+            "--router-id",
+            metavar="<router_id>",
             required=True,
-            help=_('Router ID.'),
+            help=_("Router ID."),
         )
         network_group.add_argument(
-            '--network-id',
-            metavar='<network_id>',
+            "--network-id",
+            metavar="<network_id>",
             required=True,
-            help=_('Network ID.'),
+            help=_("Network ID."),
         )
         network_group.add_argument(
-            '--security-group-id',
-            metavar='<security_group_id>',
+            "--security-group-id",
+            metavar="<security_group_id>",
             required=True,
-            help=_('Security group ID.'),
+            help=_("Security group ID."),
         )
         parser.add_argument(
-            '--username',
-            metavar='<username>',
-            dest='user_name',
+            "--username",
+            metavar="<username>",
+            dest="user_name",
             required=True,
             help=_(
-                'Administrator username for logging in to a '
-                'GaussDB(DWS) cluster. The username must:\n'
-                '- Consist of lowercase letters, digits, or underscores.\n'
-                '- Start with a lowercase letter or an underscore.\n'
-                '- Contain 1 to 63 characters.\n'
-                '- Cannot be a keyword of the GaussDB(DWS) database.'
+                "Administrator username for logging in to a "
+                "GaussDB(DWS) cluster. The username must:\n"
+                "- Consist of lowercase letters, digits, or underscores.\n"
+                "- Start with a lowercase letter or an underscore.\n"
+                "- Contain 1 to 63 characters.\n"
+                "- Cannot be a keyword of the GaussDB(DWS) database."
             ),
         )
         parser.add_argument(
-            '--password',
-            metavar='<password>',
-            dest='user_pwd',
+            "--password",
+            metavar="<password>",
+            dest="user_pwd",
             required=True,
             help=_(
-                'Administrator password for logging in to a '
-                'GaussDB(DWS) cluster.'
+                "Administrator password for logging in to a " "GaussDB(DWS) cluster."
             ),
         )
         parser.add_argument(
-            '--port',
-            metavar='<port>',
+            "--port",
+            metavar="<port>",
             default=8000,
             type=int,
             help=_(
-                'Service port of a cluster. The value ranges from '
-                '8000 to 30000. The default value is 8000.'
+                "Service port of a cluster. The value ranges from "
+                "8000 to 30000. The default value is 8000."
             ),
         )
         parser.add_argument(
-            '--floating-ip',
-            metavar='<floating_ip>',
+            "--floating-ip",
+            metavar="<floating_ip>",
             help=_(
-                'Bind Floating Ip to a DWS Cluster.\n'
-                'Possible values can be:\n'
+                "Bind Floating Ip to a DWS Cluster.\n"
+                "Possible values can be:\n"
                 '- "auto" - To automatically assign Floating IP.\n'
-                '- ID or IP of existing floating ip.'
+                "- ID or IP of existing floating ip."
             ),
         )
         parser.add_argument(
-            '--enterprise-project-id',
-            metavar='<enterprise_project_id>',
-            help=_(
-                'Enterprise project. The default '
-                'enterprise project ID is 0.'
-            ),
+            "--enterprise-project-id",
+            metavar="<enterprise_project_id>",
+            help=_("Enterprise project. The default " "enterprise project ID is 0."),
         )
         parser.add_argument(
-            '--wait',
-            action='store_true',
-            help=('Wait for the Cluster status to be available.'),
+            "--wait",
+            action="store_true",
+            help=("Wait for the Cluster status to be available."),
         )
         parser.add_argument(
-            '--timeout',
-            metavar='<timeout>',
+            "--timeout",
+            metavar="<timeout>",
             type=int,
             default=1800,
-            help=_('Timeout for the wait in seconds (Default 1800 seconds).'),
+            help=_("Timeout for the wait in seconds (Default 1800 seconds)."),
         )
         return parser
 
@@ -226,18 +220,18 @@ class CreateCluster(command.ShowOne):
 
         attrs = {}
         for arg in (
-            'name',
-            'router_id',
-            'network_id',
-            'security_group_id',
-            'num_nodes',
-            'user_name',
-            'user_pwd',
-            'flavor',
-            'port',
-            'availability_zone',
-            'enterprise_project_id',
-            'num_cn',
+            "name",
+            "router_id",
+            "network_id",
+            "security_group_id",
+            "num_nodes",
+            "user_name",
+            "user_pwd",
+            "flavor",
+            "port",
+            "availability_zone",
+            "enterprise_project_id",
+            "num_cn",
         ):
             val = getattr(parsed_args, arg)
             if val:
@@ -245,19 +239,14 @@ class CreateCluster(command.ShowOne):
 
         floating_ip = parsed_args.floating_ip
 
-        if floating_ip and floating_ip.lower() == 'auto':
-            attrs['public_ip'] = {
-                'public_bind_type': 'auto_assign',
-                'eip_id': ''
-            }
+        if floating_ip and floating_ip.lower() == "auto":
+            attrs["public_ip"] = {"public_bind_type": "auto_assign", "eip_id": ""}
         elif floating_ip:
             network_client = self.app.client_manager.network
-            floating_ip_resp = network_client.find_ip(
-                floating_ip, ignore_missing=False
-            )
-            attrs['public_ip'] = {
-                'public_bind_type': 'bind_existing',
-                'eip_id': floating_ip_resp.id,
+            floating_ip_resp = network_client.find_ip(floating_ip, ignore_missing=False)
+            attrs["public_ip"] = {
+                "public_bind_type": "bind_existing",
+                "eip_id": floating_ip_resp.id,
             }
         cluster = client.create_cluster(**attrs)
         if parsed_args.wait:
@@ -266,14 +255,12 @@ class CreateCluster(command.ShowOne):
 
 
 class ShowCluster(command.ShowOne):
-    _description = _('Show details of a DWS cluster')
+    _description = _("Show details of a DWS cluster")
 
     def get_parser(self, prog_name):
         parser = super(ShowCluster, self).get_parser(prog_name)
         parser.add_argument(
-            'cluster',
-            metavar='<cluster>',
-            help=_('Cluster name or ID.')
+            "cluster", metavar="<cluster>", help=_("Cluster name or ID.")
         )
         return parser
 
@@ -288,140 +275,132 @@ class ShowCluster(command.ShowOne):
 
 
 class RestartCluster(command.Command):
-    _description = _('Restart a DWS cluster')
+    _description = _("Restart a DWS cluster")
 
     def get_parser(self, prog_name):
         parser = super(RestartCluster, self).get_parser(prog_name)
         parser.add_argument(
-            'cluster',
-            metavar='<cluster>',
-            help=_('ID or Name of the DWS cluster to be restart.'),
+            "cluster",
+            metavar="<cluster>",
+            help=_("ID or Name of the DWS cluster to be restart."),
         )
         parser.add_argument(
-            '--wait',
-            action='store_true',
-            help=('Wait for the Cluster restart action to complete.'),
+            "--wait",
+            action="store_true",
+            help=("Wait for the Cluster restart action to complete."),
         )
         parser.add_argument(
-            '--timeout',
-            metavar='<timeout>',
+            "--timeout",
+            metavar="<timeout>",
             type=int,
             default=300,
-            help=_('Timeout for the wait in seconds. (Default 300 seconds)'),
+            help=_("Timeout for the wait in seconds. (Default 300 seconds)"),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
-        cluster = client.find_cluster(
-            parsed_args.cluster, ignore_missing=False
-        )
+        cluster = client.find_cluster(parsed_args.cluster, ignore_missing=False)
         client.restart_cluster(cluster)
         if parsed_args.wait:
             client.wait_for_cluster(cluster.id, wait=parsed_args.timeout)
 
 
 class ResetPassword(command.Command):
-    _description = _('Reset the password of cluster administrator.')
+    _description = _("Reset the password of cluster administrator.")
 
     def get_parser(self, prog_name):
         parser = super(ResetPassword, self).get_parser(prog_name)
         parser.add_argument(
-            'cluster',
-            metavar='<cluster>',
-            help=_('ID or Name of the DWS cluster to be restart.'),
+            "cluster",
+            metavar="<cluster>",
+            help=_("ID or Name of the DWS cluster to be restart."),
         )
         parser.add_argument(
-            '--password',
-            metavar='<password>',
+            "--password",
+            metavar="<password>",
             required=True,
             help=_(
-                'New password of the GaussDB(DWS) cluster administrator.\n'
-                'A password must conform to the following rules:\n'
-                '- Contains 8 to 32 characters.\n'
-                '- Cannot be the same as the username or the username '
-                'written in reverse order.\n'
-                '- Contains at least three types of the following:\n'
-                '- > Lowercase letters\n'
-                '- > Uppercase letters\n'
-                '- > Digits\n'
-                '- > Special characters\n'
-                '- Cannot be the same as previous passwords.\n'
-                '- Cannot be a weak password.'
+                "New password of the GaussDB(DWS) cluster administrator.\n"
+                "A password must conform to the following rules:\n"
+                "- Contains 8 to 32 characters.\n"
+                "- Cannot be the same as the username or the username "
+                "written in reverse order.\n"
+                "- Contains at least three types of the following:\n"
+                "- > Lowercase letters\n"
+                "- > Uppercase letters\n"
+                "- > Digits\n"
+                "- > Special characters\n"
+                "- Cannot be the same as previous passwords.\n"
+                "- Cannot be a weak password."
             ),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
-        cluster = client.find_cluster(
-            parsed_args.cluster, ignore_missing=False
-        )
+        cluster = client.find_cluster(parsed_args.cluster, ignore_missing=False)
         return client.reset_password(cluster, parsed_args.password)
 
 
 class ScaleOutCluster(command.Command):
-    _description = _('Scaling Out a Cluster with only Common Nodes.')
+    _description = _("Scaling Out a Cluster with only Common Nodes.")
 
     def get_parser(self, prog_name):
         parser = super(ScaleOutCluster, self).get_parser(prog_name)
         parser.add_argument(
-            'cluster',
-            metavar='<cluster>',
-            help=_('ID or Name of the DWS cluster to be extended.'),
+            "cluster",
+            metavar="<cluster>",
+            help=_("ID or Name of the DWS cluster to be extended."),
         )
         parser.add_argument(
-            '--add-nodes',
-            metavar='<add_nodes>',
+            "--add-nodes",
+            metavar="<add_nodes>",
             type=int,
             required=True,
-            help=_('Number of dws nodes to be scaled out.'),
+            help=_("Number of dws nodes to be scaled out."),
         )
         parser.add_argument(
-            '--wait',
-            action='store_true',
-            help=('Wait for the Cluster Scaling Task to complete.'),
+            "--wait",
+            action="store_true",
+            help=("Wait for the Cluster Scaling Task to complete."),
         )
         parser.add_argument(
-            '--timeout',
-            metavar='<timeout>',
+            "--timeout",
+            metavar="<timeout>",
             type=int,
             default=1800,
-            help=_('Timeout for the wait in seconds. (Default 1800 seconds)'),
+            help=_("Timeout for the wait in seconds. (Default 1800 seconds)"),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
-        cluster = client.find_cluster(
-            parsed_args.cluster, ignore_missing=False
-        )
+        cluster = client.find_cluster(parsed_args.cluster, ignore_missing=False)
         client.scale_out_cluster(cluster, parsed_args.add_nodes)
         if parsed_args.wait:
-            client.wait_for_cluster_scale_out(
-                cluster.id, wait=parsed_args.timeout
-            )
+            client.wait_for_cluster_scale_out(cluster.id, wait=parsed_args.timeout)
 
 
 class DeleteCluster(command.Command):
-    _description = _('Delete DWS Cluster(s)')
+    _description = _("Delete DWS Cluster(s)")
 
     def get_parser(self, prog_name):
         parser = super(DeleteCluster, self).get_parser(prog_name)
         parser.add_argument(
-            'cluster',
-            metavar='<cluster>',
-            nargs='+',
-            help=_('ID or Name of the DWS cluster(s) to be deleted.'),
+            "cluster",
+            metavar="<cluster>",
+            nargs="+",
+            help=_("ID or Name of the DWS cluster(s) to be deleted."),
         )
         parser.add_argument(
-            '--keep-last-manual-snapshot',
-            metavar='<keep_last_manual_snapshot>',
+            "--keep-last-manual-snapshot",
+            metavar="<keep_last_manual_snapshot>",
             type=int,
             default=0,
             help=_(
-                'The number of latest manual snapshots that need '
-                'to be retained for a cluster.'
+                "The number of latest manual snapshots that need "
+                "to be retained for a cluster."
             ),
         )
         return parser
@@ -432,21 +411,20 @@ class DeleteCluster(command.Command):
         for name_or_id in parsed_args.cluster:
             try:
                 cluster = client.find_cluster(name_or_id, ignore_missing=False)
-                client.delete_cluster(
-                    cluster.id, parsed_args.keep_last_manual_snapshot
-                )
+                client.delete_cluster(cluster.id, parsed_args.keep_last_manual_snapshot)
             except Exception as e:
                 result += 1
                 LOG.error(
                     _(
-                        'Failed to delete cluster(s) with '
+                        "Failed to delete cluster(s) with "
                         "ID or Name '%(cluster)s': %(e)s"
                     ),
-                    {'cluster': name_or_id, 'e': e},
+                    {"cluster": name_or_id, "e": e},
                 )
         if result > 0:
             total = len(parsed_args.cluster)
-            msg = _(
-                '%(result)s of %(total)s Cluster(s) failed ' 'to delete.'
-            ) % {'result': result, 'total': total}
+            msg = _("%(result)s of %(total)s Cluster(s) failed " "to delete.") % {
+                "result": result,
+                "total": total,
+            }
             raise exceptions.CommandError(msg)

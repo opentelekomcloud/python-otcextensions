@@ -11,15 +11,14 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.vlb.v3 import pool
 
 EXAMPLE = {
-    'name': 'name',
-    'description': 'description',
-    'lb_algorithm': 'ROUND_ROBIN',
-    'protocol': 'TCP',
-    'admin_state_up': True,
+    "name": "name",
+    "description": "description",
+    "lb_algorithm": "ROUND_ROBIN",
+    "protocol": "TCP",
+    "admin_state_up": True,
 }
 
 
@@ -27,7 +26,7 @@ class TestLoadBalancer(base.TestCase):
 
     def test_basic(self):
         sot = pool.Pool()
-        path = '/elb/pools'
+        path = "/elb/pools"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -37,6 +36,6 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = pool.Pool(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['lb_algorithm'], sot.lb_algorithm)
-        self.assertEqual(EXAMPLE['protocol'], sot.protocol)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["lb_algorithm"], sot.lb_algorithm)
+        self.assertEqual(EXAMPLE["protocol"], sot.protocol)

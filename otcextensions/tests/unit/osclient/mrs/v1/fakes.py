@@ -26,8 +26,7 @@ from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
-    """Fill expected data tuple based on columns list
-    """
+    """Fill expected data tuple based on columns list"""
     return tuple(getattr(data, attr, "") for attr in columns)
 
 
@@ -57,7 +56,7 @@ class FakeHost(test_base.Fake):
             "root_volume_size": random.randint(1, 300),
             "data_volume_type": random.choice(["SATA", "SAS", "SSD"]),
             "data_volume_size": random.randint(1, 1000),
-            "data_volume_count": random.randint(1, 5)
+            "data_volume_count": random.randint(1, 5),
         }
         obj = cluster.Host.existing(**object_info)
         return obj
@@ -73,10 +72,19 @@ class FakeCluster(test_base.Fake):
             "name": uuid.uuid4().hex,
             "master_num": random.randint(1, 5),
             "core_num": random.randint(1, 5),
-            "status": random.choice(["starting", "running", "terminated",
-                                     "failed", "abnormal", "terminating",
-                                     "frozen", "scaling-out", "scaling-in"]
-                                    ),
+            "status": random.choice(
+                [
+                    "starting",
+                    "running",
+                    "terminated",
+                    "failed",
+                    "abnormal",
+                    "terminating",
+                    "frozen",
+                    "scaling-out",
+                    "scaling-in",
+                ]
+            ),
             "created_at": 1487570757,
             "updated_at": 1487668974,
             "billing_type": "Metered",
@@ -84,15 +92,17 @@ class FakeCluster(test_base.Fake):
             "vpc": "vpc-autotest",
             "fee": "0",
             "hadoop_version": "",
-            "component_list": [{
-                "id": None,
-                "componentId": "MRS 3.0.2_001",
-                "componentName": "Hadoop",
-                "componentVersion": "3.1.1",
-                "external_datasources": None,
-                "componentDesc": "A distributed data processing framework",
-                "componentDescEn": None,
-            }],
+            "component_list": [
+                {
+                    "id": None,
+                    "componentId": "MRS 3.0.2_001",
+                    "componentName": "Hadoop",
+                    "componentVersion": "3.1.1",
+                    "external_datasources": None,
+                    "componentDesc": "A distributed data processing framework",
+                    "componentDescEn": None,
+                }
+            ],
             "master_node_size": "s1.8xlarge.linux.mrs",
             "core_node_size": "s2.2xlarge.linux.mrs",
             "external_ip": "100.120.0.2",
@@ -130,7 +140,7 @@ class FakeCluster(test_base.Fake):
                     "fail_action": "errorout",
                     "before_component_start": True,
                     "state": "SUCCESS",
-                    "start_time": 1527681083
+                    "start_time": 1527681083,
                 }
             ],
             "node_groups": [
@@ -152,7 +162,7 @@ class FakeCluster(test_base.Fake):
                     "dataVolumeSize": 100,
                     "dataVolumeProductId": "16c1dcf0897249758b1ec276d06e0572",
                     "dataVolumeResourceSpecCode": "",
-                    "dataVolumeResourceType": ""
+                    "dataVolumeResourceType": "",
                 }
             ],
             "task_node_groups": [
@@ -175,7 +185,7 @@ class FakeCluster(test_base.Fake):
                     "dataVolumeProductId": "16c1dcf0897249758b1ec276d06e0572",
                     "dataVolumeResourceSpecCode": "",
                     "dataVolumeResourceType": "",
-                    "AutoScalingPolicy": None
+                    "AutoScalingPolicy": None,
                 }
             ],
             "cluster_type": 0,
@@ -223,8 +233,7 @@ class FakeJob(test_base.Fake):
         object_info = {
             "id": "id-" + uuid.uuid4().hex,
             "name": uuid.uuid4().hex,
-            "type": random.choice(["MapReduce", "SparkScript",
-                                   "Hive", "DistCp"]),
+            "type": random.choice(["MapReduce", "SparkScript", "Hive", "DistCp"]),
             "description": "This is the Map Reduce job template",
             "created_at": "2017-06-22T09:39:13",
             "updated_at": "2017-06-22T09:39:13",

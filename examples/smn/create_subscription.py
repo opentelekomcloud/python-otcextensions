@@ -13,18 +13,19 @@
 """
 Create a SMN subscription
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
-    'endpoint': '+49123123456789',
-    'protocol': 'sms',
-    'remark': 'My SMS subscription'
+    "endpoint": "+49123123456789",
+    "protocol": "sms",
+    "remark": "My SMS subscription",
 }
-topic = 'urn:smn:eu-de:1123:mytopic'
+topic = "urn:smn:eu-de:1123:mytopic"
 
 subscription = conn.smn.create_subscription(topic=topic, **attrs)
 print(subscription)

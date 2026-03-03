@@ -9,26 +9,24 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import openstack
 import uuid
 
+import openstack
 from otcextensions.tests.functional.sdk.dns import TestDns
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestNameservers(TestDns):
     uuid_v4 = uuid.uuid4().hex[:8]
-    zone_alias = uuid_v4 + 'dns.sdk-test-zone-public.com.'
+    zone_alias = uuid_v4 + "dns.sdk-test-zone-public.com."
     zones = []
 
     def setUp(self):
         super(TestNameservers, self).setUp()
         # create zone
         try:
-            self.zone = self.client.create_zone(
-                name=self.zone_alias
-            )
+            self.zone = self.client.create_zone(name=self.zone_alias)
         except openstack.exceptions.BadRequestException:
             self.zone = self.client.find_zone(self.zone_alias)
         self.zones.append(self.zone)
@@ -39,8 +37,7 @@ class TestNameservers(TestDns):
                 if zone:
                     self.client.delete_zone(zone)
         except openstack.exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
         super(TestNameservers, self).tearDown()
 
     def test_list_nameservers(self):
@@ -48,7 +45,7 @@ class TestNameservers(TestDns):
         zone = self.client.nameservers(zone=self.zone.id)
         self.assertIsNotNone(zone)
         for ns in zone:
-            nameservers.append(ns['hostname'])
-        self.assertEqual(nameservers,
-                         ['ns1.open-telekom-cloud.com.',
-                          'ns2.open-telekom-cloud.com.'])
+            nameservers.append(ns["hostname"])
+        self.assertEqual(
+            nameservers, ["ns1.open-telekom-cloud.com.", "ns2.open-telekom-cloud.com."]
+        )

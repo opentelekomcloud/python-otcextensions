@@ -12,6 +12,7 @@
 # under the License.
 #
 """Querying the Details About a Specified Training Job Configuration."""
+
 import openstack
 
 openstack.enable_logging(True)

@@ -81,15 +81,11 @@ class TestDevenv(base.TestCase):
             "latest_update_timestamp": "updated_at",
             "de_type": "dev_env_type",
         }
-        self.assertEqual(
-            sot.profile.dev_env_type, EXAMPLE["profile"]["de_type"]
-        )
+        self.assertEqual(sot.profile.dev_env_type, EXAMPLE["profile"]["de_type"])
         del EXAMPLE["profile"]["de_type"]
         for key, value in EXAMPLE.items():
             if key in updated_sot_attrs.keys():
-                self.assertEqual(
-                    getattr(sot, updated_sot_attrs[key]), EXAMPLE[key]
-                )
+                self.assertEqual(getattr(sot, updated_sot_attrs[key]), EXAMPLE[key])
             else:
                 assert_attributes_equal(self, getattr(sot, key), value)
 

@@ -13,11 +13,12 @@
 """
 Delete MRS Job binary
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'name_or_id'
+name_or_id = "name_or_id"
 job_binary = conn.mrs.find_jobbinary(name_or_id)
 conn.mrs.delete_jobbinary(jobbinary=job_binary)

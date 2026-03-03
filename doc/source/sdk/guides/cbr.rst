@@ -83,7 +83,7 @@ This interface is used to create a CBR policy instance with
 parameters.
 
 .. literalinclude:: ../examples/cbr/create_policy.py
-   :lines: 16-44
+   :lines: 16-43
 
 Update CBR Policy
 ^^^^^^^^^^^^^^^^^
@@ -92,7 +92,7 @@ This interface is used to update a CBR policy instance with
 parameters.
 
 .. literalinclude:: ../examples/cbr/update_policy.py
-   :lines: 16-45
+   :lines: 16-44
 
 Delete CBR Policy
 ^^^^^^^^^^^^^^^^^
@@ -137,7 +137,7 @@ This interface is used to restore data from a backup to server instances or
 volumes.
 
 .. literalinclude:: ../examples/cbr/restore_data.py
-   :lines: 16-36
+   :lines: 16-34
 
 Vault
 -----
@@ -176,7 +176,7 @@ This interface is used to update a CBR vault instance with
 parameters.
 
 .. literalinclude:: ../examples/cbr/update_vault.py
-   :lines: 16-29
+   :lines: 16-28
 
 Delete CBR Vault
 ^^^^^^^^^^^^^^^^
@@ -210,7 +210,7 @@ Associate resources to CBR Vault
 This interface is used to add resources to a CBR vault.
 
 .. literalinclude:: ../examples/cbr/associate_resources.py
-   :lines: 16-28
+   :lines: 16-27
 
 Dissociate resources from CBR Vault
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -259,7 +259,7 @@ This interface is used to update a CBR share member instance with
 parameters.
 
 .. literalinclude:: ../examples/cbr/update_member.py
-   :lines: 16-28
+   :lines: 16-27
 
 Delete CBR Share Member
 ^^^^^^^^^^^^^^^^^^^^^^^

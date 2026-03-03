@@ -11,7 +11,6 @@
 # under the License.
 from openstack import exceptions
 from openstack import resource
-
 from otcextensions.common import exc
 
 
@@ -19,46 +18,46 @@ class Metadata(resource.Resource):
 
     # Properties
     #: Annotations
-    annotations = resource.Body('annotations', type=dict)
+    annotations = resource.Body("annotations", type=dict)
     #: UUID
     #: *Type:str
-    id = resource.Body('uid', alternate_id=True)
+    id = resource.Body("uid", alternate_id=True)
     #: Labels
-    labels = resource.Body('labels', type=dict)
+    labels = resource.Body("labels", type=dict)
     #: Name
     #: *Type:str
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Create time
     #: *Type:str
-    created_at = resource.Body('creationTimestamp')
+    created_at = resource.Body("creationTimestamp")
     #: Update time
     #: *Type:str
-    updated_at = resource.Body('updateTimestamp')
+    updated_at = resource.Body("updateTimestamp")
 
 
 class StatusSpec(resource.Resource):
     # Properties
     #: Cluster status.
-    status = resource.Body('phase')
+    status = resource.Body("phase")
     #: Job ID.
-    job_id = resource.Body('jobID')
+    job_id = resource.Body("jobID")
 
 
 class Resource(resource.Resource):
 
     # Properties
     #: Kind
-    kind = resource.Body('kind')
+    kind = resource.Body("kind")
     #: api version
-    api_version = resource.Body('apiVersion', default='v3')
+    api_version = resource.Body("apiVersion", default="v3")
     #: metadata
-    metadata = resource.Body('metadata', type=Metadata)
+    metadata = resource.Body("metadata", type=Metadata)
     #: Cluster status
-    status = resource.Body('status', type=StatusSpec)
+    status = resource.Body("status", type=StatusSpec)
     #: Creation date. A virtual attribute fetched from metadata
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Update date. A virtual attribute fetched from metadata
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")
 
     def __getattribute__(self, name):
         """Return an attribute on this instance
@@ -67,32 +66,32 @@ class Resource(resource.Resource):
         the 'id' name, as this can exist under a different name via the
         `alternate_id` argument to resource.Body.
         """
-        if name == 'id' or name == 'name':
+        if name == "id" or name == "name":
             if name in self._body:
                 return self._body[name]
             else:
                 try:
-                    metadata = self._body['metadata']
-                    if name == 'id':
+                    metadata = self._body["metadata"]
+                    if name == "id":
                         if isinstance(metadata, dict):
-                            return metadata['uid']
+                            return metadata["uid"]
                         elif isinstance(metadata, Metadata):
                             return metadata._body[metadata._alternate_id()]
                     else:
                         if isinstance(metadata, dict):
-                            return metadata['name']
+                            return metadata["name"]
                         elif isinstance(metadata, Metadata):
                             return metadata.name
                 except KeyError:
                     return None
-        elif name == 'status.status':
-            status = object.__getattribute__(self, 'status')
-            return object.__getattribute__(status, 'status')
-        elif name in ['job_id', 'status.job_id']:
-            status = object.__getattribute__(self, 'status')
-            return object.__getattribute__(status, 'job_id')
-        elif name in ['created_at', 'updated_at']:
-            metadata = object.__getattribute__(self, 'metadata')
+        elif name == "status.status":
+            status = object.__getattribute__(self, "status")
+            return object.__getattribute__(status, "status")
+        elif name in ["job_id", "status.job_id"]:
+            status = object.__getattribute__(self, "status")
+            return object.__getattribute__(status, "job_id")
+        elif name in ["created_at", "updated_at"]:
+            metadata = object.__getattribute__(self, "metadata")
             # CCE return completely broken time format:
             # 2021-08-26 11:46:31.841673 +0000 UTC
             # Since it is far away from being any existing standard - drop
@@ -105,8 +104,8 @@ class Resource(resource.Resource):
             return object.__getattribute__(self, name)
 
     def _translate_response(
-            self, response, has_body=None, error_message=None,
-            resource_response_key=None):
+        self, response, has_body=None, error_message=None, resource_response_key=None
+    ):
         if has_body is None:
             has_body = self.has_body
         # NOTE: we only use our own exception parser
@@ -120,8 +119,7 @@ class Resource(resource.Resource):
                 body_attrs = self._consume_body_attrs(body)
 
                 if self._store_unknown_attrs_as_properties:
-                    body_attrs = self._pack_attrs_under_properties(
-                        body_attrs, body)
+                    body_attrs = self._pack_attrs_under_properties(body_attrs, body)
 
                 self._body.attributes.update(body_attrs)
                 self._body.clean()
@@ -159,7 +157,7 @@ class Resource(resource.Resource):
         response = self._raw_delete(session)
         kwargs = {}
         if error_message:
-            kwargs['error_message'] = error_message
+            kwargs["error_message"] = error_message
 
         self._translate_response(response, has_body=True, **kwargs)
         return self
@@ -214,13 +212,15 @@ class Resource(resource.Resource):
             response = session.get(
                 uri,
                 headers={
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'},
-                params=query_params.copy())
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                params=query_params.copy(),
+            )
             exceptions.raise_from_response(response)
 
-            if response.json() and 'items' in response.json():
-                data = response.json()['items'] or []
+            if response.json() and "items" in response.json():
+                data = response.json()["items"] or []
 
             if cls.resources_key:
                 resources = data[cls.resources_key]
@@ -235,7 +235,8 @@ class Resource(resource.Resource):
                 value = cls.existing(
                     microversion=microversion,
                     connection=session._get_connection(),
-                    **raw_resource)
+                    **raw_resource
+                )
                 yield value
 
             return

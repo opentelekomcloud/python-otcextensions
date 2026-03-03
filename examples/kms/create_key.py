@@ -13,15 +13,12 @@
 """
 Create a KMS cmk
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-key = conn.kms.create_key(
-    key_alias='cmk_name',
-    description='My KMS cmk'
-)
+key = conn.kms.create_key(key_alias="cmk_name", description="My KMS cmk")
 print(key)

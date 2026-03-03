@@ -13,10 +13,9 @@ import uuid
 
 import openstack
 from openstack import _log
-
 from otcextensions.tests.functional.sdk.mrs import TestMrs
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestDS(TestMrs):
@@ -26,9 +25,9 @@ class TestDS(TestMrs):
         super(TestDS, self).setUp()
         result = self.client.create_datasource(
             name=uuid.uuid4().hex,
-            url='/simple/mapreduce/input',
-            type='hdfs',
-            description='test ds'
+            url="/simple/mapreduce/input",
+            type="hdfs",
+            description="test ds",
         )
         id = result.id
         self.data_source = self.client.get_datasource(id)
@@ -41,8 +40,7 @@ class TestDS(TestMrs):
             if self.data_source.id:
                 self.client.delete_datasource(self.data_source)
         except openstack.exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
         super(TestDS, self).tearDown()
 
     def test_01_list(self):

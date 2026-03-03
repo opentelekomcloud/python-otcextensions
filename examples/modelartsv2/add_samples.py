@@ -12,14 +12,13 @@
 # under the License.
 #
 """Adding Samples in Batches."""
+
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "6ZQSY2loMn9bAUpsZzp"
-attrs = {
-    "samples": [{"name": "2.jpg", "data": "/9j/4AAQSkZJRgABAQAAAQABAAD/.."}]
-}
+attrs = {"samples": [{"name": "2.jpg", "data": "/9j/4AAQSkZJRgABAQAAAQABAAD/.."}]}
 
 dataset_sample = conn.modelartsv2.add_dataset_samples(dataset_id, **attrs)
 print(dataset_sample)

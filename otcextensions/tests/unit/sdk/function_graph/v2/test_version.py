@@ -11,13 +11,11 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import version
 
-
 EXAMPLE = {
-    'version': 'new-version',
-    'description': 'otce',
+    "version": "new-version",
+    "description": "otce",
 }
 
 
@@ -25,12 +23,12 @@ class TestFunctionInvocation(base.TestCase):
 
     def test_basic(self):
         sot = version.Version()
-        path = '/fgs/functions/%(function_urn)s/versions'
+        path = "/fgs/functions/%(function_urn)s/versions"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
         sot = version.Version(**EXAMPLE)
-        self.assertEqual(EXAMPLE['version'], sot.version)
-        self.assertEqual(EXAMPLE['description'], sot.description)
+        self.assertEqual(EXAMPLE["version"], sot.version)
+        self.assertEqual(EXAMPLE["description"], sot.description)

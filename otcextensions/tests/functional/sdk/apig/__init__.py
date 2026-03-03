@@ -10,8 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.tests.functional import base
 import uuid
+
+from otcextensions.tests.functional import base
 
 
 class TestApiG(base.BaseFunctionalTest):
@@ -30,20 +31,15 @@ class TestApiG(base.BaseFunctionalTest):
         security_group = security_groups[0]
         available_zone_ids = ["eu-de-01"]
         nmb = uuid.uuid4().hex[:8]
-        tags = [
-            {
-                "key": "check_this",
-                "value": "mate"
-            }
-        ]
+        tags = [{"key": "check_this", "value": "mate"}]
         return {
-            'instance_name': 'test_gateway_{}'.format(nmb),
-            'spec_id': 'BASIC',
-            'vpc_id': vpc.id,
-            'subnet_id': subnet.id,
-            'security_group_id': security_group.id,
-            'available_zone_ids': available_zone_ids,
-            'tags': tags
+            "instance_name": "test_gateway_{}".format(nmb),
+            "spec_id": "BASIC",
+            "vpc_id": vpc.id,
+            "subnet_id": subnet.id,
+            "security_group_id": security_group.id,
+            "available_zone_ids": available_zone_ids,
+            "tags": tags,
         }
 
     def create_gateway(self):
@@ -51,7 +47,8 @@ class TestApiG(base.BaseFunctionalTest):
             attrs = self.get_attrs()
             TestApiG.gateway = self.client.create_gateway(**attrs)
             TestApiG.gateway = self.client.wait_for_gateway(
-                TestApiG.gateway.instance_id)
+                TestApiG.gateway.instance_id
+            )
 
     def delete_gateway(self):
         if TestApiG.gateway:

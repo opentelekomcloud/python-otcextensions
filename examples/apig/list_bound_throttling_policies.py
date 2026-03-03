@@ -13,12 +13,10 @@
 """
 List Throttling policies that have been bound to an API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-apis = list(conn.apig.bound_throttling_policies(
-    gateway="gateway_id",
-    api_id="api_id"
-))
+apis = list(conn.apig.bound_throttling_policies(gateway="gateway_id", api_id="api_id"))

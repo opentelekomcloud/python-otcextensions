@@ -10,13 +10,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Add CloudEye metric data
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 # not working due to lag of compatible API: list instead of proper JSON
 attrs = [
@@ -24,36 +25,30 @@ attrs = [
         "metric": {
             "namespace": "MINE.APP",
             "dimensions": [
-                {
-                    "name": "instance_id",
-                    "value": "33328f02-3814-422e-b688-bfdba93d4050"
-                }
+                {"name": "instance_id", "value": "33328f02-3814-422e-b688-bfdba93d4050"}
             ],
-            "metric_name": "cpu_util"
+            "metric_name": "cpu_util",
         },
         "ttl": 172800,
         "collect_time": 1598266684000,
         "type": "int",
         "value": 60,
-        "unit": "%"
+        "unit": "%",
     },
     {
         "metric": {
             "namespace": "MINE.APP",
             "dimensions": [
-                {
-                    "name": "instance_id",
-                    "value": "33328f02-3814-422e-b688-bfdba93d4050"
-                }
+                {"name": "instance_id", "value": "33328f02-3814-422e-b688-bfdba93d4050"}
             ],
-            "metric_name": "cpu_util"
+            "metric_name": "cpu_util",
         },
         "ttl": 172800,
         "collect_time": 1598266685000,
         "type": "int",
         "value": 70,
-        "unit": "%"
-    }
+        "unit": "%",
+    },
 ]
 
 

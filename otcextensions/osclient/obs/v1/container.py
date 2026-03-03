@@ -11,20 +11,19 @@
 #   under the License.
 #
 """OBS Container v1 action implementations"""
-import logging
 
-from otcextensions.i18n import _
+import logging
 
 from osc_lib import utils
 from osc_lib.cli import parseractions
 from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
-
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-STORAGE_CLASSES = ['STANDARD', 'STANDARD_IA', 'GLACIER']
+STORAGE_CLASSES = ["STANDARD", "STANDARD_IA", "GLACIER"]
 
 
 def _get_columns(item):
@@ -43,27 +42,25 @@ class CreateContainer(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateContainer, self).get_parser(prog_name)
         parser.add_argument(
-            'container',
-            metavar='<container-name>',
-            help=_('New container name(s)'),
+            "container",
+            metavar="<container-name>",
+            help=_("New container name(s)"),
         )
         parser.add_argument(
-            '--storage-class',
-            metavar='{' + ','.join(STORAGE_CLASSES) + '}',
+            "--storage-class",
+            metavar="{" + ",".join(STORAGE_CLASSES) + "}",
             type=lambda s: s.upper(),
             choices=STORAGE_CLASSES,
-            help=_('Storage class'),
+            help=_("Storage class"),
         )
         return parser
 
     def take_action(self, parsed_args):
         # raise NotImplementedError
-        attrs = {
-            'name': parsed_args.container
-        }
+        attrs = {"name": parsed_args.container}
 
         if parsed_args.storage_class:
-            attrs['storage_class'] = parsed_args.storage_class
+            attrs["storage_class"] = parsed_args.storage_class
 
         data = self.app.client_manager.obs.create_container(**attrs)
         display_columns, columns = _get_columns(data)
@@ -78,16 +75,17 @@ class DeleteContainer(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteContainer, self).get_parser(prog_name)
         parser.add_argument(
-            '--recursive', '-r',
-            action='store_true',
+            "--recursive",
+            "-r",
+            action="store_true",
             default=False,
-            help=_('Recursively delete objects and container'),
+            help=_("Recursively delete objects and container"),
         )
         parser.add_argument(
-            'containers',
-            metavar='<container>',
+            "containers",
+            metavar="<container>",
             nargs="+",
-            help=_('Container(s) to delete'),
+            help=_("Container(s) to delete"),
         )
         return parser
 
@@ -96,12 +94,11 @@ class DeleteContainer(command.Command):
             if parsed_args.recursive:
                 # TODO(agoncharov) do a mass delete
                 # through the boto3.delete_objects
-                objs = self.app.client_manager.obs.objects(
-                    container=container)
+                objs = self.app.client_manager.obs.objects(container=container)
                 for obj in objs:
                     self.app.client_manager.obs.delete_object(
                         container=container,
-                        object=obj['name'],
+                        object=obj["name"],
                     )
             self.app.client_manager.obs.delete_container(
                 container=container,
@@ -153,7 +150,7 @@ class ListContainer(command.Lister):
         # if parsed_args.long:
         #     columns = ('Name', 'Bytes', 'Count')
         # else:
-        columns = ('name', 'creation_date')
+        columns = ("name", "creation_date")
 
         kwargs = {}
         # if parsed_args.prefix:
@@ -167,15 +164,19 @@ class ListContainer(command.Lister):
         # if parsed_args.all:
         #     kwargs['full_listing'] = True
 
-        data = self.app.client_manager.obs.containers(
-            **kwargs
-        )
+        data = self.app.client_manager.obs.containers(**kwargs)
 
-        return (columns,
-                (utils.get_item_properties(
-                    s, columns,
+        return (
+            columns,
+            (
+                utils.get_item_properties(
+                    s,
+                    columns,
                     formatters={},
-                ) for s in data))
+                )
+                for s in data
+            ),
+        )
 
 
 class SaveContainer(command.Command):
@@ -184,9 +185,9 @@ class SaveContainer(command.Command):
     def get_parser(self, prog_name):
         parser = super(SaveContainer, self).get_parser(prog_name)
         parser.add_argument(
-            'container',
-            metavar='<container>',
-            help=_('Container to save'),
+            "container",
+            metavar="<container>",
+            help=_("Container to save"),
         )
         return parser
 
@@ -203,17 +204,19 @@ class SetContainer(command.Command):
     def get_parser(self, prog_name):
         parser = super(SetContainer, self).get_parser(prog_name)
         parser.add_argument(
-            'container',
-            metavar='<container>',
-            help=_('Container to modify'),
+            "container",
+            metavar="<container>",
+            help=_("Container to modify"),
         )
         parser.add_argument(
             "--property",
             metavar="<key=value>",
             required=True,
             action=parseractions.KeyValueAction,
-            help=_("Set a property on this container "
-                   "(repeat option to set multiple properties)")
+            help=_(
+                "Set a property on this container "
+                "(repeat option to set multiple properties)"
+            ),
         )
         return parser
 
@@ -232,9 +235,9 @@ class ShowContainer(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowContainer, self).get_parser(prog_name)
         parser.add_argument(
-            'container',
-            metavar='<container>',
-            help=_('Container to display'),
+            "container",
+            metavar="<container>",
+            help=_("Container to display"),
         )
         return parser
 
@@ -256,18 +259,20 @@ class UnsetContainer(command.Command):
     def get_parser(self, prog_name):
         parser = super(UnsetContainer, self).get_parser(prog_name)
         parser.add_argument(
-            'container',
-            metavar='<container>',
-            help=_('Container to modify'),
+            "container",
+            metavar="<container>",
+            help=_("Container to modify"),
         )
         parser.add_argument(
-            '--property',
-            metavar='<key>',
+            "--property",
+            metavar="<key>",
             required=True,
-            action='append',
+            action="append",
             default=[],
-            help=_('Property to remove from container '
-                   '(repeat option to remove multiple properties)'),
+            help=_(
+                "Property to remove from container "
+                "(repeat option to remove multiple properties)"
+            ),
         )
         return parser
 

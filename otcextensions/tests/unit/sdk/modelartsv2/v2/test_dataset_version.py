@@ -67,9 +67,7 @@ class TestDataset(base.TestCase):
                     self.assertEqual(
                         sot.label_stats[ix].sample_count, data["sample_count"]
                     )
-                    self.assertEqual(
-                        sot.label_stats[ix].attributes, data["attributes"]
-                    )
+                    self.assertEqual(sot.label_stats[ix].attributes, data["attributes"])
                     self.assertEqual(
                         sot.label_stats[ix].property.color,
                         data["property"]["@modelarts:color"],

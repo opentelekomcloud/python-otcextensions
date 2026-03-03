@@ -17,7 +17,7 @@ from otcextensions.tests.unit.osclient.rds.v3 import fakes
 
 class TestListDatastores(fakes.TestRds):
 
-    columns_datastore_type = ('Name', )
+    columns_datastore_type = ("Name",)
 
     def setUp(self):
         super(TestListDatastores, self).setUp()
@@ -28,25 +28,21 @@ class TestListDatastores(fakes.TestRds):
 
         self.datastore_types = []
         self.datastore_type_data = []
-        for ds in ['MySQL', 'PostgreSQL', 'SQLServer']:
-            obj = type('obj', (object,), {'name': ds})
+        for ds in ["MySQL", "PostgreSQL", "SQLServer"]:
+            obj = type("obj", (object,), {"name": ds})
             self.datastore_types.append(obj)
             # Since only one field is there leave a comma at the end
             self.datastore_type_data.append((ds,))
 
     def test_list_datastore_types(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.datastore_types.side_effect = [
-            self.datastore_types
-        ]
+        self.app.client_manager.rds.datastore_types.side_effect = [self.datastore_types]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -60,8 +56,8 @@ class TestListDatastores(fakes.TestRds):
 class TestListDatastoreVersions(fakes.TestRds):
     objects = fakes.FakeDatastore.create_multiple(3)
 
-    column_headers = ('ID', 'Name')
-    columns = ('id', 'name')
+    column_headers = ("ID", "Name")
+    columns = ("id", "name")
 
     data = []
 
@@ -76,13 +72,9 @@ class TestListDatastoreVersions(fakes.TestRds):
         self.client.datastores = mock.Mock(return_value=self.objects)
 
     def test_list_datastore_versions(self):
-        arglist = [
-            'MySQL'
-        ]
+        arglist = ["MySQL"]
 
-        verifylist = [
-            ('database', 'mysql')
-        ]
+        verifylist = [("database", "mysql")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)

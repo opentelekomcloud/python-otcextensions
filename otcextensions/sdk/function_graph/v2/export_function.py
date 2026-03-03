@@ -11,34 +11,31 @@
 # under the License.
 import urllib
 
-from openstack import resource
 from openstack import exceptions
+from openstack import resource
 
 
 class Export(resource.Resource):
-    base_path = '/fgs/functions/%(function_urn)s/export'
+    base_path = "/fgs/functions/%(function_urn)s/export"
 
     # Capabilities
     allow_fetch = True
 
-    _query_mapping = resource.QueryParameters(
-        'config', 'code', 'type'
-    )
+    _query_mapping = resource.QueryParameters("config", "code", "type")
 
     # Properties
-    function_urn = resource.URI('function_urn', type=str)
+    function_urn = resource.URI("function_urn", type=str)
 
     # Attributes
-    file_name = resource.Body('file_name', type=str)
-    code_url = resource.Body('code_url', type=str)
+    file_name = resource.Body("file_name", type=str)
+    code_url = resource.Body("code_url", type=str)
 
     def _export(self, session, function, **query):
-        """Export a function
-        """
+        """Export a function"""
         query_params = urllib.parse.urlencode(query)
         urn = function.func_urn.rpartition(":")[0]
-        url = self.base_path % {'function_urn': urn}
-        url += '?' + query_params
+        url = self.base_path % {"function_urn": urn}
+        url += "?" + query_params
         response = session.get(url)
         exceptions.raise_from_response(response)
         self._translate_response(response)

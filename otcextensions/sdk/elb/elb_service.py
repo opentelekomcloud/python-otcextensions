@@ -10,13 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.sdk.elb.v2 import _proxy as _proxy_v2
 from openstack import service_description
+from otcextensions.sdk.elb.v2 import _proxy as _proxy_v2
 
 
 class ElbService(service_description.ServiceDescription):
     """The identity service."""
 
     supported_versions = {
-        '2': _proxy_v2.Proxy,
+        "2": _proxy_v2.Proxy,
     }

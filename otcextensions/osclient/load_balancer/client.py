@@ -13,11 +13,10 @@
 
 import logging
 
-
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '1.0'
-API_VERSION_OPTION = 'os_load_balancer_api_version'
+DEFAULT_API_VERSION = "1.0"
+API_VERSION_OPTION = "os_load_balancer_api_version"
 API_NAME = "load_balancer"
 API_VERSIONS = {
     "1.0": "openstack.connection.Connection",
@@ -28,8 +27,10 @@ API_VERSIONS = {
 def make_client(instance):
     """Returns a LoadBalancer proxy"""
 
-    LOG.debug('LoadBalancer client initialized using OpenStack SDK: %s',
-              instance.sdk_connection.network)
+    LOG.debug(
+        "LoadBalancer client initialized using OpenStack SDK: %s",
+        instance.sdk_connection.network,
+    )
     return instance.sdk_connection.network
 
 

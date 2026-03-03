@@ -10,38 +10,28 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import mock
 from unittest.mock import call
 
+import mock
+from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
 
 from otcextensions.osclient.smn.v2 import template
 from otcextensions.tests.unit.osclient.smn.v2 import fakes
-
-from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListTemplate(fakes.TestSmn):
 
     objects = fakes.FakeTemplate.create_multiple(3)
 
-    column_list_headers = (
-        'ID',
-        'Name',
-        'Protocol'
-    )
+    column_list_headers = ("ID", "Name", "Protocol")
 
-    columns = (
-        'id',
-        'name',
-        'protocol'
-    )
+    columns = ("id", "name", "protocol")
 
     data = []
 
     for s in objects:
-        data.append(
-            (s.id, s.name, s.protocol))
+        data.append((s.id, s.name, s.protocol))
 
     def setUp(self):
         super(TestListTemplate, self).setUp()
@@ -72,17 +62,21 @@ class TestListTemplate(fakes.TestSmn):
 
     def test_list_args(self):
         arglist = [
-            '--limit', '1',
-            '--offset', '2',
-            '--name', '3',
-            '--protocol', 'email'
+            "--limit",
+            "1",
+            "--offset",
+            "2",
+            "--name",
+            "3",
+            "--protocol",
+            "email",
         ]
 
         verifylist = [
-            ('limit', 1),
-            ('offset', 2),
-            ('name', '3'),
-            ('protocol', 'email'),
+            ("limit", 1),
+            ("offset", 2),
+            ("name", "3"),
+            ("protocol", "email"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -97,8 +91,8 @@ class TestListTemplate(fakes.TestSmn):
         self.client.api_mock.assert_called_with(
             limit=1,
             offset=2,
-            name='3',
-            protocol='email',
+            name="3",
+            protocol="email",
         )
 
 
@@ -107,14 +101,15 @@ class TestCreateTemplate(fakes.TestSmn):
     _data = fakes.FakeTemplate.create_one()
 
     columns = (
-        'content',
-        'create_time',
-        'id',
-        'name',
-        'protocol',
-        'request_id',
-        'tag_names',
-        'update_time')
+        "content",
+        "create_time",
+        "id",
+        "name",
+        "protocol",
+        "request_id",
+        "tag_names",
+        "update_time",
+    )
 
     data = fakes.gen_data(_data, columns)
 
@@ -127,14 +122,16 @@ class TestCreateTemplate(fakes.TestSmn):
 
     def test_create(self):
         arglist = [
-            'test-template',
-            '--protocol', 'email',
-            '--content', 'test-content',
+            "test-template",
+            "--protocol",
+            "email",
+            "--content",
+            "test-content",
         ]
         verifylist = [
-            ('name', 'test-template'),
-            ('protocol', 'email'),
-            ('content', 'test-content'),
+            ("name", "test-template"),
+            ("protocol", "email"),
+            ("content", "test-content"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -143,9 +140,9 @@ class TestCreateTemplate(fakes.TestSmn):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_template.assert_called_with(
-            name='test-template',
-            protocol='email',
-            content='test-content',
+            name="test-template",
+            protocol="email",
+            content="test-content",
         )
         self.assertEqual(self.columns, columns)
 
@@ -155,14 +152,14 @@ class TestUpdateTemplate(fakes.TestSmn):
     _data = fakes.FakeTemplate.create_one()
 
     columns = (
-        'content',
-        'create_time',
-        'id',
-        'name',
-        'protocol',
-        'request_id',
-        'tag_names',
-        'update_time'
+        "content",
+        "create_time",
+        "id",
+        "name",
+        "protocol",
+        "request_id",
+        "tag_names",
+        "update_time",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -178,11 +175,12 @@ class TestUpdateTemplate(fakes.TestSmn):
     def test_update(self):
         arglist = [
             self._data.name,
-            '--content', 'test content updated',
+            "--content",
+            "test content updated",
         ]
         verifylist = [
-            ('template', self._data.name),
-            ('content', 'test content updated'),
+            ("template", self._data.name),
+            ("content", "test content updated"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -193,7 +191,7 @@ class TestUpdateTemplate(fakes.TestSmn):
         self.client.find_template.assert_called_with(self._data.name)
         self.client.update_template.assert_called_with(
             self._data,
-            content='test content updated',
+            content="test content updated",
         )
         self.assertEqual(self.columns, columns)
 
@@ -203,14 +201,14 @@ class TestShowTemplate(fakes.TestSmn):
     _data = fakes.FakeTemplate.create_one()
 
     columns = (
-        'content',
-        'create_time',
-        'id',
-        'name',
-        'protocol',
-        'request_id',
-        'tag_names',
-        'update_time'
+        "content",
+        "create_time",
+        "id",
+        "name",
+        "protocol",
+        "request_id",
+        "tag_names",
+        "update_time",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -228,8 +226,13 @@ class TestShowTemplate(fakes.TestSmn):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
@@ -237,7 +240,7 @@ class TestShowTemplate(fakes.TestSmn):
         ]
 
         verifylist = [
-            ('template', self._data.id),
+            ("template", self._data.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -252,27 +255,25 @@ class TestShowTemplate(fakes.TestSmn):
 
     def test_show_non_existent(self):
         arglist = [
-            'unexist_template',
+            "unexist_template",
         ]
 
         verifylist = [
-            ('template', 'unexist_template'),
+            ("template", "unexist_template"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.find_template = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        find_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.find_template = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
-        self.client.find_template.assert_called_with('unexist_template')
+            self.assertEqual("Resource Not Found", str(e))
+        self.client.find_template.assert_called_with("unexist_template")
 
 
 class TestDeleteTemplate(fakes.TestSmn):
@@ -293,15 +294,13 @@ class TestDeleteTemplate(fakes.TestSmn):
         ]
 
         verifylist = [
-            ('template', [self._data[0].name]),
+            ("template", [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.client.find_template = (
-            mock.Mock(return_value=self._data[0])
-        )
+        self.client.find_template = mock.Mock(return_value=self._data[0])
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -315,16 +314,14 @@ class TestDeleteTemplate(fakes.TestSmn):
             arglist.append(data.name)
 
         verifylist = [
-            ('template', arglist),
+            ("template", arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_result = self._data
-        self.client.find_template = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        self.client.find_template = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -338,27 +335,24 @@ class TestDeleteTemplate(fakes.TestSmn):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._data[0].name,
-            'unexist_template',
+            "unexist_template",
         ]
         verifylist = [
-            ('template', arglist),
+            ("template", arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_result = [self._data[0], exceptions.CommandError]
-        self.client.find_template = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        self.client.find_template = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual(
-                '1 of 2 message template(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 message template(s) failed to delete.", str(e))
 
         self.client.find_template.assert_any_call(self._data[0].name)
-        self.client.find_template.assert_any_call('unexist_template')
+        self.client.find_template.assert_any_call("unexist_template")
         self.client.delete_template.assert_called_once_with(self._data[0])

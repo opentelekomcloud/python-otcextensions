@@ -16,13 +16,11 @@ from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.css.v1 import _proxy
 from otcextensions.sdk.css.v1 import cluster as _cluster
 from otcextensions.sdk.css.v1 import cluster_image as _cluster_image
-from otcextensions.sdk.css.v1 import (
-    cluster_upgrade_status as _cluster_upgrade_status
-)
+from otcextensions.sdk.css.v1 import cluster_upgrade_status as _cluster_upgrade_status
 from otcextensions.sdk.css.v1 import flavor as _flavor
 from otcextensions.sdk.css.v1 import snapshot as _snapshot
 
-ENDPOINT_CSS = 'http://css.example.com/v1.0'
+ENDPOINT_CSS = "http://css.example.com/v1.0"
 
 
 class TestCssProxy(test_proxy_base.TestProxyBase):
@@ -35,8 +33,8 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.clusters,
             _cluster.Cluster,
-            method_kwargs={'id': 'foo', 'start': 999, 'limit': 666},
-            expected_kwargs={'id': 'foo', 'start': 999, 'limit': 666},
+            method_kwargs={"id": "foo", "start": 999, "limit": 666},
+            expected_kwargs={"id": "foo", "start": 999, "limit": 666},
         )
 
     def test_get_cluster(self):
@@ -49,8 +47,8 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
         self.verify_create(
             self.proxy.create_cluster,
             _cluster.Cluster,
-            method_kwargs={'x': 1, 'y': 2, 'z': 3},
-            expected_kwargs={'x': 1, 'y': 2, 'z': 3},
+            method_kwargs={"x": 1, "y": 2, "z": 3},
+            expected_kwargs={"x": 1, "y": 2, "z": 3},
         )
 
     def test_delete_cluster(self):
@@ -58,7 +56,7 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
 
     def test_restart_cluster(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.restart',
+            "otcextensions.sdk.css.v1.cluster.Cluster.restart",
             self.proxy.restart_cluster,
             method_args=[_cluster.Cluster],
             expected_args=[self.proxy],
@@ -66,7 +64,7 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
 
     def test_extend_cluster(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.extend',
+            "otcextensions.sdk.css.v1.cluster.Cluster.extend",
             self.proxy.extend_cluster,
             method_args=[_cluster.Cluster, 2],
             expected_args=[self.proxy, 2],
@@ -77,97 +75,96 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             self.proxy.extend_cluster_nodes,
             _cluster.ExtendClusterNodes,
             method_kwargs={
-                'cluster': 'cluster-uuid',
-                'grow': [{'x': 1, 'y': 2, 'z': 3}],
+                "cluster": "cluster-uuid",
+                "grow": [{"x": 1, "y": 2, "z": 3}],
             },
             expected_kwargs={
-                'cluster_id': 'cluster-uuid',
-                'grow': [{'x': 1, 'y': 2, 'z': 3}],
+                "cluster_id": "cluster-uuid",
+                "grow": [{"x": 1, "y": 2, "z": 3}],
             },
         )
 
     def test_update_cluster_name(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.update_name',
+            "otcextensions.sdk.css.v1.cluster.Cluster.update_name",
             self.proxy.update_cluster_name,
-            method_args=[_cluster.Cluster, 'test'],
-            expected_args=[self.proxy, 'test'],
+            method_args=[_cluster.Cluster, "test"],
+            expected_args=[self.proxy, "test"],
         )
 
     def test_update_password(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.update_password',
+            "otcextensions.sdk.css.v1.cluster.Cluster.update_password",
             self.proxy.update_cluster_password,
-            method_args=[_cluster.Cluster, 'password'],
-            expected_args=[self.proxy, 'password'],
+            method_args=[_cluster.Cluster, "password"],
+            expected_args=[self.proxy, "password"],
         )
 
     def test_update_security_mode(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.update_security_mode',
+            "otcextensions.sdk.css.v1.cluster.Cluster.update_security_mode",
             self.proxy.update_cluster_security_mode,
             method_args=[_cluster.Cluster, True, False, None],
             expected_args=[self.proxy, True, False, None],
         )
 
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.update_security_mode',
+            "otcextensions.sdk.css.v1.cluster.Cluster.update_security_mode",
             self.proxy.update_cluster_security_mode,
             method_kwargs={
-                'cluster': _cluster.Cluster,
-                'https_enable': False,
-                'authority_enable': False,
-                'admin_pwd': None,
-
+                "cluster": _cluster.Cluster,
+                "https_enable": False,
+                "authority_enable": False,
+                "admin_pwd": None,
             },
             expected_args=[self.proxy, False, False, None],
         )
 
     def test_update_security_group(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.update_security_group',
+            "otcextensions.sdk.css.v1.cluster.Cluster.update_security_group",
             self.proxy.update_cluster_security_group,
-            method_args=[_cluster.Cluster, 'security-group.id'],
-            expected_args=[self.proxy, 'security-group.id'],
+            method_args=[_cluster.Cluster, "security-group.id"],
+            expected_args=[self.proxy, "security-group.id"],
         )
 
     def test_update_cluster_flavor(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.update_flavor',
+            "otcextensions.sdk.css.v1.cluster.Cluster.update_flavor",
             self.proxy.update_cluster_flavor,
             method_kwargs={
-                'cluster': _cluster.Cluster,
-                'new_flavor': 'test',
-                'check_replica': True,
+                "cluster": _cluster.Cluster,
+                "new_flavor": "test",
+                "check_replica": True,
             },
-            expected_args=[self.proxy, 'test', None, True],
+            expected_args=[self.proxy, "test", None, True],
         )
 
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.update_flavor',
+            "otcextensions.sdk.css.v1.cluster.Cluster.update_flavor",
             self.proxy.update_cluster_flavor,
-            method_args=[_cluster.Cluster, 'test', 'ess', True],
-            expected_args=[self.proxy, 'test', 'ess', True],
+            method_args=[_cluster.Cluster, "test", "ess", True],
+            expected_args=[self.proxy, "test", "ess", True],
         )
 
     def test_update_kernel(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.update_kernel',
+            "otcextensions.sdk.css.v1.cluster.Cluster.update_kernel",
             self.proxy.update_cluster_kernel,
             method_args=[
                 _cluster.Cluster,
-                'target-image-id',
-                'upgrade-type',
+                "target-image-id",
+                "upgrade-type",
                 True,
-                'agency',
+                "agency",
                 False,
             ],
             expected_args=[
                 self.proxy,
-                'target-image-id',
-                'upgrade-type',
+                "target-image-id",
+                "upgrade-type",
                 True,
-                'agency',
+                "agency",
                 False,
             ],
         )
@@ -177,61 +174,61 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             self.proxy.get_cluster_version_upgrades,
             _cluster_image.ClusterImage,
             method_args=[],
-            method_kwargs={'cluster': 'test_id', 'upgrade_type': 'cross'},
+            method_kwargs={"cluster": "test_id", "upgrade_type": "cross"},
             expected_kwargs={
-                'cluster_id': 'test_id',
-                'upgrade_type': 'cross',
-                'requires_id': False,
+                "cluster_id": "test_id",
+                "upgrade_type": "cross",
+                "requires_id": False,
             },
         )
 
     def test_scale_in_cluster(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.scale_in',
+            "otcextensions.sdk.css.v1.cluster.Cluster.scale_in",
             self.proxy.scale_in_cluster,
-            method_args=[_cluster.Cluster, ['node-id']],
-            expected_args=[self.proxy, ['node-id']],
+            method_args=[_cluster.Cluster, ["node-id"]],
+            expected_args=[self.proxy, ["node-id"]],
         )
 
     def test_scale_in_cluster_by_node_type(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.scale_in_by_node_type',
+            "otcextensions.sdk.css.v1.cluster.Cluster.scale_in_by_node_type",
             self.proxy.scale_in_cluster_by_node_type,
             method_args=[
                 _cluster.Cluster,
-                [{'type': 'node-type', 'reducedNodeNum': 1}],
+                [{"type": "node-type", "reducedNodeNum": 1}],
             ],
             expected_args=[
                 self.proxy,
-                [{'type': 'node-type', 'reducedNodeNum': 1}],
+                [{"type": "node-type", "reducedNodeNum": 1}],
             ],
         )
 
     def test_replace_cluster_node(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.replace_node',
+            "otcextensions.sdk.css.v1.cluster.Cluster.replace_node",
             self.proxy.replace_cluster_node,
-            method_args=[_cluster.Cluster, 'node-id'],
-            expected_args=[self.proxy, 'node-id'],
+            method_args=[_cluster.Cluster, "node-id"],
+            expected_args=[self.proxy, "node-id"],
         )
 
     def test_add_cluster_nodes(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.add_nodes',
+            "otcextensions.sdk.css.v1.cluster.Cluster.add_nodes",
             self.proxy.add_cluster_nodes,
             method_args=[
                 _cluster.Cluster,
-                'node-type',
-                'flavor',
+                "node-type",
+                "flavor",
                 3,
-                'volume-type',
+                "volume-type",
             ],
             expected_args=[
                 self.proxy,
-                'node-type',
-                'flavor',
+                "node-type",
+                "flavor",
                 3,
-                'volume-type',
+                "volume-type",
             ],
         )
 
@@ -239,27 +236,27 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.get_cluster_upgrade_status,
             _cluster_upgrade_status.ClusterUpgradeStatus,
-            method_kwargs={'cluster': 'cluster-uuid'},
-            expected_kwargs={'cluster_id': 'cluster-uuid'},
+            method_kwargs={"cluster": "cluster-uuid"},
+            expected_kwargs={"cluster_id": "cluster-uuid"},
         )
 
     def test_retry_cluster_upgrade_job(self):
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.retry_upgrade_job',
+            "otcextensions.sdk.css.v1.cluster.Cluster.retry_upgrade_job",
             self.proxy.retry_cluster_upgrade_job,
             method_kwargs={
-                'cluster': _cluster.Cluster,
-                'job_id': 'job-id',
-                'retry_mode': None,
+                "cluster": _cluster.Cluster,
+                "job_id": "job-id",
+                "retry_mode": None,
             },
-            expected_args=[self.proxy, 'job-id', None],
+            expected_args=[self.proxy, "job-id", None],
         )
 
         self._verify(
-            'otcextensions.sdk.css.v1.cluster.Cluster.retry_upgrade_job',
+            "otcextensions.sdk.css.v1.cluster.Cluster.retry_upgrade_job",
             self.proxy.retry_cluster_upgrade_job,
-            method_args=[_cluster.Cluster, 'job-id', 'abort'],
-            expected_args=[self.proxy, 'job-id', 'abort'],
+            method_args=[_cluster.Cluster, "job-id", "abort"],
+            expected_args=[self.proxy, "job-id", "abort"],
         )
 
     def test_flavors(self):
@@ -270,59 +267,57 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
 
     def test_snapshots(self):
         self._verify(
-            'openstack.proxy.Proxy._list',
+            "openstack.proxy.Proxy._list",
             self.proxy.snapshots,
-            method_args=['cluster-uuid'],
+            method_args=["cluster-uuid"],
             expected_args=[_snapshot.Snapshot],
-            expected_kwargs={
-                'base_path': '/clusters/cluster-uuid/index_snapshots'
-            },
+            expected_kwargs={"base_path": "/clusters/cluster-uuid/index_snapshots"},
         )
 
     def test_create_snapshot(self):
         self.verify_create(
             self.proxy.create_snapshot,
             _snapshot.Snapshot,
-            method_kwargs={'cluster': 'cluster-uuid', 'x': 1, 'y': 2},
+            method_kwargs={"cluster": "cluster-uuid", "x": 1, "y": 2},
             expected_kwargs={
-                'uri_cluster_id': 'cluster-uuid',
-                'x': 1,
-                'y': 2,
+                "uri_cluster_id": "cluster-uuid",
+                "x": 1,
+                "y": 2,
             },
         )
 
     def test_find_snapshot(self):
         self._verify(
-            'openstack.proxy.Proxy._find',
+            "openstack.proxy.Proxy._find",
             self.proxy.find_snapshot,
-            method_args=['cluster-uuid', 'snapshot-uuid'],
-            expected_args=[_snapshot.Snapshot, 'snapshot-uuid'],
+            method_args=["cluster-uuid", "snapshot-uuid"],
+            expected_args=[_snapshot.Snapshot, "snapshot-uuid"],
             expected_kwargs={
-                'base_path': '/clusters/cluster-uuid/index_snapshots',
-                'ignore_missing': True,
+                "base_path": "/clusters/cluster-uuid/index_snapshots",
+                "ignore_missing": True,
             },
         )
 
     def test_delete_snapshot(self):
         self._verify(
-            'openstack.proxy.Proxy._delete',
+            "openstack.proxy.Proxy._delete",
             self.proxy.delete_snapshot,
-            method_args=['cluster-uuid', 'snapshot-uuid', False],
-            expected_args=[_snapshot.Snapshot, 'snapshot-uuid'],
+            method_args=["cluster-uuid", "snapshot-uuid", False],
+            expected_args=[_snapshot.Snapshot, "snapshot-uuid"],
             expected_kwargs={
-                'uri_cluster_id': 'cluster-uuid',
-                'ignore_missing': False,
+                "uri_cluster_id": "cluster-uuid",
+                "ignore_missing": False,
             },
         )
 
     def test_restore_snapshot(self):
         self._verify(
-            'otcextensions.sdk.css.v1.snapshot.Snapshot.restore',
+            "otcextensions.sdk.css.v1.snapshot.Snapshot.restore",
             self.proxy.restore_snapshot,
             method_args=[_cluster.Cluster, _snapshot.Snapshot],
-            method_kwargs={'a': '1', 'b': '2'},
+            method_kwargs={"a": "1", "b": "2"},
             expected_args=[self.proxy, _cluster.Cluster],
-            expected_kwargs={'a': '1', 'b': '2'},
+            expected_kwargs={"a": "1", "b": "2"},
         )
 
     def test_set_snapshot_configuration(self):
@@ -330,24 +325,24 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             self.proxy.set_snapshot_configuration,
             _snapshot.SnapshotConfiguration,
             method_kwargs={
-                'cluster': 'cluster-uuid',
-                'auto_configure': False,
-                'x': 1,
-                'y': 2,
+                "cluster": "cluster-uuid",
+                "auto_configure": False,
+                "x": 1,
+                "y": 2,
             },
             expected_kwargs={
-                'cluster_id': 'cluster-uuid',
-                'setting': 'setting',
-                'x': 1,
-                'y': 2,
+                "cluster_id": "cluster-uuid",
+                "setting": "setting",
+                "x": 1,
+                "y": 2,
             },
         )
 
     def test_disable_snapshot_function(self):
         self._verify(
-            'otcextensions.sdk.css.v1.snapshot.SnapshotConfiguration.disable',
+            "otcextensions.sdk.css.v1.snapshot.SnapshotConfiguration.disable",
             self.proxy.disable_snapshot_function,
-            method_args=['cluster-uuid'],
+            method_args=["cluster-uuid"],
             expected_args=[self.proxy],
         )
 
@@ -355,40 +350,38 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
         self.verify_create(
             self.proxy.set_snapshot_policy,
             _snapshot.SnapshotPolicy,
-            method_kwargs={'cluster': 'cluster-uuid', 'x': 1, 'y': 2},
-            expected_kwargs={'cluster_id': 'cluster-uuid', 'x': 1, 'y': 2},
+            method_kwargs={"cluster": "cluster-uuid", "x": 1, "y": 2},
+            expected_kwargs={"cluster_id": "cluster-uuid", "x": 1, "y": 2},
         )
 
     def test_get_snapshot_policy(self):
         self._verify(
-            'openstack.proxy.Proxy._get',
+            "openstack.proxy.Proxy._get",
             self.proxy.get_snapshot_policy,
-            method_args=['cluster-uuid'],
+            method_args=["cluster-uuid"],
             expected_args=[_snapshot.SnapshotPolicy],
             expected_kwargs={
-                'cluster_id': 'cluster-uuid',
-                'requires_id': False,
+                "cluster_id": "cluster-uuid",
+                "requires_id": False,
             },
         )
 
-    @mock.patch('builtins.open', new_callable=mock.mock_open)
-    @mock.patch('otcextensions.sdk.css.v1._proxy.Proxy.get')
+    @mock.patch("builtins.open", new_callable=mock.mock_open)
+    @mock.patch("otcextensions.sdk.css.v1._proxy.Proxy.get")
     def test_download_certificate(self, mock_get, mock_open):
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {
-            'Content-Disposition': 'attachment; filename="custom_cert.cer"'
+            "Content-Disposition": 'attachment; filename="custom_cert.cer"'
         }
-        mock_response.iter_content = mock.Mock(return_value=[b'cert content'])
+        mock_response.iter_content = mock.Mock(return_value=[b"cert content"])
         mock_get.return_value = mock_response
 
-        filename = 'custom_cert.cer'
+        filename = "custom_cert.cer"
         self.proxy.download_certificate(filename)
 
         mock_get.assert_called_once_with(
-            '/cer/download',
-            headers={'Accept': '*/*'},
-            stream=True
+            "/cer/download", headers={"Accept": "*/*"}, stream=True
         )
-        mock_open.assert_called_once_with(filename, 'wb')
-        mock_open().write.assert_called_once_with(b'cert content')
+        mock_open.assert_called_once_with(filename, "wb")
+        mock_open().write.assert_called_once_with(b"cert content")

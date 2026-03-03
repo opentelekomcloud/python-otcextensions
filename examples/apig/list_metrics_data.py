@@ -13,16 +13,17 @@
 """
 List API calls for a specified group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
-    'dim': 'inbound_eip',
-    'metric_name': 'upstream_bandwidth',
-    'from': '1740787200000',
-    'to': '1740873600000',
-    'period': 3600,
-    'filter': 'average',
+    "dim": "inbound_eip",
+    "metric_name": "upstream_bandwidth",
+    "from": "1740787200000",
+    "to": "1740873600000",
+    "period": 3600,
+    "filter": "average",
 }
-found = conn.apig.list_metric_data(gateway='gateway_id_here', **attrs)
+found = conn.apig.list_metric_data(gateway="gateway_id_here", **attrs)

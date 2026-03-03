@@ -57,7 +57,7 @@ This interface is used to create a KMS key with
 parameters.
 
 .. literalinclude:: ../examples/kms/create_key.py
-   :lines: 16-27
+   :lines: 16-24
 
 Get Key
 ^^^^^^^
@@ -127,7 +127,7 @@ This interface is used to create a KMS Datakey with
 parameters.
 
 .. literalinclude:: ../examples/kms/create_datakey.py
-   :lines: 16-26
+   :lines: 16-23
 
 Create Datakey without plain Text
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -135,7 +135,7 @@ Create Datakey without plain Text
 This interface is used to create a KMS data encryption key without plain text.
 
 .. literalinclude:: ../examples/kms/create_datakey.py
-   :lines: 16-26
+   :lines: 16-23
 
 Encrypt Datakey
 ^^^^^^^^^^^^^^^
@@ -143,7 +143,7 @@ Encrypt Datakey
 This interface is used to encrypt a KMS data encryption key.
 
 .. literalinclude:: ../examples/kms/encrypt_datakey.py
-   :lines: 16-25
+   :lines: 16-23
 
 Decrypt Datakey
 ^^^^^^^^^^^^^^^
@@ -151,7 +151,7 @@ Decrypt Datakey
 This interface is used to decrypt a KMS data encryption key.
 
 .. literalinclude:: ../examples/kms/decrypt_datakey.py
-   :lines: 16-27
+   :lines: 16-23
 
 Miscellaneous
 -------------

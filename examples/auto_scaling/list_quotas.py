@@ -13,10 +13,11 @@
 """
 List all Auto-Scaling quotas of a user or a specific AS Group.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 # group = "group_name_or_id"

@@ -13,10 +13,11 @@
 """
 Delete DWS Snapshot by snapshot name_or_id or instance of Snapshot class.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-snapshot_id = 'snapshot-uuid'
+snapshot_id = "snapshot-uuid"
 conn.dws.delete_snapshot(snapshot_id)

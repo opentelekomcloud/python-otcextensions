@@ -14,11 +14,9 @@ from unittest import mock
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.vpc.v1 import vpc
 
-
-IDENTIFIER = 'ID'
+IDENTIFIER = "ID"
 EXAMPLE = {
     "name": "vpc",
     "cidr": "192.168.200.0/24",
@@ -27,7 +25,7 @@ EXAMPLE = {
     "tenant_id": "6fbe9263116a4b68818cf1edce16bc4f",
     "routes": [],
     "enable_shared_snat": False,
-    "id": "3d42a0d4-a980-4613-ae76-a2cddecff054"
+    "id": "3d42a0d4-a980-4613-ae76-a2cddecff054",
 }
 
 
@@ -40,9 +38,9 @@ class TestVpc(base.TestCase):
 
     def test_basic(self):
         sot = vpc.Vpc()
-        self.assertEqual('vpc', sot.resource_key)
-        self.assertEqual('vpcs', sot.resources_key)
-        path = '/v1/%(project_id)s/vpcs'
+        self.assertEqual("vpc", sot.resource_key)
+        self.assertEqual("vpcs", sot.resources_key)
+        path = "/v1/%(project_id)s/vpcs"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -52,10 +50,10 @@ class TestVpc(base.TestCase):
 
     def test_make_it(self):
         sot = vpc.Vpc(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['routes'], sot.routes)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['cidr'], sot.cidr)
-        self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['routes'], sot.routes)
-        self.assertEqual(EXAMPLE['enable_shared_snat'], sot.enable_shared_snat)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["routes"], sot.routes)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["cidr"], sot.cidr)
+        self.assertEqual(EXAMPLE["status"], sot.status)
+        self.assertEqual(EXAMPLE["routes"], sot.routes)
+        self.assertEqual(EXAMPLE["enable_shared_snat"], sot.enable_shared_snat)

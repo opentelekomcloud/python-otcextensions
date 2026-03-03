@@ -14,39 +14,38 @@ from openstack import resource
 
 class Flavor(resource.Resource):
 
-    base_path = '/flavors/%(datastore_name)s'
-    resources_key = 'flavors'
+    base_path = "/flavors/%(datastore_name)s"
+    resources_key = "flavors"
 
     # capabilities
     allow_list = True
-    _query_mapping = resource.QueryParameters(
-        'version_name', 'spec_code')
+    _query_mapping = resource.QueryParameters("version_name", "spec_code")
 
-    datastore_name = resource.URI('datastore_name')
+    datastore_name = resource.URI("datastore_name")
     #: Instance Mode (single/ha/replica)
     #: *Type: int*
-    instance_mode = resource.Body('instance_mode')
+    instance_mode = resource.Body("instance_mode")
     #: Ram size in MB.
     #: *Type:int*
-    ram = resource.Body('ram', type=int)
+    ram = resource.Body("ram", type=int)
     #: Flavor name.
     #: *Type:str*
-    name = resource.Body('name', alias='spec_code')
+    name = resource.Body("name", alias="spec_code")
     #: Specification code
     #: *Type: str*
-    spec_code = resource.Body('spec_code')
+    spec_code = resource.Body("spec_code")
     #: Amount of VCPU's
     #: *Type: str*
-    vcpus = resource.Body('vcpus')
+    vcpus = resource.Body("vcpus")
     #: Group type
     #: *Type: str*
-    group_type = resource.Body('group_type')
+    group_type = resource.Body("group_type")
     #: Supported Versions
     #: *Type:list*
-    version_name = resource.Body('version_name', type=list)
+    version_name = resource.Body("version_name", type=list)
     #: Availability Zone Status
     #: *Type: dict*
-    az_status = resource.Body('az_status', type=dict)
+    az_status = resource.Body("az_status", type=dict)
     #: Availability Zone Description
     #: *Type: dict*
-    az_desc = resource.Body('az_desc', type=dict)
+    az_desc = resource.Body("az_desc", type=dict)

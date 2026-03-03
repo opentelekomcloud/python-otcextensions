@@ -11,6 +11,7 @@
 # under the License.
 #
 """VPC Endpoint Service v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -25,36 +26,34 @@ LOG = logging.getLogger(__name__)
 def _get_columns(item):
     column_map = {}
     hidden = [
-        'location',
+        "location",
     ]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class ListQuota(command.Lister):
 
-    _description = _('List VPC endpoint resource quotas.')
+    _description = _("List VPC endpoint resource quotas.")
     columns = (
-        'Type',
-        'Quota',
-        'Used',
+        "Type",
+        "Quota",
+        "Used",
     )
 
     def get_parser(self, prog_name):
         parser = super(ListQuota, self).get_parser(prog_name)
         parser.add_argument(
-            '--type',
-            metavar='{endpoint, endpoint_service}',
+            "--type",
+            metavar="{endpoint, endpoint_service}",
             type=lambda s: s.lower(),
-            choices=['endpoint', 'endpoint_service'],
-            help=_('Specify the resource type.'),
+            choices=["endpoint", "endpoint_service"],
+            help=_("Specify the resource type."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.vpcep
-        data = client.resource_quota(getattr(parsed_args, 'type'))
+        data = client.resource_quota(getattr(parsed_args, "type"))
 
         return (
             self.columns,

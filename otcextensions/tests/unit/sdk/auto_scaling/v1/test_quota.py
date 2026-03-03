@@ -11,41 +11,19 @@
 # under the License.
 import copy
 
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.auto_scaling.v1 import quota
 
 EXAMPLE_LIST = {
-    'quotas': {
-        'resources': [
-            {
-                'type': 'scaling_Group',
-                'used': 2,
-                'quota': 25,
-                'max': 50
-            },
-            {
-                'type': 'scaling_Config',
-                'used': 3,
-                'quota': 100,
-                'max': 200
-            },
-            {
-                'type': 'scaling_Policy',
-                'used': -1,
-                'quota': 50,
-                'max': 50
-            },
-            {
-                'type': 'scaling_Instance',
-                'used': -1,
-                'quota': 200,
-                'max': 1000
-            }
+    "quotas": {
+        "resources": [
+            {"type": "scaling_Group", "used": 2, "quota": 25, "max": 50},
+            {"type": "scaling_Config", "used": 3, "quota": 100, "max": 200},
+            {"type": "scaling_Policy", "used": -1, "quota": 50, "max": 50},
+            {"type": "scaling_Instance", "used": -1, "quota": 200, "max": 1000},
         ]
     }
 }
@@ -63,8 +41,8 @@ class TestQuota(base.TestCase):
     def test_basic(self):
         sot = quota.Quota()
         self.assertEqual(None, sot.resource_key)
-        self.assertEqual('quotas.resources', sot.resources_key)
-        self.assertEqual('/quotas', sot.base_path)
+        self.assertEqual("quotas.resources", sot.resources_key)
+        self.assertEqual("/quotas", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)
@@ -72,18 +50,18 @@ class TestQuota(base.TestCase):
         self.assertFalse(sot.allow_delete)
 
     def test_make_it(self):
-        obj = EXAMPLE_LIST['quotas']['resources'][0]
+        obj = EXAMPLE_LIST["quotas"]["resources"][0]
         sot = quota.Quota.existing(**obj)
-        self.assertEqual(obj['type'], sot.type)
-        self.assertEqual(obj['used'], sot.used)
-        self.assertEqual(obj['quota'], sot.quota)
-        self.assertEqual(obj['max'], sot.max)
+        self.assertEqual(obj["type"], sot.type)
+        self.assertEqual(obj["used"], sot.used)
+        self.assertEqual(obj["quota"], sot.quota)
+        self.assertEqual(obj["max"], sot.max)
 
         sot = quota.ScalingQuota.existing(**obj)
-        self.assertEqual(obj['type'], sot.type)
-        self.assertEqual(obj['used'], sot.used)
-        self.assertEqual(obj['quota'], sot.quota)
-        self.assertEqual(obj['max'], sot.max)
+        self.assertEqual(obj["type"], sot.type)
+        self.assertEqual(obj["used"], sot.used)
+        self.assertEqual(obj["quota"], sot.quota)
+        self.assertEqual(obj["max"], sot.max)
 
     def test_list(self):
         sot = quota.Quota()
@@ -95,17 +73,13 @@ class TestQuota(base.TestCase):
 
         result = list(sot.list(self.sess))
 
-        self.sess.get.assert_called_once_with('/quotas', params={})
+        self.sess.get.assert_called_once_with("/quotas", params={})
 
         expected_list = [
-            quota.Quota.existing(
-                **EXAMPLE_LIST['quotas']['resources'][0]),
-            quota.Quota.existing(
-                **EXAMPLE_LIST['quotas']['resources'][1]),
-            quota.Quota.existing(
-                **EXAMPLE_LIST['quotas']['resources'][2]),
-            quota.Quota.existing(
-                **EXAMPLE_LIST['quotas']['resources'][3]),
+            quota.Quota.existing(**EXAMPLE_LIST["quotas"]["resources"][0]),
+            quota.Quota.existing(**EXAMPLE_LIST["quotas"]["resources"][1]),
+            quota.Quota.existing(**EXAMPLE_LIST["quotas"]["resources"][2]),
+            quota.Quota.existing(**EXAMPLE_LIST["quotas"]["resources"][3]),
         ]
 
         self.assertEqual(expected_list, result)
@@ -118,19 +92,15 @@ class TestQuota(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = list(sot.list(self.sess, scaling_group_id='grp_id'))
+        result = list(sot.list(self.sess, scaling_group_id="grp_id"))
 
-        self.sess.get.assert_called_once_with('/quotas/grp_id', params={})
+        self.sess.get.assert_called_once_with("/quotas/grp_id", params={})
 
         expected_list = [
-            quota.Quota.existing(
-                **EXAMPLE_LIST['quotas']['resources'][0]),
-            quota.Quota.existing(
-                **EXAMPLE_LIST['quotas']['resources'][1]),
-            quota.Quota.existing(
-                **EXAMPLE_LIST['quotas']['resources'][2]),
-            quota.Quota.existing(
-                **EXAMPLE_LIST['quotas']['resources'][3]),
+            quota.Quota.existing(**EXAMPLE_LIST["quotas"]["resources"][0]),
+            quota.Quota.existing(**EXAMPLE_LIST["quotas"]["resources"][1]),
+            quota.Quota.existing(**EXAMPLE_LIST["quotas"]["resources"][2]),
+            quota.Quota.existing(**EXAMPLE_LIST["quotas"]["resources"][3]),
         ]
 
         self.assertEqual(expected_list, result)

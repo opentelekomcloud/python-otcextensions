@@ -14,7 +14,7 @@ from otcextensions.sdk.cce.v3 import _base
 
 class Job(_base.Resource):
 
-    base_path = '/jobs'
+    base_path = "/jobs"
 
     # capabilities
     allow_fetch = True

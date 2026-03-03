@@ -14,9 +14,9 @@ from openstack import resource
 
 
 class LoadBalancer(resource.Resource):
-    resource_key = 'loadbalancer'
-    resources_key = 'loadbalancers'
-    base_path = '/elb/loadbalancers'
+    resource_key = "loadbalancer"
+    resources_key = "loadbalancers"
+    base_path = "/elb/loadbalancers"
 
     # capabilities
     allow_create = True
@@ -26,74 +26,85 @@ class LoadBalancer(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'availability_zone_list', 'id', 'description',
-        'name', 'publicips', 'provisioning_status',
-        'operating_status', 'guaranteed',
-        'vip_address', 'ip_version',
-        'deletion_protection_enable', 'subnet_type',
-        'vip_port_id', 'vip_subnet_cidr_id',
-        'l4_flavor_id', 'l7_flavor_id', 'member_device_id',
-        is_admin_state_up='admin_state_up',
-        availability_zones='availability_zone_list',
-        floating_ips='publicips', is_guaranteed='guaranteed',
-        ip_address='vip_address', port_id='vip_port_id',
-        subnet_id='vip_subnet_cidr_id'
+        "availability_zone_list",
+        "id",
+        "description",
+        "name",
+        "publicips",
+        "provisioning_status",
+        "operating_status",
+        "guaranteed",
+        "vip_address",
+        "ip_version",
+        "deletion_protection_enable",
+        "subnet_type",
+        "vip_port_id",
+        "vip_subnet_cidr_id",
+        "l4_flavor_id",
+        "l7_flavor_id",
+        "member_device_id",
+        is_admin_state_up="admin_state_up",
+        availability_zones="availability_zone_list",
+        floating_ips="publicips",
+        is_guaranteed="guaranteed",
+        ip_address="vip_address",
+        port_id="vip_port_id",
+        subnet_id="vip_subnet_cidr_id",
     )
 
     # Properties
     #: Name of the target Octavia availability zone
-    availability_zones = resource.Body('availability_zone_list', type=list)
+    availability_zones = resource.Body("availability_zone_list", type=list)
     #: Timestamp when the load balancer was created
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: The load balancer description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: The load balancer description
-    deletion_protection_enable = resource.Body('deletion_protection_enable',
-                                               type=bool)
+    deletion_protection_enable = resource.Body("deletion_protection_enable", type=bool)
     #: EIP bound to the load balancer.
-    eips = resource.Body('eips', type=list)
+    eips = resource.Body("eips", type=list)
     #: FIP
-    floating_ip = resource.Body('publicip', type=list, list_type=dict)
+    floating_ip = resource.Body("publicip", type=list, list_type=dict)
     #: Assigned FIPs
-    floating_ips = resource.Body('publicips', type=list, list_type=dict)
+    floating_ips = resource.Body("publicips", type=list, list_type=dict)
     #: Specifies whether the load balancer is a dedicated load balancer.
-    is_guaranteed = resource.Body('guaranteed')
+    is_guaranteed = resource.Body("guaranteed")
     #: The administrative state of the load balancer *Type: bool*
-    is_admin_state_up = resource.Body('admin_state_up', type=bool)
+    is_admin_state_up = resource.Body("admin_state_up", type=bool)
     #: Specifies whether to enable cross-VPC backend.
-    ip_target_enable = resource.Body('ip_target_enable')
+    ip_target_enable = resource.Body("ip_target_enable")
     #: The Layer-4 flavor.
-    l4_flavor_id = resource.Body('l4_flavor_id')
+    l4_flavor_id = resource.Body("l4_flavor_id")
     #: Specifies the Layer-7 flavor.
-    l7_flavor_id = resource.Body('l7_flavor_id')
+    l7_flavor_id = resource.Body("l7_flavor_id")
     #: List of listeners associated with this load balancer
-    listeners = resource.Body('listeners', type=list, list_type=dict)
+    listeners = resource.Body("listeners", type=list, list_type=dict)
     #: Load balancer name.
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Network id
-    network_ids = resource.Body('elb_virsubnet_ids', type=list)
+    network_ids = resource.Body("elb_virsubnet_ids", type=list)
     #: Subnet type
-    subnet_type = resource.Body('elb_virsubnet_type')
+    subnet_type = resource.Body("elb_virsubnet_type")
     #: Operating status of the load balancer
-    operating_status = resource.Body('operating_status')
+    operating_status = resource.Body("operating_status")
     #: List of pools associated with this load balancer
-    pools = resource.Body('pools', type=list, list_type=dict)
+    pools = resource.Body("pools", type=list, list_type=dict)
     #: The ID of the project this load balancer is associated with.
-    project_id = resource.Body('project_id')
+    project_id = resource.Body("project_id")
     #: Provider name for the load balancer.
-    provider = resource.Body('provider')
+    provider = resource.Body("provider")
     #: The provisioning status of this load balancer
-    provisioning_status = resource.Body('provisioning_status')
+    provisioning_status = resource.Body("provisioning_status")
     #: Tags added to the load balancer
-    tags = resource.Body('tags', type=list)
+    tags = resource.Body("tags", type=list)
     #: Timestamp when the load balancer was last updated
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")
     #: Specifies the private IP address of the load balancer.
-    ip_address = resource.Body('vip_address')
+    ip_address = resource.Body("vip_address")
     #: Specifies the ID of the port bound to the private IPv4 address
     # of the load balancer.
-    port_id = resource.Body('vip_port_id')
+    port_id = resource.Body("vip_port_id")
     #: VIP subnet ID
-    subnet_id = resource.Body('vip_subnet_cidr_id')
+    subnet_id = resource.Body("vip_subnet_cidr_id")
     #: Router id
-    vpc_id = resource.Body('vpc_id')
+    vpc_id = resource.Body("vpc_id")

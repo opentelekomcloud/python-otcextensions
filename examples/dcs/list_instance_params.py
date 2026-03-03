@@ -13,13 +13,14 @@
 """
 List all Backups of a Distributed Message Service instance
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-instance = 'name_or_id'
+instance = "name_or_id"
 instance = conn.dcs.find_instance(instance)
 for param in conn.dcs.instance_params(instance):
     print(param)

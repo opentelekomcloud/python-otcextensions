@@ -13,10 +13,11 @@
 """
 List Cloud Trace Service Trackers
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 trackers = list(conn.ctsv3.trackers())
 print(trackers)

@@ -11,19 +11,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Update connection
+Update connection
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    "connection": "connection-uuid",
-    "name": "new-name"
-}
+attrs = {"connection": "connection-uuid", "name": "new-name"}
 
 c = conn.dcaas.update_connection(**attrs)
 print(c)

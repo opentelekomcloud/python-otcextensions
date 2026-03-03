@@ -11,11 +11,12 @@
 # under the License.
 #
 """Get VPC Endpoint details."""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-endpoint_id = 'endpoint-uuid'
+endpoint_id = "endpoint-uuid"
 endpoint = conn.vpcep.get_endpoint(endpoint_id)
 print(endpoint)

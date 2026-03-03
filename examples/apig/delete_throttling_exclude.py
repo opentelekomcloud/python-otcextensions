@@ -13,12 +13,11 @@
 """
 Delete an Excluded Request Throttling Configuration¶
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 conn.apig.delete_throttling_excluded_policy(
-    gateway="gateway_id",
-    policy="policy_id",
-    exclude="excluded_id"
+    gateway="gateway_id", policy="policy_id", exclude="excluded_id"
 )

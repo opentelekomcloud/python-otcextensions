@@ -9,13 +9,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import proxy
 from openstack import resource
-
+from otcextensions.sdk.nat.v2 import dnat as _dnat
 from otcextensions.sdk.nat.v2 import gateway as _gateway
 from otcextensions.sdk.nat.v2 import snat as _snat
-from otcextensions.sdk.nat.v2 import dnat as _dnat
-
-from openstack import proxy
 
 
 class Proxy(proxy.Proxy):
@@ -49,11 +47,17 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(_gateway.Gateway, gateway,
-                            ignore_missing=ignore_missing)
+        return self._delete(_gateway.Gateway, gateway, ignore_missing=ignore_missing)
 
-    def wait_for_gateway(self, gateway, status='ACTIVE', failures=None,
-                         interval=2, wait=300, attribute='status'):
+    def wait_for_gateway(
+        self,
+        gateway,
+        status="ACTIVE",
+        failures=None,
+        interval=2,
+        wait=300,
+        attribute="status",
+    ):
         """Wait for an gateway to be in a particular status.
 
         :param gateway:
@@ -75,9 +79,8 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = ['INACTIVE'] if failures is None else failures
-        return resource.wait_for_status(
-            self, gateway, status, failures, interval, wait)
+        failures = ["INACTIVE"] if failures is None else failures
+        return resource.wait_for_status(self, gateway, status, failures, interval, wait)
 
     def wait_for_delete_gateway(self, gateway, interval=2, wait=180):
         """Wait for the gateway to be deleted.
@@ -149,8 +152,7 @@ class Proxy(proxy.Proxy):
         :returns:
             One :class:`~otcextensions.sdk.nat.v2.gateway.Gateway` or ``None``
         """
-        return self._find(_gateway.Gateway, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_gateway.Gateway, name_or_id, ignore_missing=ignore_missing)
 
     # ======== SNAT rules ========
     def create_snat_rule(self, **attrs):
@@ -204,8 +206,15 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_snat.Snat, **query)
 
-    def wait_for_snat(self, snat, status='ACTIVE', failures=None,
-                      interval=2, wait=300, attribute='status'):
+    def wait_for_snat(
+        self,
+        snat,
+        status="ACTIVE",
+        failures=None,
+        interval=2,
+        wait=300,
+        attribute="status",
+    ):
         """Wait for an snat rule to be in a particular status.
 
         :param snat:
@@ -227,9 +236,8 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = ['INACTIVE'] if failures is None else failures
-        return resource.wait_for_status(
-            self, snat, status, failures, interval, wait)
+        failures = ["INACTIVE"] if failures is None else failures
+        return resource.wait_for_status(self, snat, status, failures, interval, wait)
 
     def wait_for_delete_snat(self, snat, interval=2, wait=180):
         """Wait for the snat rule to be deleted.
@@ -302,8 +310,15 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_dnat.Dnat, **query)
 
-    def wait_for_dnat(self, dnat, status='ACTIVE', failures=None,
-                      interval=2, wait=300, attribute='status'):
+    def wait_for_dnat(
+        self,
+        dnat,
+        status="ACTIVE",
+        failures=None,
+        interval=2,
+        wait=300,
+        attribute="status",
+    ):
         """Wait for an dnat rule to be in a particular status.
 
         :param dnat:
@@ -325,9 +340,8 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = ['INACTIVE'] if failures is None else failures
-        return resource.wait_for_status(
-            self, dnat, status, failures, interval, wait)
+        failures = ["INACTIVE"] if failures is None else failures
+        return resource.wait_for_status(self, dnat, status, failures, interval, wait)
 
     def wait_for_delete_dnat(self, dnat, interval=2, wait=180):
         """Wait for the dnat rule to be deleted.
@@ -350,21 +364,18 @@ class Proxy(proxy.Proxy):
 
     # ======== Project cleanup ========
     def _get_cleanup_dependencies(self):
-        return {
-            'nat': {
-                'before': ['network']
-            }
-        }
+        return {"nat": {"before": ["network"]}}
 
-    def _service_cleanup(self,
-                         dry_run=True,
-                         client_status_queue=None,
-                         identified_resources=None,
-                         filters=None,
-                         resource_evaluation_fn=None,
-                         skip_resources=None):
-        if self.should_skip_resource_cleanup("gateway",
-                                             skip_resources):
+    def _service_cleanup(
+        self,
+        dry_run=True,
+        client_status_queue=None,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
+    ):
+        if self.should_skip_resource_cleanup("gateway", skip_resources):
             return
 
         gateways = []
@@ -378,7 +389,8 @@ class Proxy(proxy.Proxy):
                     client_status_queue=client_status_queue,
                     identified_resources=identified_resources,
                     filters=filters,
-                    resource_evaluation_fn=resource_evaluation_fn)
+                    resource_evaluation_fn=resource_evaluation_fn,
+                )
                 if not dry_run and need_delete:
                     snat_rules.append(snat)
             dnat_rules = []
@@ -390,7 +402,8 @@ class Proxy(proxy.Proxy):
                     client_status_queue=client_status_queue,
                     identified_resources=identified_resources,
                     filters=filters,
-                    resource_evaluation_fn=resource_evaluation_fn)
+                    resource_evaluation_fn=resource_evaluation_fn,
+                )
                 if not dry_run and need_delete:
                     dnat_rules.append(dnat)
             for snat in snat_rules:
@@ -404,10 +417,10 @@ class Proxy(proxy.Proxy):
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn)
+                resource_evaluation_fn=resource_evaluation_fn,
+            )
             if dry_run and need_delete:
-                for port in self._connection.network.ports(
-                        device_id=gateway.id):
+                for port in self._connection.network.ports(device_id=gateway.id):
                     identified_resources[port.id] = port
             if not dry_run and need_delete:
                 gateways.append(gateway)

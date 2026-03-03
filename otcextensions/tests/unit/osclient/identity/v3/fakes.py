@@ -14,7 +14,6 @@ import uuid
 from datetime import datetime
 
 import mock
-
 from openstackclient.tests.unit import utils
 
 from otcextensions.sdk.identity.v3 import credential
@@ -23,15 +22,13 @@ from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(getattr(data, attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(getattr(data, attr, "") for attr in columns)
 
 
 def gen_data_dict(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(data.get(attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(data.get(attr, "") for attr in columns)
 
 
 class TestIdentity(utils.TestCommand):
@@ -45,6 +42,7 @@ class TestIdentity(utils.TestCommand):
 
 class FakeIdentityCredential(test_base.Fake):
     """Fake one or more identity credentials."""
+
     @classmethod
     def generate(cls):
         """Create a fake identity credential.
@@ -69,6 +67,7 @@ class FakeIdentityCredential(test_base.Fake):
 
 class FakeIdentityCustomRole(test_base.Fake):
     """Fake one or more identity custom roles."""
+
     @classmethod
     def generate(cls):
         """Create a fake identity custom role.

@@ -10,15 +10,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Delete CBR policy
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-policy = '52606d56-d129-44d1-85da-1cc7b837942e'
+policy = "52606d56-d129-44d1-85da-1cc7b837942e"
 policy = conn.cbr.find_policy(policy_id=policy)
 conn.cbr.delete_policy(policy=policy)

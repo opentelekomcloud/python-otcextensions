@@ -13,16 +13,17 @@
 """
 Update a DNS recordset with new parameters
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 floating_ip = conn.dns.update_floating_ip(
-    floating_ip='floating_ip_id',
-    ptrdname='update.test.',
-    description='My updated Floating IP PTR record',
-    ttl=3600
+    floating_ip="floating_ip_id",
+    ptrdname="update.test.",
+    description="My updated Floating IP PTR record",
+    ttl=3600,
 )
 print(floating_ip)

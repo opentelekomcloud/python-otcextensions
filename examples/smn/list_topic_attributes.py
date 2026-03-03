@@ -13,15 +13,15 @@
 """
 Querying SMN topic attributes
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-urn = 'urn:smn:eu-de:123:myname'
+urn = "urn:smn:eu-de:123:myname"
 topic = conn.smn.get_topic(topic=urn)
-attributes = conn.smn.topic_attributes(
-    topic=topic.id)
+attributes = conn.smn.topic_attributes(topic=topic.id)
 for item in attributes:
     print(item)

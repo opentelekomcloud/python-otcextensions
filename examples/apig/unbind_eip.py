@@ -13,9 +13,10 @@
 """
 Unind EIP from gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.unbind_eip('gateway_id')
+conn.apig.unbind_eip("gateway_id")

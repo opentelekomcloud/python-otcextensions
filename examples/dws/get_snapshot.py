@@ -13,11 +13,12 @@
 """
 Get details of DWS Snapshot by snapshot_id or instance of Snapshot class.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-snapshot_id = 'snapshot-uuid'
+snapshot_id = "snapshot-uuid"
 resp = conn.dws.get_snapshot(snapshot_id)
 print(resp)

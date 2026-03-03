@@ -13,11 +13,9 @@
 """
 List APIs Not Bound with a Signature Key
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-apis = list(conn.apig.not_bound_apis(
-    gateway="gateway_id",
-    sign_id="sign_id"
-))
+conn = openstack.connect(cloud="otc")
+apis = list(conn.apig.not_bound_apis(gateway="gateway_id", sign_id="sign_id"))

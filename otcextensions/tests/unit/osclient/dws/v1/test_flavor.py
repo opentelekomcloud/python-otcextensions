@@ -20,23 +20,23 @@ class TestListFlavors(fakes.TestDws):
     objects = fakes.FakeFlavor.create_multiple(3)
 
     column_list_headers = (
-        'ID',
-        'Name',
-        'Availability Zones',
-        'vCPU',
-        'RAM',
-        'Disk Size',
-        'Disk Type',
+        "ID",
+        "Name",
+        "Availability Zones",
+        "vCPU",
+        "RAM",
+        "Disk Size",
+        "Disk Type",
     )
 
     columns = (
-        'id',
-        'name',
-        'availability_zones',
-        'vcpu',
-        'ram',
-        'disk_size',
-        'disk_type',
+        "id",
+        "name",
+        "availability_zones",
+        "vcpu",
+        "ram",
+        "disk_size",
+        "disk_type",
     )
 
     data = []

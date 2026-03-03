@@ -11,7 +11,6 @@
 # under the License.
 #
 import mock
-
 from osc_lib.cli import format_columns
 
 from otcextensions.osclient.rds.v3 import instance
@@ -23,20 +22,35 @@ class TestListDatabaseInstances(fakes.TestRds):
     objects = fakes.FakeInstance.create_multiple(3)
 
     column_list_headers = (
-        'ID', 'Name', 'Datastore Type', 'Datastore Version', 'Status',
-        'Flavor_ref', 'Type', 'Size', 'Region'
+        "ID",
+        "Name",
+        "Datastore Type",
+        "Datastore Version",
+        "Status",
+        "Flavor_ref",
+        "Type",
+        "Size",
+        "Region",
     )
 
-    columns = (
-        'id', 'name', 'datastore_type', 'datastore_version'
-    )
+    columns = ("id", "name", "datastore_type", "datastore_version")
 
     data = []
 
     for s in objects:
         data.append(
-            (s.id, s.name, s.datastore['type'], s.datastore['version'],
-             s.status, s.flavor_ref, s.type, s.volume['size'], s.region))
+            (
+                s.id,
+                s.name,
+                s.datastore["type"],
+                s.datastore["version"],
+                s.status,
+                s.flavor_ref,
+                s.type,
+                s.volume["size"],
+                s.region,
+            )
+        )
 
     def setUp(self):
         super(TestListDatabaseInstances, self).setUp()
@@ -67,25 +81,33 @@ class TestListDatabaseInstances(fakes.TestRds):
 
     def test_list_args(self):
         arglist = [
-            '--limit', '1',
-            '--id', '2',
-            '--name', '3',
-            '--type', 'ha',
-            '--datastore-type', 'postgreSqL',
-            '--router-id', '6',
-            '--network-id', '7',
-            '--offset', '8',
+            "--limit",
+            "1",
+            "--id",
+            "2",
+            "--name",
+            "3",
+            "--type",
+            "ha",
+            "--datastore-type",
+            "postgreSqL",
+            "--router-id",
+            "6",
+            "--network-id",
+            "7",
+            "--offset",
+            "8",
         ]
 
         verifylist = [
-            ('limit', 1),
-            ('id', '2'),
-            ('name', '3'),
-            ('type', 'ha'),
-            ('datastore_type', 'postgresql'),
-            ('router_id', '6'),
-            ('network_id', '7'),
-            ('offset', 8),
+            ("limit", 1),
+            ("id", "2"),
+            ("name", "3"),
+            ("type", "ha"),
+            ("datastore_type", "postgresql"),
+            ("router_id", "6"),
+            ("network_id", "7"),
+            ("offset", 8),
         ]
 
         # Verify cm is triggered with default parameters
@@ -95,36 +117,43 @@ class TestListDatabaseInstances(fakes.TestRds):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            datastore_type='PostgreSQL',
-            id='2',
+            datastore_type="PostgreSQL",
+            id="2",
             limit=1,
-            name='3',
+            name="3",
             offset=8,
-            router_id='6',
-            network_id='7',
-            type='Ha',
-            paginated=False
+            router_id="6",
+            network_id="7",
+            type="Ha",
+            paginated=False,
         )
 
     def test_list_args_paginated(self):
         arglist = [
-            '--id', '2',
-            '--name', '3',
-            '--type', 'ha',
-            '--datastore-type', 'postgreSqL',
-            '--router-id', '6',
-            '--network-id', '7',
-            '--offset', '8',
+            "--id",
+            "2",
+            "--name",
+            "3",
+            "--type",
+            "ha",
+            "--datastore-type",
+            "postgreSqL",
+            "--router-id",
+            "6",
+            "--network-id",
+            "7",
+            "--offset",
+            "8",
         ]
 
         verifylist = [
-            ('id', '2'),
-            ('name', '3'),
-            ('type', 'ha'),
-            ('datastore_type', 'postgresql'),
-            ('router_id', '6'),
-            ('network_id', '7'),
-            ('offset', 8),
+            ("id", "2"),
+            ("name", "3"),
+            ("type", "ha"),
+            ("datastore_type", "postgresql"),
+            ("router_id", "6"),
+            ("network_id", "7"),
+            ("offset", 8),
         ]
 
         # Verify cm is triggered with default parameters
@@ -134,13 +163,13 @@ class TestListDatabaseInstances(fakes.TestRds):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            datastore_type='PostgreSQL',
-            id='2',
-            name='3',
+            datastore_type="PostgreSQL",
+            id="2",
+            name="3",
             offset=8,
-            router_id='6',
-            network_id='7',
-            type='Ha',
+            router_id="6",
+            network_id="7",
+            type="Ha",
         )
 
 
@@ -148,9 +177,7 @@ class TestShowDatabaseInstance(fakes.TestRds):
 
     _data = fakes.FakeInstance.create_one()
 
-    columns = (
-        'datastore', 'flavor_ref', 'id', 'name', 'region', 'status', 'volume'
-    )
+    columns = ("datastore", "flavor_ref", "id", "name", "region", "status", "volume")
 
     data = (
         format_columns.DictColumn(_data.datastore),
@@ -159,7 +186,7 @@ class TestShowDatabaseInstance(fakes.TestRds):
         _data.name,
         _data.region,
         _data.status,
-        format_columns.DictColumn(_data.volume)
+        format_columns.DictColumn(_data.volume),
     )
 
     def setUp(self):
@@ -171,11 +198,11 @@ class TestShowDatabaseInstance(fakes.TestRds):
 
     def test_show(self):
         arglist = [
-            'test_instance',
+            "test_instance",
         ]
 
         verifylist = [
-            ('instance', 'test_instance'),
+            ("instance", "test_instance"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -183,8 +210,9 @@ class TestShowDatabaseInstance(fakes.TestRds):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_instance.assert_called_with('test_instance',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with(
+            "test_instance", ignore_missing=False
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -201,11 +229,11 @@ class TestDeleteDatabaseInstance(fakes.TestRds):
 
     def test_delete(self):
         arglist = [
-            'test_obj',
+            "test_obj",
         ]
 
         verifylist = [
-            ('instance', 'test_obj'),
+            ("instance", "test_obj"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -215,18 +243,13 @@ class TestDeleteDatabaseInstance(fakes.TestRds):
         self.cmd.take_action(parsed_args)
 
         self.sdk_client.delete_rds_instance.assert_called_with(
-            instance='test_obj', wait=False)
+            instance="test_obj", wait=False
+        )
 
     def test_delete_wait(self):
-        arglist = [
-            'test_obj',
-            '--wait'
-        ]
+        arglist = ["test_obj", "--wait"]
 
-        verifylist = [
-            ('instance', 'test_obj'),
-            ('wait', True)
-        ]
+        verifylist = [("instance", "test_obj"), ("wait", True)]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -235,7 +258,8 @@ class TestDeleteDatabaseInstance(fakes.TestRds):
         self.cmd.take_action(parsed_args)
 
         self.sdk_client.delete_rds_instance.assert_called_with(
-            instance='test_obj', wait=True)
+            instance="test_obj", wait=True
+        )
 
 
 class TestCreateDatabaseInstance(fakes.TestRds):
@@ -251,52 +275,73 @@ class TestCreateDatabaseInstance(fakes.TestRds):
 
         self.cmd = instance.CreateDatabaseInstance(self.app, None)
 
-        self.sdk_client.create_rds_instance = mock.Mock(
-            return_value=self._data)
+        self.sdk_client.create_rds_instance = mock.Mock(return_value=self._data)
 
     def test_create(self):
         arglist = [
-            'inst_name',
-            'test-flavor',
-            '--availability-zone', 'test-az-01',
-            '--backup', 'source_backup',
-            '--backup-keepdays', 'bkd',
-            '--backup-timeframe', 'xxx',
-            '--charge-mode', 'postpaid',
-            '--configuration', '123',
-            '--datastore-type', 'MySQL',
-            '--datastore-version', '5.7',
-            '--disk-encryption-id', '234',
-            '--from-instance', 'source_instance',
-            '--ha-mode', 'async',
-            '--network-id', 'test-network-id',
-            '--password', 'CrackMe123',
-            '--port', '12345',
-            '--region', 'test-region',
-            '--replica-of', 'replica_instance',
-            '--restore-time', 'restore_time_123',
-            '--router-id', 'test-vpc-id',
-            '--security-group-id', 'test-sec_grp-id',
-            '--volume-type', 'ULTRAHIGH',
-            '--size', '100'
+            "inst_name",
+            "test-flavor",
+            "--availability-zone",
+            "test-az-01",
+            "--backup",
+            "source_backup",
+            "--backup-keepdays",
+            "bkd",
+            "--backup-timeframe",
+            "xxx",
+            "--charge-mode",
+            "postpaid",
+            "--configuration",
+            "123",
+            "--datastore-type",
+            "MySQL",
+            "--datastore-version",
+            "5.7",
+            "--disk-encryption-id",
+            "234",
+            "--from-instance",
+            "source_instance",
+            "--ha-mode",
+            "async",
+            "--network-id",
+            "test-network-id",
+            "--password",
+            "CrackMe123",
+            "--port",
+            "12345",
+            "--region",
+            "test-region",
+            "--replica-of",
+            "replica_instance",
+            "--restore-time",
+            "restore_time_123",
+            "--router-id",
+            "test-vpc-id",
+            "--security-group-id",
+            "test-sec_grp-id",
+            "--volume-type",
+            "ULTRAHIGH",
+            "--size",
+            "100",
         ]
 
         verifylist = [
-            ('name', 'inst_name'),
-            ('configuration', '123'),
-            ('flavor', 'test-flavor'),
-            ('availability_zone', 'test-az-01'),
-            ('datastore_type', 'MySQL'),
-            ('datastore_version', '5.7'),
-            ('disk_encryption_id', '234'),
-            ('router', 'test-vpc-id'),
-            ('network', 'test-network-id'),
-            ('security_group', 'test-sec_grp-id'),
-            ('port', 12345),
-            ('volume_type', 'ULTRAHIGH'),
-            ('volume_size', 100),
-            ('password', 'CrackMe123'),
-            ('region', 'test-region')]
+            ("name", "inst_name"),
+            ("configuration", "123"),
+            ("flavor", "test-flavor"),
+            ("availability_zone", "test-az-01"),
+            ("datastore_type", "MySQL"),
+            ("datastore_version", "5.7"),
+            ("disk_encryption_id", "234"),
+            ("router", "test-vpc-id"),
+            ("network", "test-network-id"),
+            ("security_group", "test-sec_grp-id"),
+            ("port", 12345),
+            ("volume_type", "ULTRAHIGH"),
+            ("volume_size", 100),
+            ("password", "CrackMe123"),
+            ("region", "test-region"),
+        ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -305,17 +350,30 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         self.cmd.take_action(parsed_args)
 
         self.sdk_client.create_rds_instance.assert_called_with(
-            availability_zone='test-az-01', backup='source_backup',
-            backup_keepdays='bkd', backup_timeframe='xxx',
-            charge_mode='postpaid', configuration='123',
-            datastore_type='MySQL', datastore_version='5.7',
-            disk_encryption_id='234', flavor='test-flavor',
-            from_instance='source_instance', ha_mode='async', name='inst_name',
-            network='test-network-id', password='CrackMe123', port=12345,
-            region='test-region', replica_of='replica_instance',
-            restore_time='restore_time_123', router='test-vpc-id',
-            security_group='test-sec_grp-id', volume_size=100,
-            volume_type='ULTRAHIGH', wait=False
+            availability_zone="test-az-01",
+            backup="source_backup",
+            backup_keepdays="bkd",
+            backup_timeframe="xxx",
+            charge_mode="postpaid",
+            configuration="123",
+            datastore_type="MySQL",
+            datastore_version="5.7",
+            disk_encryption_id="234",
+            flavor="test-flavor",
+            from_instance="source_instance",
+            ha_mode="async",
+            name="inst_name",
+            network="test-network-id",
+            password="CrackMe123",
+            port=12345,
+            region="test-region",
+            replica_of="replica_instance",
+            restore_time="restore_time_123",
+            router="test-vpc-id",
+            security_group="test-sec_grp-id",
+            volume_size=100,
+            volume_type="ULTRAHIGH",
+            wait=False,
         )
 
 
@@ -331,21 +389,21 @@ class TestRestoreDatabaseInstance(fakes.TestRds):
 
         self.client.find_instance = mock.Mock(return_value=self.instance)
         self.restore_result = mock.Mock()
-        self.restore_result.job_id = 'some_job_id'
-        self.client.restore_instance = mock.Mock(
-            return_value=self.restore_result)
+        self.restore_result.job_id = "some_job_id"
+        self.client.restore_instance = mock.Mock(return_value=self.restore_result)
         self.client.find_backup = mock.Mock(return_value=self.backup)
         self.client.wait_for_job = mock.Mock()
 
     def test_action_from_backup(self):
         arglist = [
-            'inst_name',
-            '--backup', 'backup',
+            "inst_name",
+            "--backup",
+            "backup",
         ]
 
         verifylist = [
-            ('instance', 'inst_name'),
-            ('backup', 'backup'),
+            ("instance", "inst_name"),
+            ("backup", "backup"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -354,28 +412,26 @@ class TestRestoreDatabaseInstance(fakes.TestRds):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('inst_name',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with("inst_name", ignore_missing=False)
 
-        self.client.find_backup.assert_called_with(name_or_id='backup',
-                                                   instance=self.instance,
-                                                   ignore_missing=False)
+        self.client.find_backup.assert_called_with(
+            name_or_id="backup", instance=self.instance, ignore_missing=False
+        )
 
         self.client.restore_instance.assert_called_with(
-            backup=self.client.find_backup(),
-            instance=self.instance,
-            restore_time=None
+            backup=self.client.find_backup(), instance=self.instance, restore_time=None
         )
 
     def test_action_pit(self):
         arglist = [
-            'inst_name',
-            '--restore-time', 'some_time',
+            "inst_name",
+            "--restore-time",
+            "some_time",
         ]
 
         verifylist = [
-            ('instance', 'inst_name'),
-            ('restore_time', 'some_time'),
+            ("instance", "inst_name"),
+            ("restore_time", "some_time"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -384,28 +440,27 @@ class TestRestoreDatabaseInstance(fakes.TestRds):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('inst_name',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with("inst_name", ignore_missing=False)
 
         self.client.restore_instance.assert_called_with(
-            backup=None,
-            instance=self.instance,
-            restore_time='some_time'
+            backup=None, instance=self.instance, restore_time="some_time"
         )
 
     def test_action_wait(self):
         arglist = [
-            'inst_name',
-            '--restore-time', 'some_time',
-            '--wait',
-            '--wait-interval', '5'
+            "inst_name",
+            "--restore-time",
+            "some_time",
+            "--wait",
+            "--wait-interval",
+            "5",
         ]
 
         verifylist = [
-            ('instance', 'inst_name'),
-            ('restore_time', 'some_time'),
-            ('wait', True),
-            ('wait_interval', 5)
+            ("instance", "inst_name"),
+            ("restore_time", "some_time"),
+            ("wait", True),
+            ("wait_interval", 5),
         ]
 
         # Verify cm is triggered with default parameters
@@ -414,31 +469,25 @@ class TestRestoreDatabaseInstance(fakes.TestRds):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('inst_name',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with("inst_name", ignore_missing=False)
 
         self.client.restore_instance.assert_called_with(
-            backup=None,
-            instance=self.instance,
-            restore_time='some_time'
+            backup=None, instance=self.instance, restore_time="some_time"
         )
 
         self.client.wait_for_job.assert_called_with(
-            self.restore_result.job_id,
-            interval=5
+            self.restore_result.job_id, interval=5
         )
 
 
 class TestShowBackupPolicy(fakes.TestRds):
 
     _instance = fakes.FakeInstance.create_one()
-    _data = {'keep_days': 1, 'period': '2', 'start_time': '3'}
+    _data = {"keep_days": 1, "period": "2", "start_time": "3"}
 
-    columns = (
-        'keep_days', 'period', 'start_time'
-    )
+    columns = ("keep_days", "period", "start_time")
 
-    data = (1, '2', '3')
+    data = (1, "2", "3")
 
     def setUp(self):
         super(TestShowBackupPolicy, self).setUp()
@@ -449,12 +498,10 @@ class TestShowBackupPolicy(fakes.TestRds):
         self.client.get_instance_backup_policy = mock.Mock()
 
     def test_action(self):
-        arglist = [
-            'inst'
-        ]
+        arglist = ["inst"]
 
         verifylist = [
-            ('instance', 'inst'),
+            ("instance", "inst"),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -467,12 +514,9 @@ class TestShowBackupPolicy(fakes.TestRds):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('inst',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with("inst", ignore_missing=False)
 
-        self.client.get_instance_backup_policy.assert_called_once_with(
-            self._instance
-        )
+        self.client.get_instance_backup_policy.assert_called_once_with(self._instance)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -491,18 +535,13 @@ class TestSetBackupPolicy(fakes.TestRds):
         self.client.set_instance_backup_policy = mock.Mock()
 
     def test_action(self):
-        arglist = [
-            'inst',
-            '--keep-days', '1',
-            '--period', '2',
-            '--start-time', '3'
-        ]
+        arglist = ["inst", "--keep-days", "1", "--period", "2", "--start-time", "3"]
 
         verifylist = [
-            ('instance', 'inst'),
-            ('keep_days', 1),
-            ('period', '2'),
-            ('start_time', '3')
+            ("instance", "inst"),
+            ("keep_days", 1),
+            ("period", "2"),
+            ("start_time", "3"),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -514,23 +553,18 @@ class TestSetBackupPolicy(fakes.TestRds):
         # Trigger the action
         self.assertIsNone(self.cmd.take_action(parsed_args))
 
-        self.client.find_instance.assert_called_with('inst',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with("inst", ignore_missing=False)
 
         self.client.set_instance_backup_policy.assert_called_once_with(
-            self._instance,
-            keep_days=1, period='2', start_time='3'
+            self._instance, keep_days=1, period="2", start_time="3"
         )
 
     def test_action_set_0(self):
-        arglist = [
-            'inst',
-            '--keep-days', '0'
-        ]
+        arglist = ["inst", "--keep-days", "0"]
 
         verifylist = [
-            ('instance', 'inst'),
-            ('keep_days', 0),
+            ("instance", "inst"),
+            ("keep_days", 0),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -542,12 +576,10 @@ class TestSetBackupPolicy(fakes.TestRds):
         # Trigger the action
         self.assertIsNone(self.cmd.take_action(parsed_args))
 
-        self.client.find_instance.assert_called_with('inst',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with("inst", ignore_missing=False)
 
         self.client.set_instance_backup_policy.assert_called_once_with(
-            self._instance,
-            keep_days=0
+            self._instance, keep_days=0
         )
 
 
@@ -555,25 +587,16 @@ class TestShowAvailableRestoreTime(fakes.TestRds):
 
     instance = fakes.FakeInstance.create_one()
 
-    objects = [
-        {
-            'start_time': 'some_fake_start',
-            'end_time': 'some_fake_end'
-        }
-    ]
+    objects = [{"start_time": "some_fake_start", "end_time": "some_fake_end"}]
 
-    column_list_headers = (
-        'Start time', 'End time'
-    )
+    column_list_headers = ("Start time", "End time")
 
-    columns = (
-        'start_time', 'end_time'
-    )
+    columns = ("start_time", "end_time")
 
     data = []
 
     for s in objects:
-        data.append((s['start_time'], s['end_time']))
+        data.append((s["start_time"], s["end_time"]))
 
     def setUp(self):
         super(TestShowAvailableRestoreTime, self).setUp()
@@ -581,17 +604,12 @@ class TestShowAvailableRestoreTime(fakes.TestRds):
         self.cmd = instance.ShowAvailableRestoreTime(self.app, None)
 
         self.client.find_instance = mock.Mock(return_value=self.instance)
-        self.client.get_instance_restore_time = mock.Mock(
-            return_value=self.objects)
+        self.client.get_instance_restore_time = mock.Mock(return_value=self.objects)
 
     def test_action(self):
-        arglist = [
-            'test_inst'
-        ]
+        arglist = ["test_inst"]
 
-        verifylist = [
-            ('instance', 'test_inst')
-        ]
+        verifylist = [("instance", "test_inst")]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -599,8 +617,7 @@ class TestShowAvailableRestoreTime(fakes.TestRds):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('test_inst',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with("test_inst", ignore_missing=False)
         self.client.get_instance_restore_time.assert_called_with(self.instance)
 
         self.assertEqual(self.column_list_headers, columns)

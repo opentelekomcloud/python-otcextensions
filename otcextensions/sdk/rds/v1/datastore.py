@@ -11,42 +11,41 @@
 # under the License.
 from openstack import _log
 from openstack import resource
-
 from otcextensions.sdk import sdk_resource
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class Datastore(sdk_resource.Resource):
 
-    base_path = '/datastores/%(datastore_name)s/versions'
-    resource_key = ''
-    resources_key = 'dataStores'
+    base_path = "/datastores/%(datastore_name)s/versions"
+    resource_key = ""
+    resources_key = "dataStores"
 
     # capabilities
     allow_get = False
     allow_list = True
 
-    project_id = resource.URI('project_id')
-    datastore_name = resource.URI('datastore_name')
+    project_id = resource.URI("project_id")
+    datastore_name = resource.URI("datastore_name")
 
     # Indicates the database version ID. Its value is unique.
     # :*Type:string*
-    id = resource.Body('id')
+    id = resource.Body("id")
     # Indicates the database version.
     # :*Type:string*
-    name = resource.Body('name')
+    name = resource.Body("name")
     # Indicates the database ID.
     #: *Type:string*
-    datastore = resource.Body('datastore')
+    datastore = resource.Body("datastore")
     # Indicates the database image ID.
     # :*Type:string*
-    image = resource.Body('image')
+    image = resource.Body("image")
     #: Indicates the database package version information.
     #: *Type:string*
-    packages = resource.Body('packages')
+    packages = resource.Body("packages")
     # Indicates the current database version status. 0 indicates
     # Non-activated, and 1 indicates Activated.
     # The interface can only query information of versions that are activated.
     #: *Type:int*
-    active = resource.Body('active', type=int)
+    active = resource.Body("active", type=int)

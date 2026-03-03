@@ -10,27 +10,25 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 CBR restore data
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-backup = 'name_or_id_backup'
-disk_backup = 'name_or_id_disk_backup'
-ecs = 'server_name_or_id'
-volume = 'volume_id'
+backup = "name_or_id_backup"
+disk_backup = "name_or_id_disk_backup"
+ecs = "server_name_or_id"
+volume = "volume_id"
 
 attrs = {
-    'mappings': [{
-        'backup_id': disk_backup,
-        'volume_id': volume
-    }],
-    'power_on': True,
-    'server_id': ecs
+    "mappings": [{"backup_id": disk_backup, "volume_id": volume}],
+    "power_on": True,
+    "server_id": ecs,
 }
 result = conn.cbr.restore_data(backup=backup, **attrs)
 print(result)

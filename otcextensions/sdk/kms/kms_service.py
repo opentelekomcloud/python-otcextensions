@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.kms.v1 import _proxy as _proxy_v1
 
 
 class KmsService(service_description.ServiceDescription):
     """The KMS service."""
 
-    supported_versions = {
-        '1': _proxy_v1.Proxy
-    }
+    supported_versions = {"1": _proxy_v1.Proxy}

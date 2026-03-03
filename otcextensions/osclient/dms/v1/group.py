@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''DMS Group v1 action implementations'''
+"""DMS Group v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -22,22 +23,25 @@ LOG = logging.getLogger(__name__)
 
 
 class ListGroup(command.Lister):
-    _description = _('List DMS Groups')
-    columns = ('ID', 'name', 'produced_messages', 'consumed_messages',
-               'available_messages')
+    _description = _("List DMS Groups")
+    columns = (
+        "ID",
+        "name",
+        "produced_messages",
+        "consumed_messages",
+        "available_messages",
+    )
 
     def get_parser(self, prog_name):
         parser = super(ListGroup, self).get_parser(prog_name)
+        parser.add_argument("queue", metavar="<queue>", help=_("ID of the queue"))
         parser.add_argument(
-            'queue',
-            metavar='<queue>',
-            help=_('ID of the queue')
-        )
-        parser.add_argument(
-            '--include_deadletter',
-            action='store_true',
-            help=_('Indicates whether to list dead letter parameters '
-                   'in the response message.')
+            "--include_deadletter",
+            action="store_true",
+            help=_(
+                "Indicates whether to list dead letter parameters "
+                "in the response message."
+            ),
         )
         return parser
 
@@ -47,37 +51,36 @@ class ListGroup(command.Lister):
         queue = client.find_queue(parsed_args.queue)
 
         data = client.groups(
-            queue=queue.id,
-            include_deadletter=parsed_args.include_deadletter)
+            queue=queue.id, include_deadletter=parsed_args.include_deadletter
+        )
 
         if parsed_args.include_deadletter:
             self.columns = self.columns + (
-                'produced_deadletters',
-                'available_deadletters'
+                "produced_deadletters",
+                "available_deadletters",
             )
 
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns,
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
         return table
 
 
 class DeleteGroup(command.Command):
-    _description = _('Delete DMS Group')
+    _description = _("Delete DMS Group")
 
     def get_parser(self, prog_name):
         parser = super(DeleteGroup, self).get_parser(prog_name)
+        parser.add_argument("queue", metavar="<queue>", help=_("ID of the queue"))
         parser.add_argument(
-            'queue',
-            metavar='<queue>',
-            help=_('ID of the queue')
-        )
-        parser.add_argument(
-            'group',
-            metavar='<group>',
-            nargs='+',
-            help=_('ID of the Group')
+            "group", metavar="<group>", nargs="+", help=_("ID of the Group")
         )
         return parser
 
@@ -90,29 +93,20 @@ class DeleteGroup(command.Command):
 
 
 class CreateGroup(command.ShowOne):
-    _description = _('Create DMS Group')
-    columns = ('ID', 'name')
+    _description = _("Create DMS Group")
+    columns = ("ID", "name")
 
     def get_parser(self, prog_name):
         parser = super(CreateGroup, self).get_parser(prog_name)
-        parser.add_argument(
-            'queue',
-            metavar='<queue>',
-            help=_('ID of the queue')
-        )
-        parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_('Name of the cluster.')
-        )
+        parser.add_argument("queue", metavar="<queue>", help=_("ID of the queue"))
+        parser.add_argument("name", metavar="<name>", help=_("Name of the cluster."))
         return parser
 
     def take_action(self, parsed_args):
 
         client = self.app.client_manager.dms
 
-        obj = client.create_group(queue=parsed_args.queue,
-                                  group=parsed_args.name)
+        obj = client.create_group(queue=parsed_args.queue, group=parsed_args.name)
 
         data = utils.get_item_properties(obj, self.columns)
 

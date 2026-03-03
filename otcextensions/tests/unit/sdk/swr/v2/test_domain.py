@@ -11,16 +11,15 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.swr.v2 import domain
 
 EXAMPLE = {
-    'namespace': 'space',
-    'repository': 'repo',
-    'access_domain': 'OTC00000000001000000447',
-    'permit': 'read',
-    'deadline': 'forever',
-    'description': 'desc'
+    "namespace": "space",
+    "repository": "repo",
+    "access_domain": "OTC00000000001000000447",
+    "permit": "read",
+    "deadline": "forever",
+    "description": "desc",
 }
 
 
@@ -28,8 +27,10 @@ class TestDomain(base.TestCase):
 
     def test_basic(self):
         sot = domain.Domain()
-        path = 'manage/namespaces/%(namespace)s/' \
-               'repositories/%(repository)s/access-domains'
+        path = (
+            "manage/namespaces/%(namespace)s/"
+            "repositories/%(repository)s/access-domains"
+        )
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -39,7 +40,7 @@ class TestDomain(base.TestCase):
 
     def test_make_it(self):
         sot = domain.Domain(**EXAMPLE)
-        self.assertEqual(EXAMPLE['access_domain'], sot.access_domain)
-        self.assertEqual(EXAMPLE['namespace'], sot.namespace)
-        self.assertEqual(EXAMPLE['deadline'], sot.deadline)
-        self.assertEqual(EXAMPLE['description'], sot.description)
+        self.assertEqual(EXAMPLE["access_domain"], sot.access_domain)
+        self.assertEqual(EXAMPLE["namespace"], sot.namespace)
+        self.assertEqual(EXAMPLE["deadline"], sot.deadline)
+        self.assertEqual(EXAMPLE["description"], sot.description)

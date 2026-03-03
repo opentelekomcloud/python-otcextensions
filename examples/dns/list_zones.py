@@ -13,11 +13,12 @@
 """
 List all DNS Zones of a specific type
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-for zone in conn.dns.zones(zone_type='private'):
+for zone in conn.dns.zones(zone_type="private"):
     print(zone)

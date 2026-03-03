@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.identity.v3 import agency_role
-
 
 FAKE_ID = "945d-fe449be00148"
 EXAMPLE = {
@@ -27,7 +24,7 @@ EXAMPLE = {
     "domain_id": None,
     "type": "AA",
     "id": "b32d99a7778d4fd9aa5bc616c3dc4e5f",
-    "description": "Tenant Guest"
+    "description": "Tenant Guest",
 }
 
 
@@ -42,10 +39,13 @@ class TestAgencyRole(base.TestCase):
         sot = agency_role.AgencyRole()
 
         self.assertEqual(
-            ('/v3.0/OS-AGENCY/%(role_ref_type)ss'
-             '/%(role_ref_id)s/agencies/%(agency_id)s/roles'),
-            sot.base_path)
-        self.assertEqual('roles', sot.resources_key)
+            (
+                "/v3.0/OS-AGENCY/%(role_ref_type)ss"
+                "/%(role_ref_id)s/agencies/%(agency_id)s/roles"
+            ),
+            sot.base_path,
+        )
+        self.assertEqual("roles", sot.resources_key)
 
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_head)
@@ -57,9 +57,12 @@ class TestAgencyRole(base.TestCase):
         sot = agency_role.AgencyRole(connection=self.cloud, **EXAMPLE)
         # Check how the override with "real" connection works
         self.assertEqual(
-            ('https://identity.example.com/v3.0/OS-AGENCY/%(role_ref_type)ss'
-             '/%(role_ref_id)s/agencies/%(agency_id)s/roles'),
-            sot.base_path)
+            (
+                "https://identity.example.com/v3.0/OS-AGENCY/%(role_ref_type)ss"
+                "/%(role_ref_id)s/agencies/%(agency_id)s/roles"
+            ),
+            sot.base_path,
+        )
 
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['description'], sot.description)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["description"], sot.description)

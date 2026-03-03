@@ -13,11 +13,11 @@
 """
 Retrieve the details of specified API version.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-details = list(conn.apig.api_version_details(
-    gateway="gateway_id",
-    version_id="version_id"
-))
+conn = openstack.connect(cloud="otc")
+details = list(
+    conn.apig.api_version_details(gateway="gateway_id", version_id="version_id")
+)

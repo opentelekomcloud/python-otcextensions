@@ -12,6 +12,7 @@
 # under the License.
 #
 """List all Job Resource Specifications."""
+
 import openstack
 
 openstack.enable_logging(True)

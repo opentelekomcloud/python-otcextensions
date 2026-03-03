@@ -11,7 +11,6 @@
 #   under the License.
 #
 from cliff import columns as cliff_columns
-
 from openstackclient.tests.unit import utils
 
 
@@ -28,8 +27,9 @@ class TestCommand(utils.TestCommand):
         for col_expected, col_actual in zip(expected, actual):
             if isinstance(col_expected, cliff_columns.FormattableColumn):
                 self.assertIsInstance(col_actual, col_expected.__class__)
-                self.assertEqual(col_expected.human_readable(),
-                                 col_actual.human_readable())
+                self.assertEqual(
+                    col_expected.human_readable(), col_actual.human_readable()
+                )
             else:
                 self.assertEqual(col_expected, col_actual)
 
@@ -66,7 +66,6 @@ class Fake(object):
         """
         objects = []
         for i in range(0, count):
-            objects.append(
-                cls.create_one(attrs))
+            objects.append(cls.create_one(attrs))
 
         return objects

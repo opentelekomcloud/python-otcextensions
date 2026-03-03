@@ -13,23 +13,20 @@
 """
 Create Auto-Scaling Configuration.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'name': 'test-config',
-    'instance_config': {
-        'flavorRef': 's2.medium.1',
-        'imageRef': '1616e0b6-503a-4698-946f-cf9942c4c73b',
-        'disk': [{
-            'size': 20,
-            'volume_type': 'SATA',
-            'disk_type': 'SYS'
-        }],
-        'key_name': 'test-key',
-    }
+    "name": "test-config",
+    "instance_config": {
+        "flavorRef": "s2.medium.1",
+        "imageRef": "1616e0b6-503a-4698-946f-cf9942c4c73b",
+        "disk": [{"size": 20, "volume_type": "SATA", "disk_type": "SYS"}],
+        "key_name": "test-key",
+    },
 }
 
 config = conn.auto_scaling.create_config(**attrs)

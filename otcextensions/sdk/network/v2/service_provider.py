@@ -14,9 +14,15 @@ from openstack.network.v2 import service_provider
 
 class ServiceProvider(service_provider.ServiceProvider):
     @classmethod
-    def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, requests_auth=None,
-             **params):
+    def list(
+        cls,
+        session,
+        paginated=False,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **params
+    ):
         """
         this dummy fake interface is temporarily introduced until
         demand OTCPR-24905 is completed

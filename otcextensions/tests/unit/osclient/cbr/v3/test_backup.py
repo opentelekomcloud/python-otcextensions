@@ -26,14 +26,8 @@ class TestBackup(fakes.TestCBR):
 
         column = ()
         data = ()
-        verify_column = (
-            'child_backup_1',
-            'child_backup_2'
-        )
-        verify_data = (
-            'child_backup_uuid_1',
-            'child_backup_uuid_2'
-        )
+        verify_column = ("child_backup_1", "child_backup_2")
+        verify_data = ("child_backup_uuid_1", "child_backup_uuid_2")
 
         data, column = backup._add_children_to_backup_obj(obj, data, column)
 
@@ -46,25 +40,25 @@ class TestBackup(fakes.TestCBR):
         flat_data = backup._flatten_backup(obj)
 
         data = (
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['checkpoint_id'],
-            flat_data['created_at'],
-            flat_data['description'],
-            flat_data['expired_at'],
-            flat_data['image_type'],
-            flat_data['parent_id'],
-            flat_data['project_id'],
-            flat_data['protected_at'],
-            flat_data['resource_az'],
-            flat_data['resource_id'],
-            flat_data['resource_name'],
-            flat_data['resource_size'],
-            flat_data['resource_type'],
-            flat_data['status'],
-            flat_data['updated_at'],
-            flat_data['vault_id'],
-            flat_data['provider_id']
+            flat_data["id"],
+            flat_data["name"],
+            flat_data["checkpoint_id"],
+            flat_data["created_at"],
+            flat_data["description"],
+            flat_data["expired_at"],
+            flat_data["image_type"],
+            flat_data["parent_id"],
+            flat_data["project_id"],
+            flat_data["protected_at"],
+            flat_data["resource_az"],
+            flat_data["resource_id"],
+            flat_data["resource_name"],
+            flat_data["resource_size"],
+            flat_data["resource_type"],
+            flat_data["status"],
+            flat_data["updated_at"],
+            flat_data["vault_id"],
+            flat_data["provider_id"],
         )
 
         cmp_data = (
@@ -86,7 +80,7 @@ class TestBackup(fakes.TestCBR):
             obj.status,
             obj.updated_at,
             obj.vault_id,
-            obj.provider_id
+            obj.provider_id,
         )
 
         self.assertEqual(data, cmp_data)
@@ -97,52 +91,54 @@ class TestListBackup(fakes.TestCBR):
     objects = fakes.FakeBackup.create_multiple(3)
 
     columns = (
-        'id',
-        'name',
-        'checkpoint_id',
-        'created_at',
-        'description',
-        'expired_at',
-        'image_type',
-        'parent_id',
-        'project_id',
-        'protected_at',
-        'resource_az',
-        'resource_id',
-        'resource_name',
-        'resource_size',
-        'resource_type',
-        'status',
-        'updated_at',
-        'vault_id',
-        'provider_id',
+        "id",
+        "name",
+        "checkpoint_id",
+        "created_at",
+        "description",
+        "expired_at",
+        "image_type",
+        "parent_id",
+        "project_id",
+        "protected_at",
+        "resource_az",
+        "resource_id",
+        "resource_name",
+        "resource_size",
+        "resource_type",
+        "status",
+        "updated_at",
+        "vault_id",
+        "provider_id",
     )
 
     data = []
 
     for s in objects:
         flat_data = backup._flatten_backup(s)
-        data.append((
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['checkpoint_id'],
-            flat_data['created_at'],
-            flat_data['description'],
-            flat_data['expired_at'],
-            flat_data['image_type'],
-            flat_data['parent_id'],
-            flat_data['project_id'],
-            flat_data['protected_at'],
-            flat_data['resource_az'],
-            flat_data['resource_id'],
-            flat_data['resource_name'],
-            flat_data['resource_size'],
-            flat_data['resource_type'],
-            flat_data['status'],
-            flat_data['updated_at'],
-            flat_data['vault_id'],
-            flat_data['provider_id']
-        ))
+        data.append(
+            (
+                flat_data["id"],
+                flat_data["name"],
+                flat_data["checkpoint_id"],
+                flat_data["created_at"],
+                flat_data["description"],
+                flat_data["expired_at"],
+                flat_data["image_type"],
+                flat_data["parent_id"],
+                flat_data["project_id"],
+                flat_data["protected_at"],
+                flat_data["resource_az"],
+                flat_data["resource_id"],
+                flat_data["resource_name"],
+                flat_data["resource_size"],
+                flat_data["resource_type"],
+                flat_data["status"],
+                flat_data["updated_at"],
+                flat_data["vault_id"],
+                flat_data["provider_id"],
+            )
+        )
 
     def setUp(self):
         super(TestListBackup, self).setUp()
@@ -154,83 +150,101 @@ class TestListBackup(fakes.TestCBR):
 
     def test_default(self):
         arglist = [
-            '--checkpoint-id', 'checkpoint_uuid',
-            '--dec', 'True',
-            '--end-time', '2018-02-01T12:00:00Z',
-            '--image-type', 'backup',
-            '--limit', '5',
-            '--marker', 'marker',
-            '--member-status', 'accept',
-            '--name', 'name',
-            '--offset', '5',
-            '--own-type', 'all_granted',
-            '--parent-id', 'parent_uuid',
-            '--resource-az', 'resource_az',
-            '--resource-id', 'resource_uuid',
-            '--resource-name', 'resource_name',
-            '--resource-type', 'OS::Cinder::Volume',
-            '--sort', 'sort',
-            '--start-time', 'start_time',
-            '--status', 'available',
-            '--used-percent', 'used_percent',
-            '--vault-id', 'vault_uuid'
+            "--checkpoint-id",
+            "checkpoint_uuid",
+            "--dec",
+            "True",
+            "--end-time",
+            "2018-02-01T12:00:00Z",
+            "--image-type",
+            "backup",
+            "--limit",
+            "5",
+            "--marker",
+            "marker",
+            "--member-status",
+            "accept",
+            "--name",
+            "name",
+            "--offset",
+            "5",
+            "--own-type",
+            "all_granted",
+            "--parent-id",
+            "parent_uuid",
+            "--resource-az",
+            "resource_az",
+            "--resource-id",
+            "resource_uuid",
+            "--resource-name",
+            "resource_name",
+            "--resource-type",
+            "OS::Cinder::Volume",
+            "--sort",
+            "sort",
+            "--start-time",
+            "start_time",
+            "--status",
+            "available",
+            "--used-percent",
+            "used_percent",
+            "--vault-id",
+            "vault_uuid",
         ]
 
         verifylist = [
-            ('checkpoint_id', 'checkpoint_uuid'),
-            ('dec', True),
-            ('end_time', '2018-02-01T12:00:00Z'),
-            ('image_type', 'backup'),
-            ('limit', 5),
-            ('marker', 'marker'),
-            ('member_status', 'accept'),
-            ('name', 'name'),
-            ('offset', 5),
-            ('own_type', 'all_granted'),
-            ('parent_id', 'parent_uuid'),
-            ('resource_az', 'resource_az'),
-            ('resource_id', 'resource_uuid'),
-            ('resource_name', 'resource_name'),
-            ('resource_type', 'OS::Cinder::Volume'),
-            ('sort', 'sort'),
-            ('start_time', 'start_time'),
-            ('status', 'available'),
-            ('used_percent', 'used_percent'),
-            ('vault_id', 'vault_uuid'),
+            ("checkpoint_id", "checkpoint_uuid"),
+            ("dec", True),
+            ("end_time", "2018-02-01T12:00:00Z"),
+            ("image_type", "backup"),
+            ("limit", 5),
+            ("marker", "marker"),
+            ("member_status", "accept"),
+            ("name", "name"),
+            ("offset", 5),
+            ("own_type", "all_granted"),
+            ("parent_id", "parent_uuid"),
+            ("resource_az", "resource_az"),
+            ("resource_id", "resource_uuid"),
+            ("resource_name", "resource_name"),
+            ("resource_type", "OS::Cinder::Volume"),
+            ("sort", "sort"),
+            ("start_time", "start_time"),
+            ("status", "available"),
+            ("used_percent", "used_percent"),
+            ("vault_id", "vault_uuid"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            checkpoint_id='checkpoint_uuid',
+            checkpoint_id="checkpoint_uuid",
             dec=True,
-            end_time='2018-02-01T12:00:00Z',
-            image_type='backup',
+            end_time="2018-02-01T12:00:00Z",
+            image_type="backup",
             limit=5,
-            marker='marker',
-            member_status='accept',
-            name='name',
+            marker="marker",
+            member_status="accept",
+            name="name",
             offset=5,
-            own_type='all_granted',
-            parent_id='parent_uuid',
-            resource_az='resource_az',
-            resource_id='resource_uuid',
-            resource_name='resource_name',
-            resource_type='OS::Cinder::Volume',
-            sort='sort',
-            start_time='start_time',
-            status='available',
-            used_percent='used_percent',
-            vault_id='vault_uuid',
+            own_type="all_granted",
+            parent_id="parent_uuid",
+            resource_az="resource_az",
+            resource_id="resource_uuid",
+            resource_name="resource_name",
+            resource_type="OS::Cinder::Volume",
+            sort="sort",
+            start_time="start_time",
+            status="available",
+            used_percent="used_percent",
+            vault_id="vault_uuid",
         )
 
         self.assertEqual(self.columns, columns)
@@ -242,49 +256,49 @@ class TestShowBackup(fakes.TestCBR):
     object = fakes.FakeBackup.create_one()
 
     columns = (
-        'id',
-        'name',
-        'checkpoint_id',
-        'created_at',
-        'description',
-        'expired_at',
-        'image_type',
-        'parent_id',
-        'project_id',
-        'protected_at',
-        'resource_az',
-        'resource_id',
-        'resource_name',
-        'resource_size',
-        'resource_type',
-        'status',
-        'updated_at',
-        'vault_id',
-        'provider_id'
+        "id",
+        "name",
+        "checkpoint_id",
+        "created_at",
+        "description",
+        "expired_at",
+        "image_type",
+        "parent_id",
+        "project_id",
+        "protected_at",
+        "resource_az",
+        "resource_id",
+        "resource_name",
+        "resource_size",
+        "resource_type",
+        "status",
+        "updated_at",
+        "vault_id",
+        "provider_id",
     )
 
     flat_data = backup._flatten_backup(object)
 
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['checkpoint_id'],
-        flat_data['created_at'],
-        flat_data['description'],
-        flat_data['expired_at'],
-        flat_data['image_type'],
-        flat_data['parent_id'],
-        flat_data['project_id'],
-        flat_data['protected_at'],
-        flat_data['resource_az'],
-        flat_data['resource_id'],
-        flat_data['resource_name'],
-        flat_data['resource_size'],
-        flat_data['resource_type'],
-        flat_data['status'],
-        flat_data['updated_at'],
-        flat_data['vault_id'],
-        flat_data['provider_id']
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["checkpoint_id"],
+        flat_data["created_at"],
+        flat_data["description"],
+        flat_data["expired_at"],
+        flat_data["image_type"],
+        flat_data["parent_id"],
+        flat_data["project_id"],
+        flat_data["protected_at"],
+        flat_data["resource_az"],
+        flat_data["resource_id"],
+        flat_data["resource_name"],
+        flat_data["resource_size"],
+        flat_data["resource_type"],
+        flat_data["status"],
+        flat_data["updated_at"],
+        flat_data["vault_id"],
+        flat_data["provider_id"],
     )
 
     def setUp(self):
@@ -295,33 +309,25 @@ class TestShowBackup(fakes.TestCBR):
         self.client.find_backup = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'backup'
-        ]
-        verifylist = [
-            ('backup', 'backup')
-        ]
+        arglist = ["backup"]
+        verifylist = [("backup", "backup")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_backup.side_effect = [
-            self.object
-        ]
+        self.client.find_backup.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_backup.assert_called_once_with(
-            name_or_id='backup',
+            name_or_id="backup",
             ignore_missing=False,
         )
 
         self.data, self.columns = backup._add_children_to_backup_obj(
-            self.object,
-            self.data,
-            self.columns
+            self.object, self.data, self.columns
         )
 
         self.assertEqual(self.columns, columns)
@@ -338,12 +344,8 @@ class TestDeleteBackup(fakes.TestCBR):
         self.client.delete_backup = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'b1'
-        ]
-        verifylist = [
-            ('backup', 'b1')
-        ]
+        arglist = ["b1"]
+        verifylist = [("backup", "b1")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -351,23 +353,17 @@ class TestDeleteBackup(fakes.TestCBR):
         self.client.delete_backup.side_effect = [{}]
 
         # Set the response for find_policy
-        self.client.find_backup.side_effect = [
-            backupSDK.Backup(id='b1')
-        ]
+        self.client.find_backup.side_effect = [backupSDK.Backup(id="b1")]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         delete_calls = [
-            mock.call(
-                backup='b1',
-                ignore_missing=False),
+            mock.call(backup="b1", ignore_missing=False),
         ]
 
         find_calls = [
-            mock.call(
-                name_or_id='b1',
-                ignore_missing=False),
+            mock.call(name_or_id="b1", ignore_missing=False),
         ]
 
         self.client.delete_backup.assert_has_calls(delete_calls)
@@ -380,49 +376,49 @@ class TestRestoreBackup(fakes.TestCBR):
     object = fakes.FakeBackup.create_one()
 
     columns = (
-        'id',
-        'name',
-        'checkpoint_id',
-        'created_at',
-        'description',
-        'expired_at',
-        'image_type',
-        'parent_id',
-        'project_id',
-        'protected_at',
-        'resource_az',
-        'resource_id',
-        'resource_name',
-        'resource_size',
-        'resource_type',
-        'status',
-        'updated_at',
-        'vault_id',
-        'provider_id',
+        "id",
+        "name",
+        "checkpoint_id",
+        "created_at",
+        "description",
+        "expired_at",
+        "image_type",
+        "parent_id",
+        "project_id",
+        "protected_at",
+        "resource_az",
+        "resource_id",
+        "resource_name",
+        "resource_size",
+        "resource_type",
+        "status",
+        "updated_at",
+        "vault_id",
+        "provider_id",
     )
 
     flat_data = backup._flatten_backup(object)
 
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['checkpoint_id'],
-        flat_data['created_at'],
-        flat_data['description'],
-        flat_data['expired_at'],
-        flat_data['image_type'],
-        flat_data['parent_id'],
-        flat_data['project_id'],
-        flat_data['protected_at'],
-        flat_data['resource_az'],
-        flat_data['resource_id'],
-        flat_data['resource_name'],
-        flat_data['resource_size'],
-        flat_data['resource_type'],
-        flat_data['status'],
-        flat_data['updated_at'],
-        flat_data['vault_id'],
-        flat_data['provider_id']
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["checkpoint_id"],
+        flat_data["created_at"],
+        flat_data["description"],
+        flat_data["expired_at"],
+        flat_data["image_type"],
+        flat_data["parent_id"],
+        flat_data["project_id"],
+        flat_data["protected_at"],
+        flat_data["resource_az"],
+        flat_data["resource_id"],
+        flat_data["resource_name"],
+        flat_data["resource_size"],
+        flat_data["resource_type"],
+        flat_data["status"],
+        flat_data["updated_at"],
+        flat_data["vault_id"],
+        flat_data["provider_id"],
     )
 
     def setUp(self):
@@ -436,39 +432,37 @@ class TestRestoreBackup(fakes.TestCBR):
 
     def test_default(self):
         arglist = [
-            'backup_uuid',
-            '--mappings', 'backup_id=backup_uuid volume_id=volume_uuid',
-            '--server-id', 'server_uuid',
-            '--volume-id', 'volume_uuid'
+            "backup_uuid",
+            "--mappings",
+            "backup_id=backup_uuid volume_id=volume_uuid",
+            "--server-id",
+            "server_uuid",
+            "--volume-id",
+            "volume_uuid",
         ]
         verifylist = [
-            ('backup', 'backup_uuid'),
-            ('power_on', False),
-            ('server_id', 'server_uuid'),
-            ('volume_id', 'volume_uuid'),
-            ('mappings', ['backup_id=backup_uuid volume_id=volume_uuid'])
+            ("backup", "backup_uuid"),
+            ("power_on", False),
+            ("server_id", "server_uuid"),
+            ("volume_id", "volume_uuid"),
+            ("mappings", ["backup_id=backup_uuid volume_id=volume_uuid"]),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         #
         # Set the response
-        self.client.restore_data.side_effect = [
-            {}
-        ]
+        self.client.restore_data.side_effect = [{}]
 
-        self.client.find_backup.side_effect = [
-            backupSDK.Backup(id='backup_uuid')
-        ]
+        self.client.find_backup.side_effect = [backupSDK.Backup(id="backup_uuid")]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.restore_data.assert_called_once_with(
-            backup='backup_uuid',
-            mappings=[{'backup_id': 'backup_uuid',
-                       'volume_id': 'volume_uuid'}],
+            backup="backup_uuid",
+            mappings=[{"backup_id": "backup_uuid", "volume_id": "volume_uuid"}],
             power_on=False,
-            server_id='server_uuid',
-            volume_id='volume_uuid'
+            server_id="server_uuid",
+            volume_id="volume_uuid",
         )

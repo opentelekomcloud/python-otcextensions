@@ -26,18 +26,20 @@ class TestListDMSQuota(TestDMSQuota):
 
     objects = fakes.FakeQuota.create_multiple(3)
 
-    columns = ('type', 'quota', 'used', 'min', 'max')
+    columns = ("type", "quota", "used", "min", "max")
 
     data = []
 
     for s in objects:
-        data.append((
-            s.type,
-            s.quota,
-            s.used,
-            s.min,
-            s.max,
-        ))
+        data.append(
+            (
+                s.type,
+                s.quota,
+                s.used,
+                s.min,
+                s.max,
+            )
+        )
 
     def setUp(self):
         super(TestListDMSQuota, self).setUp()
@@ -47,8 +49,7 @@ class TestListDMSQuota(TestDMSQuota):
         self.client.quotas = mock.Mock()
 
     def test_list_queue(self):
-        arglist = [
-        ]
+        arglist = []
 
         verifylist = [
             # ('group', None),
@@ -58,9 +59,7 @@ class TestListDMSQuota(TestDMSQuota):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.quotas.side_effect = [
-            self.objects
-        ]
+        self.client.quotas.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)

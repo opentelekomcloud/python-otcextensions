@@ -10,7 +10,6 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 import mock
-
 from openstackclient.tests.unit import utils
 
 from otcextensions.osclient.dcs.v1 import instance
@@ -21,18 +20,20 @@ class TestListInstance(fakes.TestDCS):
 
     objects = fakes.FakeInstance.create_multiple(3)
 
-    columns = ('id', 'name', 'engine', 'status', 'error_code')
+    columns = ("id", "name", "engine", "status", "error_code")
 
     data = []
 
     for s in objects:
-        data.append((
-            s.id,
-            s.name,
-            s.engine,
-            s.status,
-            s.error_code,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.engine,
+                s.status,
+                s.error_code,
+            )
+        )
 
     def setUp(self):
         super(TestListInstance, self).setUp()
@@ -42,55 +43,52 @@ class TestListInstance(fakes.TestDCS):
         self.client.instances = mock.Mock()
 
     def test_list(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.instances.side_effect = [
-            self.objects
-        ]
+        self.client.instances.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.instances.assert_called_once_with(
-        )
+        self.client.instances.assert_called_once_with()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_query(self):
         arglist = [
-            '--limit', '1',
-            '--start', '2',
-            '--name', '3',
-            '--status', 'CREATING',
-            '--include_failure',
-            '--exact_match'
+            "--limit",
+            "1",
+            "--start",
+            "2",
+            "--name",
+            "3",
+            "--status",
+            "CREATING",
+            "--include_failure",
+            "--exact_match",
         ]
 
         verifylist = [
-            ('limit', 1),
-            ('start', 2),
-            ('name', '3'),
-            ('status', 'CREATING'),
-            ('include_failure', True),
-            ('exact_match', True)
+            ("limit", 1),
+            ("start", 2),
+            ("name", "3"),
+            ("status", "CREATING"),
+            ("include_failure", True),
+            ("exact_match", True),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.instances.side_effect = [
-            self.objects
-        ]
+        self.client.instances.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -99,9 +97,9 @@ class TestListInstance(fakes.TestDCS):
             exactMatchName=True,
             includeFailure=True,
             limit=1,
-            name='3',
+            name="3",
             start=2,
-            status='CREATING'
+            status="CREATING",
         )
 
         self.assertEqual(self.columns, columns)
@@ -109,16 +107,17 @@ class TestListInstance(fakes.TestDCS):
 
     def test_list_bad_arg(self):
         arglist = [
-            '--status', 'BAD',
+            "--status",
+            "BAD",
         ]
 
         verifylist = [
-            ('status', 'BAD'),
+            ("status", "BAD"),
         ]
 
         self.assertRaises(
-            utils.ParserException,
-            self.check_parser, self.cmd, arglist, verifylist)
+            utils.ParserException, self.check_parser, self.cmd, arglist, verifylist
+        )
 
 
 class TestBasicInstance(fakes.TestDCS):
@@ -126,13 +125,37 @@ class TestBasicInstance(fakes.TestDCS):
     _data = fakes.FakeInstance.create_one()
 
     columns = (
-        'available_zones', 'capacity', 'charging_mode', 'created_at',
-        'description', 'engine', 'engine_version', 'error_code',
-        'id', 'internal_version', 'ip', 'maintain_begin', 'maintain_end',
-        'max_memory', 'name', 'order_id', 'port', 'product_id',
-        'resource_spec_code', 'security_group_id', 'security_group_name',
-        'status', 'subnet_cidr', 'subnet_id', 'subnet_name',
-        'used_memory', 'user_id', 'user_name', 'vpc_id', 'vpc_name')
+        "available_zones",
+        "capacity",
+        "charging_mode",
+        "created_at",
+        "description",
+        "engine",
+        "engine_version",
+        "error_code",
+        "id",
+        "internal_version",
+        "ip",
+        "maintain_begin",
+        "maintain_end",
+        "max_memory",
+        "name",
+        "order_id",
+        "port",
+        "product_id",
+        "resource_spec_code",
+        "security_group_id",
+        "security_group_name",
+        "status",
+        "subnet_cidr",
+        "subnet_id",
+        "subnet_name",
+        "used_memory",
+        "user_id",
+        "user_name",
+        "vpc_id",
+        "vpc_name",
+    )
 
     data = (
         _data.available_zones,
@@ -164,7 +187,7 @@ class TestBasicInstance(fakes.TestDCS):
         _data.user_id,
         _data.user_name,
         _data.vpc_id,
-        _data.vpc_name
+        _data.vpc_name,
     )
 
     def setUp(self):
@@ -182,25 +205,21 @@ class TestShowInstance(TestBasicInstance):
 
     def test_show_default(self):
         arglist = [
-            'name_or_id',
+            "name_or_id",
         ]
         verifylist = [
-            ('instance', 'name_or_id'),
+            ("instance", "name_or_id"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_instance.side_effect = [
-            self._data
-        ]
+        self.client.find_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with(
-            name_or_id='name_or_id'
-        )
+        self.client.find_instance.assert_called_with(name_or_id="name_or_id")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -217,12 +236,10 @@ class TestDeleteInstance(fakes.TestDCS):
 
     def test_delete(self):
         arglist = [
-            't1',
+            "t1",
         ]
 
-        verifylist = [
-            ('instance', ['t1'])
-        ]
+        verifylist = [("instance", ["t1"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -232,19 +249,17 @@ class TestDeleteInstance(fakes.TestDCS):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [mock.call(instance='t1')]
+        calls = [mock.call(instance="t1")]
 
         self.client.delete_instance.assert_has_calls(calls)
         self.assertEqual(1, self.client.delete_instance.call_count)
 
     def test_delete_multiple(self):
         arglist = [
-            't1',
-            't2',
+            "t1",
+            "t2",
         ]
-        verifylist = [
-            ('instance', ['t1', 't2'])
-        ]
+        verifylist = [("instance", ["t1", "t2"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -254,10 +269,7 @@ class TestDeleteInstance(fakes.TestDCS):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [
-            mock.call(instance='t1'),
-            mock.call(instance='t2')
-        ]
+        calls = [mock.call(instance="t1"), mock.call(instance="t2")]
 
         self.client.delete_instance.assert_has_calls(calls)
         self.assertEqual(2, self.client.delete_instance.call_count)
@@ -274,63 +286,75 @@ class TestCreateInstance(TestBasicInstance):
 
     def test_default(self):
         arglist = [
-            '--name', '1',
-            '--description', '2',
-            '--engine', '3',
-            '--engine_version', '4',
-            '--capacity', '4',
-            '--password', '6',
-            '--vpc_id', '7',
-            '--security_group_id', '8',
-            '--subnet_id', '9',
-            '--az', '10',
-            '--product_id', 'OTC_DCS_SINGLE',
-            '--backup_policy', '{}',
-            '--maintain_begin', '11',
-            '--maintain_end', '12'
+            "--name",
+            "1",
+            "--description",
+            "2",
+            "--engine",
+            "3",
+            "--engine_version",
+            "4",
+            "--capacity",
+            "4",
+            "--password",
+            "6",
+            "--vpc_id",
+            "7",
+            "--security_group_id",
+            "8",
+            "--subnet_id",
+            "9",
+            "--az",
+            "10",
+            "--product_id",
+            "OTC_DCS_SINGLE",
+            "--backup_policy",
+            "{}",
+            "--maintain_begin",
+            "11",
+            "--maintain_end",
+            "12",
         ]
         verifylist = [
-            ('name', '1'),
-            ('description', '2'),
-            ('engine', '3'),
-            ('engine_version', '4'),
-            ('password', '6'),
-            ('capacity', 4),
-            ('vpc_id', '7'),
-            ('security_group_id', '8'),
-            ('subnet_id', '9'),
-            ('az', '10'),
-            ('product_id', 'OTC_DCS_SINGLE'),
-            ('backup_policy', '{}'),
-            ('maintain_begin', '11'),
-            ('maintain_end', '12')
+            ("name", "1"),
+            ("description", "2"),
+            ("engine", "3"),
+            ("engine_version", "4"),
+            ("password", "6"),
+            ("capacity", 4),
+            ("vpc_id", "7"),
+            ("security_group_id", "8"),
+            ("subnet_id", "9"),
+            ("az", "10"),
+            ("product_id", "OTC_DCS_SINGLE"),
+            ("backup_policy", "{}"),
+            ("maintain_begin", "11"),
+            ("maintain_end", "12"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_instance.side_effect = [
-            self._data
-        ]
+        self.client.create_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_instance.assert_called_with(
-            name='1',
-            description='2',
-            engine='3',
-            engine_version='4',
+            name="1",
+            description="2",
+            engine="3",
+            engine_version="4",
             capacity=4,
-            password='6',
-            vpc_id='7',
-            security_group_id='8',
-            subnet_id='9',
-            az='10',
-            product_id='OTC_DCS_SINGLE',
-            backup_policy='{}',
-            maintain_begin='11',
-            maintain_end='12'
+            password="6",
+            vpc_id="7",
+            security_group_id="8",
+            subnet_id="9",
+            az="10",
+            product_id="OTC_DCS_SINGLE",
+            backup_policy="{}",
+            maintain_begin="11",
+            maintain_end="12",
         )
 
         self.assertEqual(self.columns, columns)
@@ -348,42 +372,46 @@ class TestSetInstance(TestBasicInstance):
 
     def test_default(self):
         arglist = [
-            'inst',
-            '--name', '1',
-            '--description', '2',
-            '--security_group_id', '8',
-            '--backup_policy', '{}',
-            '--maintain_begin', '11',
-            '--maintain_end', '12'
+            "inst",
+            "--name",
+            "1",
+            "--description",
+            "2",
+            "--security_group_id",
+            "8",
+            "--backup_policy",
+            "{}",
+            "--maintain_begin",
+            "11",
+            "--maintain_end",
+            "12",
         ]
         verifylist = [
-            ('instance', 'inst'),
-            ('name', '1'),
-            ('description', '2'),
-            ('security_group_id', '8'),
-            ('backup_policy', '{}'),
-            ('maintain_begin', '11'),
-            ('maintain_end', '12')
+            ("instance", "inst"),
+            ("name", "1"),
+            ("description", "2"),
+            ("security_group_id", "8"),
+            ("backup_policy", "{}"),
+            ("maintain_begin", "11"),
+            ("maintain_end", "12"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_instance.side_effect = [
-            self._data
-        ]
+        self.client.update_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_instance.assert_called_with(
-            backup_policy='{}',
-            description='2',
-            instance='inst',
-            maintain_begin='11',
-            maintain_end='12',
-            name='1',
-            security_group_id='8'
+            backup_policy="{}",
+            description="2",
+            instance="inst",
+            maintain_begin="11",
+            maintain_end="12",
+            name="1",
+            security_group_id="8",
         )
 
         self.assertEqual(self.columns, columns)
@@ -399,30 +427,26 @@ class TestExtendInstance(TestBasicInstance):
 
     def test_default(self):
         arglist = [
-            'inst',
-            '--capacity', '2',
+            "inst",
+            "--capacity",
+            "2",
         ]
         verifylist = [
-            ('instance', 'inst'),
-            ('capacity', 2),
+            ("instance", "inst"),
+            ("capacity", 2),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.extend_instance.side_effect = [
-            self._data
-        ]
-        self.client.find_instance.side_effect = [
-            self._data
-        ]
+        self.client.extend_instance.side_effect = [self._data]
+        self.client.find_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_instance.assert_called_with(
-            name_or_id='inst',
-            ignore_missing=False
+            name_or_id="inst", ignore_missing=False
         )
         self.client.extend_instance.assert_called_with(
             instance=self._data.id,
@@ -442,24 +466,22 @@ class TestStopInstance(TestBasicInstance):
 
     def test_default(self):
         arglist = [
-            'inst',
+            "inst",
         ]
         verifylist = [
-            ('instance', 'inst'),
+            ("instance", "inst"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.stop_instance.side_effect = [
-            self._data
-        ]
+        self.client.stop_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.stop_instance.assert_called_with(
-            instance='inst',
+            instance="inst",
         )
 
         self.assertEqual(self.columns, columns)
@@ -475,24 +497,22 @@ class TestStartInstance(TestBasicInstance):
 
     def test_default(self):
         arglist = [
-            'inst',
+            "inst",
         ]
         verifylist = [
-            ('instance', 'inst'),
+            ("instance", "inst"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.start_instance.side_effect = [
-            self._data
-        ]
+        self.client.start_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.start_instance.assert_called_with(
-            instance='inst',
+            instance="inst",
         )
 
         self.assertEqual(self.columns, columns)
@@ -508,24 +528,22 @@ class TestRestartInstance(TestBasicInstance):
 
     def test_default(self):
         arglist = [
-            'inst',
+            "inst",
         ]
         verifylist = [
-            ('instance', 'inst'),
+            ("instance", "inst"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.restart_instance.side_effect = [
-            self._data
-        ]
+        self.client.restart_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.restart_instance.assert_called_with(
-            instance='inst',
+            instance="inst",
         )
 
         self.assertEqual(self.columns, columns)
@@ -540,31 +558,23 @@ class TestChangePwdInstance(TestBasicInstance):
         self.cmd = instance.ChangePasswordInstance(self.app, None)
 
     def test_default(self):
-        arglist = [
-            'inst',
-            '--current_password', 'curr',
-            '--new_password', 'new'
-        ]
+        arglist = ["inst", "--current_password", "curr", "--new_password", "new"]
         verifylist = [
-            ('instance', 'inst'),
-            ('current_password', 'curr'),
-            ('new_password', 'new')
+            ("instance", "inst"),
+            ("current_password", "curr"),
+            ("new_password", "new"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.change_instance_password.side_effect = [
-            self._data
-        ]
+        self.client.change_instance_password.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.change_instance_password.assert_called_with(
-            instance='inst',
-            current_password='curr',
-            new_password='new'
+            instance="inst", current_password="curr", new_password="new"
         )
 
         self.assertEqual(self.columns, columns)

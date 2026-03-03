@@ -12,6 +12,7 @@
 # under the License.
 #
 """Update configurations of a service."""
+
 import openstack
 
 openstack.enable_logging(True)

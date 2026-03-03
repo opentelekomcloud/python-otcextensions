@@ -13,10 +13,11 @@
 """
 List all CBR tasks
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for task in conn.cbr.tasks():
     print(task)

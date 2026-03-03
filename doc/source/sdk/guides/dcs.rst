@@ -147,7 +147,7 @@ Update Instance Config Parameters
 This interface is used to update config parameters of a DCS instance.
 
 .. literalinclude:: ../examples/dcs/update_instance_params.py
-   :lines: 16-47
+   :lines: 16-44
 
 Backup DCS Instance
 -------------------
@@ -169,7 +169,7 @@ Create Instance Backup
 This interface is used to backup a DCS Instance.
 
 .. literalinclude:: ../examples/dcs/create_backup.py
-   :lines: 16-27
+   :lines: 16-25
 
 Delete Instance Backup
 ^^^^^^^^^^^^^^^^^^^^^^

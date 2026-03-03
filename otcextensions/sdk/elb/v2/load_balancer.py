@@ -10,14 +10,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import resource
 from openstack.common import tag
+
+from openstack import resource
 
 
 class LoadBalancer(resource.Resource, tag.TagMixin):
-    resource_key = 'loadbalancer'
-    resources_key = 'loadbalancers'
-    base_path = '/lbaas/loadbalancers'
+    resource_key = "loadbalancer"
+    resources_key = "loadbalancers"
+    base_path = "/lbaas/loadbalancers"
 
     # capabilities
     allow_create = True
@@ -27,47 +28,57 @@ class LoadBalancer(resource.Resource, tag.TagMixin):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'description', 'flavor_id', 'name', 'project_id', 'provider',
-        'vip_address', 'vip_network_id', 'vip_port_id', 'vip_subnet_id',
-        'vip_qos_policy_id', 'provisioning_status', 'operating_status',
-        'availability_zone', is_admin_state_up='admin_state_up',
+        "description",
+        "flavor_id",
+        "name",
+        "project_id",
+        "provider",
+        "vip_address",
+        "vip_network_id",
+        "vip_port_id",
+        "vip_subnet_id",
+        "vip_qos_policy_id",
+        "provisioning_status",
+        "operating_status",
+        "availability_zone",
+        is_admin_state_up="admin_state_up",
         **tag.TagMixin._tag_query_parameters
     )
 
     # Properties
     #: The administrative state of the load balancer *Type: bool*
-    is_admin_state_up = resource.Body('admin_state_up', type=bool)
+    is_admin_state_up = resource.Body("admin_state_up", type=bool)
     #: Name of the target Octavia availability zone
-    availability_zone = resource.Body('availability_zone')
+    availability_zone = resource.Body("availability_zone")
     #: Timestamp when the load balancer was created
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: The load balancer description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: The load balancer flavor ID
-    flavor_id = resource.Body('flavor_id')
+    flavor_id = resource.Body("flavor_id")
     #: List of listeners associated with this load balancer
-    listeners = resource.Body('listeners', type=list, list_type=dict)
+    listeners = resource.Body("listeners", type=list, list_type=dict)
     #: The load balancer name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Operating status of the load balancer
-    operating_status = resource.Body('operating_status')
+    operating_status = resource.Body("operating_status")
     #: List of pools associated with this load balancer
-    pools = resource.Body('pools', type=list, list_type=dict)
+    pools = resource.Body("pools", type=list, list_type=dict)
     #: The ID of the project this load balancer is associated with.
-    project_id = resource.Body('project_id')
+    project_id = resource.Body("project_id")
     #: Provider name for the load balancer.
-    provider = resource.Body('provider')
+    provider = resource.Body("provider")
     #: The provisioning status of this load balancer
-    provisioning_status = resource.Body('provisioning_status')
+    provisioning_status = resource.Body("provisioning_status")
     #: Timestamp when the load balancer was last updated
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")
     #: VIP address of load balancer
-    vip_address = resource.Body('vip_address')
+    vip_address = resource.Body("vip_address")
     #: VIP netowrk ID
-    vip_network_id = resource.Body('vip_network_id')
+    vip_network_id = resource.Body("vip_network_id")
     #: VIP port ID
-    vip_port_id = resource.Body('vip_port_id')
+    vip_port_id = resource.Body("vip_port_id")
     #: VIP subnet ID
-    vip_subnet_id = resource.Body('vip_subnet_id')
+    vip_subnet_id = resource.Body("vip_subnet_id")
     # VIP qos policy id
-    vip_qos_policy_id = resource.Body('vip_qos_policy_id')
+    vip_qos_policy_id = resource.Body("vip_qos_policy_id")

@@ -16,42 +16,42 @@ from openstack import utils
 
 
 class Connection(resource.Resource):
-    base_path = '/vpc-endpoint-services/%(endpoint_service_id)s/connections'
-    resources_key = 'connections'
+    base_path = "/vpc-endpoint-services/%(endpoint_service_id)s/connections"
+    resources_key = "connections"
 
     # capabilities
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'id',
-        'limit',
-        'marker_id',
-        'offset',
-        'sort_dir',
-        'sort_key',
+        "id",
+        "limit",
+        "marker_id",
+        "offset",
+        "sort_dir",
+        "sort_key",
     )
 
     # URI properties
-    endpoint_service_id = resource.URI('endpoint_service_id')
+    endpoint_service_id = resource.URI("endpoint_service_id")
 
     # Properties
     #: Creation time of the VPC endpoint.
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: User's domain ID.
-    domain_id = resource.Body('domain_id')
+    domain_id = resource.Body("domain_id")
     #: ID of the VPC endpoint.
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Packet ID of the VPC endpoint.
-    marker_id = resource.Body('marker_id', type=int)
+    marker_id = resource.Body("marker_id", type=int)
     #: Connection status of the VPC endpoint.
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Update time of the VPC endpoint.
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")
 
     def _action(self, session, action, endpoints=[]):
         """Preform actions given the message body."""
-        uri = utils.urljoin(self.base_path % self._uri.attributes, 'action')
-        body = {'endpoints': endpoints, 'action': action}
+        uri = utils.urljoin(self.base_path % self._uri.attributes, "action")
+        body = {"endpoints": endpoints, "action": action}
         response = session.post(uri, json=body)
         exceptions.raise_from_response(response)
         return [
@@ -61,8 +61,8 @@ class Connection(resource.Resource):
 
     def accept(self, session, endpoints=[]):
         """Accept connections."""
-        return self._action(session, 'receive', endpoints)
+        return self._action(session, "receive", endpoints)
 
     def reject(self, session, endpoints=[]):
         """Reject Connections."""
-        return self._action(session, 'reject', endpoints)
+        return self._action(session, "reject", endpoints)

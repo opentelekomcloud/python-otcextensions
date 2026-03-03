@@ -11,6 +11,7 @@
 #   under the License.
 #
 """Configuration v1 action implementations"""
+
 import json
 import logging
 
@@ -21,10 +22,9 @@ from osc_lib.command import command
 
 from otcextensions.i18n import _
 
-
 LOG = logging.getLogger(__name__)
 
-DATASTORE_TYPE_CHOICES = ['MySQL', 'PostgreSQL', 'SQLServer']
+DATASTORE_TYPE_CHOICES = ["MySQL", "PostgreSQL", "SQLServer"]
 
 
 def format_dict(data):
@@ -45,27 +45,28 @@ def format_dict(data):
 
 class ListConfigurations(command.Lister):
     _description = _("List Parameter Groups")
-    columns = ['ID', 'Name', 'Description', 'Datastore Name',
-               'Datastore Version Name']
+    columns = ["ID", "Name", "Description", "Datastore Name", "Datastore Version Name"]
 
     def get_parser(self, prog_name):
         parser = super(ListConfigurations, self).get_parser(prog_name)
         parser.add_argument(
-            '--limit',
-            dest='limit',
-            metavar='<limit>',
+            "--limit",
+            dest="limit",
+            metavar="<limit>",
             type=int,
             default=None,
-            help=_('Limit the number of results displayed. (Not supported)')
+            help=_("Limit the number of results displayed. (Not supported)"),
         )
         parser.add_argument(
-            '--marker',
-            dest='marker',
-            metavar='<ID>',
-            help=_('Begin displaying the results for IDs greater than the '
-                   'specified marker. When used with --limit, set this to '
-                   'the last ID displayed in the previous run. '
-                   '(Not supported)')
+            "--marker",
+            dest="marker",
+            metavar="<ID>",
+            help=_(
+                "Begin displaying the results for IDs greater than the "
+                "specified marker. When used with --limit, set this to "
+                "the last ID displayed in the previous run. "
+                "(Not supported)"
+            ),
         )
 
         return parser
@@ -77,24 +78,33 @@ class ListConfigurations(command.Lister):
 
         return (
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
         )
 
 
 class ShowConfiguration(command.ShowOne):
     _description = _("Shows details of a database configuration group.")
-    columns = ['ID', 'Name', 'Description', 'Datastore Name',
-               'Datastore Version Name', 'Values']
+    columns = [
+        "ID",
+        "Name",
+        "Description",
+        "Datastore Name",
+        "Datastore Version Name",
+        "Values",
+    ]
 
     def get_parser(self, prog_name):
         parser = super(ShowConfiguration, self).get_parser(prog_name)
         parser.add_argument(
-            'configuration_group',
+            "configuration_group",
             metavar="<configuration_group>",
-            help=_("ID or name of the configuration group")
+            help=_("ID or name of the configuration group"),
         )
         return parser
 
@@ -108,11 +118,12 @@ class ShowConfiguration(command.ShowOne):
         # dramatically. Maybe it make sence to create additional
         # filter to get/list only specific values/params
         data = utils.get_item_properties(
-            obj, self.columns,
+            obj,
+            self.columns,
             formatters={
-                'values': format_dict,
-                'parameters': utils.format_list_of_dicts,
-            }
+                "values": format_dict,
+                "parameters": utils.format_list_of_dicts,
+            },
         )
 
         return (self.columns, data)
@@ -122,57 +133,53 @@ class CreateConfiguration(command.ShowOne):
     _description = _("Create new Parameter Group")
 
     columns = (
-        'id',
-        'name',
-        'description',
-        'datastore_version_id',
-        'datastore_version_name',
-        'datastore_name',
-        'created',
-        'updated',
-        'allowed_updated',
-        'instance_count',
-        'values'
+        "id",
+        "name",
+        "description",
+        "datastore_version_id",
+        "datastore_version_name",
+        "datastore_name",
+        "created",
+        "updated",
+        "allowed_updated",
+        "instance_count",
+        "values",
     )
 
     def get_parser(self, prog_name):
         parser = super(CreateConfiguration, self).get_parser(prog_name)
         parser.add_argument(
-            '--name',
-            metavar="<name>",
-            required=True,
-            help=_("Parameter group name")
+            "--name", metavar="<name>", required=True, help=_("Parameter group name")
         )
         parser.add_argument(
-            '--description',
+            "--description",
             metavar="<description>",
-            help=_("Parameter group description")
+            help=_("Parameter group description"),
         )
         parser.add_argument(
-            '--datastore_type',
+            "--datastore_type",
             metavar="<datastore_type>",
             choices=DATASTORE_TYPE_CHOICES,
             required=True,
-            help=_("Datastore type")
+            help=_("Datastore type"),
         )
         parser.add_argument(
-            '--datastore_version',
+            "--datastore_version",
             metavar="<datastore_version>",
             required=True,
-            help=_("Datastore version")
+            help=_("Datastore version"),
         )
         parser.add_argument(
-            '--value',
+            "--value",
             dest="ind_values",
             metavar="<key=value>",
             action=parseractions.KeyValueAction,
-            help=_("Parameter group value"
-                   "(repeat option to set multiple values)")
+            help=_("Parameter group value" "(repeat option to set multiple values)"),
         )
         parser.add_argument(
-            'values',
-            metavar='<values>',
-            help=_('Dictionary (JSon) of the values to set.'),
+            "values",
+            metavar="<values>",
+            help=_("Dictionary (JSon) of the values to set."),
         )
 
         return parser
@@ -181,39 +188,39 @@ class CreateConfiguration(command.ShowOne):
         client = self.app.client_manager.rds
 
         config_attrs = {}
-        config_attrs['datastore'] = {}
+        config_attrs["datastore"] = {}
         if parsed_args.name:
-            config_attrs['name'] = parsed_args.name
+            config_attrs["name"] = parsed_args.name
         if parsed_args.description:
-            config_attrs['description'] = parsed_args.description
+            config_attrs["description"] = parsed_args.description
         if parsed_args.datastore_type and parsed_args.datastore_version:
             datastore = {}
-            datastore['type'] = parsed_args.datastore_type
-            datastore['version'] = parsed_args.datastore_version
-            config_attrs['datastore'] = datastore
+            datastore["type"] = parsed_args.datastore_type
+            datastore["version"] = parsed_args.datastore_version
+            config_attrs["datastore"] = datastore
 
         # flatten values into the proper config_attrs
         values = {}
         try:
             values = json.loads(parsed_args.values)
         except Exception as e:
-            msg = (_("Failed to parse configuration values: %(e)s")
-                   % {'e': e})
+            msg = _("Failed to parse configuration values: %(e)s") % {"e": e}
             raise exceptions.CommandError(msg)
 
-        if getattr(parsed_args, 'ind_values', None):
+        if getattr(parsed_args, "ind_values", None):
             for k, v in parsed_args.ind_values.items():
                 values[k] = str(v)
 
-        config_attrs['values'] = values
+        config_attrs["values"] = values
 
         config = client.create_configuration(**config_attrs)
 
         data = utils.get_item_properties(
-            config, self.columns,
+            config,
+            self.columns,
             formatters={
-                'values': format_dict,
-            }
+                "values": format_dict,
+            },
         )
 
         return (self.columns, data)
@@ -223,36 +230,34 @@ class SetConfiguration(command.ShowOne):
     _description = _("Set values of the Parameter Group")
 
     columns = (
-        'id',
-        'name',
-        'description',
-        'datastore_version_id',
-        'datastore_version_name',
-        'datastore_name',
-        'created',
-        'updated',
-        'allowed_updated',
-        'instance_count',
-        'values'
+        "id",
+        "name",
+        "description",
+        "datastore_version_id",
+        "datastore_version_name",
+        "datastore_name",
+        "created",
+        "updated",
+        "allowed_updated",
+        "instance_count",
+        "values",
     )
 
     def get_parser(self, prog_name):
         parser = super(SetConfiguration, self).get_parser(prog_name)
         parser.add_argument(
-            '--parameter-group',
+            "--parameter-group",
             metavar="<parameter_group>",
             required=True,
-            help=_("Parameter group id")
+            help=_("Parameter group id"),
         )
         parser.add_argument(
-            '--name',
-            metavar="<name>",
-            help=_("New ParameterGroup name")
+            "--name", metavar="<name>", help=_("New ParameterGroup name")
         )
         parser.add_argument(
-            '--description',
+            "--description",
             metavar="<description>",
-            help=_("New ParameterGroup description")
+            help=_("New ParameterGroup description"),
         )
         # parser.add_argument(
         #     '--datastore_type',
@@ -268,13 +273,12 @@ class SetConfiguration(command.ShowOne):
         #     help=_("Datastore version")
         # )
         parser.add_argument(
-            '--value',
+            "--value",
             dest="values",
             metavar="<key=value>",
             required=True,
             action=parseractions.KeyValueAction,
-            help=_("Parameter group value"
-                   "(repeat option to set multiple values)")
+            help=_("Parameter group value" "(repeat option to set multiple values)"),
         )
 
         return parser
@@ -285,30 +289,33 @@ class SetConfiguration(command.ShowOne):
         config_attrs = {}
 
         if parsed_args.name:
-            config_attrs['name'] = parsed_args.name
+            config_attrs["name"] = parsed_args.name
         if parsed_args.description:
-            config_attrs['description'] = parsed_args.description
+            config_attrs["description"] = parsed_args.description
 
         # flatten values into the proper Configuration_attrs
-        if getattr(parsed_args, 'values', None):
-            config_attrs['values'] = {}
+        if getattr(parsed_args, "values", None):
+            config_attrs["values"] = {}
             for k, v in parsed_args.values.items():
-                config_attrs['values'][k] = str(v)
+                config_attrs["values"][k] = str(v)
 
         config = client.get_parameter_group(parsed_args.parameter_group)
 
         if not config:
-            msg = (_("Failed to find Parameter Group by ID %s")
-                   % parsed_args.parameter_group)
+            msg = (
+                _("Failed to find Parameter Group by ID %s")
+                % parsed_args.parameter_group
+            )
             raise exceptions.CommandError(msg)
 
         config = config.change_parameter_info(session=client, **config_attrs)
 
         data = utils.get_item_properties(
-            config, self.columns,
+            config,
+            self.columns,
             formatters={
-                'values': format_dict,
-            }
+                "values": format_dict,
+            },
         )
 
         return (self.columns, data)
@@ -330,36 +337,39 @@ class DeleteConfiguration(command.Command):
         client = self.app.client_manager.rds
 
         try:
-            configuration = client.find_configuration(
-                parsed_args.configuration_group)
+            configuration = client.find_configuration(parsed_args.configuration_group)
             client.delete_configuration(configuration)
         except Exception as e:
-            msg = (_("Failed to delete configuration %(c_group)s: %(e)s")
-                   % {'c_group': parsed_args.configuration_group, 'e': e})
+            msg = _("Failed to delete configuration %(c_group)s: %(e)s") % {
+                "c_group": parsed_args.configuration_group,
+                "e": e,
+            }
             raise exceptions.CommandError(msg)
 
 
 class ListDatabaseConfigurationParameters(command.Lister):
 
     _description = _("Lists available parameters for a configuration group.")
-    columns = ['Name', 'Type', 'Min Size', 'Max Size', 'Restart Required']
+    columns = ["Name", "Type", "Min Size", "Max Size", "Restart Required"]
 
     def get_parser(self, prog_name):
-        parser = super(ListDatabaseConfigurationParameters, self).\
-            get_parser(prog_name)
+        parser = super(ListDatabaseConfigurationParameters, self).get_parser(prog_name)
         parser.add_argument(
-            'datastore_version',
-            metavar='<datastore_version>',
-            help=_('Datastore version name or ID assigned'
-                   'to the configuration group.')
+            "datastore_version",
+            metavar="<datastore_version>",
+            help=_(
+                "Datastore version name or ID assigned" "to the configuration group."
+            ),
         )
         parser.add_argument(
-            '--datastore',
-            metavar='<datastore>',
+            "--datastore",
+            metavar="<datastore>",
             default=None,
-            help=_('ID or name of the datastore to list configuration'
-                   'parameters for. Optional if the ID of the'
-                   'datastore_version is provided.')
+            help=_(
+                "ID or name of the datastore to list configuration"
+                "parameters for. Optional if the ID of the"
+                "datastore_version is provided."
+            ),
         )
         return parser
 
@@ -391,26 +401,28 @@ class ShowDatabaseConfigurationParameter(command.ShowOne):
     _description = _("Shows details of a database configuration parameter.")
 
     def get_parser(self, prog_name):
-        parser = super(ShowDatabaseConfigurationParameter, self).\
-            get_parser(prog_name)
+        parser = super(ShowDatabaseConfigurationParameter, self).get_parser(prog_name)
         parser.add_argument(
-            'datastore_version',
-            metavar='<datastore_version>',
-            help=_('Datastore version name or ID assigned to the'
-                   ' configuration group.'),
+            "datastore_version",
+            metavar="<datastore_version>",
+            help=_(
+                "Datastore version name or ID assigned to the" " configuration group."
+            ),
         )
         parser.add_argument(
-            'parameter',
-            metavar='<parameter>',
-            help=_('Name of the configuration parameter.'),
+            "parameter",
+            metavar="<parameter>",
+            help=_("Name of the configuration parameter."),
         )
         parser.add_argument(
-            '--datastore',
-            metavar='<datastore>',
+            "--datastore",
+            metavar="<datastore>",
             default=None,
-            help=_('ID or name of the datastore to list configuration'
-                   ' parameters for. Optional if the ID of the'
-                   ' datastore_version is provided.'),
+            help=_(
+                "ID or name of the datastore to list configuration"
+                " parameters for. Optional if the ID of the"
+                " datastore_version is provided."
+            ),
         )
         return parser
 

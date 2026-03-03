@@ -18,11 +18,11 @@ import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 attrs = {
     "project_id": "5dd3c0b24cdc4d31952c49589182a89d",
-    "job_id": 'ff8080828f9a78db018fe7c6e2f772b2'
+    "job_id": "ff8080828f9a78db018fe7c6e2f772b2",
 }
 result = conn.imsv1.get_async_job(**attrs)
 print(result)

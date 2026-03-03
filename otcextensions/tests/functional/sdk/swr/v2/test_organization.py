@@ -13,7 +13,6 @@ import os
 import uuid
 
 # from openstack import resource
-
 from otcextensions.tests.functional.sdk.swr import TestSwr
 
 
@@ -23,15 +22,13 @@ class TestOrganization(TestSwr):
         super(TestOrganization, self).setUp()
 
         self.org_name = "sdk-swr-org-" + uuid.uuid4().hex
-        self.org = self.client.create_organization(
-            namespace=self.org_name
-        )
+        self.org = self.client.create_organization(namespace=self.org_name)
         if os.getenv("OS_SWR_PERMISSIONS_RUN"):
             self.permission = [
                 {
                     "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
                     "user_name": "pgubina",
-                    "user_auth": 1
+                    "user_auth": 1,
                 }
             ]
             self.org_perm = self.client.create_organization_permissions(
@@ -61,20 +58,20 @@ class TestOrganization(TestSwr):
     def test_update_organization_permissions(self):
         if os.getenv("OS_SWR_PERMISSIONS_RUN"):
             o = self.client.update_organization_permissions(
-                namespace=self.org_name, permissions=[
+                namespace=self.org_name,
+                permissions=[
                     {
                         "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
                         "user_name": "pgubina",
-                        "user_auth": 3
+                        "user_auth": 3,
                     }
-                ]
+                ],
             )
             self.assertEqual(3, o.permissions[0].user_auth)
 
     def test_delete_organization_permissions(self):
         if os.getenv("OS_SWR_PERMISSIONS_RUN"):
             orgs = self.client.delete_organization_permissions(
-                self.org.namespace,
-                [self.org_perm.permissions[0].user_id]
+                self.org.namespace, [self.org_perm.permissions[0].user_id]
             )
             self.assertEqual(orgs, None)

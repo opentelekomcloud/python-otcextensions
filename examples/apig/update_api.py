@@ -13,10 +13,11 @@
 """
 Update API in gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "group_id": "group_id",
     "name": "test_api_001",
@@ -36,11 +37,7 @@ attrs = {
         "req_uri": "/test/benchmark",
         "timeout": 5000,
         "retry_count": "-1",
-        "url_domain": "192.168.189.156:12346"
+        "url_domain": "192.168.189.156:12346",
     },
 }
-environment = conn.apig.update_api(
-    api="env_id",
-    gateway="gateway_id",
-    **attrs
-)
+environment = conn.apig.update_api(api="env_id", gateway="gateway_id", **attrs)

@@ -310,9 +310,7 @@ class TestStartDevenvInstance(fakes.TestModelartsv1):
         self.cmd = devenv.StartDevenvInstance(self.app, None)
 
         self.client.find_devenv_instance = mock.Mock(return_value=self._devenv)
-        self.client.start_devenv_instance = mock.Mock(
-            return_value=self._devenv
-        )
+        self.client.start_devenv_instance = mock.Mock(return_value=self._devenv)
 
     def test_start(self):
         arglist = [
@@ -427,9 +425,7 @@ class TestShowDevenvInstance(fakes.TestModelartsv1):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_result = exceptions.CommandError("Resource Not Found")
-        self.client.find_devenv_instance = mock.Mock(
-            side_effect=find_mock_result
-        )
+        self.client.find_devenv_instance = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
@@ -447,9 +443,7 @@ class TestDeleteDevenvInstance(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteDevenvInstance, self).setUp()
 
-        self.client.find_devenv_instance = mock.Mock(
-            return_value=self._devenv[0]
-        )
+        self.client.find_devenv_instance = mock.Mock(return_value=self._devenv[0])
         self.client.delete_devenv_instance = mock.Mock(return_value=None)
 
         # Get the command object to test
@@ -472,9 +466,7 @@ class TestDeleteDevenvInstance(fakes.TestModelartsv1):
         self.client.find_devenv_instance.assert_called_with(
             self._devenv[0].name, ignore_missing=False
         )
-        self.client.delete_devenv_instance.assert_called_with(
-            self._devenv[0].id
-        )
+        self.client.delete_devenv_instance.assert_called_with(self._devenv[0].id)
         self.assertIsNone(result)
 
     def test_multiple_delete(self):
@@ -491,9 +483,7 @@ class TestDeleteDevenvInstance(fakes.TestModelartsv1):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_results = self._devenv
-        self.client.find_devenv_instance = mock.Mock(
-            side_effect=find_mock_results
-        )
+        self.client.find_devenv_instance = mock.Mock(side_effect=find_mock_results)
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -520,16 +510,12 @@ class TestDeleteDevenvInstance(fakes.TestModelartsv1):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_results = [self._devenv[0], exceptions.CommandError]
-        self.client.find_devenv_instance = mock.Mock(
-            side_effect=find_mock_results
-        )
+        self.client.find_devenv_instance = mock.Mock(side_effect=find_mock_results)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual(
-                "1 of 2 Devenv Instance(s) failed to delete.", str(e)
-            )
+            self.assertEqual("1 of 2 Devenv Instance(s) failed to delete.", str(e))
 
         self.client.delete_devenv_instance.assert_any_call(self._devenv[0].id)

@@ -28,15 +28,17 @@ class TestListAutoScalingConfig(TestAutoScalingConfig):
 
     configs = fakes.FakeConfig.create_multiple(3)
 
-    columns = ('ID', 'Name')
+    columns = ("ID", "Name")
 
     data = []
 
     for s in configs:
-        data.append((
-            s.id,
-            s.name,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+            )
+        )
 
     def setUp(self):
         super(TestListAutoScalingConfig, self).setUp()
@@ -46,18 +48,14 @@ class TestListAutoScalingConfig(TestAutoScalingConfig):
         self.client.configs = mock.Mock()
 
     def test_list_default(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.configs.side_effect = [
-            self.configs
-        ]
+        self.client.configs.side_effect = [self.configs]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -70,10 +68,19 @@ class TestListAutoScalingConfig(TestAutoScalingConfig):
 
 class TestShowAutoScalingConfig(TestAutoScalingConfig):
 
-    columns = ['ID', 'Name', 'instance_id', 'instance_name',
-               'flavor_id', 'image_id', 'disk',
-               'key_name', 'public_ip', 'user_data', 'metadata'
-               ]
+    columns = [
+        "ID",
+        "Name",
+        "instance_id",
+        "instance_name",
+        "flavor_id",
+        "image_id",
+        "disk",
+        "key_name",
+        "public_ip",
+        "user_data",
+        "metadata",
+    ]
 
     _config = fakes.FakeConfig.create_one()
 
@@ -101,19 +108,13 @@ class TestShowAutoScalingConfig(TestAutoScalingConfig):
         self.client.find_config = mock.Mock()
 
     def test_show_default(self):
-        arglist = [
-            'test_config'
-        ]
-        verifylist = [
-            ('config', 'test_config')
-        ]
+        arglist = ["test_config"]
+        verifylist = [("config", "test_config")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_config.side_effect = [
-            self._config
-        ]
+        self.client.find_config.side_effect = [self._config]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -126,10 +127,19 @@ class TestShowAutoScalingConfig(TestAutoScalingConfig):
 
 class TestCreateAutoScalingGroup(TestAutoScalingConfig):
 
-    columns = ['ID', 'Name', 'instance_id', 'instance_name',
-               'flavor_id', 'image_id', 'disk',
-               'key_name', 'public_ip', 'user_data', 'metadata'
-               ]
+    columns = [
+        "ID",
+        "Name",
+        "instance_id",
+        "instance_name",
+        "flavor_id",
+        "image_id",
+        "disk",
+        "key_name",
+        "public_ip",
+        "user_data",
+        "metadata",
+    ]
 
     _config = fakes.FakeConfig.create_one()
 
@@ -156,36 +166,36 @@ class TestCreateAutoScalingGroup(TestAutoScalingConfig):
 
     def test_create_no_details(self):
         arglist = [
-            'config_name',
+            "config_name",
         ]
-        verifylist = [
-        ]
+        verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(argparse.ArgumentTypeError,
-                          self.cmd.take_action, parsed_args)
+        self.assertRaises(argparse.ArgumentTypeError, self.cmd.take_action, parsed_args)
 
     def test_create_ok(self):
         arglist = [
-            'config_name',
-            '--flavor', 'some_flavor',
-            '--image-id', 'some_image',
-            '--disk', 'SYS,SSD,10',
-            '--disk', 'DATA,SSD,5',
+            "config_name",
+            "--flavor",
+            "some_flavor",
+            "--image-id",
+            "some_image",
+            "--disk",
+            "SYS,SSD,10",
+            "--disk",
+            "DATA,SSD,5",
         ]
         verifylist = [
-            ('name', 'config_name'),
-            ('flavor', 'some_flavor'),
-            ('image_id', 'some_image'),
-            ('disk', ['SYS,SSD,10', 'DATA,SSD,5']),
+            ("name", "config_name"),
+            ("flavor", "some_flavor"),
+            ("image_id", "some_image"),
+            ("disk", ["SYS,SSD,10", "DATA,SSD,5"]),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.client.create_config.side_effect = [
-            self._config
-        ]
+        self.client.create_config.side_effect = [self._config]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -207,12 +217,8 @@ class TestDeleteAutoScalingConfig(TestAutoScalingConfig):
         self.client.batch_delete_configs = mock.Mock()
 
     def test_delete_single(self):
-        arglist = [
-            'config_id'
-        ]
-        verifylist = [
-            ('config', ['config_id'])
-        ]
+        arglist = ["config_id"]
+        verifylist = [("config", ["config_id"])]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -222,18 +228,11 @@ class TestDeleteAutoScalingConfig(TestAutoScalingConfig):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.delete_config.assert_called_with(
-            'config_id',
-            ignore_missing=False)
+        self.client.delete_config.assert_called_with("config_id", ignore_missing=False)
 
     def test_delete_multiple(self):
-        arglist = [
-            'config_id1',
-            'config_id2'
-        ]
-        verifylist = [
-            ('config', ['config_id1', 'config_id2'])
-        ]
+        arglist = ["config_id1", "config_id2"]
+        verifylist = [("config", ["config_id1", "config_id2"])]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -245,4 +244,5 @@ class TestDeleteAutoScalingConfig(TestAutoScalingConfig):
 
         self.client.delete_config.assert_not_called()
         self.client.batch_delete_configs.assert_called_with(
-            ['config_id1', 'config_id2'])
+            ["config_id1", "config_id2"]
+        )

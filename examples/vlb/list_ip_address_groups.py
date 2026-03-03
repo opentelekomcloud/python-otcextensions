@@ -13,11 +13,12 @@
 """
 List ip address groups
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 ip_groups = conn.vlb.ip_address_groups()

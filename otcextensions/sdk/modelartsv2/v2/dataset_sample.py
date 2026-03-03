@@ -24,9 +24,7 @@ class SampleMetadataSpec(resource.Resource):
     #:  attribute.
     hard_coefficient = resource.Body("@modelarts:hard_coefficient", type=float)
     #: ID of a hard sample reason, which is a default attribute.
-    hard_reasons = resource.Body(
-        "@modelarts:hard_reasons", type=list, list_type=int
-    )
+    hard_reasons = resource.Body("@modelarts:hard_reasons", type=list, list_type=int)
     #: Image size (width, height, and depth of the image), which is a default
     #:  attribute, with type of List.
     size = resource.Body("@modelarts:size", type=list, list_type=int)
@@ -254,13 +252,9 @@ class DatasetSample(SampleSpec):
     #: Whether the operation is successful.
     success = resource.Body("success", type=bool)
 
-    def delete_samples(
-        self, session, dataset_id, samples=[], delete_source=False
-    ):
+    def delete_samples(self, session, dataset_id, samples=[], delete_source=False):
         """Delete dataset samples"""
-        url = utils.urljoin(
-            self.base_path % {"dataset_id": dataset_id}, "delete"
-        )
+        url = utils.urljoin(self.base_path % {"dataset_id": dataset_id}, "delete")
         json_body = {"samples": samples}
         if delete_source:
             json_body.update(delete_source=True)

@@ -15,31 +15,32 @@ from openstack import resource
 
 class ClusterSpec(resource.Resource):
     # Properties
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Cluster information.
-    cluster = resource.Body('cluster', type=dict)
+    cluster = resource.Body("cluster", type=dict)
 
 
 class ClusterCertificate(resource.Resource):
-    base_path = '/clusters/%(cluster_id)s/clustercert'
+    base_path = "/clusters/%(cluster_id)s/clustercert"
 
     allow_fetch = True
 
     # Properties
-    cluster_id = resource.URI('cluster_id')
+    cluster_id = resource.URI("cluster_id")
 
     #: Certificate authority data.
-    ca = resource.Body('ca')
+    ca = resource.Body("ca")
     #: Client certificate.
-    client_certificate = resource.Body('client_certificate')
+    client_certificate = resource.Body("client_certificate")
     #: Client key data, containing the PEM data of the TLS key
     #: file of the client.
-    client_key = resource.Body('client_key')
+    client_key = resource.Body("client_key")
     #: Context information.
-    context = resource.Body('context', type=dict)
+    context = resource.Body("context", type=dict)
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(
+        self, response, has_body=None, error_message=None, resource_response_key=None
+    ):
         """Given a KSA response, inflate this instance with its data
 
         DELETE operations don't return a body, so only try to work
@@ -54,16 +55,16 @@ class ClusterCertificate(resource.Resource):
         if has_body:
             try:
                 body = response.json()
-                cluster = body['clusters'][0]['cluster']
-                self.ca = cluster['certificate-authority-data']
-                user = body['users'][0]['user']
-                self.client_certificate = user['client-certificate-data']
-                self.client_key = user['client-key-data']
-                context = body['contexts'][0]
+                cluster = body["clusters"][0]["cluster"]
+                self.ca = cluster["certificate-authority-data"]
+                user = body["users"][0]["user"]
+                self.client_certificate = user["client-certificate-data"]
+                self.client_key = user["client-key-data"]
+                context = body["contexts"][0]
                 self.context = {
-                    'name': context['name'],
-                    'cluster': cluster['server'],
-                    'user': context['context']['user']
+                    "name": context["name"],
+                    "cluster": cluster["server"],
+                    "user": context["context"]["user"],
                 }
             except ValueError:
                 # Server returned not parse-able response (202, 204, etc)

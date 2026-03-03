@@ -13,19 +13,17 @@
 """
 Update ip address group
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
     "name": "test-ip-group",
-    "ip_list": {
-        "ip": "192.168.0.3",
-        "description": "new description"
-    }
+    "ip_list": {"ip": "192.168.0.3", "description": "new description"},
 }
 
 ip_group = conn.vlb.update_ip_address_group(**attrs)

@@ -11,8 +11,8 @@
 #   under the License.
 #
 import mock
-# from osc_lib import utils as common_utils
 
+# from osc_lib import utils as common_utils
 from otcextensions.osclient.rds.v1 import configuration
 from otcextensions.tests.unit.osclient.rds.v1 import fakes as rds_fakes
 
@@ -20,11 +20,11 @@ from otcextensions.tests.unit.osclient.rds.v1 import fakes as rds_fakes
 class TestRdsListConfigurations(rds_fakes.TestRds):
 
     column_list_headers = [
-        'ID',
-        'Name',
-        'Description',
-        'Datastore Name',
-        'Datastore Version Name',
+        "ID",
+        "Name",
+        "Description",
+        "Datastore Name",
+        "Datastore Version Name",
         # 'Str_ID',
         # 'Values'
     ]
@@ -39,29 +39,27 @@ class TestRdsListConfigurations(rds_fakes.TestRds):
         self.configurations = self.configuration_mock.create_multiple(3)
         self.configuration_data = []
         for s in self.configurations:
-            self.configuration_data.append((
-                s.id,
-                s.name,
-                s.description,
-                s.datastore_name,
-                s.datastore_version_name,
-                # s.flavor_detail,
-            ))
+            self.configuration_data.append(
+                (
+                    s.id,
+                    s.name,
+                    s.description,
+                    s.datastore_name,
+                    s.datastore_version_name,
+                    # s.flavor_detail,
+                )
+            )
 
     def test_list(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.configurations.side_effect = [
-            self.configurations
-        ]
+        self.app.client_manager.rds.configurations.side_effect = [self.configurations]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -75,12 +73,12 @@ class TestRdsListConfigurations(rds_fakes.TestRds):
 class TestRdsShowConfiguration(rds_fakes.TestRds):
 
     columns = [
-        'ID',
-        'Name',
-        'Description',
-        'Datastore Name',
-        'Datastore Version Name',
-        'Values',
+        "ID",
+        "Name",
+        "Description",
+        "Datastore Name",
+        "Datastore Version Name",
+        "Values",
     ]
 
     def setUp(self):
@@ -99,25 +97,23 @@ class TestRdsShowConfiguration(rds_fakes.TestRds):
             self.config.description,
             self.config.datastore_name,
             self.config.datastore_version_name,
-            self.config.values
+            self.config.values,
         )
 
     def test_show(self):
         arglist = [
-            'test_obj',
+            "test_obj",
         ]
 
         verifylist = [
-            ('configuration_group', 'test_obj'),
+            ("configuration_group", "test_obj"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.find_configuration.side_effect = [
-            self.config
-        ]
+        self.app.client_manager.rds.find_configuration.side_effect = [self.config]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)

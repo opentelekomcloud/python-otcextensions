@@ -13,9 +13,11 @@
 """
 Get custom authorizer
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-found = conn.apig.get_custom_authorizer(gateway='gateway_id',
-                                        custom_authorizer='authorizer_id')
+conn = openstack.connect(cloud="otc")
+found = conn.apig.get_custom_authorizer(
+    gateway="gateway_id", custom_authorizer="authorizer_id"
+)

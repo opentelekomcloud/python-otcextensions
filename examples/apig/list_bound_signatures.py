@@ -13,12 +13,10 @@
 """
 List Signature Keys Bound to an API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-signs = list(conn.apig.bound_signatures(
-    gateway="gateway_id",
-    api_id="api_id"
-))
+signs = list(conn.apig.bound_signatures(gateway="gateway_id", api_id="api_id"))

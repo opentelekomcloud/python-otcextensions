@@ -39,9 +39,7 @@ class TestDatasetStatistics(fakes.TestModelartsv2):
         self.cmd = dataset_statistics.DatasetStatistics(self.app, None)
 
         self.client.find_dataset = mock.Mock(return_value=self._dataset)
-        self.client.get_dataset_statistics = mock.Mock(
-            return_value=self.object
-        )
+        self.client.get_dataset_statistics = mock.Mock(return_value=self.object)
 
     def test_show_no_options(self):
         arglist = []

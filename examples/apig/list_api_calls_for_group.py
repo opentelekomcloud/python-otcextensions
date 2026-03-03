@@ -13,12 +13,12 @@
 """
 List API calls for a specified group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
-    'group_id': 'ce973ff83ce54ef192c80bde884aa0ac',
+    "group_id": "ce973ff83ce54ef192c80bde884aa0ac",
 }
-found = conn.apig.list_api_calls_for_group(gateway='gateway_id_here',
-                                           **attrs)
+found = conn.apig.list_api_calls_for_group(gateway="gateway_id_here", **attrs)

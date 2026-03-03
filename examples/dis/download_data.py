@@ -13,10 +13,11 @@
 """
 Downloading Data from DIS Stream.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 partition_cursor = "eyJpdGVyR2VuVGltZSI6MTQ5MDk1MD.."
 result = conn.dis.download_data(partition_cursor)

@@ -13,10 +13,11 @@
 """
 List all CBR Vaults
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for vault in conn.cbr.vaults():
     print(vault)

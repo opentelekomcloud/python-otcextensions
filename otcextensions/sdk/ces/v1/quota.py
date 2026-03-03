@@ -16,22 +16,21 @@ class ResourcesSpec(resource.Resource):
 
     # Properties
     # quota type
-    type = resource.Body('type')
+    type = resource.Body("type")
     # total amount of quota
-    quota = resource.Body('quota', type=int)
+    quota = resource.Body("quota", type=int)
     # quota unit
-    unit = resource.Body('unit')
+    unit = resource.Body("unit")
     # used amount of quota
-    used = resource.Body('used', type=int)
+    used = resource.Body("used", type=int)
 
 
 class Quota(resource.Resource):
-    resources_key = 'quotas'
-    base_path = '/quotas'
+    resources_key = "quotas"
+    base_path = "/quotas"
 
     # capabilities
     allow_list = True
 
     # Properties
-    resources = resource.Body('resources', type=list,
-                              list_type=ResourcesSpec)
+    resources = resource.Body("resources", type=list, list_type=ResourcesSpec)

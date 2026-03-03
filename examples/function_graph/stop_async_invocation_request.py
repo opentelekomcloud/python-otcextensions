@@ -13,25 +13,25 @@
 """
 Stop asynchronous invocation request of a function
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 func_attrs = {
-    'func_name': 'test-function',
-    'package': 'default',
-    'runtime': 'Python3.9',
-    'handler': 'index.handler',
-    'timeout': 30,
-    'memory_size': 128,
-    'code_type': 'inline',
+    "func_name": "test-function",
+    "package": "default",
+    "runtime": "Python3.9",
+    "handler": "index.handler",
+    "timeout": 30,
+    "memory_size": 128,
+    "code_type": "inline",
 }
 fg = conn.functiongraph.create_function(**func_attrs)
 inv = conn.functiongraph.executing_function_asynchronously(
-    function="urn", attrs={'a': 'b'}
+    function="urn", attrs={"a": "b"}
 )
-conn.functiongraph.stop_async_invocation_request(
-    fg, request_id=inv.request_id)
+conn.functiongraph.stop_async_invocation_request(fg, request_id=inv.request_id)

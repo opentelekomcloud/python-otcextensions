@@ -25,27 +25,27 @@ class TestLoadBalancer(fakes.TestVLB):
         flat_data = load_balancer._flatten_loadbalancer(obj)
 
         data = (
-            flat_data['availability_zone_list'],
-            flat_data['created_at'],
-            flat_data['description'],
-            flat_data['deletion_protection_enable'],
-            flat_data['is_guaranteed'],
-            flat_data['is_admin_state_up'],
-            flat_data['ip_target_enable'],
-            flat_data['l4_flavor_id'],
-            flat_data['l7_flavor_id'],
-            flat_data['name'],
-            flat_data['network_ids'],
-            flat_data['subnet_type'],
-            flat_data['operating_status'],
-            flat_data['project_id'],
-            flat_data['provider'],
-            flat_data['provisioning_status'],
-            flat_data['updated_at'],
-            flat_data['ip_address'],
-            flat_data['port_id'],
-            flat_data['subnet_id'],
-            flat_data['vpc_id']
+            flat_data["availability_zone_list"],
+            flat_data["created_at"],
+            flat_data["description"],
+            flat_data["deletion_protection_enable"],
+            flat_data["is_guaranteed"],
+            flat_data["is_admin_state_up"],
+            flat_data["ip_target_enable"],
+            flat_data["l4_flavor_id"],
+            flat_data["l7_flavor_id"],
+            flat_data["name"],
+            flat_data["network_ids"],
+            flat_data["subnet_type"],
+            flat_data["operating_status"],
+            flat_data["project_id"],
+            flat_data["provider"],
+            flat_data["provisioning_status"],
+            flat_data["updated_at"],
+            flat_data["ip_address"],
+            flat_data["port_id"],
+            flat_data["subnet_id"],
+            flat_data["vpc_id"],
         )
 
         cmp_data = (
@@ -69,7 +69,7 @@ class TestLoadBalancer(fakes.TestVLB):
             obj.ip_address,
             obj.port_id,
             obj.subnet_id,
-            obj.vpc_id
+            obj.vpc_id,
         )
 
         self.assertEqual(data, cmp_data)
@@ -79,30 +79,21 @@ class TestLoadBalancer(fakes.TestVLB):
 
         column = ()
         data = ()
-        verify_column = (
-            'tags',
-        )
-        verify_data = (
-            ('value=val-tags, key=key-tags',)
-        )
+        verify_column = ("tags",)
+        verify_data = ("value=val-tags, key=key-tags",)
 
-        data, column = load_balancer._add_tags_to_load_balancer_obj(
-            obj, data, column)
+        data, column = load_balancer._add_tags_to_load_balancer_obj(obj, data, column)
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
 
     def test_normalize_tags(self):
-        tags = [
-            'key1=value',
-            'key2=',
-            'key3'
-        ]
+        tags = ["key1=value", "key2=", "key3"]
 
         verify_result = [
-            {'key': 'key1', 'value': 'value'},
-            {'key': 'key2', 'value': ''},
-            {'key': 'key3', 'value': ''}
+            {"key": "key1", "value": "value"},
+            {"key": "key2", "value": ""},
+            {"key": "key3", "value": ""},
         ]
 
         result = load_balancer._normalize_tags(tags)
@@ -115,24 +106,23 @@ class TestLoadBalancer(fakes.TestVLB):
         column = ()
         data = ()
         verify_column = (
-            'eip_id_1',
-            'eip_address_1',
-            'ip_version_1',
-            'eip_id_2',
-            'eip_address_2',
-            'ip_version_2'
+            "eip_id_1",
+            "eip_address_1",
+            "ip_version_1",
+            "eip_id_2",
+            "eip_address_2",
+            "ip_version_2",
         )
         verify_data = (
-            'eip-uuid-1',
-            'eip-address-1',
-            'ip-version-1',
-            'eip-uuid-2',
-            'eip-address-2',
-            'ip-version-2'
+            "eip-uuid-1",
+            "eip-address-1",
+            "ip-version-1",
+            "eip-uuid-2",
+            "eip-address-2",
+            "ip-version-2",
         )
 
-        data, column = load_balancer._add_eips_to_load_balancer_obj(
-            obj, data, column)
+        data, column = load_balancer._add_eips_to_load_balancer_obj(obj, data, column)
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
@@ -143,24 +133,25 @@ class TestLoadBalancer(fakes.TestVLB):
         column = ()
         data = ()
         verify_column = (
-            'publicip_id_1',
-            'publicip_address_1',
-            'publicip_ip_version_1',
-            'publicip_id_2',
-            'publicip_address_2',
-            'publicip_ip_version_2',
+            "publicip_id_1",
+            "publicip_address_1",
+            "publicip_ip_version_1",
+            "publicip_id_2",
+            "publicip_address_2",
+            "publicip_ip_version_2",
         )
         verify_data = (
-            'publicip-id-1',
-            'publicip-address-1',
-            'ip-version-1',
-            'publicip-id-2',
-            'publicip-address-2',
-            'ip-version-2',
+            "publicip-id-1",
+            "publicip-address-1",
+            "ip-version-1",
+            "publicip-id-2",
+            "publicip-address-2",
+            "ip-version-2",
         )
 
         data, column = load_balancer._add_publicips_to_load_balancer_obj(
-            obj, data, column)
+            obj, data, column
+        )
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
@@ -171,16 +162,15 @@ class TestLoadBalancer(fakes.TestVLB):
         column = ()
         data = ()
         verify_column = (
-            'pool_id_1',
-            'pool_id_2',
+            "pool_id_1",
+            "pool_id_2",
         )
         verify_data = (
-            'pool-id-1',
-            'pool-id-2',
+            "pool-id-1",
+            "pool-id-2",
         )
 
-        data, column = load_balancer._add_pools_to_load_balancer_obj(
-            obj, data, column)
+        data, column = load_balancer._add_pools_to_load_balancer_obj(obj, data, column)
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
@@ -191,16 +181,17 @@ class TestLoadBalancer(fakes.TestVLB):
         column = ()
         data = ()
         verify_column = (
-            'listener_id_1',
-            'listener_id_2',
+            "listener_id_1",
+            "listener_id_2",
         )
         verify_data = (
-            'listener-id-1',
-            'listener-id-2',
+            "listener-id-1",
+            "listener-id-2",
         )
 
         data, column = load_balancer._add_listeners_to_load_balancer_obj(
-            obj, data, column)
+            obj, data, column
+        )
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)

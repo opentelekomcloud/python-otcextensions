@@ -11,16 +11,15 @@
 #   under the License.
 # import datetime
 import random
-import uuid
 import time
+import uuid
 
 import mock
-
 from openstackclient.tests.unit import utils
-from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.cts.v1 import trace
 from otcextensions.sdk.cts.v1 import tracker
+from otcextensions.tests.unit.osclient import test_base
 
 
 class TestCTS(utils.TestCommand):
@@ -40,21 +39,21 @@ class FakeTrace(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': uuid.uuid4().hex,
-            'level': uuid.uuid4().hex,
-            'type': uuid.uuid4().hex,
-            'time': time.time() * 1000,
-            'user': uuid.uuid4().hex,
-            'code': random.randint(1, 600),
-            'service_type': uuid.uuid4().hex,
-            'resource_type': uuid.uuid4().hex,
-            'resource_name': uuid.uuid4().hex,
-            'resource_id': uuid.uuid4().hex,
-            'source_ip': uuid.uuid4().hex,
-            'record_time': time.time() * 1000,
-            'request': uuid.uuid4().hex,
-            'response': uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "name": uuid.uuid4().hex,
+            "level": uuid.uuid4().hex,
+            "type": uuid.uuid4().hex,
+            "time": time.time() * 1000,
+            "user": uuid.uuid4().hex,
+            "code": random.randint(1, 600),
+            "service_type": uuid.uuid4().hex,
+            "resource_type": uuid.uuid4().hex,
+            "resource_name": uuid.uuid4().hex,
+            "resource_id": uuid.uuid4().hex,
+            "source_ip": uuid.uuid4().hex,
+            "record_time": time.time() * 1000,
+            "request": uuid.uuid4().hex,
+            "response": uuid.uuid4().hex,
         }
         obj = trace.Trace.existing(**object_info)
         return obj
@@ -66,18 +65,18 @@ class FakeTracker(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'name': uuid.uuid4().hex,
-            'bucket_name': uuid.uuid4().hex,
-            'file_prefix_name': uuid.uuid4().hex,
-            'status': uuid.uuid4().hex,
-            'details': uuid.uuid4().hex,
-            'smn': {
-                'enabled': True,
-                'topic_id': uuid.uuid4().hex,
-                'is_send_all_key_operation': True,
-                'need_notify_user_list': [uuid.uuid4().hex, uuid.uuid4().hex],
-                'operations': [uuid.uuid4().hex, uuid.uuid4().hex]
-            }
+            "name": uuid.uuid4().hex,
+            "bucket_name": uuid.uuid4().hex,
+            "file_prefix_name": uuid.uuid4().hex,
+            "status": uuid.uuid4().hex,
+            "details": uuid.uuid4().hex,
+            "smn": {
+                "enabled": True,
+                "topic_id": uuid.uuid4().hex,
+                "is_send_all_key_operation": True,
+                "need_notify_user_list": [uuid.uuid4().hex, uuid.uuid4().hex],
+                "operations": [uuid.uuid4().hex, uuid.uuid4().hex],
+            },
         }
         obj = tracker.Tracker.existing(**object_info)
         return obj

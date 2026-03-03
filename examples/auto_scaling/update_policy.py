@@ -13,10 +13,11 @@
 """
 Update Auto-Scaling Policy by using id or an instance of class Policy.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 policy = "policy_name_or_id"
@@ -27,12 +28,9 @@ attrs = {
         "launch_time": "16:00",
         "recurrence_type": "Daily",
         "end_time": "2016-02-08T17:31Z",
-        "start_time": "2016-01-08T17:31Z"
+        "start_time": "2016-01-08T17:31Z",
     },
-    "scaling_policy_action": {
-        "operation": "SET",
-        "instance_number": 2
-    }
+    "scaling_policy_action": {"operation": "SET", "instance_number": 2},
 }
 
 policy = conn.auto_scaling.find_policy(policy)

@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts v1 trainingjob version action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -25,15 +26,11 @@ LOG = logging.getLogger(__name__)
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class TrainingjobVersionLogs(command.ShowOne):
-    _description = _(
-        "Query detailed information about training job logs by row"
-    )
+    _description = _("Query detailed information about training job logs by row")
 
     def get_parser(self, prog_name):
         parser = super(TrainingjobVersionLogs, self).get_parser(prog_name)
@@ -56,9 +53,7 @@ class TrainingjobVersionLogs(command.ShowOne):
             metavar="<base_line>",
             required=False,
             type=str,
-            help=_(
-                "Base line of the log, which is obtained from an API response"
-            ),
+            help=_("Base line of the log, which is obtained from an API response"),
         )
         parser.add_argument(
             "--lines",

@@ -13,14 +13,15 @@
 """
 Delete CCE Node Pool by name or ID
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-cluster = 'name_or_id'
-node_pool = 'name_or_id'
+cluster = "name_or_id"
+node_pool = "name_or_id"
 cluster = conn.cce.find_cluster(cluster)
 node_pool = conn.cce.find_node_pool(cluster=cluster, node_pool=node_pool)
 conn.cce.delete_node_pool(cluster=cluster, node_pool=node_pool)

@@ -13,19 +13,20 @@
 """
 Get all dependency versions
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-u = 'https://fg-test-files.obs.eu-de.otc.t-systems.com/dependency.zip'
+u = "https://fg-test-files.obs.eu-de.otc.t-systems.com/dependency.zip"
 attrs = {
-    'depend_link': u,
-    'depend_type': 'obs',
-    'runtime': 'Python3.10',
-    'name': 'test-dep-1'
+    "depend_link": u,
+    "depend_type": "obs",
+    "runtime": "Python3.10",
+    "name": "test-dep-1",
 }
 d = conn.functiongraph.create_dependency_version(**attrs)
 for dv in conn.functiongraph.dependency_versions(d):

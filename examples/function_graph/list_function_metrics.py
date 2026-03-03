@@ -13,23 +13,23 @@
 """
 Get all Function Metrics in a Specified Period
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 func_attrs = {
-    'func_name': 'test-function',
-    'package': 'default',
-    'runtime': 'Python3.9',
-    'handler': 'index.handler',
-    'timeout': 30,
-    'memory_size': 128,
-    'code_type': 'inline',
+    "func_name": "test-function",
+    "package": "default",
+    "runtime": "Python3.9",
+    "handler": "index.handler",
+    "timeout": 30,
+    "memory_size": 128,
+    "code_type": "inline",
 }
 fg = conn.functiongraph.create_function(**func_attrs)
-for m in conn.functiongraph.function_metrics(
-        fg, period='1596679200000,1696679200000'):
+for m in conn.functiongraph.function_metrics(fg, period="1596679200000,1696679200000"):
     print(m)

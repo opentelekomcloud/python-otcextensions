@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.anti_ddos.v1 import alert_config as _alert
 from otcextensions.sdk.anti_ddos.v1 import config as _config
@@ -66,8 +65,9 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.anti_ddos.v1.floating_ip.FloatingIP`
         """
-        return self._create(_floating_ip.FloatingIP,
-                            floating_ip_id=floating_ip_id, **kwargs)
+        return self._create(
+            _floating_ip.FloatingIP, floating_ip_id=floating_ip_id, **kwargs
+        )
 
     def unprotect_floating_ip(self, floating_ip, ignore_missing=True):
         """Diable anti-ddos on the given Floating IP
@@ -80,9 +80,9 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.anti_ddos.v1.floating_ip.FloatingIP`
         """
-        return self._delete(_floating_ip.FloatingIP,
-                            floating_ip,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _floating_ip.FloatingIP, floating_ip, ignore_missing=ignore_missing
+        )
 
     def get_floating_ip_policies(self, floating_ip):
         """Get detail about an Floating IP policy
@@ -130,8 +130,12 @@ class Proxy(proxy.Proxy):
         :returns: A generator of FloatingIPLog object
         :rtype: :class:`~otcextensions.sdk.anti_ddos.v1.status.FloatingIPLog`
         """
-        return self._list(_status.FloatingIPEvent, paginated=False,
-                          floating_ip_id=floating_ip_id, **query)
+        return self._list(
+            _status.FloatingIPEvent,
+            paginated=False,
+            floating_ip_id=floating_ip_id,
+            **query
+        )
 
     def floating_ip_stat_day(self, floating_ip_id):
         """List statistic for last 24 hours by floating ip id.
@@ -142,8 +146,9 @@ class Proxy(proxy.Proxy):
         :rtype:
             :class:`~otcextensions.sdk.anti_ddos.v1.status.FloatingIPDayStat`
         """
-        return self._list(_status.FloatingIPDayStat, paginated=False,
-                          floating_ip_id=floating_ip_id)
+        return self._list(
+            _status.FloatingIPDayStat, paginated=False, floating_ip_id=floating_ip_id
+        )
 
     def floating_ip_stat_week(self, **query):
         """List weekly defence statisticsabout all floating ips.
@@ -156,19 +161,21 @@ class Proxy(proxy.Proxy):
         :rtype:
             :class:`~otcextensions.sdk.anti_ddos.v1.status.FloatingIPWeekStat`
         """
-        return self._get(_status.FloatingIPWeekStat, requires_id=False,
-                         value=None, **query)
+        return self._get(
+            _status.FloatingIPWeekStat, requires_id=False, value=None, **query
+        )
 
     # ======== Project cleanup ========
     def _get_cleanup_dependencies(self):
-        return {
-            'anti_ddos': {
-                'before': ['network']
-            }
-        }
+        return {"anti_ddos": {"before": ["network"]}}
 
-    def _service_cleanup(self, dry_run=True, client_status_queue=None,
-                         identified_resources=None,
-                         filters=None, resource_evaluation_fn=None,
-                         skip_resources=None):
+    def _service_cleanup(
+        self,
+        dry_run=True,
+        client_status_queue=None,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
+    ):
         pass

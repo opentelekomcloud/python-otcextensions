@@ -10,32 +10,30 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from keystoneauth1 import adapter
-
 import mock
+from keystoneauth1 import adapter
 
 from openstack import exceptions
 from openstack.tests.unit import base
-
 from otcextensions.sdk.auto_scaling.v1 import instance
 
 EXAMPLE_LIST = {
-    'limit': 10,
-    'total_number': 1,
-    'start_number': 0,
-    'scaling_group_instances': [
+    "limit": 10,
+    "total_number": 1,
+    "start_number": 0,
+    "scaling_group_instances": [
         {
-            'instance_id': 'b25c1589-c96c-465b-9fef-d06540d1945c',
-            'scaling_group_id': 'e5d27f5c-dd76-4a61-b4bc-a67c5686719a',
-            'scaling_group_name': 'discuz',
-            'life_cycle_state': 'INSERVICE',
-            'health_status': 'NORMAL',
-            'scaling_configuration_name': 'discuz',
-            'scaling_configuration_id': 'ca3dcd84-d197-4c4f-af2a-cf8ba39696ac',
-            'create_time': '2015-07-23T06:47:33Z',
-            'instance_name': 'discuz_3D210808'
+            "instance_id": "b25c1589-c96c-465b-9fef-d06540d1945c",
+            "scaling_group_id": "e5d27f5c-dd76-4a61-b4bc-a67c5686719a",
+            "scaling_group_name": "discuz",
+            "life_cycle_state": "INSERVICE",
+            "health_status": "NORMAL",
+            "scaling_configuration_name": "discuz",
+            "scaling_configuration_id": "ca3dcd84-d197-4c4f-af2a-cf8ba39696ac",
+            "create_time": "2015-07-23T06:47:33Z",
+            "instance_name": "discuz_3D210808",
         }
-    ]
+    ],
 }
 
 
@@ -52,9 +50,9 @@ class TestInstance(base.TestCase):
 
     def test_basic(self):
         sot = instance.Instance()
-        self.assertEqual('scaling_group_instance', sot.resource_key)
-        self.assertEqual('scaling_group_instances', sot.resources_key)
-        self.assertEqual('/scaling_group_instance', sot.base_path)
+        self.assertEqual("scaling_group_instance", sot.resource_key)
+        self.assertEqual("scaling_group_instances", sot.resources_key)
+        self.assertEqual("/scaling_group_instance", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)
@@ -62,18 +60,18 @@ class TestInstance(base.TestCase):
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
-        obj = EXAMPLE_LIST['scaling_group_instances'][0].copy()
+        obj = EXAMPLE_LIST["scaling_group_instances"][0].copy()
         sot = instance.Instance.existing(**obj)
-        self.assertEqual(obj['instance_id'], sot.id)
-        self.assertEqual(obj['instance_name'], sot.name)
-        self.assertEqual(obj['scaling_group_name'], sot.scaling_group_name)
-        self.assertEqual(obj['life_cycle_state'], sot.lifecycle_state)
-        self.assertEqual(obj['health_status'], sot.health_status)
-        self.assertEqual(obj['scaling_configuration_name'],
-                         sot.scaling_configuration_name)
-        self.assertEqual(obj['scaling_configuration_id'],
-                         sot.scaling_configuration_id)
-        self.assertEqual(obj['create_time'], sot.create_time)
+        self.assertEqual(obj["instance_id"], sot.id)
+        self.assertEqual(obj["instance_name"], sot.name)
+        self.assertEqual(obj["scaling_group_name"], sot.scaling_group_name)
+        self.assertEqual(obj["life_cycle_state"], sot.lifecycle_state)
+        self.assertEqual(obj["health_status"], sot.health_status)
+        self.assertEqual(
+            obj["scaling_configuration_name"], sot.scaling_configuration_name
+        )
+        self.assertEqual(obj["scaling_configuration_id"], sot.scaling_configuration_id)
+        self.assertEqual(obj["create_time"], sot.create_time)
 
     def test_batch_action_act_check(self):
         mock_response = mock.Mock()
@@ -82,13 +80,17 @@ class TestInstance(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = instance.Instance.existing(scaling_group_id='grp_id')
+        sot = instance.Instance.existing(scaling_group_id="grp_id")
 
-        obj_list = ['i1', 'i2']
+        obj_list = ["i1", "i2"]
 
         self.assertRaises(
-            exceptions.SDKException, sot.batch_action,
-            session=self.sess, instances=obj_list, action='f')
+            exceptions.SDKException,
+            sot.batch_action,
+            session=self.sess,
+            instances=obj_list,
+            action="f",
+        )
 
     def test_batch_action_add(self):
         mock_response = mock.Mock()
@@ -97,18 +99,18 @@ class TestInstance(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = instance.Instance.existing(scaling_group_id='grp_id')
+        sot = instance.Instance.existing(scaling_group_id="grp_id")
 
-        obj_list = ['i1', 'i2']
+        obj_list = ["i1", "i2"]
 
-        sot.batch_action(self.sess, obj_list, 'ADD')
+        sot.batch_action(self.sess, obj_list, "ADD")
 
         self.sess.post.assert_called_once_with(
-            'scaling_group_instance/grp_id/action',
+            "scaling_group_instance/grp_id/action",
             json={
-                'action': 'ADD',
-                'instances_id': obj_list,
-            }
+                "action": "ADD",
+                "instances_id": obj_list,
+            },
         )
 
     def test_batch_action_remove(self):
@@ -118,19 +120,19 @@ class TestInstance(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = instance.Instance.existing(scaling_group_id='grp_id')
+        sot = instance.Instance.existing(scaling_group_id="grp_id")
 
-        obj_list = ['i1', 'i2']
+        obj_list = ["i1", "i2"]
 
-        sot.batch_action(self.sess, obj_list, 'REMOVE', delete_instance=True)
+        sot.batch_action(self.sess, obj_list, "REMOVE", delete_instance=True)
 
         self.sess.post.assert_called_once_with(
-            'scaling_group_instance/grp_id/action',
+            "scaling_group_instance/grp_id/action",
             json={
-                'action': 'REMOVE',
-                'instances_id': obj_list,
-                'instance_delete': 'yes'
-            }
+                "action": "REMOVE",
+                "instances_id": obj_list,
+                "instance_delete": "yes",
+            },
         )
 
     def test_batch_action_protect(self):
@@ -140,18 +142,18 @@ class TestInstance(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = instance.Instance.existing(scaling_group_id='grp_id')
+        sot = instance.Instance.existing(scaling_group_id="grp_id")
 
-        obj_list = ['i1', 'i2']
+        obj_list = ["i1", "i2"]
 
-        sot.batch_action(self.sess, obj_list, 'PROTECT')
+        sot.batch_action(self.sess, obj_list, "PROTECT")
 
         self.sess.post.assert_called_once_with(
-            'scaling_group_instance/grp_id/action',
+            "scaling_group_instance/grp_id/action",
             json={
-                'action': 'PROTECT',
-                'instances_id': obj_list,
-            }
+                "action": "PROTECT",
+                "instances_id": obj_list,
+            },
         )
 
     def test_batch_action_unprotect(self):
@@ -161,18 +163,18 @@ class TestInstance(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = instance.Instance.existing(scaling_group_id='grp_id')
+        sot = instance.Instance.existing(scaling_group_id="grp_id")
 
-        obj_list = ['i1', 'i2']
+        obj_list = ["i1", "i2"]
 
-        sot.batch_action(self.sess, obj_list, 'UNPROTECT')
+        sot.batch_action(self.sess, obj_list, "UNPROTECT")
 
         self.sess.post.assert_called_once_with(
-            'scaling_group_instance/grp_id/action',
+            "scaling_group_instance/grp_id/action",
             json={
-                'action': 'UNPROTECT',
-                'instances_id': obj_list,
-            }
+                "action": "UNPROTECT",
+                "instances_id": obj_list,
+            },
         )
 
     def test_batch_action_delete_instance_not_expected(self):
@@ -182,14 +184,18 @@ class TestInstance(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = instance.Instance.existing(scaling_group_id='grp_id')
+        sot = instance.Instance.existing(scaling_group_id="grp_id")
 
-        obj_list = ['i1', 'i2']
+        obj_list = ["i1", "i2"]
 
         self.assertRaises(
-            exceptions.SDKException, sot.batch_action,
-            session=self.sess, instances=obj_list,
-            action='PROTECT', delete_instance=True)
+            exceptions.SDKException,
+            sot.batch_action,
+            session=self.sess,
+            instances=obj_list,
+            action="PROTECT",
+            delete_instance=True,
+        )
 
     def test_remove(self):
         mock_response = mock.Mock()
@@ -198,15 +204,12 @@ class TestInstance(base.TestCase):
 
         self.sess.delete.return_value = mock_response
 
-        sot = instance.Instance.existing(id='id1', scaling_group_id='grp_id')
+        sot = instance.Instance.existing(id="id1", scaling_group_id="grp_id")
 
         sot.remove(self.sess, delete_instance=True)
 
         self.sess.delete.assert_called_once_with(
-            'scaling_group_instance/%s' % sot.id,
-            params={
-                'instance_delete': 'yes'
-            }
+            "scaling_group_instance/%s" % sot.id, params={"instance_delete": "yes"}
         )
 
     def test_remove_default(self):
@@ -216,13 +219,10 @@ class TestInstance(base.TestCase):
 
         self.sess.delete.return_value = mock_response
 
-        sot = instance.Instance.existing(id='id1', scaling_group_id='grp_id')
+        sot = instance.Instance.existing(id="id1", scaling_group_id="grp_id")
 
         sot.remove(self.sess)
 
         self.sess.delete.assert_called_once_with(
-            'scaling_group_instance/%s' % sot.id,
-            params={
-                'instance_delete': 'no'
-            }
+            "scaling_group_instance/%s" % sot.id, params={"instance_delete": "no"}
         )

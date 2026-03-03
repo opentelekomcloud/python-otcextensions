@@ -13,11 +13,12 @@
 """
 List group responses for api group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-response_list = list(conn.apig.client.group_responses(
-    gateway="gateway_id",
-    group="group_id"))
+response_list = list(
+    conn.apig.client.group_responses(gateway="gateway_id", group="group_id")
+)

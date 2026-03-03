@@ -13,10 +13,11 @@
 """
 List all Auto-Scaling Configurations
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for config in conn.auto_scaling.configs():
     print(config)

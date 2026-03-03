@@ -17,9 +17,7 @@ from openstack import resource
 class Resource(resource.Resource):
     query_marker_key = "offset"
 
-    _query_mapping = resource.QueryParameters(
-        "marker", "limit", marker="offset"
-    )
+    _query_mapping = resource.QueryParameters("marker", "limit", marker="offset")
 
     @classmethod
     def list(

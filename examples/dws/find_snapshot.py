@@ -13,11 +13,12 @@
 """
 Get details of DWS Cluster Snapshot by name_or_id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'dws-1-snapshot-3'
+name_or_id = "dws-1-snapshot-3"
 resp = conn.dws.find_snapshot(name_or_id, ignore_missing=False)
 print(resp)

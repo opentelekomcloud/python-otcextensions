@@ -12,8 +12,8 @@
 #
 import mock
 
-from otcextensions.tests.unit.osclient.css.v1 import fakes
 from otcextensions.osclient.css.v1 import certificate
+from otcextensions.tests.unit.osclient.css.v1 import fakes
 
 
 class TestDownloadCertificate(fakes.TestCss):

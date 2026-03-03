@@ -13,11 +13,11 @@
 """
 List all RDS Datastore Types
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for ds in conn.rds.datastore_types():
     print(ds.name)

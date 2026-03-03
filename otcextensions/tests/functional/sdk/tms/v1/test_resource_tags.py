@@ -11,10 +11,9 @@
 # under the License.
 
 from openstack import _log
-
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestResourceTag(base.BaseFunctionalTest):
@@ -26,8 +25,11 @@ class TestResourceTag(base.BaseFunctionalTest):
         attrs = {
             "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
             "resources": [
-                {"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
-                 "resource_type": "vpc"}],
+                {
+                    "resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                    "resource_type": "vpc",
+                }
+            ],
             "tags": [{"key": "ENV1", "value": "dev1"}],
         }
         result = self.tms.create_resource_tag(**attrs)
@@ -37,8 +39,11 @@ class TestResourceTag(base.BaseFunctionalTest):
         attrs = {
             "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
             "resources": [
-                {"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
-                 "resource_type": "vpc"}],
+                {
+                    "resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                    "resource_type": "vpc",
+                }
+            ],
             "tags": [{"key": "ENV1", "value": "dev1"}],
         }
         result = self.tms.delete_resource_tag(**attrs)
@@ -48,7 +53,7 @@ class TestResourceTag(base.BaseFunctionalTest):
         query = {
             "resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
             "resource_type": "vpc",
-            "project_id": "786ef11caa5c43ff80256be4c7fee8b7"
+            "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
         }
         tags = list(self.tms.resource_tags(**query))
         self.assertGreaterEqual(len(tags), 0)

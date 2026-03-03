@@ -10,16 +10,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import mock
 from unittest.mock import call
 
+import mock
+from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
 
-from otcextensions.osclient.dis.v2 import dump_task
 from otcextensions.common import cli_utils
+from otcextensions.osclient.dis.v2 import dump_task
 from otcextensions.tests.unit.osclient.dis.v2 import fakes
-
-from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListDumpTasks(fakes.TestDis):
@@ -27,31 +26,33 @@ class TestListDumpTasks(fakes.TestDis):
     objects = fakes.FakeDumpTask.create_multiple(3)
 
     column_list_headers = (
-        'Task Name',
-        'Task Id',
-        'Destination Type',
-        'Created At',
-        'Status'
+        "Task Name",
+        "Task Id",
+        "Destination Type",
+        "Created At",
+        "Status",
     )
 
     columns = (
-        'task_name',
-        'task_id',
-        'destination_type',
-        'created_at',
-        'status',
+        "task_name",
+        "task_id",
+        "destination_type",
+        "created_at",
+        "status",
     )
 
     data = []
 
     for s in objects:
-        data.append((
-            s.task_name,
-            s.task_id,
-            s.destination_type,
-            cli_utils.UnixTimestampFormatter(s.created_at),
-            s.status
-        ))
+        data.append(
+            (
+                s.task_name,
+                s.task_id,
+                s.destination_type,
+                cli_utils.UnixTimestampFormatter(s.created_at),
+                s.status,
+            )
+        )
 
     def setUp(self):
         super(TestListDumpTasks, self).setUp()
@@ -63,11 +64,11 @@ class TestListDumpTasks(fakes.TestDis):
 
     def test_list(self):
         arglist = [
-            'test-stream',
+            "test-stream",
         ]
 
         verifylist = [
-            ('streamName', 'test-stream'),
+            ("streamName", "test-stream"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -79,7 +80,7 @@ class TestListDumpTasks(fakes.TestDis):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with('test-stream')
+        self.client.api_mock.assert_called_with("test-stream")
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
@@ -89,16 +90,16 @@ class TestCreateDumpTask(fakes.TestDis):
     _data = fakes.FakeDumpTask.create_one()
 
     columns = (
-        'created_at',
-        'destination_type',
-        'exception_strategy',
-        'last_transfer_timestamp',
-        'obs_destination_description',
-        'partitions',
-        'status',
-        'stream_name',
-        'task_id',
-        'task_name'
+        "created_at",
+        "destination_type",
+        "exception_strategy",
+        "last_transfer_timestamp",
+        "obs_destination_description",
+        "partitions",
+        "status",
+        "stream_name",
+        "task_id",
+        "task_name",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -112,54 +113,63 @@ class TestCreateDumpTask(fakes.TestDis):
 
     def test_create(self):
         arglist = [
-            'test-stream',
-            'test-dump-task',
-            '--destination-type', 'OBS',
-            '--agency-name', '4',
-            '--deliver-time-interval', '5',
-            '--consumer-strategy', 'LATEST',
-            '--file-prefix', '7',
-            '--partition-format', 'yyyy',
-            '--obs-bucket-path', '8',
-            '--destination-file-type', 'Text',
-            '--record-delimiter', '\\n',
+            "test-stream",
+            "test-dump-task",
+            "--destination-type",
+            "OBS",
+            "--agency-name",
+            "4",
+            "--deliver-time-interval",
+            "5",
+            "--consumer-strategy",
+            "LATEST",
+            "--file-prefix",
+            "7",
+            "--partition-format",
+            "yyyy",
+            "--obs-bucket-path",
+            "8",
+            "--destination-file-type",
+            "Text",
+            "--record-delimiter",
+            "\\n",
         ]
         verifylist = [
-            ('streamName', 'test-stream'),
-            ('taskName', 'test-dump-task'),
-            ('destination_type', 'OBS'),
-            ('agency_name', '4'),
-            ('deliver_time_interval', 5),
-            ('consumer_strategy', 'LATEST'),
-            ('file_prefix', '7'),
-            ('partition_format', 'yyyy'),
-            ('obs_bucket_path', '8'),
-            ('destination_file_type', 'Text'),
-            ('record_delimiter', '\\n'),
+            ("streamName", "test-stream"),
+            ("taskName", "test-dump-task"),
+            ("destination_type", "OBS"),
+            ("agency_name", "4"),
+            ("deliver_time_interval", 5),
+            ("consumer_strategy", "LATEST"),
+            ("file_prefix", "7"),
+            ("partition_format", "yyyy"),
+            ("obs_bucket_path", "8"),
+            ("destination_file_type", "Text"),
+            ("record_delimiter", "\\n"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         attrs = {}
         attrs.update(
-            destination_type='OBS',
+            destination_type="OBS",
             obs_destination_descriptor={
-                'task_name': 'test-dump-task',
-                'agency_name': '4',
-                'deliver_time_interval': 5,
-                'consumer_strategy': 'LATEST',
-                'file_prefix': '7',
-                'partition_format': 'yyyy',
-                'obs_bucket_path': '8',
-                'destination_file_type': 'Text',
-                'record_delimiter': '\\n'
-            }
+                "task_name": "test-dump-task",
+                "agency_name": "4",
+                "deliver_time_interval": 5,
+                "consumer_strategy": "LATEST",
+                "file_prefix": "7",
+                "partition_format": "yyyy",
+                "obs_bucket_path": "8",
+                "destination_file_type": "Text",
+                "record_delimiter": "\\n",
+            },
         )
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.create_dump_task.assert_called_with('test-stream', **attrs)
+        self.client.create_dump_task.assert_called_with("test-stream", **attrs)
         self.assertEqual(self.columns, columns)
 
 
@@ -167,16 +177,16 @@ class TestShowDumpTask(fakes.TestDis):
     _data = fakes.FakeDumpTask.create_one()
 
     columns = (
-        'created_at',
-        'destination_type',
-        'exception_strategy',
-        'last_transfer_timestamp',
-        'obs_destination_description',
-        'partitions',
-        'status',
-        'stream_name',
-        'task_id',
-        'task_name'
+        "created_at",
+        "destination_type",
+        "exception_strategy",
+        "last_transfer_timestamp",
+        "obs_destination_description",
+        "partitions",
+        "status",
+        "stream_name",
+        "task_id",
+        "task_name",
     )
     data = fakes.gen_data(_data, columns, dump_task._formatters)
 
@@ -193,8 +203,13 @@ class TestShowDumpTask(fakes.TestDis):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
@@ -203,8 +218,8 @@ class TestShowDumpTask(fakes.TestDis):
         ]
 
         verifylist = [
-            ('streamName', self._data.stream_name),
-            ('taskName', self._data.task_name),
+            ("streamName", self._data.stream_name),
+            ("taskName", self._data.task_name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -222,28 +237,27 @@ class TestShowDumpTask(fakes.TestDis):
     def test_show_non_existent(self):
         arglist = [
             self._data.stream_name,
-            'unexist_dis_dump_task',
+            "unexist_dis_dump_task",
         ]
 
         verifylist = [
-            ('streamName', self._data.stream_name),
-            ('taskName', 'unexist_dis_dump_task'),
+            ("streamName", self._data.stream_name),
+            ("taskName", "unexist_dis_dump_task"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        get_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.get_dump_task = (
-            mock.Mock(side_effect=get_mock_result)
-        )
+        get_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.get_dump_task = mock.Mock(side_effect=get_mock_result)
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
+            self.assertEqual("Resource Not Found", str(e))
         self.client.get_dump_task.assert_called_with(
-            self._data.stream_name, 'unexist_dis_dump_task')
+            self._data.stream_name, "unexist_dis_dump_task"
+        )
 
 
 class TestDeleteDumpTask(fakes.TestDis):
@@ -265,8 +279,8 @@ class TestDeleteDumpTask(fakes.TestDis):
         ]
 
         verifylist = [
-            ('streamName', self._data[0].stream_name),
-            ('taskName', [self._data[0].task_name]),
+            ("streamName", self._data[0].stream_name),
+            ("taskName", [self._data[0].task_name]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -275,19 +289,20 @@ class TestDeleteDumpTask(fakes.TestDis):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.delete_dump_task.assert_called_with(
-            self._data[0].stream_name, self._data[0].task_name)
+            self._data[0].stream_name, self._data[0].task_name
+        )
         self.assertIsNone(result)
 
     def test_multiple_delete(self):
         arglist = [
             self._data[0].stream_name,
             self._data[0].task_name,
-            self._data[1].task_name
+            self._data[1].task_name,
         ]
 
         verifylist = [
-            ('streamName', self._data[0].stream_name),
-            ('taskName', [self._data[0].task_name, self._data[1].task_name]),
+            ("streamName", self._data[0].stream_name),
+            ("taskName", [self._data[0].task_name, self._data[1].task_name]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -298,7 +313,7 @@ class TestDeleteDumpTask(fakes.TestDis):
 
         calls = [
             call(self._data[0].stream_name, self._data[0].task_name),
-            call(self._data[0].stream_name, self._data[1].task_name)
+            call(self._data[0].stream_name, self._data[1].task_name),
         ]
         self.client.delete_dump_task.assert_has_calls(calls)
         self.assertIsNone(result)
@@ -307,30 +322,27 @@ class TestDeleteDumpTask(fakes.TestDis):
         arglist = [
             self._data[0].stream_name,
             self._data[0].task_name,
-            'unexist_dis_dump_task',
+            "unexist_dis_dump_task",
         ]
         verifylist = [
-            ('streamName', self._data[0].stream_name),
-            ('taskName', [self._data[0].task_name, 'unexist_dis_dump_task']),
+            ("streamName", self._data[0].stream_name),
+            ("taskName", [self._data[0].task_name, "unexist_dis_dump_task"]),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         delete_mock_result = [None, exceptions.CommandError]
-        self.client.delete_dump_task = (
-            mock.Mock(side_effect=delete_mock_result)
-        )
+        self.client.delete_dump_task = mock.Mock(side_effect=delete_mock_result)
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual(
-                '1 of 2 dump task(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 dump task(s) failed to delete.", str(e))
 
         calls = [
             call(self._data[0].stream_name, self._data[0].task_name),
-            call(self._data[0].stream_name, 'unexist_dis_dump_task')
+            call(self._data[0].stream_name, "unexist_dis_dump_task"),
         ]
         self.client.delete_dump_task.assert_has_calls(calls)
 
@@ -345,13 +357,13 @@ class TestStartDumpTask(fakes.TestDis):
     def test_restart(self):
 
         arglist = [
-            'test-stream',
-            'test-dump-taskId',
+            "test-stream",
+            "test-dump-taskId",
         ]
 
         verifylist = [
-            ('streamName', 'test-stream'),
-            ('taskId', ['test-dump-taskId']),
+            ("streamName", "test-stream"),
+            ("taskId", ["test-dump-taskId"]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -360,8 +372,7 @@ class TestStartDumpTask(fakes.TestDis):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.start_dump_task.assert_called_with(
-            'test-stream',
-            ['test-dump-taskId']
+            "test-stream", ["test-dump-taskId"]
         )
         self.assertIsNone(result)
 
@@ -376,13 +387,13 @@ class TestPauseDumpTask(fakes.TestDis):
     def test_restart(self):
 
         arglist = [
-            'test-stream',
-            'test-dump-taskId',
+            "test-stream",
+            "test-dump-taskId",
         ]
 
         verifylist = [
-            ('streamName', 'test-stream'),
-            ('taskId', ['test-dump-taskId']),
+            ("streamName", "test-stream"),
+            ("taskId", ["test-dump-taskId"]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -391,7 +402,6 @@ class TestPauseDumpTask(fakes.TestDis):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.pause_dump_task.assert_called_with(
-            'test-stream',
-            ['test-dump-taskId']
+            "test-stream", ["test-dump-taskId"]
         )
         self.assertIsNone(result)

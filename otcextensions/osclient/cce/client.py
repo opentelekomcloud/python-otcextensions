@@ -15,14 +15,12 @@ import logging
 from osc_lib import utils
 
 from otcextensions import sdk
-
 from otcextensions.i18n import _
-
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '3'
-API_VERSION_OPTION = 'os_cce_api_version'
+DEFAULT_API_VERSION = "3"
+API_VERSION_OPTION = "os_cce_api_version"
 API_NAME = "cce"
 API_VERSIONS = {
     "1.0": "openstack.connection.Connection",
@@ -37,22 +35,21 @@ def make_client(instance):
 
     conn = instance.sdk_connection
 
-    if getattr(conn, 'cce', None) is None:
-        LOG.debug('OTC extensions are not registered. Do that now')
+    if getattr(conn, "cce", None) is None:
+        LOG.debug("OTC extensions are not registered. Do that now")
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('CCE client initialized using OpenStack OTC SDK: %s',
-              conn.cce)
+    LOG.debug("CCE client initialized using OpenStack OTC SDK: %s", conn.cce)
     return conn.cce
 
 
 def build_option_parser(parser):
     """Hook to add global options"""
     parser.add_argument(
-        '--os-cce-api-version',
-        metavar='<cce-api-version>',
-        default=utils.env('OS_CCE_API_VERSION'),
-        help=_("CCE API version, default=%s "
-               "(Env: OS_CCE_API_VERSION)") % DEFAULT_API_VERSION
+        "--os-cce-api-version",
+        metavar="<cce-api-version>",
+        default=utils.env("OS_CCE_API_VERSION"),
+        help=_("CCE API version, default=%s " "(Env: OS_CCE_API_VERSION)")
+        % DEFAULT_API_VERSION,
     )
     return parser

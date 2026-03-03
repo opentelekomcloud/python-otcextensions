@@ -13,11 +13,12 @@
 """
 Extend a Distributed Message Service Instance with additional RAM
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-instance = 'instance_id_or_class_instance'
+instance = "instance_id_or_class_instance"
 capacity = 8
 conn.dcs.extend_instance(instance, capacity)

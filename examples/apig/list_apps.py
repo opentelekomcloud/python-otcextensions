@@ -13,11 +13,10 @@
 """
 List Apps
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    'limit': 5
-}
-apps = conn.apig.apps(gateway='gateway_id', **attrs)
+conn = openstack.connect(cloud="otc")
+attrs = {"limit": 5}
+apps = conn.apig.apps(gateway="gateway_id", **attrs)

@@ -13,10 +13,11 @@
 """
 List all Distributed Cache Service Specifications
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 for specification in conn.dcs.service_specifications():

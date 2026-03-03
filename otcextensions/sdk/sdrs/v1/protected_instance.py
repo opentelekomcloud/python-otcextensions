@@ -9,39 +9,39 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import resource
 from openstack import utils
-from openstack import exceptions
 
 
 class Attachment(resource.Resource):
     #: Properties
     #: Replication pair ID
-    replication = resource.Body('replication')
+    replication = resource.Body("replication")
     #: Protected instance attached disk name
-    device = resource.Body('device')
+    device = resource.Body("device")
 
 
 class Metadata(resource.Resource):
     #: Properties
     #: Resource status (frozen or not)
-    system_frozen = resource.Body('__system__frozen',
-                                  type=bool)
+    system_frozen = resource.Body("__system__frozen", type=bool)
 
 
 class TagSpec(resource.Resource):
     #: Properties
     #: Tag key
-    key = resource.Body('key')
+    key = resource.Body("key")
     #: Tag value
-    value = resource.Body('value')
+    value = resource.Body("value")
 
 
 class ProtectedInstance(resource.Resource):
     """SDRS Protected Instance Resource"""
-    resource_key = 'protected_instance'
-    resources_key = 'protected_instances'
-    base_path = '/protected-instances'
+
+    resource_key = "protected_instance"
+    resources_key = "protected_instances"
+    base_path = "/protected-instances"
 
     # capabilities
     allow_create = True
@@ -51,60 +51,72 @@ class ProtectedInstance(resource.Resource):
     allow_commit = True
 
     _query_mapping = resource.QueryParameters(
-        'availability_zone', 'limit', 'marker', 'name', 'offset',
-        'protected_instance_ids', 'query_type', 'server_group_id',
-        'server_group_ids', 'status')
+        "availability_zone",
+        "limit",
+        "marker",
+        "name",
+        "offset",
+        "protected_instance_ids",
+        "query_type",
+        "server_group_id",
+        "server_group_ids",
+        "status",
+    )
 
     #: Properties
     #: Attached replication pair info
-    attachment = resource.Body('attachment', type=list, list_type=Attachment)
+    attachment = resource.Body("attachment", type=list, list_type=Attachment)
     #: Creation time
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Protected instance description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Specifies whether to delete EIP on DR site server
     #: Default: False
-    delete_target_eip = resource.Body('delete_target_eip', type=bool)
+    delete_target_eip = resource.Body("delete_target_eip", type=bool)
     #: Specifies whether to delete server on DR site server
     #: Default: False
-    delete_target_server = resource.Body('delete_target_server', type=bool)
+    delete_target_server = resource.Body("delete_target_server", type=bool)
     #: DR site server flavor ID
-    flavorRef = resource.Body('flavorRef')
+    flavorRef = resource.Body("flavorRef")
     #: Protected instance ID
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Created task job ID
-    job_id = resource.Body('job_id')
+    job_id = resource.Body("job_id")
     #: Protected instance metadata
-    metadata = resource.Body('metadata', type=Metadata)
+    metadata = resource.Body("metadata", type=Metadata)
     #: Protected instance name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Network ID of the subnet for primary NIC on
     #: DR site server
-    primary_subnet_id = resource.Body('primary_subnet_id')
+    primary_subnet_id = resource.Body("primary_subnet_id")
     #: IP address of the primary NIC on DR site server
-    primary_ip_address = resource.Body('primary_ip_address')
+    primary_ip_address = resource.Body("primary_ip_address")
     #: Production site of protection group
-    priority_station = resource.Body('priority_station')
+    priority_station = resource.Body("priority_station")
     #: Protected instance synch progress
-    progress = resource.Body('progress', type=int)
+    progress = resource.Body("progress", type=int)
     #: Protection group ID
-    server_group_id = resource.Body('server_group_id')
+    server_group_id = resource.Body("server_group_id")
     #: Production site ECS ID
-    server_id = resource.Body('server_id')
+    server_id = resource.Body("server_id")
     #: Production site server ID
-    source_server = resource.Body('source_server')
+    source_server = resource.Body("source_server")
     #: Protected instance status
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Instance tag list
-    tags = resource.Body('tags', type=list, list_type=TagSpec)
+    tags = resource.Body("tags", type=list, list_type=TagSpec)
     #: DR site server ID
-    target_server = resource.Body('target_server')
+    target_server = resource.Body("target_server")
     #: Update time
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")
 
-    def delete(self, session,
-               delete_target_server=False, delete_target_eip=False,
-               ignore_missing=True):
+    def delete(
+        self,
+        session,
+        delete_target_server=False,
+        delete_target_eip=False,
+        ignore_missing=True,
+    ):
         """Delete the remote resource based on this instance.
 
         This function overrides default Resource.delete to enable params
@@ -123,12 +135,11 @@ class ProtectedInstance(resource.Resource):
         :return: This :class:`Group` instance.
         """
         body = {
-            'delete_target_server': delete_target_server,
-            'delete_target_eip': delete_target_eip
+            "delete_target_server": delete_target_server,
+            "delete_target_eip": delete_target_eip,
         }
         request = self._prepare_request()
-        response = session.delete(request.url,
-                                  json=body)
+        response = session.delete(request.url, json=body)
         try:
             self._translate_response(response, has_body=True)
         except exceptions.ResourceNotFound:
@@ -137,8 +148,9 @@ class ProtectedInstance(resource.Resource):
             raise
         return self
 
-    def attach_pair(self, session, protected_instance,
-                    replication_id, device='/dev/vdb'):
+    def attach_pair(
+        self, session, protected_instance, replication_id, device="/dev/vdb"
+    ):
         """Method to attach replication pair to the specified
             protected instance
 
@@ -150,20 +162,17 @@ class ProtectedInstance(resource.Resource):
             attached
         :param str device: disk device name of a replication pair
         """
-        url = utils.urljoin(self.base_path,
-                            protected_instance,
-                            'attachreplication')
+        url = utils.urljoin(self.base_path, protected_instance, "attachreplication")
         body = {
             "replicationAttachment": {
                 "replication_id": replication_id,
-                "device": device
+                "device": device,
             }
         }
 
         return session.post(url, json=body)
 
-    def detach_pair(self, session, protected_instance,
-                    replication_id):
+    def detach_pair(self, session, protected_instance, replication_id):
         """Method to detach replication pair from the specified
             protected instance
 
@@ -174,15 +183,20 @@ class ProtectedInstance(resource.Resource):
         :param str replication_id: ID of replication pair to be
             detached
         """
-        url = utils.urljoin(self.base_path,
-                            protected_instance,
-                            'detachreplication',
-                            replication_id)
+        url = utils.urljoin(
+            self.base_path, protected_instance, "detachreplication", replication_id
+        )
 
         return session.delete(url)
 
-    def add_nic(self, session, protected_instance, subnet_id,
-                security_groups=None, ip_address=None):
+    def add_nic(
+        self,
+        session,
+        protected_instance,
+        subnet_id,
+        security_groups=None,
+        ip_address=None,
+    ):
         """Method to add NIC to protected instance
 
         :param session: The session to use for making this request.
@@ -194,21 +208,16 @@ class ProtectedInstance(resource.Resource):
             to be added for NIC in format 'id': 'value'
         :param str ip_address: IP address of NIC
         """
-        body = {
-            'subnet_id': subnet_id
-        }
+        body = {"subnet_id": subnet_id}
         if security_groups:
-            body['security_groups'] = security_groups
+            body["security_groups"] = security_groups
         if ip_address:
-            body['ip_address'] = ip_address
+            body["ip_address"] = ip_address
 
-        url = utils.urljoin(self.base_path,
-                            protected_instance,
-                            'nic')
+        url = utils.urljoin(self.base_path, protected_instance, "nic")
         return session.post(url, json=body)
 
-    def delete_nic(self, session, protected_instance,
-                   nic_id):
+    def delete_nic(self, session, protected_instance, nic_id):
         """Method to remove NIC to protected instance
 
         :param session: The session to use for making this request.
@@ -217,17 +226,18 @@ class ProtectedInstance(resource.Resource):
             for which NIC will be added
         :param str nic_id: ID of Network interface card
         """
-        body = {
-            'nic_id': nic_id
-        }
-        url = utils.urljoin(self.base_path,
-                            protected_instance,
-                            'nic/delete')
+        body = {"nic_id": nic_id}
+        url = utils.urljoin(self.base_path, protected_instance, "nic/delete")
         return session.post(url, json=body)
 
-    def modify_instance(self, session,
-                        protected_instance, flavor=None,
-                        production_flavor=None, dr_flavor=None):
+    def modify_instance(
+        self,
+        session,
+        protected_instance,
+        flavor=None,
+        production_flavor=None,
+        dr_flavor=None,
+    ):
         """Method to modify server specifications
 
         :param session: The session to use for making this request.
@@ -239,17 +249,13 @@ class ProtectedInstance(resource.Resource):
         :param str dr_flavor: flavor ID for DR site
             If 'flavor' is specified this parameter doesn't take effect
         """
-        body = {
-            'resize': {}
-        }
+        body = {"resize": {}}
         if flavor:
-            body['resize']['flavorRef'] = flavor
+            body["resize"]["flavorRef"] = flavor
         if production_flavor:
-            body['resize']['production_flavorRef'] = production_flavor
+            body["resize"]["production_flavorRef"] = production_flavor
         if dr_flavor:
-            body['resize']['dr_flavorRef'] = dr_flavor
+            body["resize"]["dr_flavorRef"] = dr_flavor
 
-        url = utils.urljoin(self.base_path,
-                            protected_instance,
-                            'resize')
+        url = utils.urljoin(self.base_path, protected_instance, "resize")
         return session.post(url, json=body)

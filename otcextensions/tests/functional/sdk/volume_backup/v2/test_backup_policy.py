@@ -19,12 +19,12 @@ def create_backup_policy(client, name):
     data = {
         "name": name,
         "scheduled_policy": {
-            "remain_first_backup_of_curMonth": 'Y',
+            "remain_first_backup_of_curMonth": "Y",
             "rentention_num": 10,
             "frequency": 1,
             "start_time": "12:00",
-            "status": "ON"
-        }
+            "status": "ON",
+        },
     }
     return client.create_backup_policy(**data)
 
@@ -36,14 +36,14 @@ class TestBackupPolicy(TestVbs):
 
     def setUp(self):
         super(TestBackupPolicy, self).setUp()
-        self.policy = create_backup_policy(self.client,
-                                           self.BACKUP_POLICY_NAME)
+        self.policy = create_backup_policy(self.client, self.BACKUP_POLICY_NAME)
 
     def tearDown(self):
         #: delete backup policy
         if self.policy and self.volume:
             self.conn.volume_backup.unlink_resources_of_policy(
-                self.policy, [self.volume.id])
+                self.policy, [self.volume.id]
+            )
         if self.policy:
             self.conn.volume_backup.delete_backup_policy(self.policy)
 
@@ -62,12 +62,12 @@ class TestBackupPolicy(TestVbs):
     def test_enable_policy(self):
         policy = self.client.enable_policy(self.policy)
         assert isinstance(policy, _backup_policy.BackupPolicy)
-        self.assertEqual(policy.scheduled_policy.status, 'ON')
+        self.assertEqual(policy.scheduled_policy.status, "ON")
 
     def test_disable_policy(self):
         policy = self.client.disable_policy(self.policy)
         assert isinstance(policy, _backup_policy.BackupPolicy)
-        self.assertEqual(policy.scheduled_policy.status, 'OFF')
+        self.assertEqual(policy.scheduled_policy.status, "OFF")
 
     def test_execute_policy(self):
         policy = self.client.enable_policy(self.policy)

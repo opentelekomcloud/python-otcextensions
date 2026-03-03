@@ -12,6 +12,7 @@
 #
 
 """Identity custom role v3.0 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -24,38 +25,35 @@ LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class ListCustomRoles(command.Lister):
-    _description = _('List Identity Custom Roles')
+    _description = _("List Identity Custom Roles")
     columns = (
-        'id',
-        'name',
-        'description',
-        'domain_id',
-        'references',
-        'catalog',
-        'display_name',
-        'type',
-        'created_at',
-        'updated_at',
+        "id",
+        "name",
+        "description",
+        "domain_id",
+        "references",
+        "catalog",
+        "display_name",
+        "type",
+        "created_at",
+        "updated_at",
     )
 
     def get_parser(self, prog_name):
         parser = super(ListCustomRoles, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--page',
-            metavar='<page>',
-            help=_('Page number for pagination query.')
+            "--page", metavar="<page>", help=_("Page number for pagination query.")
         )
         parser.add_argument(
-            '--per_page',
-            metavar='<per_page>',
-            help=_('Number of data records to be displayed on each page.')
+            "--per_page",
+            metavar="<per_page>",
+            help=_("Number of data records to be displayed on each page."),
         )
         return parser
 
@@ -63,28 +61,28 @@ class ListCustomRoles(command.Lister):
         client = self.app.client_manager.iam
 
         table_columns = (
-            'ID',
-            'Name',
-            'Description',
-            'Domain ID',
-            'References',
-            'Catalog',
-            'Display name',
-            'Type',
-            'Created At',
-            'Updated At',
+            "ID",
+            "Name",
+            "Description",
+            "Domain ID",
+            "References",
+            "Catalog",
+            "Display name",
+            "Type",
+            "Created At",
+            "Updated At",
         )
 
         attrs = {}
 
         if parsed_args.page:
-            attrs['page'] = parsed_args.page
+            attrs["page"] = parsed_args.page
         if parsed_args.page:
-            attrs['per_page'] = parsed_args.per_page
+            attrs["per_page"] = parsed_args.per_page
         data = client.custom_roles(**attrs)
 
-        table = (table_columns,
-                 (utils.get_dict_properties(
-                     s, self.columns
-                 ) for s in data))
+        table = (
+            table_columns,
+            (utils.get_dict_properties(s, self.columns) for s in data),
+        )
         return table

@@ -28,20 +28,28 @@ class TestListDMSInstanceTopic(TestDMSInstanceTopic):
 
     topics = fakes.FakeTopic.create_multiple(3)
 
-    columns = ('ID', 'replication', 'partition', 'retention_time',
-               'is_sync_flush', 'is_sync_replication')
+    columns = (
+        "ID",
+        "replication",
+        "partition",
+        "retention_time",
+        "is_sync_flush",
+        "is_sync_replication",
+    )
 
     data = []
 
     for s in topics:
-        data.append((
-            s.id,
-            s.replication,
-            s.partition,
-            s.retention_time,
-            s.is_sync_flush,
-            s.is_sync_replication
-        ))
+        data.append(
+            (
+                s.id,
+                s.replication,
+                s.partition,
+                s.retention_time,
+                s.is_sync_flush,
+                s.is_sync_replication,
+            )
+        )
 
     def setUp(self):
         super(TestListDMSInstanceTopic, self).setUp()
@@ -51,27 +59,20 @@ class TestListDMSInstanceTopic(TestDMSInstanceTopic):
         self.client.topics = mock.Mock()
 
     def test_list_topics(self):
-        arglist = [
-            'inst'
-        ]
+        arglist = ["inst"]
 
-        verifylist = [
-            ('instance', 'inst')
-        ]
+        verifylist = [("instance", "inst")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.topics.side_effect = [
-            self.topics
-        ]
+        self.client.topics.side_effect = [self.topics]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_once_with(
-            'inst', ignore_missing=False)
+        self.client.find_instance.assert_called_once_with("inst", ignore_missing=False)
         self.client.topics.assert_called_once_with(instance=self.instance)
 
         self.assertEqual(self.columns, columns)
@@ -88,11 +89,8 @@ class TestDeleteDMSInstanceTopic(TestDMSInstanceTopic):
         self.client.delete_topic = mock.Mock()
 
     def test_delete(self):
-        arglist = ['inst', 't1']
-        verifylist = [
-            ('instance', 'inst'),
-            ('topic', ['t1'])
-        ]
+        arglist = ["inst", "t1"]
+        verifylist = [("instance", "inst"), ("topic", ["t1"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -102,23 +100,19 @@ class TestDeleteDMSInstanceTopic(TestDMSInstanceTopic):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [mock.call(instance=self.instance, topics=['t1'])]
+        calls = [mock.call(instance=self.instance, topics=["t1"])]
 
-        self.client.find_instance.assert_called_with(
-            'inst', ignore_missing=False)
+        self.client.find_instance.assert_called_with("inst", ignore_missing=False)
         self.client.delete_topic.assert_has_calls(calls)
         self.assertEqual(1, self.client.delete_topic.call_count)
 
     def test_delete_multiple(self):
         arglist = [
-            'inst',
-            't1',
-            't2',
+            "inst",
+            "t1",
+            "t2",
         ]
-        verifylist = [
-            ('instance', 'inst'),
-            ('topic', ['t1', 't2'])
-        ]
+        verifylist = [("instance", "inst"), ("topic", ["t1", "t2"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -128,10 +122,9 @@ class TestDeleteDMSInstanceTopic(TestDMSInstanceTopic):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [mock.call(instance=self.instance, topics=['t1', 't2'])]
+        calls = [mock.call(instance=self.instance, topics=["t1", "t2"])]
 
-        self.client.find_instance.assert_called_with(
-            'inst', ignore_missing=False)
+        self.client.find_instance.assert_called_with("inst", ignore_missing=False)
         self.client.delete_topic.assert_has_calls(calls)
         self.assertEqual(1, self.client.delete_topic.call_count)
 
@@ -140,8 +133,14 @@ class TestCreateDMSInstanceTopic(TestDMSInstanceTopic):
 
     _data = fakes.FakeTopic.create_one()
 
-    columns = ('id', 'is_sync_flush', 'is_sync_replication', 'partition',
-               'replication', 'retention_time')
+    columns = (
+        "id",
+        "is_sync_flush",
+        "is_sync_replication",
+        "partition",
+        "replication",
+        "retention_time",
+    )
 
     data = fakes.gen_data(_data, columns)
 
@@ -154,42 +153,43 @@ class TestCreateDMSInstanceTopic(TestDMSInstanceTopic):
 
     def test_create_default(self):
         arglist = [
-            'inst',
-            'topic',
-            '--partition', '5',
-            '--replication', '3',
-            '--retention-time', '8',
-            '--enable-sync-flush',
-            '--enable-sync-replication'
+            "inst",
+            "topic",
+            "--partition",
+            "5",
+            "--replication",
+            "3",
+            "--retention-time",
+            "8",
+            "--enable-sync-flush",
+            "--enable-sync-replication",
         ]
         verifylist = [
-            ('instance', 'inst'),
-            ('id', 'topic'),
-            ('partition', 5),
-            ('replication', 3),
-            ('retention_time', 8),
-            ('enable_sync_flush', True),
-            ('enable_sync_replication', True),
+            ("instance", "inst"),
+            ("id", "topic"),
+            ("partition", 5),
+            ("replication", 3),
+            ("retention_time", 8),
+            ("enable_sync_flush", True),
+            ("enable_sync_replication", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_topic.side_effect = [
-            self._data
-        ]
+        self.client.create_topic.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_topic.assert_called_with(
             instance=self.instance,
-            id='topic',
+            id="topic",
             is_sync_flush=True,
             is_sync_replication=True,
             partition=5,
             replication=3,
-            retention_time=8
+            retention_time=8,
         )
 
         self.assertEqual(self.columns, columns)

@@ -12,7 +12,6 @@
 import uuid
 
 # from openstack import resource
-
 from otcextensions.tests.functional.sdk.waf import TestWaf
 
 
@@ -72,9 +71,7 @@ rNcviQ==
 
         self.cert_name = "SDK-" + uuid.uuid4().hex
         self.cert = self.client.create_certificate(
-            key=self._PRIVATE_KEY,
-            content=self._CERTIFICATE,
-            name=self.cert_name
+            key=self._PRIVATE_KEY, content=self._CERTIFICATE, name=self.cert_name
         )
 
         self.addCleanup(self.conn.waf.delete_certificate, self.cert)
@@ -98,16 +95,11 @@ rNcviQ==
 
     def test_update_certificate(self):
         cert2 = self.client.create_certificate(
-            key=self._PRIVATE_KEY,
-            content=self._CERTIFICATE,
-            name=self.cert_name + "_2"
+            key=self._PRIVATE_KEY, content=self._CERTIFICATE, name=self.cert_name + "_2"
         )
 
         self.addCleanup(self.conn.waf.delete_certificate, cert2)
-        cert2_cmp = self.client.update_certificate(
-            cert2,
-            name=self.cert_name + "_2_cp"
-        )
+        cert2_cmp = self.client.update_certificate(cert2, name=self.cert_name + "_2_cp")
         self.assertEqual(cert2.name, cert2_cmp.name)
 
         cert2_cmp = self.client.get_certificate(cert2_cmp.id)

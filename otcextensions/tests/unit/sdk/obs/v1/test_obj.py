@@ -15,8 +15,8 @@ from collections import namedtuple
 
 import mock
 from keystoneauth1 import adapter
-from openstack.tests.unit import base
 
+from openstack.tests.unit import base
 from otcextensions.sdk.obs.v1 import obj
 
 EXAMPLE = {
@@ -37,13 +37,13 @@ EXAMPLE_LIST = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
 """
 
-INITIATE_MPU_RESP = '''
+INITIATE_MPU_RESP = """
 <InitiateMultipartUpload>
 <UploadId>ID</UploadId>
 </InitiateMultipartUpload>
-'''
+"""
 
-LIST_PARTS_RESP = '''
+LIST_PARTS_RESP = """
 <ListPartsResult>
 <StorageClass>STANDARD</StorageClass>
 <PartNumberMarker>1</PartNumberMarker>
@@ -63,15 +63,16 @@ LIST_PARTS_RESP = '''
 <Size>10485760</Size>
 </Part>
 </ListPartsResult>
-'''
+"""
 
-COMPLETE_MPU_RESP = \
-    '<CompleteMultipartUpload>' \
-    '<Part><PartNumber>1</PartNumber><ETag>1</ETag>' \
-    '</Part><Part><PartNumber>2</PartNumber><ETag>2</ETag>' \
-    '</Part><Part><PartNumber>3</PartNumber>' \
-    '<ETag>3</ETag></Part>' \
-    '</CompleteMultipartUpload>'
+COMPLETE_MPU_RESP = (
+    "<CompleteMultipartUpload>"
+    "<Part><PartNumber>1</PartNumber><ETag>1</ETag>"
+    "</Part><Part><PartNumber>2</PartNumber><ETag>2</ETag>"
+    "</Part><Part><PartNumber>3</PartNumber>"
+    "<ETag>3</ETag></Part>"
+    "</CompleteMultipartUpload>"
+)
 
 
 class TestObject(base.TestCase):
@@ -85,7 +86,7 @@ class TestObject(base.TestCase):
     def test_basic(self):
         sot = obj.Object()
 
-        self.assertEqual('/', sot.base_path)
+        self.assertEqual("/", sot.base_path)
 
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_get)
@@ -95,10 +96,10 @@ class TestObject(base.TestCase):
 
     def test_make_it(self):
         sot = obj.Object(**EXAMPLE)
-        self.assertEqual(EXAMPLE['Key'], sot.id)
-        self.assertEqual(EXAMPLE['Key'], sot.name)
-        self.assertEqual(EXAMPLE['LastModified'], sot.last_modified)
-        self.assertEqual(EXAMPLE['ETag'], sot.etag)
+        self.assertEqual(EXAMPLE["Key"], sot.id)
+        self.assertEqual(EXAMPLE["Key"], sot.name)
+        self.assertEqual(EXAMPLE["LastModified"], sot.last_modified)
+        self.assertEqual(EXAMPLE["ETag"], sot.etag)
 
     def test_list(self):
         sot = obj.Object()
@@ -109,105 +110,92 @@ class TestObject(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = list(sot.list(
-            self.sess,
-        ))
+        result = list(
+            sot.list(
+                self.sess,
+            )
+        )
 
         self.assertEqual(1, len(result))
-        self.assertEqual('setup.py', result[0].name)
-        self.assertEqual('9c24605289b49ad77a51ba7986425158', result[0].etag)
+        self.assertEqual("setup.py", result[0].name)
+        self.assertEqual("9c24605289b49ad77a51ba7986425158", result[0].etag)
         self.assertEqual(1030, result[0].content_length)
 
     def test_create(self):
-        data = 'some test data'
+        data = "some test data"
         md5 = hashlib.md5()
         md5.update(str.encode(data))
         data_md5 = base64.b64encode(md5.digest()).decode()
-        sot = obj.Object(name='test-v1', data=data)
+        sot = obj.Object(name="test-v1", data=data)
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
-        mock_response.content = ''
+        mock_response.content = ""
         mock_response.headers = {}
 
         self.sess.put.return_value = mock_response
 
-        sot.create(
-            self.sess,
-            endpoint_override='epo',
-            requests_auth=2)
+        sot.create(self.sess, endpoint_override="epo", requests_auth=2)
 
         self.sess.put.assert_called_once_with(
-            '/test-v1',
+            "/test-v1",
             data=data,
-            endpoint_override='epo',
+            endpoint_override="epo",
             requests_auth=2,
-            headers={
-                'Content-MD5': data_md5
-            }
+            headers={"Content-MD5": data_md5},
         )
 
     def test_initiate_multipart_upload(self):
         sot = obj.Object()
-        return_data = namedtuple('response', ['content'])
+        return_data = namedtuple("response", ["content"])
 
         response_data = return_data(INITIATE_MPU_RESP)
 
         self.sess.post = mock.Mock(return_value=response_data)
         self.sess.region_name = mock.Mock(return_value="eu-de")
 
-        sot.initiate_multipart_upload(
-            self.sess,
-            'http://obs.otc.t-systems.com',
-            'test'
-        )
+        sot.initiate_multipart_upload(self.sess, "http://obs.otc.t-systems.com", "test")
 
         self.sess.post.assert_called_once_with(
-            url='/test?uploads',
-            endpoint_override='http://obs.otc.t-systems.com'
+            url="/test?uploads", endpoint_override="http://obs.otc.t-systems.com"
         )
 
     def test_get_parts(self):
         sot = obj.Object()
-        return_data = namedtuple('response', ['content'])
+        return_data = namedtuple("response", ["content"])
 
         response_data = return_data(LIST_PARTS_RESP)
 
         self.sess.get = mock.Mock(return_value=response_data)
         self.sess.region_name = mock.Mock(return_value="eu-de")
-        sot.get_parts(
-            self.sess,
-            'http://obs.otc.t-systems.com',
-            'test'
-        )
+        sot.get_parts(self.sess, "http://obs.otc.t-systems.com", "test")
 
         self.sess.get.assert_called_once_with(
-            'http://obs.otc.t-systems.com',
-            requests_auth='test'
+            "http://obs.otc.t-systems.com", requests_auth="test"
         )
 
     def test_complete_multipart_upload(self):
         sot = obj.Object()
         input_data = [
-            {'PartNumber': '1', 'ETag': '1'},
-            {'PartNumber': '2', 'ETag': '2'},
-            {'PartNumber': '3', 'ETag': '3'}
+            {"PartNumber": "1", "ETag": "1"},
+            {"PartNumber": "2", "ETag": "2"},
+            {"PartNumber": "3", "ETag": "3"},
         ]
 
         self.sess.post = mock.Mock(return_value=input_data)
         self.sess.region_name = mock.Mock(return_value="eu-de")
         sot.complete_multipart_upload(
             self.sess,
-            'http://obs.otc.t-systems.com',
-            'test',
+            "http://obs.otc.t-systems.com",
+            "test",
             input_data,
             {},
-            requests_auth='requests_auth'
+            requests_auth="requests_auth",
         )
 
         self.sess.post.assert_called_once_with(
-            'http://obs.otc.t-systems.com?uploadId=test',
+            "http://obs.otc.t-systems.com?uploadId=test",
             data=COMPLETE_MPU_RESP,
             headers={},
-            requests_auth='requests_auth'
+            requests_auth="requests_auth",
         )

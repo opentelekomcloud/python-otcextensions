@@ -13,11 +13,11 @@
 """
 List all DNAT Rules
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for dnat_rule in conn.nat.dnat_rules():
     print(dnat_rule)

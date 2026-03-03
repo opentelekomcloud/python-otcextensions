@@ -13,19 +13,15 @@
 """
 Create ip address group
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    "name": "test-ip-group",
-    "ip_list": {
-        "ip": "192.168.0.2"
-    }
-}
+attrs = {"name": "test-ip-group", "ip_list": {"ip": "192.168.0.2"}}
 
 ip_group = conn.vlb.create_ip_address_group(**attrs)
 print(ip_group)

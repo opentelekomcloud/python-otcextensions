@@ -13,19 +13,20 @@
 """
 Delete dependency version
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-u = 'https://fg-test-files.obs.eu-de.otc.t-systems.com/dependency.zip'
+u = "https://fg-test-files.obs.eu-de.otc.t-systems.com/dependency.zip"
 attrs = {
-    'depend_link': u,
-    'depend_type': 'obs',
-    'runtime': 'Python3.10',
-    'name': 'test-dep-1'
+    "depend_link": u,
+    "depend_type": "obs",
+    "runtime": "Python3.10",
+    "name": "test-dep-1",
 }
 dv = conn.functiongraph.create_dependency_version(**attrs)
 conn.functiongraph.delete_dependency_version(dv)

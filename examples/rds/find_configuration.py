@@ -13,12 +13,12 @@
 """
 Find an RDS configuration
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'configuration_name_or_id'
+name_or_id = "configuration_name_or_id"
 configuration = conn.rds.find_configuration(name_or_id=name_or_id)
 print(configuration)

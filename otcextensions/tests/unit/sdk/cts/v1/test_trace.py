@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import base
-
 from otcextensions.common import format
 from otcextensions.sdk.cts.v1 import trace
 
@@ -28,7 +27,7 @@ EXAMPLE = {
     "trace_rating": "normal",
     "trace_type": "ConsoleAction",
     "record_time": 1534748957990,
-    "trace_id": FAKE_ID
+    "trace_id": FAKE_ID,
 }
 
 
@@ -37,27 +36,25 @@ class TestTrace(base.TestCase):
     def test_basic(self):
         sot = trace.Trace()
 
-        self.assertEqual('/%(tracker_name)s/trace', sot.base_path)
+        self.assertEqual("/%(tracker_name)s/trace", sot.base_path)
 
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
 
         sot = trace.Trace(**EXAMPLE)
-        self.assertEqual(EXAMPLE['trace_id'], sot.id)
+        self.assertEqual(EXAMPLE["trace_id"], sot.id)
+        self.assertEqual(format.TimeTMsStr().deserialize(EXAMPLE["time"]), sot.time),
+        self.assertEqual(EXAMPLE["user"], sot.user)
+        self.assertEqual(EXAMPLE["code"], sot.code)
+        self.assertEqual(EXAMPLE["service_type"], sot.service_type)
+        self.assertEqual(EXAMPLE["resource_type"], sot.resource_type)
+        self.assertEqual(EXAMPLE["resource_name"], sot.resource_name)
+        self.assertEqual(EXAMPLE["resource_id"], sot.resource_id)
+        self.assertEqual(EXAMPLE["source_ip"], sot.source_ip)
+        self.assertEqual(EXAMPLE["trace_name"], sot.name)
+        self.assertEqual(EXAMPLE["trace_rating"], sot.level)
+        self.assertEqual(EXAMPLE["trace_type"], sot.type)
         self.assertEqual(
-            format.TimeTMsStr().deserialize(EXAMPLE['time']),
-            sot.time),
-        self.assertEqual(EXAMPLE['user'], sot.user)
-        self.assertEqual(EXAMPLE['code'], sot.code)
-        self.assertEqual(EXAMPLE['service_type'], sot.service_type)
-        self.assertEqual(EXAMPLE['resource_type'], sot.resource_type)
-        self.assertEqual(EXAMPLE['resource_name'], sot.resource_name)
-        self.assertEqual(EXAMPLE['resource_id'], sot.resource_id)
-        self.assertEqual(EXAMPLE['source_ip'], sot.source_ip)
-        self.assertEqual(EXAMPLE['trace_name'], sot.name)
-        self.assertEqual(EXAMPLE['trace_rating'], sot.level)
-        self.assertEqual(EXAMPLE['trace_type'], sot.type)
-        self.assertEqual(
-            format.TimeTMsStr().deserialize(EXAMPLE['record_time']),
-            sot.record_time)
+            format.TimeTMsStr().deserialize(EXAMPLE["record_time"]), sot.record_time
+        )

@@ -13,11 +13,12 @@
 """
 Get all reserved instances configs
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 for i in conn.functiongraph.reserved_instances_config():

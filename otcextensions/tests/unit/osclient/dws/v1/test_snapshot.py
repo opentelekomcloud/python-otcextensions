@@ -25,17 +25,17 @@ class TestListSnapshots(fakes.TestDws):
     objects = fakes.FakeSnapshot.create_multiple(3)
 
     column_list_headers = (
-        'ID',
-        'Name',
-        'Type',
-        'Cluster Id',
+        "ID",
+        "Name",
+        "Type",
+        "Cluster Id",
     )
 
     columns = (
-        'id',
-        'name',
-        'type',
-        'cluster_id',
+        "id",
+        "name",
+        "type",
+        "cluster_id",
     )
 
     data = []
@@ -81,15 +81,15 @@ class TestCreateSnapshot(fakes.TestDws):
     _snapshot = fakes.FakeSnapshot.create_one()
 
     columns = (
-        'cluster_id',
-        'created_at',
-        'description',
-        'id',
-        'name',
-        'size',
-        'status',
-        'type',
-        'updated_at',
+        "cluster_id",
+        "created_at",
+        "description",
+        "id",
+        "name",
+        "size",
+        "status",
+        "type",
+        "updated_at",
     )
 
     data = fakes.gen_data(_snapshot, columns)
@@ -109,15 +109,16 @@ class TestCreateSnapshot(fakes.TestDws):
     def test_create(self):
         arglist = [
             self._cluster.name,
-            'test-snapshot',
-            '--description', 'test description',
-            '--wait',
+            "test-snapshot",
+            "--description",
+            "test description",
+            "--wait",
         ]
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('name', 'test-snapshot'),
-            ('description', 'test description'),
-            ('wait', True),
+            ("cluster", self._cluster.name),
+            ("name", "test-snapshot"),
+            ("description", "test description"),
+            ("wait", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -125,9 +126,9 @@ class TestCreateSnapshot(fakes.TestDws):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'name': 'test-snapshot',
-            'cluster_id': self._cluster.id,
-            'description': 'test description',
+            "name": "test-snapshot",
+            "cluster_id": self._cluster.id,
+            "description": "test description",
         }
         self.client.create_snapshot.assert_called_with(**attrs)
         self.client.wait_for_cluster.assert_called_with(
@@ -140,15 +141,15 @@ class TestShowSnapshot(fakes.TestDws):
     _snapshot = fakes.FakeSnapshot.create_one()
 
     columns = (
-        'cluster_id',
-        'created_at',
-        'description',
-        'id',
-        'name',
-        'size',
-        'status',
-        'type',
-        'updated_at',
+        "cluster_id",
+        "created_at",
+        "description",
+        "id",
+        "name",
+        "size",
+        "status",
+        "type",
+        "updated_at",
     )
 
     data = fakes.gen_data(_snapshot, columns)
@@ -180,7 +181,7 @@ class TestShowSnapshot(fakes.TestDws):
         ]
 
         verifylist = [
-            ('snapshot', self._snapshot.id),
+            ("snapshot", self._snapshot.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -197,26 +198,26 @@ class TestShowSnapshot(fakes.TestDws):
 
     def test_show_non_existent(self):
         arglist = [
-            'unexist_dws_snapshot',
+            "unexist_dws_snapshot",
         ]
 
         verifylist = [
-            ('snapshot', 'unexist_dws_snapshot'),
+            ("snapshot", "unexist_dws_snapshot"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
+        find_mock_result = exceptions.CommandError("Resource Not Found")
         self.client.find_snapshot = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
+            self.assertEqual("Resource Not Found", str(e))
         self.client.find_snapshot.assert_called_with(
-            'unexist_dws_snapshot', ignore_missing=False
+            "unexist_dws_snapshot", ignore_missing=False
         )
 
 
@@ -225,42 +226,42 @@ class TestRestoreSnapshot(fakes.TestDws):
     _snapshot = fakes.FakeSnapshot.create_one()
 
     columns = (
-        'action_progress',
-        'availability_zone',
-        'created_at',
-        'endpoints',
-        'enterprise_project_id',
-        'flavor',
-        'flavor_id',
-        'floating_ip',
-        'guest_agent_version',
-        'id',
-        'is_logical_cluster_enabled',
-        'is_logical_cluster_initialed',
-        'is_logical_cluster_mode',
-        'maintenance_window',
-        'name',
-        'network_id',
-        'nodes',
-        'num_free_nodes',
-        'num_nodes',
-        'num_recent_events',
-        'parameter_group',
-        'port',
-        'private_domain',
-        'private_ip',
-        'public_domain',
-        'public_endpoints',
-        'router_id',
-        'security_group_id',
-        'spec_version',
-        'status',
-        'sub_status',
-        'tags',
-        'task_status',
-        'updated_at',
-        'user_name',
-        'version',
+        "action_progress",
+        "availability_zone",
+        "created_at",
+        "endpoints",
+        "enterprise_project_id",
+        "flavor",
+        "flavor_id",
+        "floating_ip",
+        "guest_agent_version",
+        "id",
+        "is_logical_cluster_enabled",
+        "is_logical_cluster_initialed",
+        "is_logical_cluster_mode",
+        "maintenance_window",
+        "name",
+        "network_id",
+        "nodes",
+        "num_free_nodes",
+        "num_nodes",
+        "num_recent_events",
+        "parameter_group",
+        "port",
+        "private_domain",
+        "private_ip",
+        "public_domain",
+        "public_endpoints",
+        "router_id",
+        "security_group_id",
+        "spec_version",
+        "status",
+        "sub_status",
+        "tags",
+        "task_status",
+        "updated_at",
+        "user_name",
+        "version",
     )
 
     data = fakes.gen_data(_cluster, columns, cluster._formatters)
@@ -278,28 +279,36 @@ class TestRestoreSnapshot(fakes.TestDws):
 
     def test_restore(self):
         arglist = [
-            'restored-cluster',
-            '--snapshot-id', self._snapshot.id,
-            '--router-id', 'router-uuid',
-            '--network-id', 'network-uuid',
-            '--security-group-id', 'sg-uuid',
-            '--port', '9000',
-            '--availability-zone', 'test-az',
-            '--enterprise-project-id', 'eps-uuid',
-            '--floating-ip', 'auto',
-            '--wait',
+            "restored-cluster",
+            "--snapshot-id",
+            self._snapshot.id,
+            "--router-id",
+            "router-uuid",
+            "--network-id",
+            "network-uuid",
+            "--security-group-id",
+            "sg-uuid",
+            "--port",
+            "9000",
+            "--availability-zone",
+            "test-az",
+            "--enterprise-project-id",
+            "eps-uuid",
+            "--floating-ip",
+            "auto",
+            "--wait",
         ]
         verifylist = [
-            ('name', 'restored-cluster'),
-            ('snapshot_id', self._snapshot.id),
-            ('vpc_id', 'router-uuid'),
-            ('subnet_id', 'network-uuid'),
-            ('security_group_id', 'sg-uuid'),
-            ('port', 9000),
-            ('availability_zone', 'test-az'),
-            ('enterprise_project_id', 'eps-uuid'),
-            ('floating_ip', 'auto'),
-            ('wait', True),
+            ("name", "restored-cluster"),
+            ("snapshot_id", self._snapshot.id),
+            ("vpc_id", "router-uuid"),
+            ("subnet_id", "network-uuid"),
+            ("security_group_id", "sg-uuid"),
+            ("port", 9000),
+            ("availability_zone", "test-az"),
+            ("enterprise_project_id", "eps-uuid"),
+            ("floating_ip", "auto"),
+            ("wait", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -307,21 +316,16 @@ class TestRestoreSnapshot(fakes.TestDws):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'name': 'restored-cluster',
-            'vpc_id': 'router-uuid',
-            'subnet_id': 'network-uuid',
-            'security_group_id': 'sg-uuid',
-            'port': 9000,
-            'availability_zone': 'test-az',
-            'enterprise_project_id': 'eps-uuid',
-            'public_ip': {
-                'public_bind_type': 'auto_assign',
-                'eip_id': ''
-            }
+            "name": "restored-cluster",
+            "vpc_id": "router-uuid",
+            "subnet_id": "network-uuid",
+            "security_group_id": "sg-uuid",
+            "port": 9000,
+            "availability_zone": "test-az",
+            "enterprise_project_id": "eps-uuid",
+            "public_ip": {"public_bind_type": "auto_assign", "eip_id": ""},
         }
-        self.client.restore_snapshot.assert_called_with(
-            self._snapshot.id, **attrs
-        )
+        self.client.restore_snapshot.assert_called_with(self._snapshot.id, **attrs)
         self.client.wait_for_cluster.assert_called_with(
             self._cluster.id, self.default_timeout
         )
@@ -347,7 +351,7 @@ class TestDeleteSnapshot(fakes.TestDws):
         ]
 
         verifylist = [
-            ('snapshot', [self._snapshot[0].id]),
+            ("snapshot", [self._snapshot[0].id]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -370,7 +374,7 @@ class TestDeleteSnapshot(fakes.TestDws):
             arglist.append(dws_snapshot.name)
 
         verifylist = [
-            ('snapshot', snapshot_list),
+            ("snapshot", snapshot_list),
         ]
 
         # Verify cm is triggered with default parameters
@@ -389,24 +393,22 @@ class TestDeleteSnapshot(fakes.TestDws):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._snapshot[0].id,
-            'unexist_dws_snapshot',
+            "unexist_dws_snapshot",
         ]
         verifylist = [
-            ('snapshot', [self._snapshot[0].id, 'unexist_dws_snapshot']),
+            ("snapshot", [self._snapshot[0].id, "unexist_dws_snapshot"]),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         delete_mock_results = [None, exceptions.CommandError]
-        self.client.delete_snapshot = mock.Mock(
-            side_effect=delete_mock_results
-        )
+        self.client.delete_snapshot = mock.Mock(side_effect=delete_mock_results)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('1 of 2 Snapshot(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 Snapshot(s) failed to delete.", str(e))
 
         self.client.delete_snapshot.assert_any_call(self._snapshot[0].id)

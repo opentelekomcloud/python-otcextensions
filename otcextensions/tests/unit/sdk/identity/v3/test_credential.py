@@ -11,9 +11,7 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.identity.v3 import credential
-
 
 FAKE_ID = "945d-fe449be00148"
 EXAMPLE = {
@@ -21,7 +19,7 @@ EXAMPLE = {
     "create_time": "2020-01-08T06:26:08.123059Z",
     "user_id": "07609fb9358010e21f7bc0037...",
     "description": "",
-    "status": "active"
+    "status": "active",
 }
 
 
@@ -33,10 +31,10 @@ class TestCredential(base.TestCase):
     def test_basic(self):
         sot = credential.Credential()
 
-        self.assertEqual('/v3.0/OS-CREDENTIAL/credentials', sot.base_path)
-        self.assertEqual('credentials', sot.resources_key)
-        self.assertEqual('credential', sot.resource_key)
-        self.assertEqual('PUT', sot.commit_method)
+        self.assertEqual("/v3.0/OS-CREDENTIAL/credentials", sot.base_path)
+        self.assertEqual("credentials", sot.resources_key)
+        self.assertEqual("credential", sot.resource_key)
+        self.assertEqual("PUT", sot.commit_method)
 
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)
@@ -44,11 +42,9 @@ class TestCredential(base.TestCase):
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_commit)
 
-        self.assertDictEqual({
-            'limit': 'limit',
-            'marker': 'marker',
-            'user_id': 'user_id'},
-            sot._query_mapping._mapping
+        self.assertDictEqual(
+            {"limit": "limit", "marker": "marker", "user_id": "user_id"},
+            sot._query_mapping._mapping,
         )
 
     def test_make_it(self):
@@ -56,10 +52,10 @@ class TestCredential(base.TestCase):
         sot = credential.Credential(connection=self.cloud, **EXAMPLE)
         # Check how the override with "real" connection works
         self.assertEqual(
-            'https://identity.example.com/v3.0/OS-CREDENTIAL/credentials',
-            sot.base_path)
+            "https://identity.example.com/v3.0/OS-CREDENTIAL/credentials", sot.base_path
+        )
 
-        self.assertEqual(EXAMPLE['access'], sot.id)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['create_time'], sot.created_at)
+        self.assertEqual(EXAMPLE["access"], sot.id)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["status"], sot.status)
+        self.assertEqual(EXAMPLE["create_time"], sot.created_at)

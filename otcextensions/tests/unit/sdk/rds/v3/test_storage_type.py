@@ -10,20 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import base
-
 from otcextensions.sdk.rds.v3 import storage_type
 
 EXAMPLE = {
     "name": "COMMON",
-    "compute_group_type": [
-        "normal",
-        "normal2"
-    ],
-    "az_status": {
-        "eu-de-02": "normal",
-        "eu-de-01": "normal",
-        "eu-de-03": "normal"
-    }
+    "compute_group_type": ["normal", "normal2"],
+    "az_status": {"eu-de-02": "normal", "eu-de-01": "normal", "eu-de-03": "normal"},
 }
 
 
@@ -32,8 +24,8 @@ class TestFlavor(base.TestCase):
     def test_basic(self):
         sot = storage_type.StorageType()
 
-        self.assertEqual('/storage-type/%(datastore_name)s', sot.base_path)
-        self.assertEqual('storage_type', sot.resources_key)
+        self.assertEqual("/storage-type/%(datastore_name)s", sot.base_path)
+        self.assertEqual("storage_type", sot.resources_key)
         self.assertIsNone(sot.resource_key)
 
         self.assertTrue(sot.allow_list)
@@ -41,14 +33,14 @@ class TestFlavor(base.TestCase):
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
-        self.assertDictEqual({'limit': 'limit',
-                              'marker': 'marker',
-                              'version_name': 'version_name'},
-                             sot._query_mapping._mapping)
+        self.assertDictEqual(
+            {"limit": "limit", "marker": "marker", "version_name": "version_name"},
+            sot._query_mapping._mapping,
+        )
 
     def test_make_it(self):
 
         sot = storage_type.StorageType(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['compute_group_type'], sot.compute_group_type)
-        self.assertEqual(EXAMPLE['az_status'], sot.az_status)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["compute_group_type"], sot.compute_group_type)
+        self.assertEqual(EXAMPLE["az_status"], sot.az_status)

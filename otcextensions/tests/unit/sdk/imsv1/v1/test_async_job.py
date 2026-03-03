@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.imsv1.v1 import async_job
 
 EXAMPLE = {
@@ -21,7 +20,7 @@ EXAMPLE = {
     "begin_time": "04-Jun-2015 18:11:06:586",
     "end_time": "",
     "error_code": "404",
-    "fail_reason": "something bad happened"
+    "fail_reason": "something bad happened",
 }
 
 
@@ -29,16 +28,16 @@ class TestAsyncJob(base.TestCase):
 
     def test_basic(self):
         sot = async_job.AsyncJob()
-        path = ''
+        path = ""
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_fetch)
 
     def test_make_it(self):
         sot = async_job.AsyncJob(**EXAMPLE)
-        self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['job_id'], sot.job_id)
-        self.assertEqual(EXAMPLE['job_type'], sot.job_type)
-        self.assertEqual(EXAMPLE['begin_time'], sot.begin_time)
-        self.assertEqual(EXAMPLE['end_time'], sot.end_time)
-        self.assertEqual(EXAMPLE['error_code'], sot.error_code)
-        self.assertEqual(EXAMPLE['fail_reason'], sot.fail_reason)
+        self.assertEqual(EXAMPLE["status"], sot.status)
+        self.assertEqual(EXAMPLE["job_id"], sot.job_id)
+        self.assertEqual(EXAMPLE["job_type"], sot.job_type)
+        self.assertEqual(EXAMPLE["begin_time"], sot.begin_time)
+        self.assertEqual(EXAMPLE["end_time"], sot.end_time)
+        self.assertEqual(EXAMPLE["error_code"], sot.error_code)
+        self.assertEqual(EXAMPLE["fail_reason"], sot.fail_reason)

@@ -24,14 +24,14 @@ def upload_image(conn):
     print("Upload Image:")
 
     # Load fake image data for the example.
-    data = 'This is fake image data.'
+    data = "This is fake image data."
 
     # Build the image attributes and upload the image.
     image_attrs = {
-        'name': EXAMPLE_IMAGE_NAME,
-        'data': data,
-        'disk_format': 'raw',
-        'container_format': 'bare',
-        'visibility': 'public',
+        "name": EXAMPLE_IMAGE_NAME,
+        "data": data,
+        "disk_format": "raw",
+        "container_format": "bare",
+        "visibility": "public",
     }
     conn.image.upload_image(**image_attrs)

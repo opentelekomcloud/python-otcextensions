@@ -13,11 +13,12 @@
 """
 Get a Queue
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-queue = 'queue_id'
+queue = "queue_id"
 raw = conn.dms.get_queue(queue)
 print(raw)

@@ -13,20 +13,23 @@
 """
 Import API
 """
-import openstack
+
 import json
 
+import openstack
+
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-with open('/mnt/c/Users/sand1/PycharmProjects/python-otcextensions/'
-          'otcextensions/tests/functional/sdk/apig/v2/test.json', 'r') as f:
+conn = openstack.connect(cloud="otc")
+with open(
+    "/mnt/c/Users/sand1/PycharmProjects/python-otcextensions/"
+    "otcextensions/tests/functional/sdk/apig/v2/test.json",
+    "r",
+) as f:
     openapi_content = json.load(f)
 attrs = {
     "is_create_group": False,
     "group_id": "ce973ff83ce54ef192c80bde884aa0ac",
     "file_name": "test.json",
-    "swagger": openapi_content
+    "swagger": openapi_content,
 }
-conn.apig.client.import_api(
-    gateway='gateway_id',
-    **attrs)
+conn.apig.client.import_api(gateway="gateway_id", **attrs)

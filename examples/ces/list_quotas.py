@@ -13,11 +13,11 @@
 """
 List all CloudEye quotas
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for quota in conn.ces.quotas():
     print(quota)

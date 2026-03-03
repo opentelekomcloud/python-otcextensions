@@ -11,37 +11,18 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import quota
 
 EXAMPLE = {
     "quotas": {
-        "resources": [{
-            "quota": 60,
-            "used": 3,
-            "type": "fgs_func_scale_down_timeout"
-        }, {
-            "quota": 100,
-            "used": 22,
-            "type": "fgs_func_occurs"
-        }, {
-            "quota": 100,
-            "used": 22,
-            "type": "fgs_func_pat_idle_time"
-        }, {
-            "quota": 100,
-            "used": 22,
-            "type": "fgs_func_num"
-        }, {
-            "quota": 10240,
-            "used": 22,
-            "type": "fgs_func_code_size",
-            "unit": "MB"
-        }, {
-            "quota": 512,
-            "used": 22,
-            "type": "fgs_workflow_num"
-        }]
+        "resources": [
+            {"quota": 60, "used": 3, "type": "fgs_func_scale_down_timeout"},
+            {"quota": 100, "used": 22, "type": "fgs_func_occurs"},
+            {"quota": 100, "used": 22, "type": "fgs_func_pat_idle_time"},
+            {"quota": 100, "used": 22, "type": "fgs_func_num"},
+            {"quota": 10240, "used": 22, "type": "fgs_func_code_size", "unit": "MB"},
+            {"quota": 512, "used": 22, "type": "fgs_workflow_num"},
+        ]
     }
 }
 
@@ -50,10 +31,10 @@ class TestFunctionQuota(base.TestCase):
 
     def test_basic(self):
         sot = quota.Quota()
-        path = '/fgs/quotas'
+        path = "/fgs/quotas"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
         sot = quota.Quota(**EXAMPLE)
-        self.assertEqual(EXAMPLE['quotas'], sot.quotas)
+        self.assertEqual(EXAMPLE["quotas"], sot.quotas)

@@ -21,31 +21,31 @@ from otcextensions.osclient.css.v1 import cluster
 from otcextensions.tests.unit.osclient.css.v1 import fakes
 
 COLUMNS = (
-    'action_progress',
-    'actions',
-    'bandwidth_size',
-    'cmk_id',
-    'created_at',
-    'datastore',
-    'elb_whitelist',
-    'endpoints',
-    'enterprise_project_id',
-    'floating_ip',
-    'id',
-    'is_authority_enabled',
-    'is_backup_enabled',
-    'is_billed',
-    'is_disk_encrypted',
-    'is_https_enabled',
-    'name',
-    'network_id',
-    'nodes',
-    'router_id',
-    'security_group_id',
-    'status',
-    'status_code',
-    'tags',
-    'updated_at',
+    "action_progress",
+    "actions",
+    "bandwidth_size",
+    "cmk_id",
+    "created_at",
+    "datastore",
+    "elb_whitelist",
+    "endpoints",
+    "enterprise_project_id",
+    "floating_ip",
+    "id",
+    "is_authority_enabled",
+    "is_backup_enabled",
+    "is_billed",
+    "is_disk_encrypted",
+    "is_https_enabled",
+    "name",
+    "network_id",
+    "nodes",
+    "router_id",
+    "security_group_id",
+    "status",
+    "status_code",
+    "tags",
+    "updated_at",
 )
 
 
@@ -53,15 +53,15 @@ class TestListClusters(fakes.TestCss):
     _data = fakes.FakeCluster.create_multiple(3)
 
     column_list_headers = (
-        'ID',
-        'Name',
-        'Type',
-        'Version',
-        'Status',
-        'Created At',
+        "ID",
+        "Name",
+        "Type",
+        "Version",
+        "Status",
+        "Created At",
     )
 
-    columns = ('id', 'name', 'type', 'version', 'status', 'created_at')
+    columns = ("id", "name", "type", "version", "status", "created_at")
 
     data = []
 
@@ -70,8 +70,8 @@ class TestListClusters(fakes.TestCss):
             (
                 s.id,
                 s.name,
-                s.datastore['type'],
-                s.datastore['version'],
+                s.datastore["type"],
+                s.datastore["version"],
                 s.status,
                 s.created_at,
             )
@@ -124,77 +124,77 @@ class TestCreateCluster(fakes.TestCss):
 
     def test_create(self):
         arglist = [
-            'test-css',
-            '--flavor',
-            'css-flavor',
-            '--datastore-version',
-            '7.10.2',
-            '--availability-zone',
-            'eu-de-01,eu-de-02',
-            '--router-id',
-            'router-uuid',
-            '--network-id',
-            'network-uuid',
-            '--security-group-id',
-            'sg-uuid',
-            '--num-nodes',
-            '2',
-            '--volume-size',
-            '100',
-            '--volume-type',
-            'HIGH',
-            '--cmk-id',
-            'cmk-uuid',
-            '--https-enable',
-            '--admin-pwd',
-            'testtest',
-            '--backup-policy',
+            "test-css",
+            "--flavor",
+            "css-flavor",
+            "--datastore-version",
+            "7.10.2",
+            "--availability-zone",
+            "eu-de-01,eu-de-02",
+            "--router-id",
+            "router-uuid",
+            "--network-id",
+            "network-uuid",
+            "--security-group-id",
+            "sg-uuid",
+            "--num-nodes",
+            "2",
+            "--volume-size",
+            "100",
+            "--volume-type",
+            "HIGH",
+            "--cmk-id",
+            "cmk-uuid",
+            "--https-enable",
+            "--admin-pwd",
+            "testtest",
+            "--backup-policy",
             (
-                'period=00:00 GMT+08:00,keepday=7,prefix=snapshot,'
-                'bucket=css-backup-bucket,agency=obs_css_agency,'
-                'basepath=obs_path'
+                "period=00:00 GMT+08:00,keepday=7,prefix=snapshot,"
+                "bucket=css-backup-bucket,agency=obs_css_agency,"
+                "basepath=obs_path"
             ),
-            '--tag',
-            'key=key1,value=value1',
-            '--tag',
-            'key=key2,value=value2',
-            '--wait',
+            "--tag",
+            "key=key1,value=value1",
+            "--tag",
+            "key=key2,value=value2",
+            "--wait",
         ]
         verifylist = [
-            ('name', 'test-css'),
-            ('flavor', 'css-flavor'),
-            ('datastore_version', '7.10.2'),
-            ('availability_zone', 'eu-de-01,eu-de-02'),
-            ('router_id', 'router-uuid'),
-            ('network_id', 'network-uuid'),
-            ('security_group_id', 'sg-uuid'),
-            ('num_nodes', 2),
-            ('volume_size', 100),
-            ('volume_type', 'HIGH'),
-            ('cmk_id', 'cmk-uuid'),
-            ('https_enable', True),
-            ('admin_pwd', 'testtest'),
+            ("name", "test-css"),
+            ("flavor", "css-flavor"),
+            ("datastore_version", "7.10.2"),
+            ("availability_zone", "eu-de-01,eu-de-02"),
+            ("router_id", "router-uuid"),
+            ("network_id", "network-uuid"),
+            ("security_group_id", "sg-uuid"),
+            ("num_nodes", 2),
+            ("volume_size", 100),
+            ("volume_type", "HIGH"),
+            ("cmk_id", "cmk-uuid"),
+            ("https_enable", True),
+            ("admin_pwd", "testtest"),
             (
-                'backup_policy',
+                "backup_policy",
                 [
                     {
-                        'period': '00:00 GMT+08:00',
-                        'keepday': '7',
-                        'prefix': 'snapshot',
-                        'bucket': 'css-backup-bucket',
-                        'agency': 'obs_css_agency',
-                        'basepath': 'obs_path',
+                        "period": "00:00 GMT+08:00",
+                        "keepday": "7",
+                        "prefix": "snapshot",
+                        "bucket": "css-backup-bucket",
+                        "agency": "obs_css_agency",
+                        "basepath": "obs_path",
                     }
                 ],
             ),
             (
-                'tags',
+                "tags",
                 [
-                    {'key': 'key1', 'value': 'value1'},
-                    {'key': 'key2', 'value': 'value2'},
+                    {"key": "key1", "value": "value1"},
+                    {"key": "key2", "value": "value2"},
                 ],
             ),
-            ('wait', True),
+            ("wait", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -202,37 +202,37 @@ class TestCreateCluster(fakes.TestCss):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'name': 'test-css',
-            'datastore': {'version': '7.10.2', 'type': 'elasticsearch'},
-            'instanceNum': 2,
-            'instance': {
-                'availability_zone': 'eu-de-01,eu-de-02',
-                'flavorRef': 'css-flavor',
-                'volume': {'volume_type': 'HIGH', 'size': 100},
-                'nics': {
-                    'vpcId': 'router-uuid',
-                    'netId': 'network-uuid',
-                    'securityGroupId': 'sg-uuid',
+            "name": "test-css",
+            "datastore": {"version": "7.10.2", "type": "elasticsearch"},
+            "instanceNum": 2,
+            "instance": {
+                "availability_zone": "eu-de-01,eu-de-02",
+                "flavorRef": "css-flavor",
+                "volume": {"volume_type": "HIGH", "size": 100},
+                "nics": {
+                    "vpcId": "router-uuid",
+                    "netId": "network-uuid",
+                    "securityGroupId": "sg-uuid",
                 },
             },
-            'diskEncryption': {
-                'systemEncrypted': 1,
-                'systemCmkid': 'cmk-uuid',
+            "diskEncryption": {
+                "systemEncrypted": 1,
+                "systemCmkid": "cmk-uuid",
             },
-            'httpsEnable': True,
-            'authorityEnable': True,
-            'adminPwd': 'testtest',
-            'backupStrategy': {
-                'period': '00:00 GMT+08:00',
-                'keepday': 7,
-                'prefix': 'snapshot',
-                'bucket': 'css-backup-bucket',
-                'agency': 'obs_css_agency',
-                'basePath': 'obs_path',
+            "httpsEnable": True,
+            "authorityEnable": True,
+            "adminPwd": "testtest",
+            "backupStrategy": {
+                "period": "00:00 GMT+08:00",
+                "keepday": 7,
+                "prefix": "snapshot",
+                "bucket": "css-backup-bucket",
+                "agency": "obs_css_agency",
+                "basePath": "obs_path",
             },
-            'tags': [
-                {'key': 'key1', 'value': 'value1'},
-                {'key': 'key2', 'value': 'value2'},
+            "tags": [
+                {"key": "key1", "value": "value1"},
+                {"key": "key2", "value": "value2"},
             ],
         }
         self.client.create_cluster.assert_called_with(**attrs)
@@ -260,12 +260,12 @@ class TestRestartCluster(fakes.TestCss):
     def test_restart(self):
         arglist = [
             self._data.name,
-            '--wait',
+            "--wait",
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("wait", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -300,16 +300,16 @@ class TestUpdateClusterName(fakes.TestCss):
         self.client.update_cluster_name = mock.Mock(return_value=None)
 
     def test_update_name(self):
-        new_name = 'new_cluster_name'
+        new_name = "new_cluster_name"
         arglist = [
             self._data.name,
-            '--new-name',
+            "--new-name",
             new_name,
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('new_name', new_name),
+            ("cluster", self._data.name),
+            ("new_name", new_name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -320,9 +320,7 @@ class TestUpdateClusterName(fakes.TestCss):
         self.client.find_cluster.assert_called_with(
             self._data.name, ignore_missing=False
         )
-        self.client.update_cluster_name.assert_called_with(
-            self._data, new_name
-        )
+        self.client.update_cluster_name.assert_called_with(self._data, new_name)
         self.client.get_cluster.assert_called_with(self._data)
 
         self.assertEqual(self.columns, columns)
@@ -341,16 +339,16 @@ class TestUpdateClusterPassword(fakes.TestCss):
         self.client.update_cluster_password = mock.Mock(return_value=None)
 
     def test_update_password(self):
-        new_password = 'new_cluster_password'
+        new_password = "new_cluster_password"
         arglist = [
             self._data.name,
-            '--new-password',
+            "--new-password",
             new_password,
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('new_password', new_password),
+            ("cluster", self._data.name),
+            ("new_password", new_password),
         ]
 
         # Verify cm is triggered with default parameters
@@ -361,9 +359,7 @@ class TestUpdateClusterPassword(fakes.TestCss):
         self.client.find_cluster.assert_called_with(
             self._data.name, ignore_missing=False
         )
-        self.client.update_cluster_password.assert_called_with(
-            self._data, new_password
-        )
+        self.client.update_cluster_password.assert_called_with(self._data, new_password)
         self.assertIsNone(result)
 
 
@@ -383,21 +379,19 @@ class TestUpdateSecurityGroup(fakes.TestCss):
             return_value=self._data
         )
 
-        self.client.update_cluster_security_group = mock.Mock(
-            return_value=None
-        )
+        self.client.update_cluster_security_group = mock.Mock(return_value=None)
 
     def test_update_security_group(self):
-        new_security_group = 'new_security_group'
+        new_security_group = "new_security_group"
         arglist = [
             self._data.name,
-            '--security-group',
+            "--security-group",
             new_security_group,
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('security_group', new_security_group),
+            ("cluster", self._data.name),
+            ("security_group", new_security_group),
         ]
 
         # Verify cm is triggered with default parameters
@@ -421,7 +415,7 @@ class TestUpdateSecurityGroup(fakes.TestCss):
         arglist = [
             self._data.name,
         ]
-        verifylist = [('cluster', self._data.name)]
+        verifylist = [("cluster", self._data.name)]
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
@@ -432,7 +426,7 @@ class TestUpdateSecurityGroup(fakes.TestCss):
             arglist,
             verifylist,
         )
-        self.assertIn('arguments are required: --security-group', str(ex))
+        self.assertIn("arguments are required: --security-group", str(ex))
 
 
 class TestUpdateSecurityMode(fakes.TestCss):
@@ -452,14 +446,14 @@ class TestUpdateSecurityMode(fakes.TestCss):
         https_enable = True
         arglist = [
             self._data.name,
-            '--authority-enable',
-            '--https-enable',
+            "--authority-enable",
+            "--https-enable",
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('authority_enable', authority_enable),
-            ('https_enable', https_enable),
+            ("cluster", self._data.name),
+            ("authority_enable", authority_enable),
+            ("https_enable", https_enable),
         ]
 
         # Verify cm is triggered with default parameters
@@ -496,15 +490,15 @@ class TestExtendCluster(fakes.TestCss):
     def test_extend(self):
         arglist = [
             self._data.name,
-            '--add-nodes',
-            '2',
-            '--wait',
+            "--add-nodes",
+            "2",
+            "--wait",
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('add_nodes', 2),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("add_nodes", 2),
+            ("wait", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -539,24 +533,24 @@ class TestExtendClusterNodes(fakes.TestCss):
     def test_extend(self):
         arglist = [
             self._data.name,
-            '--extend',
-            'type=ess,disksize=60,nodesize=2',
-            '--extend',
-            'type=ess-master,disksize=0,nodesize=2',
-            '--wait',
+            "--extend",
+            "type=ess,disksize=60,nodesize=2",
+            "--extend",
+            "type=ess-master,disksize=0,nodesize=2",
+            "--wait",
         ]
 
         expected_request_data = {
-            'grow': [
-                {'type': 'ess', 'disksize': '60', 'nodesize': '2'},
-                {'type': 'ess-master', 'disksize': '0', 'nodesize': '2'},
+            "grow": [
+                {"type": "ess", "disksize": "60", "nodesize": "2"},
+                {"type": "ess-master", "disksize": "0", "nodesize": "2"},
             ]
         }
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('extend', expected_request_data['grow']),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("extend", expected_request_data["grow"]),
+            ("wait", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -611,7 +605,7 @@ class TestShowCluster(fakes.TestCss):
         ]
 
         verifylist = [
-            ('cluster', self._data.id),
+            ("cluster", self._data.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -619,35 +613,33 @@ class TestShowCluster(fakes.TestCss):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_cluster.assert_called_with(
-            self._data.id, ignore_missing=False
-        )
+        self.client.find_cluster.assert_called_with(self._data.id, ignore_missing=False)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
     def test_show_non_existent(self):
         arglist = [
-            'unexist_css_data',
+            "unexist_css_data",
         ]
 
         verifylist = [
-            ('cluster', 'unexist_css_data'),
+            ("cluster", "unexist_css_data"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
+        find_mock_result = exceptions.CommandError("Resource Not Found")
         self.client.find_cluster = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
+            self.assertEqual("Resource Not Found", str(e))
         self.client.find_cluster.assert_called_with(
-            'unexist_css_data', ignore_missing=False
+            "unexist_css_data", ignore_missing=False
         )
 
 
@@ -655,13 +647,13 @@ class TestListClusterNodes(fakes.TestCss):
     _data = fakes.FakeCluster.create_one()
 
     column_list_headers = (
-        'ID',
-        'Name',
-        'IP',
-        'Type',
-        'Volume',
-        'Availability Zone',
-        'Status',
+        "ID",
+        "Name",
+        "IP",
+        "Type",
+        "Volume",
+        "Availability Zone",
+        "Status",
     )
 
     data = []
@@ -692,7 +684,7 @@ class TestListClusterNodes(fakes.TestCss):
         ]
 
         verifylist = [
-            ('cluster', self._data.id),
+            ("cluster", self._data.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -704,9 +696,7 @@ class TestListClusterNodes(fakes.TestCss):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_cluster.assert_called_with(
-            self._data.id, ignore_missing=False
-        )
+        self.client.find_cluster.assert_called_with(self._data.id, ignore_missing=False)
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
@@ -729,7 +719,7 @@ class TestDeleteCluster(fakes.TestCss):
         ]
 
         verifylist = [
-            ('cluster', [self._data[0].name]),
+            ("cluster", [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -751,7 +741,7 @@ class TestDeleteCluster(fakes.TestCss):
             arglist.append(css_data.name)
 
         verifylist = [
-            ('cluster', arglist),
+            ("cluster", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -771,10 +761,10 @@ class TestDeleteCluster(fakes.TestCss):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._data[0].name,
-            'unexist_css_data',
+            "unexist_css_data",
         ]
         verifylist = [
-            ('cluster', arglist),
+            ("cluster", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -787,13 +777,13 @@ class TestDeleteCluster(fakes.TestCss):
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('1 of 2 Cluster(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 Cluster(s) failed to delete.", str(e))
 
         self.client.find_cluster.assert_any_call(
             self._data[0].name, ignore_missing=False
         )
         self.client.find_cluster.assert_any_call(
-            'unexist_css_data', ignore_missing=False
+            "unexist_css_data", ignore_missing=False
         )
         self.client.delete_cluster.assert_called_once_with(
             self._data[0], ignore_missing=False
@@ -815,13 +805,13 @@ class TestUpdateClusterFlavor(fakes.TestCss):
         self.client.wait_for_cluster = mock.Mock(return_value=True)
 
     def test_update_flavor(self):
-        new_flavor = 'new_flavor'
-        arglist = [self._data.name, '--flavor', new_flavor, '--wait']
+        new_flavor = "new_flavor"
+        arglist = [self._data.name, "--flavor", new_flavor, "--wait"]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('flavor', new_flavor),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("flavor", new_flavor),
+            ("wait", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -841,20 +831,20 @@ class TestUpdateClusterFlavor(fakes.TestCss):
         self.assertIsNone(result)
 
     def test_update_flavor_with_node_type(self):
-        node_type = 'ess'
-        new_flavor = 'new_flavor'
+        node_type = "ess"
+        new_flavor = "new_flavor"
         arglist = [
             self._data.name,
-            '--node-type',
+            "--node-type",
             node_type,
-            '--flavor',
+            "--flavor",
             new_flavor,
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('node_type', node_type),
-            ('flavor', new_flavor),
+            ("cluster", self._data.name),
+            ("node_type", node_type),
+            ("flavor", new_flavor),
         ]
 
         # Verify cm is triggered with default parameters
@@ -888,16 +878,16 @@ class TestScaleInCluster(fakes.TestCss):
     def test_scale_in(self):
         arglist = [
             self._data.name,
-            '--nodes',
-            'id1',
-            'id2',
-            '--wait',
+            "--nodes",
+            "id1",
+            "id2",
+            "--wait",
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('nodes', ['id1', 'id2']),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("nodes", ["id1", "id2"]),
+            ("wait", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -908,9 +898,7 @@ class TestScaleInCluster(fakes.TestCss):
         self.client.find_cluster.assert_called_with(
             self._data.name, ignore_missing=False
         )
-        self.client.scale_in_cluster.assert_called_with(
-            self._data, ['id1', 'id2']
-        )
+        self.client.scale_in_cluster.assert_called_with(self._data, ["id1", "id2"])
         self.client.wait_for_cluster.assert_called_with(
             self._data.id, self.default_timeout
         )
@@ -928,26 +916,24 @@ class TestScaleInClusterByNodeType(fakes.TestCss):
         self.cmd = cluster.ScaleInClusterByNodeType(self.app, None)
 
         self.client.find_cluster = mock.Mock(return_value=self._data)
-        self.client.scale_in_cluster_by_node_type = mock.Mock(
-            return_value=None
-        )
+        self.client.scale_in_cluster_by_node_type = mock.Mock(return_value=None)
         self.client.wait_for_cluster = mock.Mock(return_value=True)
 
     def test_scale_in_ess(self):
         arglist = [
             self._data.name,
-            '--ess',
-            '2',
-            '--wait',
+            "--ess",
+            "2",
+            "--wait",
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('ess', 2),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("ess", 2),
+            ("wait", True),
         ]
 
-        expected_data = [{'type': 'ess', 'reducedNodeNum': 2}]
+        expected_data = [{"type": "ess", "reducedNodeNum": 2}]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -968,31 +954,31 @@ class TestScaleInClusterByNodeType(fakes.TestCss):
     def test_scale_in_all_type(self):
         arglist = [
             self._data.name,
-            '--ess',
-            '2',
-            '--ess-master',
-            '3',
-            '--ess-client',
-            '1',
-            '--ess-cold',
-            '5',
-            '--wait',
+            "--ess",
+            "2",
+            "--ess-master",
+            "3",
+            "--ess-client",
+            "1",
+            "--ess-cold",
+            "5",
+            "--wait",
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('ess', 2),
-            ('ess-master', 3),
-            ('ess-client', 1),
-            ('ess-cold', 5),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("ess", 2),
+            ("ess-master", 3),
+            ("ess-client", 1),
+            ("ess-cold", 5),
+            ("wait", True),
         ]
 
         expected_data = [
-            {'type': 'ess', 'reducedNodeNum': 2},
-            {'type': 'ess-master', 'reducedNodeNum': 3},
-            {'type': 'ess-client', 'reducedNodeNum': 1},
-            {'type': 'ess-cold', 'reducedNodeNum': 5},
+            {"type": "ess", "reducedNodeNum": 2},
+            {"type": "ess-master", "reducedNodeNum": 3},
+            {"type": "ess-client", "reducedNodeNum": 1},
+            {"type": "ess-cold", "reducedNodeNum": 5},
         ]
 
         # Verify cm is triggered with default parameters
@@ -1027,16 +1013,16 @@ class TestRetryClusterUpgradeJob(fakes.TestCss):
         self.client.wait_for_cluster = mock.Mock(return_value=True)
 
     def test_retry_mode(self):
-        arglist = [self._data.name, '--job-id', 'job_id', '--wait']
+        arglist = [self._data.name, "--job-id", "job_id", "--wait"]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('job_id', 'job_id'),
-            ('retry_mode', 'abort'),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("job_id", "job_id"),
+            ("retry_mode", "abort"),
+            ("wait", True),
         ]
 
-        expected_data = {'job_id': 'job_id', 'retry_mode': 'abort'}
+        expected_data = {"job_id": "job_id", "retry_mode": "abort"}
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -1069,31 +1055,31 @@ class TestUpdateClusterKernel(fakes.TestCss):
     def test_upgrade_cluster_all_checks(self):
         arglist = [
             self._data.name,
-            '--target-image-id',
-            'target_image_id',
-            '--upgrade-type',
-            'cross',
-            '--agency',
-            'css_agency',
-            '--check-backup-indices',
-            '--check-cluster-load',
+            "--target-image-id",
+            "target_image_id",
+            "--upgrade-type",
+            "cross",
+            "--agency",
+            "css_agency",
+            "--check-backup-indices",
+            "--check-cluster-load",
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('target_image_id', 'target_image_id'),
-            ('upgrade_type', 'cross'),
-            ('agency', 'css_agency'),
-            ('check_backup_indices', True),
-            ('check_cluster_load', True),
+            ("cluster", self._data.name),
+            ("target_image_id", "target_image_id"),
+            ("upgrade_type", "cross"),
+            ("agency", "css_agency"),
+            ("check_backup_indices", True),
+            ("check_cluster_load", True),
         ]
 
         expected_data = {
-            'target_image_id': 'target_image_id',
-            'upgrade_type': 'cross',
-            'agency': 'css_agency',
-            'indices_backup_check': True,
-            'cluster_load_check': True,
+            "target_image_id": "target_image_id",
+            "upgrade_type": "cross",
+            "agency": "css_agency",
+            "indices_backup_check": True,
+            "cluster_load_check": True,
         }
 
         # Verify cm is triggered with default parameters
@@ -1127,15 +1113,15 @@ class TestReplaceClusterNode(fakes.TestCss):
     def test_replace_node(self):
         arglist = [
             self._data.name,
-            '--node-id',
-            'id1',
-            '--wait',
+            "--node-id",
+            "id1",
+            "--wait",
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('node_id', 'id1'),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("node_id", "id1"),
+            ("wait", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -1146,7 +1132,7 @@ class TestReplaceClusterNode(fakes.TestCss):
         self.client.find_cluster.assert_called_with(
             self._data.name, ignore_missing=False
         )
-        self.client.replace_cluster_node.assert_called_with(self._data, 'id1')
+        self.client.replace_cluster_node.assert_called_with(self._data, "id1")
         self.client.wait_for_cluster.assert_called_with(
             self._data.id, self.default_timeout
         )
@@ -1170,31 +1156,31 @@ class TestAddClusterNodes(fakes.TestCss):
     def test_add_nodes(self):
         arglist = [
             self._data.name,
-            '--node-type',
-            'ess',
-            '--flavor',
-            'node_flavor',
-            '--node-size',
-            '3',
-            '--volume-type',
-            'HIGH',
-            '--wait',
+            "--node-type",
+            "ess",
+            "--flavor",
+            "node_flavor",
+            "--node-size",
+            "3",
+            "--volume-type",
+            "HIGH",
+            "--wait",
         ]
 
         verifylist = [
-            ('cluster', self._data.name),
-            ('node_type', 'ess'),
-            ('flavor', 'node_flavor'),
-            ('node_size', 3),
-            ('volume_type', 'HIGH'),
-            ('wait', True),
+            ("cluster", self._data.name),
+            ("node_type", "ess"),
+            ("flavor", "node_flavor"),
+            ("node_size", 3),
+            ("volume_type", "HIGH"),
+            ("wait", True),
         ]
 
         expected_data = {
-            'node_type': 'ess',
-            'flavor': 'node_flavor',
-            'node_size': 3,
-            'volume_type': 'HIGH',
+            "node_type": "ess",
+            "flavor": "node_flavor",
+            "node_size": 3,
+            "volume_type": "HIGH",
         }
 
         # Verify cm is triggered with default parameters
@@ -1205,9 +1191,7 @@ class TestAddClusterNodes(fakes.TestCss):
         self.client.find_cluster.assert_called_with(
             self._data.name, ignore_missing=False
         )
-        self.client.add_cluster_nodes.assert_called_with(
-            self._data, **expected_data
-        )
+        self.client.add_cluster_nodes.assert_called_with(self._data, **expected_data)
         self.client.wait_for_cluster.assert_called_with(
             self._data.id, self.default_timeout
         )
@@ -1219,21 +1203,21 @@ class TestListClusterVersionUpgrades(fakes.TestCss):
     _cluster = fakes.FakeCluster.create_one()
 
     column_list_headers = [
-        'Datastore Type',
-        'Datastore Version',
-        'Image Name',
-        'Id',
-        'Description',
-        'Priority',
+        "Datastore Type",
+        "Datastore Version",
+        "Image Name",
+        "Id",
+        "Description",
+        "Priority",
     ]
 
     columns = (
-        'datastore_type',
-        'datastore_version',
-        'dsiplay_name',
-        'id',
-        'image_desc',
-        'priority',
+        "datastore_type",
+        "datastore_version",
+        "dsiplay_name",
+        "id",
+        "image_desc",
+        "priority",
     )
 
     data = []
@@ -1260,11 +1244,11 @@ class TestListClusterVersionUpgrades(fakes.TestCss):
         self.client.clusters = mock.Mock()
 
     def test_list_version_upgrades(self):
-        arglist = [self._cluster.name, '--upgrade-type', 'same']
+        arglist = [self._cluster.name, "--upgrade-type", "same"]
 
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('upgrade_type', 'same'),
+            ("cluster", self._cluster.name),
+            ("upgrade_type", "same"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -1277,7 +1261,7 @@ class TestListClusterVersionUpgrades(fakes.TestCss):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.get_cluster_version_upgrades.assert_called_with(
-            self._cluster, 'same'
+            self._cluster, "same"
         )
 
         self.assertEqual(self.column_list_headers, columns)
@@ -1289,21 +1273,21 @@ class TestShowClusterUpgradeStatus(fakes.TestCss):
     _cluster = fakes.FakeCluster.create_one()
 
     column_list_headers = (
-        'ID',
-        'Image Info',
-        'Execute Times',
-        'Start Time',
-        'End Time',
-        'Status',
+        "ID",
+        "Image Info",
+        "Execute Times",
+        "Start Time",
+        "End Time",
+        "Status",
     )
 
     columns = (
-        'id',
-        'image_info',
-        'execute_times',
-        'start_time',
-        'end_time',
-        'status',
+        "id",
+        "image_info",
+        "execute_times",
+        "start_time",
+        "end_time",
+        "status",
     )
 
     data = []
@@ -1333,7 +1317,7 @@ class TestShowClusterUpgradeStatus(fakes.TestCss):
         arglist = [self._cluster.name]
 
         verifylist = [
-            ('cluster', self._cluster.name),
+            ("cluster", self._cluster.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -1345,9 +1329,7 @@ class TestShowClusterUpgradeStatus(fakes.TestCss):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.get_cluster_upgrade_status.assert_called_with(
-            self._cluster
-        )
+        self.client.get_cluster_upgrade_status.assert_called_with(self._cluster)
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))

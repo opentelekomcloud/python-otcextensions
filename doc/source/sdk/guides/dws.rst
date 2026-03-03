@@ -32,7 +32,7 @@ parameters.
 :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`.
 
 .. literalinclude:: ../examples/dws/create_cluster.py
-   :lines: 16-38
+   :lines: 16-36
 
 Get DWS Cluster
 ^^^^^^^^^^^^^^^
@@ -148,7 +148,7 @@ created one.
 :class:`~otcextensions.sdk.dws.v1.snapshot.Restore`.
 
 .. literalinclude:: ../examples/dws/restore_snapshot.py
-   :lines: 16-37
+   :lines: 16-35
 
 Delete Snapshot
 ^^^^^^^^^^^^^^^
@@ -215,4 +215,4 @@ Batch Delete Cluster Tags
 This interface is used to batch delete tags from a specified DWS cluster.
 
 .. literalinclude:: ../examples/dws/batch_delete_cluster_tags.py
-   :lines: 16-29
+   :lines: 16-27

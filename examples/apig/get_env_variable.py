@@ -13,12 +13,10 @@
 """
 Get environment variable
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.get_environment_variable(
-    gateway="gateway_id",
-    var="variable_id"
-)
+conn.apig.get_environment_variable(gateway="gateway_id", var="variable_id")

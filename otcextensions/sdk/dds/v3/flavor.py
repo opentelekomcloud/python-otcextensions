@@ -13,31 +13,30 @@ from openstack import resource
 
 
 class Flavor(resource.Resource):
-    base_path = '/flavors'
+    base_path = "/flavors"
 
-    resources_key = 'flavors'
+    resources_key = "flavors"
 
     # capabilities
     allow_list = True
 
-    _query_mapping = resource.QueryParameters(
-        'region', 'engine_name')
+    _query_mapping = resource.QueryParameters("region", "engine_name")
 
-    region = resource.URI('region')
+    region = resource.URI("region")
     # Properties
     #: Indicates the engine name.
-    engine_name = resource.Body('engine_name')
+    engine_name = resource.Body("engine_name")
     #: Indicates the node type. DDS contains the following types of nodes:
     # * mongos
     # * shard
     # * config
     # * replica
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Number of vCPUs.
-    vcpus = resource.Body('vcpus')
+    vcpus = resource.Body("vcpus")
     #: Indicates the memory size in gigabyte (GB).
-    ram = resource.Body('ram')
+    ram = resource.Body("ram")
     #: Indicates the resource specifications code.
-    spec_code = resource.Body('spec_code')
+    spec_code = resource.Body("spec_code")
     #: Indicates the status of specifications in an AZ.
-    az_status = resource.Body('az_status')
+    az_status = resource.Body("az_status")

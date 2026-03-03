@@ -13,27 +13,23 @@
 """
 Create new event
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-event_attrs = {
-    'name': 'event-xx',
-    'content': 'eyJrIjoidiJ9'
-}
+event_attrs = {"name": "event-xx", "content": "eyJrIjoidiJ9"}
 func_attrs = {
-    'func_name': 'test-function',
-    'package': 'default',
-    'runtime': 'Python3.9',
-    'handler': 'index.handler',
-    'timeout': 30,
-    'memory_size': 128,
-    'code_type': 'inline',
+    "func_name": "test-function",
+    "package": "default",
+    "runtime": "Python3.9",
+    "handler": "index.handler",
+    "timeout": 30,
+    "memory_size": 128,
+    "code_type": "inline",
 }
 fg = conn.functiongraph.create_function(**func_attrs)
-ev = conn.functiongraph.create_event(
-    fg, **event_attrs
-)
+ev = conn.functiongraph.create_event(fg, **event_attrs)

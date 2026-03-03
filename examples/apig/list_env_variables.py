@@ -13,11 +13,11 @@
 """
 List env variables
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-environments = list(conn.apig.environment_variables(
-    gateway="gateway_id",
-    group_id="group_id"
-))
+conn = openstack.connect(cloud="otc")
+environments = list(
+    conn.apig.environment_variables(gateway="gateway_id", group_id="group_id")
+)

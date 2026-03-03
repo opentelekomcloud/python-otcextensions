@@ -11,41 +11,41 @@
 # under the License.
 #
 """SMN Topic v2 action implementations"""
+
 import logging
 
-from osc_lib import utils
 from osc_lib import exceptions
+from osc_lib import utils
 from osc_lib.command import command
 
-from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class ListTopic(command.Lister):
 
     _description = _("List SMN Topics.")
-    columns = ('ID', 'Name', 'Display Name', 'Push Policy')
+    columns = ("ID", "Name", "Display Name", "Push Policy")
 
     def get_parser(self, prog_name):
         parser = super(ListTopic, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--offset',
-            metavar='<offset>',
+            "--offset",
+            metavar="<offset>",
             type=int,
             help=_("Resources after this offset will be queried."),
         )
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
             help=_("Limit to fetch number of records."),
         )
@@ -53,9 +53,7 @@ class ListTopic(command.Lister):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.smn
-        args_list = [
-            'limit',
-            'offset']
+        args_list = ["limit", "offset"]
         attrs = {}
         for arg in args_list:
             val = getattr(parsed_args, arg)
@@ -64,8 +62,10 @@ class ListTopic(command.Lister):
 
         data = client.topics(**attrs)
 
-        return (self.columns, (utils.get_item_properties(s, self.columns)
-                               for s in data))
+        return (
+            self.columns,
+            (utils.get_item_properties(s, self.columns) for s in data),
+        )
 
 
 class ShowTopic(command.ShowOne):
@@ -74,8 +74,8 @@ class ShowTopic(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowTopic, self).get_parser(prog_name)
         parser.add_argument(
-            'topic',
-            metavar='<topic>',
+            "topic",
+            metavar="<topic>",
             help=_("Specifies the Name or ID of the SMN topic."),
         )
         return parser
@@ -96,24 +96,24 @@ class CreateTopic(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateTopic, self).get_parser(prog_name)
         parser.add_argument(
-            'name',
-            metavar='<name>',
+            "name",
+            metavar="<name>",
             help=_("Specifies the name of the NAT Gateway."),
         )
         parser.add_argument(
-            '--display-name',
-            metavar='<display_name>',
-            help=_("Topic display name, which is presented as the name "
-                   "of the email sender in email messages."),
+            "--display-name",
+            metavar="<display_name>",
+            help=_(
+                "Topic display name, which is presented as the name "
+                "of the email sender in email messages."
+            ),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.smn
 
-        args_list = [
-            'name',
-            'display_name']
+        args_list = ["name", "display_name"]
         attrs = {}
         for arg in args_list:
             val = getattr(parsed_args, arg)
@@ -122,7 +122,7 @@ class CreateTopic(command.ShowOne):
 
         obj = client.create_topic(**attrs)
 
-        columns = ('request_id', 'topic_urn')
+        columns = ("request_id", "topic_urn")
         data = utils.get_item_properties(obj, columns)
 
         return (columns, data)
@@ -134,24 +134,24 @@ class UpdateTopic(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(UpdateTopic, self).get_parser(prog_name)
         parser.add_argument(
-            'topic',
-            metavar='<topic>',
+            "topic",
+            metavar="<topic>",
             help=_("Specifies the Name or ID of the SMN Topic."),
         )
         parser.add_argument(
-            '--display-name',
-            metavar='<display_name>',
+            "--display-name",
+            metavar="<display_name>",
             required=True,
-            help=_("Topic display name, which is presented as the name of "
-                   "the email sender in email messages."),
+            help=_(
+                "Topic display name, which is presented as the name of "
+                "the email sender in email messages."
+            ),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.smn
-        attrs = {
-            'display_name': parsed_args.display_name
-        }
+        attrs = {"display_name": parsed_args.display_name}
         topic = client.find_topic(parsed_args.topic)
 
         obj = client.update_topic(topic, **attrs)
@@ -169,9 +169,9 @@ class DeleteTopic(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteTopic, self).get_parser(prog_name)
         parser.add_argument(
-            'topic',
-            metavar='<topic>',
-            nargs='+',
+            "topic",
+            metavar="<topic>",
+            nargs="+",
             help=_("Smn Topic(s) to delete (Name or ID)"),
         )
         return parser
@@ -185,11 +185,17 @@ class DeleteTopic(command.Command):
                 client.delete_topic(obj)
             except Exception as e:
                 result += 1
-                LOG.error(_("Failed to delete Smn Topic with "
-                          "name or ID '%(topic)s': %(e)s"),
-                          {'topic': topic, 'e': e})
+                LOG.error(
+                    _(
+                        "Failed to delete Smn Topic with "
+                        "name or ID '%(topic)s': %(e)s"
+                    ),
+                    {"topic": topic, "e": e},
+                )
         if result > 0:
             total = len(parsed_args.topic)
-            msg = (_("%(result)s of %(total)s SMN Topic(s) failed "
-                   "to delete.") % {'result': result, 'total': total})
+            msg = _("%(result)s of %(total)s SMN Topic(s) failed " "to delete.") % {
+                "result": result,
+                "total": total,
+            }
             raise exceptions.CommandError(msg)

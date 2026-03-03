@@ -24,17 +24,17 @@ class Proxy(proxy.Proxy):
         :returns: One
              :class:`~otcextensions.sdk.imsv2.v1.async_job.AsyncJob`
         """
-        attrs = {
-            'id': job_id
-        }
-        base_path = '{project_id}/jobs'.format(
-            project_id=self.session.get_project_id()
-        )
+        attrs = {"id": job_id}
+        base_path = "{project_id}/jobs".format(project_id=self.session.get_project_id())
         return self._get(_async_job.AsyncJob, base_path=base_path, **attrs)
 
-    def wait_for_async_job(self, job_id, timeout=600,
-                           message="Timeout waiting for asynchronous job.",
-                           wait=10):
+    def wait_for_async_job(
+        self,
+        job_id,
+        timeout=600,
+        message="Timeout waiting for asynchronous job.",
+        wait=10,
+    ):
         """Wait for an asynchronous job to finish
 
         :returns: One
@@ -42,19 +42,16 @@ class Proxy(proxy.Proxy):
         """
         # Maybe someone provided an object instead of a job_id
         # try to get the job id from that object if possible
-        if hasattr(job_id, 'job_id'):
+        if hasattr(job_id, "job_id"):
             job_id = job_id.job_id
 
-        for count in utils.iterate_timeout(
-                timeout=timeout,
-                message=message,
-                wait=wait):
+        for count in utils.iterate_timeout(timeout=timeout, message=message, wait=wait):
             job = self.get_async_job(job_id)
             if job.status == "FAIL":
                 raise RuntimeError(
                     "Asynchronous job {job_id} failed.".format(job_id=job_id)
                 )
-            elif job.status not in ['INIT', 'RUNNING']:
+            elif job.status not in ["INIT", "RUNNING"]:
                 break
         return job
 

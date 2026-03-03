@@ -27,32 +27,47 @@ class TestListGroup(TestGroup):
     groups = fakes.FakeGroup.create_multiple(3)
     queue = fakes.FakeQueue.create_one()
 
-    columns = ('ID', 'name', 'produced_messages', 'consumed_messages',
-               'available_messages')
-    columns_with_dead = ('ID', 'name', 'produced_messages',
-                         'consumed_messages', 'available_messages',
-                         'produced_deadletters', 'available_deadletters')
+    columns = (
+        "ID",
+        "name",
+        "produced_messages",
+        "consumed_messages",
+        "available_messages",
+    )
+    columns_with_dead = (
+        "ID",
+        "name",
+        "produced_messages",
+        "consumed_messages",
+        "available_messages",
+        "produced_deadletters",
+        "available_deadletters",
+    )
 
     data = []
     data_with_dead = []
 
     for s in groups:
-        data.append((
-            s.id,
-            s.name,
-            s.produced_messages,
-            s.consumed_messages,
-            s.available_messages,
-        ))
-        data_with_dead.append((
-            s.id,
-            s.name,
-            s.produced_messages,
-            s.consumed_messages,
-            s.available_messages,
-            s.produced_deadletters,
-            s.available_deadletters,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.produced_messages,
+                s.consumed_messages,
+                s.available_messages,
+            )
+        )
+        data_with_dead.append(
+            (
+                s.id,
+                s.name,
+                s.produced_messages,
+                s.consumed_messages,
+                s.available_messages,
+                s.produced_deadletters,
+                s.available_deadletters,
+            )
+        )
 
     def setUp(self):
         super(TestListGroup, self).setUp()
@@ -63,63 +78,47 @@ class TestListGroup(TestGroup):
         self.client.find_queue = mock.Mock()
 
     def test_list_group(self):
-        arglist = [
-            'queue_id'
-        ]
+        arglist = ["queue_id"]
 
         verifylist = [
-            ('queue', 'queue_id'),
+            ("queue", "queue_id"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.groups.side_effect = [
-            self.groups
-        ]
-        self.client.find_queue.side_effect = [
-            self.queue
-        ]
+        self.client.groups.side_effect = [self.groups]
+        self.client.find_queue.side_effect = [self.queue]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.groups.assert_called_once_with(
-            queue=self.queue.id,
-            include_deadletter=False)
+            queue=self.queue.id, include_deadletter=False
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_group_ext(self):
-        arglist = [
-            'queue_id',
-            '--include_deadletter'
-        ]
+        arglist = ["queue_id", "--include_deadletter"]
 
-        verifylist = [
-            ('queue', 'queue_id'),
-            ('include_deadletter', True)
-        ]
+        verifylist = [("queue", "queue_id"), ("include_deadletter", True)]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.groups.side_effect = [
-            self.groups
-        ]
-        self.client.find_queue.side_effect = [
-            self.queue
-        ]
+        self.client.groups.side_effect = [self.groups]
+        self.client.find_queue.side_effect = [self.queue]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.groups.assert_called_once_with(
-            queue=self.queue.id,
-            include_deadletter=True)
+            queue=self.queue.id, include_deadletter=True
+        )
 
         self.assertEqual(self.columns_with_dead, columns)
         self.assertEqual(self.data_with_dead, list(data))
@@ -136,14 +135,11 @@ class TestDeleteGroup(TestGroup):
 
     def test_delete(self):
         arglist = [
-            'queue',
-            't1',
+            "queue",
+            "t1",
         ]
 
-        verifylist = [
-            ('queue', 'queue'),
-            ('group', ['t1'])
-        ]
+        verifylist = [("queue", "queue"), ("group", ["t1"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -153,21 +149,18 @@ class TestDeleteGroup(TestGroup):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [mock.call(queue='queue', group='t1')]
+        calls = [mock.call(queue="queue", group="t1")]
 
         self.client.delete_group.assert_has_calls(calls)
         self.assertEqual(1, self.client.delete_group.call_count)
 
     def test_delete_multiple(self):
         arglist = [
-            'queue',
-            't1',
-            't2',
+            "queue",
+            "t1",
+            "t2",
         ]
-        verifylist = [
-            ('queue', 'queue'),
-            ('group', ['t1', 't2'])
-        ]
+        verifylist = [("queue", "queue"), ("group", ["t1", "t2"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -178,8 +171,8 @@ class TestDeleteGroup(TestGroup):
         self.cmd.take_action(parsed_args)
 
         calls = [
-            mock.call(queue='queue', group='t1'),
-            mock.call(queue='queue', group='t2')
+            mock.call(queue="queue", group="t1"),
+            mock.call(queue="queue", group="t2"),
         ]
 
         self.client.delete_group.assert_has_calls(calls)
@@ -190,7 +183,7 @@ class TestCreateGroup(TestGroup):
 
     _data = fakes.FakeGroup.create_one()
 
-    columns = ('ID', 'name')
+    columns = ("ID", "name")
 
     data = (
         _data.id,
@@ -206,27 +199,23 @@ class TestCreateGroup(TestGroup):
 
     def test_show_default(self):
         arglist = [
-            'queue_id',
-            'name',
+            "queue_id",
+            "name",
         ]
         verifylist = [
-            ('queue', 'queue_id'),
-            ('name', 'name'),
+            ("queue", "queue_id"),
+            ("name", "name"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_group.side_effect = [
-            self._data
-        ]
+        self.client.create_group.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.create_group.assert_called_with(
-            group='name', queue='queue_id'
-        )
+        self.client.create_group.assert_called_with(group="name", queue="queue_id")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

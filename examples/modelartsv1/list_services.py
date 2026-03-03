@@ -12,6 +12,7 @@
 # under the License.
 #
 """List all Services."""
+
 import openstack
 
 openstack.enable_logging(True)

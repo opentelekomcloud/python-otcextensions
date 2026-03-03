@@ -10,13 +10,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Create CloudEye alarm rule
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
@@ -25,16 +26,10 @@ attrs = {
     "metric": {
         "namespace": "SYS.ECS",
         "dimensions": [
-            {
-                "name": "instance_id",
-                "value": "33328f02-3814-422e-b688-bfdba93d4051"
-            },
-            {
-                "name": "instance_id",
-                "value": "04ab9572-8c9c-41b6-bcc8-51068463b123"
-            }
+            {"name": "instance_id", "value": "33328f02-3814-422e-b688-bfdba93d4051"},
+            {"name": "instance_id", "value": "04ab9572-8c9c-41b6-bcc8-51068463b123"},
         ],
-        "metric_name": "network_outgoing"
+        "metric_name": "network_outgoing",
     },
     "condition": {
         "period": 300,
@@ -42,7 +37,7 @@ attrs = {
         "comparison_operator": ">=",
         "value": 6,
         "unit": "B/s",
-        "count": 1
+        "count": 1,
     },
     "alarm_enabled": True,
     "alarm_action_enabled": True,
@@ -52,7 +47,8 @@ attrs = {
             "type": "notification",
             "notificationList": [
                 "urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd",
-                "urn:smn:eu-de:16d53a84a13b49529d2e2c3646691222:Error"]
+                "urn:smn:eu-de:16d53a84a13b49529d2e2c3646691222:Error",
+            ],
         }
     ],
     "alarm_actions": [
@@ -60,9 +56,10 @@ attrs = {
             "type": "notification",
             "notificationList": [
                 "urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd",
-                "urn:smn:eu-de:16d53a84a13b49529d2e2c3646691222:Error"]
+                "urn:smn:eu-de:16d53a84a13b49529d2e2c3646691222:Error",
+            ],
         }
-    ]
+    ],
 }
 
 
@@ -70,7 +67,7 @@ alarm = conn.ces.create_alarm(**attrs)
 print(alarm)
 
 # OSC command
-'''
+"""
 openstack --os-cloud otc ces alarm create --description "Test Alarm" \
 --namespace SYS.ECS \
 --dimension name=instance_id,value=33328f02-3814-422e-b688-bfdba93d4123 \
@@ -86,4 +83,4 @@ openstack --os-cloud otc ces alarm create --description "Test Alarm" \
 'urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd' \
 --alarm-action-notification-list \
 'urn:smn:eu-de:16d53a84a13b49529d2e2c3646691222:Error' alarm-test
-'''
+"""

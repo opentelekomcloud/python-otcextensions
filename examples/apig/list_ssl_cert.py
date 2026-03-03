@@ -13,14 +13,10 @@
 """
 List SSL certificates
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "limit": 10,
-    "offset": 0,
-    "type": "instance",
-    "instance_id": "gateway"
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"limit": 10, "offset": 0, "type": "instance", "instance_id": "gateway"}
 found = list(conn.apig.ssl_certificates(**attrs))

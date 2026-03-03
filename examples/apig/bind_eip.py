@@ -13,12 +13,11 @@
 """
 Bind EIP to gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "eip_id": "eip_id"
-}
-conn.apig.bind_eip('gateway_id', **attrs)
+attrs = {"eip_id": "eip_id"}
+conn.apig.bind_eip("gateway_id", **attrs)

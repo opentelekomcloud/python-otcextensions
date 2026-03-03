@@ -17,12 +17,10 @@ Get details of CSS Cluster Snapshot by name_or_id
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='bigdataai')
+conn = openstack.connect(cloud="bigdataai")
 
-cluster_name_or_id = 'asomogyi_0509'
-snapshot_name_or_id = 'snapshot-2037'
+cluster_name_or_id = "asomogyi_0509"
+snapshot_name_or_id = "snapshot-2037"
 cluster = conn.css.find_cluster(cluster_name_or_id, ignore_missing=False)
-snapshot = conn.css.find_snapshot(
-    cluster, snapshot_name_or_id, ignore_missing=False
-)
+snapshot = conn.css.find_snapshot(cluster, snapshot_name_or_id, ignore_missing=False)
 print(snapshot)

@@ -10,15 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import mock
 from unittest.mock import call
 
+import mock
+from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
 
 from otcextensions.osclient.vpc.v2 import peering
 from otcextensions.tests.unit.osclient.vpc.v1 import fakes
-
-from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListVpcPeerings(fakes.TestVpc):
@@ -26,29 +25,36 @@ class TestListVpcPeerings(fakes.TestVpc):
     objects = fakes.FakeVpcPeering.create_multiple(3)
 
     column_list_headers = (
-        'Id',
-        'Name',
-        'Status',
-        'Local Router Id',
-        'Peer Router Id',
-        'Peer Project Id',
+        "Id",
+        "Name",
+        "Status",
+        "Local Router Id",
+        "Peer Router Id",
+        "Peer Project Id",
     )
 
     columns = (
-        'id',
-        'name',
-        'status',
-        'local_router_id',
-        'peer_router_id',
-        'peer_project_id'
+        "id",
+        "name",
+        "status",
+        "local_router_id",
+        "peer_router_id",
+        "peer_project_id",
     )
 
     data = []
 
     for s in objects:
         data.append(
-            (s.id, s.name, s.status, s.local_vpc_info['vpc_id'],
-                s.peer_vpc_info['vpc_id'], s.peer_vpc_info['tenant_id']))
+            (
+                s.id,
+                s.name,
+                s.status,
+                s.local_vpc_info["vpc_id"],
+                s.peer_vpc_info["vpc_id"],
+                s.peer_vpc_info["tenant_id"],
+            )
+        )
 
     def setUp(self):
         super(TestListVpcPeerings, self).setUp()
@@ -79,23 +85,30 @@ class TestListVpcPeerings(fakes.TestVpc):
 
     def test_list_args(self):
         arglist = [
-            '--limit', '1',
-            '--marker', '2',
-            '--id', '3',
-            '--name', '4',
-            '--project-id', '5',
-            '--router-id', '6',
-            '--status', 'ACTIVE'
+            "--limit",
+            "1",
+            "--marker",
+            "2",
+            "--id",
+            "3",
+            "--name",
+            "4",
+            "--project-id",
+            "5",
+            "--router-id",
+            "6",
+            "--status",
+            "ACTIVE",
         ]
 
         verifylist = [
-            ('limit', 1),
-            ('marker', '2'),
-            ('id', '3'),
-            ('name', '4'),
-            ('project_id', '5'),
-            ('router_id', '6'),
-            ('status', 'ACTIVE'),
+            ("limit", 1),
+            ("marker", "2"),
+            ("id", "3"),
+            ("name", "4"),
+            ("project_id", "5"),
+            ("router_id", "6"),
+            ("status", "ACTIVE"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -109,12 +122,12 @@ class TestListVpcPeerings(fakes.TestVpc):
 
         self.client.api_mock.assert_called_with(
             limit=1,
-            marker='2',
-            id='3',
-            name='4',
-            project_id='5',
-            router_id='6',
-            status='ACTIVE',
+            marker="2",
+            id="3",
+            name="4",
+            project_id="5",
+            router_id="6",
+            status="ACTIVE",
         )
 
 
@@ -123,14 +136,14 @@ class TestCreateVpcPeering(fakes.TestVpc):
     _data = fakes.FakeVpcPeering.create_one()
 
     columns = (
-        'id',
-        'name',
-        'local_vpc_info',
-        'peer_vpc_info',
-        'description',
-        'created_at',
-        'updated_at',
-        'status'
+        "id",
+        "name",
+        "local_vpc_info",
+        "peer_vpc_info",
+        "description",
+        "created_at",
+        "updated_at",
+        "status",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -140,24 +153,28 @@ class TestCreateVpcPeering(fakes.TestVpc):
 
         self.cmd = peering.CreateVpcPeering(self.app, None)
         self.client.create_peering = mock.Mock(
-            return_value=fakes.FakeVpcPeering.create_one())
-        self.client.get_project_id = mock.Mock(
-            return_value='test-local-project-uuid')
+            return_value=fakes.FakeVpcPeering.create_one()
+        )
+        self.client.get_project_id = mock.Mock(return_value="test-local-project-uuid")
 
     def test_create_different_project(self):
         arglist = [
-            'test-peering',
-            '--local-router-id', 'test-local-router-uuid',
-            '--peer-router-id', 'test-peer-router-uuid',
-            '--peer-project-id', 'test-peer-project-uuid',
-            '--description', 'test-peering',
+            "test-peering",
+            "--local-router-id",
+            "test-local-router-uuid",
+            "--peer-router-id",
+            "test-peer-router-uuid",
+            "--peer-project-id",
+            "test-peer-project-uuid",
+            "--description",
+            "test-peering",
         ]
         verifylist = [
-            ('name', 'test-peering'),
-            ('local_router_id', 'test-local-router-uuid'),
-            ('peer_router_id', 'test-peer-router-uuid'),
-            ('peer_project_id', 'test-peer-project-uuid'),
-            ('description', 'test-peering'),
+            ("name", "test-peering"),
+            ("local_router_id", "test-local-router-uuid"),
+            ("peer_router_id", "test-peer-router-uuid"),
+            ("peer_project_id", "test-peer-project-uuid"),
+            ("description", "test-peering"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -165,16 +182,16 @@ class TestCreateVpcPeering(fakes.TestVpc):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'name': 'test-peering',
-            'request_vpc_info': {
-                'vpc_id': 'test-local-router-uuid',
-                'tenant_id': 'test-local-project-uuid'
+            "name": "test-peering",
+            "request_vpc_info": {
+                "vpc_id": "test-local-router-uuid",
+                "tenant_id": "test-local-project-uuid",
             },
-            'accept_vpc_info': {
-                'vpc_id': 'test-peer-router-uuid',
-                'tenant_id': 'test-peer-project-uuid'
+            "accept_vpc_info": {
+                "vpc_id": "test-peer-router-uuid",
+                "tenant_id": "test-peer-project-uuid",
             },
-            'description': 'test-peering'
+            "description": "test-peering",
         }
 
         self.client.create_peering.assert_called_with(**attrs)
@@ -182,16 +199,19 @@ class TestCreateVpcPeering(fakes.TestVpc):
 
     def test_create_same_project(self):
         arglist = [
-            'test-peering',
-            '--local-router-id', 'test-local-router-uuid',
-            '--peer-router-id', 'test-peer-router-uuid',
-            '--description', 'test-peering',
+            "test-peering",
+            "--local-router-id",
+            "test-local-router-uuid",
+            "--peer-router-id",
+            "test-peer-router-uuid",
+            "--description",
+            "test-peering",
         ]
         verifylist = [
-            ('name', 'test-peering'),
-            ('local_router_id', 'test-local-router-uuid'),
-            ('peer_router_id', 'test-peer-router-uuid'),
-            ('description', 'test-peering'),
+            ("name", "test-peering"),
+            ("local_router_id", "test-local-router-uuid"),
+            ("peer_router_id", "test-peer-router-uuid"),
+            ("description", "test-peering"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -199,14 +219,10 @@ class TestCreateVpcPeering(fakes.TestVpc):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'name': 'test-peering',
-            'request_vpc_info': {
-                'vpc_id': 'test-local-router-uuid'
-            },
-            'accept_vpc_info': {
-                'vpc_id': 'test-peer-router-uuid'
-            },
-            'description': 'test-peering'
+            "name": "test-peering",
+            "request_vpc_info": {"vpc_id": "test-local-router-uuid"},
+            "accept_vpc_info": {"vpc_id": "test-peer-router-uuid"},
+            "description": "test-peering",
         }
 
         self.client.create_peering.assert_called_with(**attrs)
@@ -218,14 +234,14 @@ class TestUpdateVpcPeering(fakes.TestVpc):
     _data = fakes.FakeVpcPeering.create_one()
 
     columns = (
-        'id',
-        'name',
-        'local_vpc_info',
-        'peer_vpc_info',
-        'description',
-        'created_at',
-        'updated_at',
-        'status'
+        "id",
+        "name",
+        "local_vpc_info",
+        "peer_vpc_info",
+        "description",
+        "created_at",
+        "updated_at",
+        "status",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -241,13 +257,15 @@ class TestUpdateVpcPeering(fakes.TestVpc):
     def test_update(self):
         arglist = [
             self._data.name,
-            '--name', 'test-peering-updated',
-            '--description', 'vpc peering updated',
+            "--name",
+            "test-peering-updated",
+            "--description",
+            "vpc peering updated",
         ]
         verifylist = [
-            ('peering', self._data.name),
-            ('name', 'test-peering-updated'),
-            ('description', 'vpc peering updated'),
+            ("peering", self._data.name),
+            ("name", "test-peering-updated"),
+            ("description", "vpc peering updated"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -258,8 +276,8 @@ class TestUpdateVpcPeering(fakes.TestVpc):
         self.client.find_peering.assert_called_with(self._data.name)
         self.client.update_peering.assert_called_with(
             self._data.id,
-            name='test-peering-updated',
-            description='vpc peering updated'
+            name="test-peering-updated",
+            description="vpc peering updated",
         )
         self.assertEqual(self.columns, columns)
 
@@ -269,14 +287,14 @@ class TestShowVpcPeering(fakes.TestVpc):
     _data = fakes.FakeVpcPeering.create_one()
 
     columns = (
-        'id',
-        'name',
-        'local_vpc_info',
-        'peer_vpc_info',
-        'description',
-        'created_at',
-        'updated_at',
-        'status'
+        "id",
+        "name",
+        "local_vpc_info",
+        "peer_vpc_info",
+        "description",
+        "created_at",
+        "updated_at",
+        "status",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -294,8 +312,13 @@ class TestShowVpcPeering(fakes.TestVpc):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
@@ -303,7 +326,7 @@ class TestShowVpcPeering(fakes.TestVpc):
         ]
 
         verifylist = [
-            ('peering', self._data.id),
+            ("peering", self._data.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -318,27 +341,25 @@ class TestShowVpcPeering(fakes.TestVpc):
 
     def test_show_non_existent(self):
         arglist = [
-            'unexist_vpc_peering',
+            "unexist_vpc_peering",
         ]
 
         verifylist = [
-            ('peering', 'unexist_vpc_peering'),
+            ("peering", "unexist_vpc_peering"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.find_peering = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        find_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.find_peering = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
-        self.client.find_peering.assert_called_with('unexist_vpc_peering')
+            self.assertEqual("Resource Not Found", str(e))
+        self.client.find_peering.assert_called_with("unexist_vpc_peering")
 
 
 class TestSetVpcPeering(fakes.TestVpc):
@@ -346,14 +367,14 @@ class TestSetVpcPeering(fakes.TestVpc):
     _data = fakes.FakeVpcPeering.create_one()
 
     columns = (
-        'id',
-        'name',
-        'local_vpc_info',
-        'peer_vpc_info',
-        'description',
-        'created_at',
-        'updated_at',
-        'status'
+        "id",
+        "name",
+        "local_vpc_info",
+        "peer_vpc_info",
+        "description",
+        "created_at",
+        "updated_at",
+        "status",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -367,14 +388,11 @@ class TestSetVpcPeering(fakes.TestVpc):
         self.client.set_peering = mock.Mock(return_value=self._data)
 
     def test_set(self):
-        arglist = [
-            self._data.name,
-            '--accept'
-        ]
+        arglist = [self._data.name, "--accept"]
 
         verifylist = [
-            ('peering', self._data.name),
-            ('accept', True),
+            ("peering", self._data.name),
+            ("accept", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -383,7 +401,7 @@ class TestSetVpcPeering(fakes.TestVpc):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         self.client.find_peering.assert_called_with(self._data.name)
-        self.client.set_peering.assert_called_with(self._data.id, 'accept')
+        self.client.set_peering.assert_called_with(self._data.id, "accept")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -407,15 +425,13 @@ class TestDeleteVpcPeering(fakes.TestVpc):
         ]
 
         verifylist = [
-            ('peering', [self._data[0].name]),
+            ("peering", [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.client.find_peering = (
-            mock.Mock(return_value=self._data[0])
-        )
+        self.client.find_peering = mock.Mock(return_value=self._data[0])
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -429,16 +445,14 @@ class TestDeleteVpcPeering(fakes.TestVpc):
             arglist.append(data.name)
 
         verifylist = [
-            ('peering', arglist),
+            ("peering", arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_result = self._data
-        self.client.find_peering = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        self.client.find_peering = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -452,27 +466,24 @@ class TestDeleteVpcPeering(fakes.TestVpc):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._data[0].name,
-            'unexist_vpc_peering',
+            "unexist_vpc_peering",
         ]
         verifylist = [
-            ('peering', arglist),
+            ("peering", arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_result = [self._data[0], exceptions.CommandError]
-        self.client.find_peering = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        self.client.find_peering = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual(
-                '1 of 2 VPC peering(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 VPC peering(s) failed to delete.", str(e))
 
         self.client.find_peering.assert_any_call(self._data[0].name)
-        self.client.find_peering.assert_any_call('unexist_vpc_peering')
+        self.client.find_peering.assert_any_call("unexist_vpc_peering")
         self.client.delete_peering.assert_called_once_with(self._data[0].id)

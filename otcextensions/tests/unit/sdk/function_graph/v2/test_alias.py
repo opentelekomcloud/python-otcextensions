@@ -11,21 +11,16 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import alias
 
-
-EXAMPLE = {
-    'name': 'a1',
-    'version': 'new-version'
-}
+EXAMPLE = {"name": "a1", "version": "new-version"}
 
 
 class TestFunctionInvocation(base.TestCase):
 
     def test_basic(self):
         sot = alias.Alias()
-        path = '/fgs/functions/%(function_urn)s/aliases'
+        path = "/fgs/functions/%(function_urn)s/aliases"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -35,5 +30,5 @@ class TestFunctionInvocation(base.TestCase):
 
     def test_make_it(self):
         sot = alias.Alias(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['version'], sot.version)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["version"], sot.version)

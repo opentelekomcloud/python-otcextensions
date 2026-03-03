@@ -15,35 +15,37 @@ from openstack import resource
 class ReplicationCluster(resource.Resource):
     #: Properties
     #: Availability zone name
-    availability_zone = resource.Body('availability_zone')
+    availability_zone = resource.Body("availability_zone")
 
 
 class Domains(resource.Resource):
     #: Properties
     #: Active-active domain id
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Active-active domain name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Active-active domain description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Active-active domain availability
-    sold_out = resource.Body('sold_out', type=bool)
+    sold_out = resource.Body("sold_out", type=bool)
     #: Active-active domain local replication cluster parameters
-    local_replication_cluster = resource.Body('local_replication_cluster',
-                                              type=ReplicationCluster)
+    local_replication_cluster = resource.Body(
+        "local_replication_cluster", type=ReplicationCluster
+    )
     #: Active-active domain remote replication cluster parameters
     remote_replication_cluster = resource.Body(
-        'remote_replication_cluster',
-        type=ReplicationCluster)
+        "remote_replication_cluster", type=ReplicationCluster
+    )
 
 
 class ActiveDomains(resource.Resource):
     """SDRS Active-Active Domain Resource"""
-    base_path = '/active-domains'
+
+    base_path = "/active-domains"
 
     #: capabilities
     allow_list = True
 
     #: Properties
     #: List of available domains
-    domains = resource.Body('domains', type=list, list_type=Domains)
+    domains = resource.Body("domains", type=list, list_type=Domains)

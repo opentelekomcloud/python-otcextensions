@@ -13,17 +13,17 @@
 """
 Authorize Apps
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "env_id": "DEFAULT_ENVIRONMENT_RELEASE_ID",
     "app_ids": ["74593f5c94f64a139db38b61a7705df3"],
-    "api_ids": ["64182cc7e77245ebbae8cf3b8522a540"]
+    "api_ids": ["64182cc7e77245ebbae8cf3b8522a540"],
 }
 
-result = conn.apig.create_auth_in_api(gateway="id",
-                                      **attrs)
+result = conn.apig.create_auth_in_api(gateway="id", **attrs)
 print(list(result))

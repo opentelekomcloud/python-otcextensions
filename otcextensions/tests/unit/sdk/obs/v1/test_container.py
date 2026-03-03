@@ -10,14 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
 from otcextensions.sdk import ak_auth
-
 from otcextensions.sdk.obs.v1 import container
-
 
 EXAMPLE = {
     "Name": "container_name",
@@ -48,7 +45,7 @@ class TestContainer(base.TestCase):
     def test_basic(self):
         sot = container.Container()
 
-        self.assertEqual('/', sot.base_path)
+        self.assertEqual("/", sot.base_path)
 
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_get)
@@ -59,9 +56,9 @@ class TestContainer(base.TestCase):
     def test_make_it(self):
 
         sot = container.Container(**EXAMPLE)
-        self.assertEqual(EXAMPLE['Name'], sot.id)
-        self.assertEqual(EXAMPLE['Name'], sot.name)
-        self.assertEqual(EXAMPLE['CreationDate'], sot.creation_date)
+        self.assertEqual(EXAMPLE["Name"], sot.id)
+        self.assertEqual(EXAMPLE["Name"], sot.name)
+        self.assertEqual(EXAMPLE["CreationDate"], sot.creation_date)
 
     def test_list(self):
 
@@ -73,38 +70,34 @@ class TestContainer(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = list(sot.list(
-            self.sess,
-        ))
+        result = list(
+            sot.list(
+                self.sess,
+            )
+        )
 
         self.assertEqual(2, len(result))
-        self.assertEqual('test-v1', result[0].name)
-        self.assertEqual('test-v2', result[1].name)
+        self.assertEqual("test-v1", result[0].name)
+        self.assertEqual("test-v2", result[1].name)
 
     def test_create(self):
 
-        sot = container.Container(name='test-v1')
+        sot = container.Container(name="test-v1")
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
-        mock_response.content = ''
+        mock_response.content = ""
         auth = ak_auth.AKRequestsAuth(
-            access_key='test-ak',
-            secret_access_key='test-sk',
-            host='http://test-sk',
-            region='',
-            service='s3'
+            access_key="test-ak",
+            secret_access_key="test-sk",
+            host="http://test-sk",
+            region="",
+            service="s3",
         )
         self.sess.put.return_value = mock_response
 
-        sot.create(
-            self.sess,
-            endpoint_override='epo',
-            requests_auth=auth)
+        sot.create(self.sess, endpoint_override="epo", requests_auth=auth)
 
         self.sess.put.assert_called_once_with(
-            '/',
-            data=None,
-            endpoint_override='epo',
-            requests_auth=auth
+            "/", data=None, endpoint_override="epo", requests_auth=auth
         )

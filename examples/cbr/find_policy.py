@@ -13,12 +13,13 @@
 """
 Find CBR policy by name or id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-policy = 'name_or_id'
+policy = "name_or_id"
 policy = conn.cbr.find_policy(policy_id=policy)
 print(policy)

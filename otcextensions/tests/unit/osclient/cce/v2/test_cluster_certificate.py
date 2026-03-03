@@ -28,18 +28,18 @@ class TestClusterCertificate(fakes.TestCCE):
         flat_data = cluster_certificate._flatten_cluster_certificate(_obj)
 
         data = (
-            flat_data['name'],
-            flat_data['cluster'],
-            flat_data['user'],
-            flat_data['ca'],
-            flat_data['client_certificate'],
-            flat_data['client_key'],
+            flat_data["name"],
+            flat_data["cluster"],
+            flat_data["user"],
+            flat_data["ca"],
+            flat_data["client_certificate"],
+            flat_data["client_key"],
         )
 
         cmp_data = (
-            _obj.context['name'],
-            _obj.context['cluster'],
-            _obj.context['user'],
+            _obj.context["name"],
+            _obj.context["cluster"],
+            _obj.context["user"],
             _obj.ca,
             _obj.client_certificate,
             _obj.client_key,
@@ -51,50 +51,43 @@ class TestClusterCertificate(fakes.TestCCE):
 class TestClusterCertificateShow(fakes.TestCCE):
     _obj = fakes.FakeClusterCertificate.create_one()
 
-    columns = ('name', 'cluster', 'user', 'ca',
-               'client_certificate', 'client_key')
+    columns = ("name", "cluster", "user", "ca", "client_certificate", "client_key")
     flat_data = cluster_certificate._flatten_cluster_certificate(_obj)
     data = (
-        flat_data['name'],
-        flat_data['cluster'],
-        flat_data['user'],
-        flat_data['ca'],
-        flat_data['client_certificate'],
-        flat_data['client_key'],
+        flat_data["name"],
+        flat_data["cluster"],
+        flat_data["user"],
+        flat_data["ca"],
+        flat_data["client_certificate"],
+        flat_data["client_key"],
     )
 
     def setUp(self):
         super(TestClusterCertificateShow, self).setUp()
 
-        self.cmd = cluster_certificate.ShowCCEClusterCertificates(
-            self.app, None)
+        self.cmd = cluster_certificate.ShowCCEClusterCertificates(self.app, None)
 
         self.client.find_cluster = mock.Mock(
-            return_value=cluster.Cluster(id='cluster_uuid'))
+            return_value=cluster.Cluster(id="cluster_uuid")
+        )
         self.client.get_cluster_certificates = mock.Mock()
 
     def test_get(self):
-        arglist = [
-            'cluster_uuid'
-        ]
+        arglist = ["cluster_uuid"]
 
-        verifylist = [
-            ('cluster', 'cluster_uuid')
-        ]
+        verifylist = [("cluster", "cluster_uuid")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.get_cluster_certificates.side_effect = [
-            self._obj
-        ]
+        self.client.get_cluster_certificates.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.get_cluster_certificates.assert_called_once_with(
-            cluster='cluster_uuid',
+            cluster="cluster_uuid",
         )
 
         self.assertEqual(self.columns, columns)

@@ -13,20 +13,20 @@ from openstack import resource
 
 
 class LocalNameSpec(resource.Resource):
-    en_us = resource.Body('en_us')
-    zh_cn = resource.Body('zh_cn')
+    en_us = resource.Body("en_us")
+    zh_cn = resource.Body("zh_cn")
 
 
 class AZ(resource.Resource):
-    resource_name = 'AZ'
-    resources_key = 'available_zones'
-    base_path = '/apigw/available-zones'
+    resource_name = "AZ"
+    resources_key = "available_zones"
+    base_path = "/apigw/available-zones"
 
     allow_list = True
 
-    name = resource.Body('name')
-    id = resource.Body('id')
-    code = resource.Body('code')
-    port = resource.Body('port')
-    local_name = resource.Body('local_name', type=LocalNameSpec)
-    specs = resource.Body('specs', type=dict)
+    name = resource.Body("name")
+    id = resource.Body("id")
+    code = resource.Body("code")
+    port = resource.Body("port")
+    local_name = resource.Body("local_name", type=LocalNameSpec)
+    specs = resource.Body("specs", type=dict)

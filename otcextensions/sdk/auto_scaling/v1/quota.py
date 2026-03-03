@@ -11,31 +11,31 @@
 # under the License.
 
 from openstack import resource
-
-from otcextensions.sdk.auto_scaling.v1 import _base
 from otcextensions.sdk import quotamixin
+from otcextensions.sdk.auto_scaling.v1 import _base
 
 
 class Quota(quotamixin.QuotaProxyMixin, _base.Resource):
     """AutoScaling Quota resource"""
-    resources_key = 'quotas.resources'
-    base_path = '/quotas'
+
+    resources_key = "quotas.resources"
+    base_path = "/quotas"
 
     # capabilities
     allow_list = True
 
     #: Properties
     #: Quota of type, current only ``alarm`` is valid
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Quota amount has been used
-    used = resource.Body('used', type=int)
+    used = resource.Body("used", type=int)
     #: Quota max amount
-    max = resource.Body('max', type=int)
+    max = resource.Body("max", type=int)
     #: Quota amount
-    quota = resource.Body('quota', type=int)
+    quota = resource.Body("quota", type=int)
 
 
 class ScalingQuota(Quota):
-    base_path = '/quotas/%(scaling_group_id)s'
+    base_path = "/quotas/%(scaling_group_id)s"
 
-    scaling_group_id = resource.URI('scaling_group_id')
+    scaling_group_id = resource.URI("scaling_group_id")

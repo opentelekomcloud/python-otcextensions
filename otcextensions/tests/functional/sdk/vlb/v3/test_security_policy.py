@@ -20,35 +20,32 @@ class TestSecurityPolicy(TestVlb):
         self.create_security_policy()
 
     def test_01_list_security_policies(self):
-        sec_policies = list(self.client.security_policies(
-            name=TestSecurityPolicy.security_policy.name))
+        sec_policies = list(
+            self.client.security_policies(name=TestSecurityPolicy.security_policy.name)
+        )
         self.assertGreaterEqual(len(sec_policies), 0)
 
     def test_02_get_security_policy(self):
-        sec_policy = self.client.get_security_policy(
-            TestVlb.security_policy)
+        sec_policy = self.client.get_security_policy(TestVlb.security_policy)
         self.assertIsNotNone(sec_policy)
 
     def test_03_find_security_policy(self):
-        sec_policy = self.client.find_security_policy(
-            TestVlb.security_policy.name)
+        sec_policy = self.client.find_security_policy(TestVlb.security_policy.name)
         self.assertIsNotNone(sec_policy)
 
     def test_04_update_security_policy(self):
-        new_description = 'changed'
+        new_description = "changed"
         protocols = ["TLSv1.3"]
         ciphers = ["TLS_AES_128_GCM_SHA256"]
         sec_policy = self.client.update_security_policy(
             TestVlb.security_policy,
             description=new_description,
             protocols=protocols,
-            ciphers=ciphers
+            ciphers=ciphers,
         )
-        self.assertEqual(sec_policy['description'], new_description)
-        self.assertEqual(sec_policy['protocols'], protocols)
-        self.assertEqual(sec_policy['ciphers'], ciphers)
+        self.assertEqual(sec_policy["description"], new_description)
+        self.assertEqual(sec_policy["protocols"], protocols)
+        self.assertEqual(sec_policy["ciphers"], ciphers)
 
         # cleanup
-        self.client.delete_security_policy(
-            TestVlb.security_policy
-        )
+        self.client.delete_security_policy(TestVlb.security_policy)

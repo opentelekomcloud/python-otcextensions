@@ -15,22 +15,22 @@ from openstack import resource
 
 class AvailabilityZone(resource.Resource):
 
-    resources_key = 'available_zones'
+    resources_key = "available_zones"
 
-    base_path = '/availableZones'
+    base_path = "/availableZones"
 
     # capabilities
     allow_list = True
 
     #: Properties
     #: Available Zone ID.
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Available Zone code.
-    code = resource.Body('code')
+    code = resource.Body("code")
     #: Available Zone name.
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Port number of the Available Zone.
-    port = resource.Body('port')
+    port = resource.Body("port")
     #: An indicator of whether there are available resources in the
     # Available Zone
-    resource_availability = resource.Body('resource_availability')
+    resource_availability = resource.Body("resource_availability")

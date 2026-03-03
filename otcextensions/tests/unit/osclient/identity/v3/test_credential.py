@@ -11,10 +11,9 @@
 # under the License.
 #
 import mock
+
 # from unittest.mock import call
-
 # from osc_lib import exceptions
-
 from otcextensions.osclient.identity.v3 import credential
 from otcextensions.tests.unit.osclient.identity.v3 import fakes
 
@@ -26,26 +25,25 @@ class TestListIdentityCredentials(fakes.TestIdentity):
     objects = fakes.FakeIdentityCredential.create_multiple(3)
 
     column_list_headers = (
-        'Access Key',
-        'Description',
-        'User ID',
-        'Status',
-        'Created At',
+        "Access Key",
+        "Description",
+        "User ID",
+        "Status",
+        "Created At",
     )
 
     columns = (
-        'access',
-        'description',
-        'user_id',
-        'status',
-        'created_at',
+        "access",
+        "description",
+        "user_id",
+        "status",
+        "created_at",
     )
 
     data = []
 
     for o in objects:
-        data.append(
-            (o.id, o.description, o.user_id, o.status, o.created_at))
+        data.append((o.id, o.description, o.user_id, o.status, o.created_at))
 
     def setUp(self):
         super(TestListIdentityCredentials, self).setUp()
@@ -75,12 +73,10 @@ class TestListIdentityCredentials(fakes.TestIdentity):
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
-        arglist = [
-            '--user-id', '1'
-        ]
+        arglist = ["--user-id", "1"]
 
         verifylist = [
-            ('user_id', '1'),
+            ("user_id", "1"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -93,5 +89,5 @@ class TestListIdentityCredentials(fakes.TestIdentity):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            user_id='1',
+            user_id="1",
         )

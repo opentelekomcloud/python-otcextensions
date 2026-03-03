@@ -13,13 +13,11 @@
 """
 Enable public inbound access
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "bandwidth_size": "5",
-    "bandwidth_charging_mode": "bandwidth"
-}
-conn.apig.enable_ingress('gateway_id', **attrs)
+attrs = {"bandwidth_size": "5", "bandwidth_charging_mode": "bandwidth"}
+conn.apig.enable_ingress("gateway_id", **attrs)

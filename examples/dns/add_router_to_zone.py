@@ -13,16 +13,14 @@
 """
 Add VPC/Router to existing zone
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 router = conn.dns.add_router_to_zone(
-    zone='zone_id',
-    router_id='router_id',
-    router_region='eu-de'
+    zone="zone_id", router_id="router_id", router_region="eu-de"
 )
 print(router)

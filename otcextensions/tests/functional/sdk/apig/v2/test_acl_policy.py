@@ -25,11 +25,11 @@ class TestACPolicy(TestApiG):
             "acl_name": "acl_demo",
             "acl_type": "PERMIT",
             "acl_value": "192.168.1.5,192.168.10.1",
-            "entity_type": "IP"
+            "entity_type": "IP",
         }
         created = self.client.create_acl_policy(
-            gateway=TestACPolicy.gateway_id,
-            **attrs)
+            gateway=TestACPolicy.gateway_id, **attrs
+        )
         self.assertIsNotNone(created.id)
         TestACPolicy.acl_id = created.id
 
@@ -39,12 +39,11 @@ class TestACPolicy(TestApiG):
             "acl_name": "acl_demo",
             "entity_type": "IP",
             "acl_type": check,
-            "acl_value": "192.168.1.5,192.168.10.1"
+            "acl_value": "192.168.1.5,192.168.10.1",
         }
         updated = self.client.update_acl_policy(
-            gateway=TestACPolicy.gateway_id,
-            acl_policy=TestACPolicy.acl_id,
-            **attrs)
+            gateway=TestACPolicy.gateway_id, acl_policy=TestACPolicy.acl_id, **attrs
+        )
         self.assertEqual(updated.acl_type, check)
 
     def test_list_acl_policies(self):
@@ -52,13 +51,15 @@ class TestACPolicy(TestApiG):
         self.assertGreater(len(found), 0)
 
     def test_get_acl_policy(self):
-        found = self.client.get_acl_policy(gateway=TestACPolicy.gateway_id,
-                                           acl_policy=TestACPolicy.acl_id)
+        found = self.client.get_acl_policy(
+            gateway=TestACPolicy.gateway_id, acl_policy=TestACPolicy.acl_id
+        )
         self.assertIsNotNone(found.id)
 
     def test_delete_ac_policy(self):
-        self.client.delete_acl_policy(gateway=TestACPolicy.gateway_id,
-                                      ac_policy=TestACPolicy.acl_id)
+        self.client.delete_acl_policy(
+            gateway=TestACPolicy.gateway_id, ac_policy=TestACPolicy.acl_id
+        )
         found = self.client.acl_policies(gateway=TestACPolicy.gateway_id)
         self.assertEqual(len(list(found)), 0)
 
@@ -67,15 +68,12 @@ class TestACPolicy(TestApiG):
             "acl_name": "acl_demo1",
             "acl_type": "PERMIT",
             "acl_value": "192.168.1.5,192.168.10.1",
-            "entity_type": "IP"
+            "entity_type": "IP",
         }
         created = self.client.create_acl_policy(
-            gateway=TestACPolicy.gateway_id,
-            **attrs)
-        attrs = {
-            'acls': [TestACPolicy.acl_id, created.id]
-        }
-        self.client.delete_acl_policies(gateway=TestACPolicy.gateway_id,
-                                        **attrs)
+            gateway=TestACPolicy.gateway_id, **attrs
+        )
+        attrs = {"acls": [TestACPolicy.acl_id, created.id]}
+        self.client.delete_acl_policies(gateway=TestACPolicy.gateway_id, **attrs)
         found = self.client.acl_policies(gateway=TestACPolicy.gateway_id)
         self.assertEqual(len(list(found)), 0)

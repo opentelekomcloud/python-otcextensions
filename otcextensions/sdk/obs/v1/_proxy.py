@@ -14,22 +14,21 @@ import os
 from urllib import parse
 from urllib.parse import urlsplit
 
-from openstack import exceptions
 from urllib3.exceptions import LocationParseError
 
+from openstack import exceptions
+from openstack import utils as os_utils
 from otcextensions.common import utils
 from otcextensions.common.utils import extract_region_from_url
 from otcextensions.sdk import ak_auth
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
-from openstack import utils as os_utils
-
 
 DEFAULT_OBJECT_SEGMENT_SIZE = 1073741824  # 1GB
 DEFAULT_MAX_FILE_SIZE = int((5 * 1024 * 1024 * 1024 + 2) / 2)
-EXPIRES_ISO8601_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
-SHORT_EXPIRES_ISO8601_FORMAT = '%Y-%m-%d'
+EXPIRES_ISO8601_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+SHORT_EXPIRES_ISO8601_FORMAT = "%Y-%m-%d"
 
 
 def _normalize_obs_keys(obj):
@@ -39,52 +38,50 @@ def _normalize_obs_keys(obj):
 class Proxy(sdk_proxy.Proxy):
     skip_discovery = True
 
-    CONTAINER_ENDPOINT = \
-        'https://%(container)s.obs.%(region_name)s.otc.t-systems.com'
+    CONTAINER_ENDPOINT = "https://%(container)s.obs.%(region_name)s.otc.t-systems.com"
 
     def _extract_name(self, url, service_type=None, project_id=None):
         url_path = parse.urlparse(url).path.strip()
         # Remove / from the beginning to keep the list indexes of interesting
         # things consistent
-        if url_path.startswith('/'):
+        if url_path.startswith("/"):
             url_path = url_path[1:]
 
         # Split url into parts and exclude potential project_id in some urls
-        url_parts = url_path.split('/')
+        url_parts = url_path.split("/")
 
         # Strip out anything that's empty or None
         parts = [part for part in url_parts if part]
 
         # Getting the root of an endpoint is a bucket operation
         if not parts:
-            return ['bucket']
+            return ["bucket"]
         else:
-            return ['object']
+            return ["object"]
 
     def get_container_endpoint(self, container):
-        """Override to return mapped endpoint if override and region are set
-
-        """
+        """Override to return mapped endpoint if override and region are set"""
         split_url = urlsplit(self.get_endpoint())
 
-        return f'{split_url.scheme}://%(container)s.{split_url.netloc}' % \
-            {'container': container}
+        return f"{split_url.scheme}://%(container)s.{split_url.netloc}" % {
+            "container": container
+        }
 
     def _get_req_auth(self, host=None):
-        auth = getattr(self, '_ak_auth', None)
+        auth = getattr(self, "_ak_auth", None)
         if not auth:
             ak = None
             sk = None
             token = None
             conn = self.session._sdk_connection
-            if hasattr(conn, 'get_ak_sk'):
+            if hasattr(conn, "get_ak_sk"):
                 aksk = conn.get_ak_sk(conn)
                 if len(aksk) == 2:
-                    (ak, sk) = aksk
+                    ak, sk = aksk
                 elif len(aksk) == 3:
-                    (ak, sk, token) = aksk
+                    ak, sk, token = aksk
             if not (ak and sk):
-                self.log.error('Cannot obtain AK/SK from config')
+                self.log.error("Cannot obtain AK/SK from config")
                 return None
             region = extract_region_from_url(self.get_endpoint())
             if not host:
@@ -94,12 +91,12 @@ class Proxy(sdk_proxy.Proxy):
                 "secret_access_key": sk,
                 "host": host,
                 "region": region,
-                "service": "s3"
+                "service": "s3",
             }
             if token:
                 auth_params["token"] = token
             auth = ak_auth.AKRequestsAuth(**auth_params)
-            setattr(self, '_ak_auth', auth)
+            setattr(self, "_ak_auth", auth)
         return auth
 
     # ======== Containers ========
@@ -113,9 +110,9 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: A generator of
             :class:`~otcextensions.sdk.obs.v1.container.Container` objects.
         """
-        return self._list(_container.Container,
-                          requests_auth=self._get_req_auth(),
-                          **query)
+        return self._list(
+            _container.Container, requests_auth=self._get_req_auth(), **query
+        )
 
     def get_container(self, container):
         """Get the detail of a container
@@ -131,7 +128,8 @@ class Proxy(sdk_proxy.Proxy):
             _container.Container,
             container,
             endpoint_override=endpoint,
-            requests_auth=self._get_req_auth(endpoint))
+            requests_auth=self._get_req_auth(endpoint),
+        )
 
     def create_container(self, **attrs):
         """Create a new container from attributes
@@ -144,7 +142,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of container creation
         :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
-        container = attrs.get('name', None)
+        container = attrs.get("name", None)
         endpoint = self.get_container_endpoint(container)
         request_auth = self._get_req_auth(endpoint)
         return self._create(
@@ -152,7 +150,8 @@ class Proxy(sdk_proxy.Proxy):
             endpoint_override=endpoint,
             requests_auth=request_auth,
             # prepend_key=False,
-            **attrs)
+            **attrs,
+        )
 
     def delete_container(self, container, ignore_missing=True):
         """Delete a container
@@ -170,10 +169,13 @@ class Proxy(sdk_proxy.Proxy):
         """
         container = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container)
-        self._delete(_container.Container, container,
-                     endpoint_override=endpoint,
-                     requests_auth=self._get_req_auth(endpoint),
-                     ignore_missing=ignore_missing)
+        self._delete(
+            _container.Container,
+            container,
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint),
+            ignore_missing=ignore_missing,
+        )
 
     def get_container_metadata(self, container):
         """Get metadata for a container
@@ -249,7 +251,9 @@ class Proxy(sdk_proxy.Proxy):
         return self._list(
             _obj.Object,
             endpoint_override=endpoint,
-            requests_auth=self._get_req_auth(endpoint), **query)
+            requests_auth=self._get_req_auth(endpoint),
+            **query,
+        )
 
     def _get_container_name(self, obj=None, container=None):
         if obj is not None:
@@ -277,12 +281,15 @@ class Proxy(sdk_proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        container_name = self._get_container_name(
-            obj=obj, container=container)
+        container_name = self._get_container_name(obj=obj, container=container)
         endpoint = self.get_container_endpoint(container_name)
-        return self._get(_obj.Object, obj, container=container_name,
-                         endpoint_override=endpoint,
-                         requests_auth=self._get_req_auth(endpoint))
+        return self._get(
+            _obj.Object,
+            obj,
+            container=container_name,
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint),
+        )
 
     def download_object(self, obj, container=None, **attrs):
         """Download the data contained inside an object.
@@ -296,16 +303,15 @@ class Proxy(sdk_proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        container_name = self._get_container_name(
-            obj=obj, container=container)
+        container_name = self._get_container_name(obj=obj, container=container)
         endpoint = self.get_container_endpoint(container_name)
-        obj = self._get_resource(
-            _obj.Object, obj, container=container_name, **attrs)
+        obj = self._get_resource(_obj.Object, obj, container=container_name, **attrs)
         return obj.download(
             self,
             endpoint_override=endpoint,
             requests_auth=self._get_req_auth(endpoint),
-            filename=attrs.pop('file', '-'))
+            filename=attrs.pop("file", "-"),
+        )
 
     def stream_object(self, obj, container=None, chunk_size=1024, **attrs):
         """Stream the data contained inside an object.
@@ -326,16 +332,26 @@ class Proxy(sdk_proxy.Proxy):
         container_name = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container_name)
         obj = self._get_resource(
-            _obj.Object, obj, container=container_name,
+            _obj.Object,
+            obj,
+            container=container_name,
             endpoint_override=endpoint,
             requests_auth=self._get_req_auth(endpoint),
-            **attrs)
+            **attrs,
+        )
         return obj.stream(self, chunk_size=chunk_size)
 
-    def create_object(self, container, name, filename=None, data=None,
-                      segment_size=None, md5=None,
-                      generate_checksums=None,
-                      **headers):
+    def create_object(
+        self,
+        container,
+        name,
+        filename=None,
+        data=None,
+        segment_size=None,
+        md5=None,
+        generate_checksums=None,
+        **headers,
+    ):
         """Upload a new object from attributes
 
         :param generate_checksums: Whether to generate checksums on the client
@@ -364,14 +380,11 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
         if data is not None and filename:
-            raise ValueError(
-                "Both filename and data given. Please choose one.")
+            raise ValueError("Both filename and data given. Please choose one.")
         if data is not None and not name:
             raise ValueError("name is a required parameter when data is given")
         if data is not None and generate_checksums:
-            raise ValueError(
-                "checksums cannot be generated with data parameter"
-            )
+            raise ValueError("checksums cannot be generated with data parameter")
 
         if not filename and data is None:
             filename = name
@@ -381,11 +394,14 @@ class Proxy(sdk_proxy.Proxy):
 
         # folder logic
         if data is None and name[-1] == "/":
-            return self._create(_obj.Object, container=container,
-                                name=name,
-                                endpoint_override=endpoint,
-                                requests_auth=self._get_req_auth(endpoint),
-                                **headers)
+            return self._create(
+                _obj.Object,
+                container=container,
+                name=name,
+                endpoint_override=endpoint,
+                requests_auth=self._get_req_auth(endpoint),
+                **headers,
+            )
         if segment_size:
             segment_size = int(segment_size)
         segment_size = self.get_object_segment_size(segment_size)
@@ -398,15 +414,16 @@ class Proxy(sdk_proxy.Proxy):
                     endpoint, data, name, headers, segment_size
                 )
             else:
-                self.log.debug(
-                    "uploading data to %(endpoint)s",
-                    {'endpoint': endpoint})
+                self.log.debug("uploading data to %(endpoint)s", {"endpoint": endpoint})
                 return self._create(
-                    _obj.Object, container=container,
-                    name=name, data=data,
+                    _obj.Object,
+                    container=container,
+                    name=name,
+                    data=data,
                     endpoint_override=endpoint,
                     requests_auth=self._get_req_auth(endpoint),
-                    **headers)
+                    **headers,
+                )
 
         file_size = os.path.getsize(filename)
 
@@ -417,14 +434,15 @@ class Proxy(sdk_proxy.Proxy):
 
             self.log.debug(
                 "uploading %(filename)s to %(endpoint)s",
-                {'filename': filename, 'endpoint': endpoint})
+                {"filename": filename, "endpoint": endpoint},
+            )
 
             if file_size <= segment_size:
                 self._upload_object(endpoint, filename, headers, name)
             else:
                 self._upload_large_object(
-                    endpoint, filename, name, headers,
-                    file_size, segment_size)
+                    endpoint, filename, name, headers, file_size, segment_size
+                )
 
     # Backwards compat
     upload_object = create_object
@@ -432,16 +450,19 @@ class Proxy(sdk_proxy.Proxy):
     def _upload_object(self, endpoint, filename, headers, name=None):
         if not name:
             name = os.path.basename(filename)
-        with open(filename, 'rb') as dt:
+        with open(filename, "rb") as dt:
             return self._create(
                 _obj.Object,
-                name=name, data=dt,
+                name=name,
+                data=dt,
                 endpoint_override=endpoint,
                 requests_auth=self._get_req_auth(endpoint),
-                **headers)
+                **headers,
+            )
 
-    def _upload_large_object(self, endpoint, filename, name, headers,
-                             file_size, segment_size):
+    def _upload_large_object(
+        self, endpoint, filename, name, headers, file_size, segment_size
+    ):
         """
         If the object is big, we need to break it up into segments that
         are no larger than segment_size, upload each of them individually
@@ -458,32 +479,33 @@ class Proxy(sdk_proxy.Proxy):
         if name:
             object_name = name
         requests_auth = self._get_req_auth(endpoint)
-        segments = utils._get_file_segments(
-            endpoint, filename, file_size, segment_size)
+        segments = utils._get_file_segments(endpoint, filename, file_size, segment_size)
 
         upload_id = _obj.Object.initiate_multipart_upload(
-            self, endpoint, object_name,
-            requests_auth=requests_auth
+            self, endpoint, object_name, requests_auth=requests_auth
         )
-        url = f'{endpoint}/{object_name}'
+        url = f"{endpoint}/{object_name}"
         # Schedule the segments for upload
         for name, segment in segments.items():
-            part_number = name.rsplit('/', 1)[-1]
+            part_number = name.rsplit("/", 1)[-1]
             # Async call to put - schedules execution and returns a future
             segment_future = self._connection._pool_executor.submit(
                 self.put,
-                f'{url}?partNumber={part_number}&uploadId={upload_id}',
-                headers=headers, data=segment,
+                f"{url}?partNumber={part_number}&uploadId={upload_id}",
+                headers=headers,
+                data=segment,
                 requests_auth=requests_auth,
-                raise_exc=False)
+                raise_exc=False,
+            )
             segment_futures.append(segment_future)
             # dict. Then sort the list of dicts by path.
-            manifest.append(dict(
-                path='/{name}'.format(name=name),
-                size_bytes=segment.length))
+            manifest.append(
+                dict(path="/{name}".format(name=name), size_bytes=segment.length)
+            )
 
         segment_results, retry_results = self._connection._wait_for_futures(
-            segment_futures, raise_on_error=False)
+            segment_futures, raise_on_error=False
+        )
 
         for result in retry_results:
             # Grab the FileSegment for the failed upload so we can retry
@@ -493,36 +515,36 @@ class Proxy(sdk_proxy.Proxy):
             # Async call to put - schedules execution and returns a future
             segment_future = self._connection._pool_executor.submit(
                 self.put,
-                f'{url}?partNumber={name[-1]}&uploadId={upload_id}',
-                headers=headers, data=segment,
-                requests_auth=requests_auth
+                f"{url}?partNumber={name[-1]}&uploadId={upload_id}",
+                headers=headers,
+                data=segment,
+                requests_auth=requests_auth,
             )
             # dict. Then sort the list of dicts by path.
             retry_futures.append(segment_future)
 
         # If any segments fail the second time, just throw the error
         segment_results, retry_results = self._connection._wait_for_futures(
-            retry_futures, raise_on_error=True)
+            retry_futures, raise_on_error=True
+        )
 
         try:
-            return self._finish_large_object_upload(
-                url, headers, upload_id)
+            return self._finish_large_object_upload(url, headers, upload_id)
         except Exception:
             try:
                 self.log.debug(
-                    "Failed to upload large object for %s. "
-                    "Aborting uploads.", upload_id)
-                self._abort_multipart_upload(endpoint=url,
-                                             upload_id=upload_id)
+                    "Failed to upload large object for %s. " "Aborting uploads.",
+                    upload_id,
+                )
+                self._abort_multipart_upload(endpoint=url, upload_id=upload_id)
             except Exception:
-                self.log.exception(
-                    "Failed to cleanup image objects for %s:",
-                    upload_id)
+                self.log.exception("Failed to cleanup image objects for %s:", upload_id)
             raise
 
     def parts(self, endpoint, upload_id, requests_auth):
         return _obj.Object.get_parts(
-            self, f'{endpoint}?uploadId={upload_id}', requests_auth)
+            self, f"{endpoint}?uploadId={upload_id}", requests_auth
+        )
 
     def _finish_large_object_upload(self, endpoint, headers, upload_id):
         requests_auth = self._get_req_auth(endpoint)
@@ -532,10 +554,14 @@ class Proxy(sdk_proxy.Proxy):
             try:
                 return exceptions.raise_from_response(
                     _obj.Object.complete_multipart_upload(
-                        self, endpoint, upload_id,
-                        parts['Parts'], headers,
-                        requests_auth=requests_auth
-                    ))
+                        self,
+                        endpoint,
+                        upload_id,
+                        parts["Parts"],
+                        headers,
+                        requests_auth=requests_auth,
+                    )
+                )
             except Exception:
                 retries -= 1
                 if retries == 0:
@@ -547,7 +573,7 @@ class Proxy(sdk_proxy.Proxy):
         :param data: The data object passed to create_object.
         :returns: The size of the data if it can be determined, else None.
         """
-        if hasattr(data, 'fileno'):
+        if hasattr(data, "fileno"):
             try:
                 fileno = data.fileno()
             except io.UnsupportedOperation:
@@ -558,11 +584,13 @@ class Proxy(sdk_proxy.Proxy):
             except Exception:
                 self.log.debug(
                     "Cannot determine size of data with fileno %s",
-                    fileno, exc_info=True)
+                    fileno,
+                    exc_info=True,
+                )
                 return None
-        if hasattr(data, 'len'):
+        if hasattr(data, "len"):
             return data.len
-        if hasattr(data, '__len__'):
+        if hasattr(data, "__len__"):
             return len(data)
         try:
             pos = data.tell()
@@ -582,10 +610,9 @@ class Proxy(sdk_proxy.Proxy):
         parallel, so we'll use the async feature of the TaskManager.
         """
         upload_id = _obj.Object.initiate_multipart_upload(
-            self, endpoint, name,
-            requests_auth=self._get_req_auth(endpoint)
+            self, endpoint, name, requests_auth=self._get_req_auth(endpoint)
         )
-        url = f'{endpoint}/{name}'
+        url = f"{endpoint}/{name}"
         part_number = 1
 
         try:
@@ -594,39 +621,34 @@ class Proxy(sdk_proxy.Proxy):
                 if not segment:
                     break
                 result = self.put(
-                    f'{url}?partNumber={part_number}&uploadId={upload_id}',
-                    headers=headers, data=segment,
-                    requests_auth=self._get_req_auth(endpoint)
+                    f"{url}?partNumber={part_number}&uploadId={upload_id}",
+                    headers=headers,
+                    data=segment,
+                    requests_auth=self._get_req_auth(endpoint),
                 )
                 result.raise_for_status()
                 part_number += 1
 
-            return self._finish_large_object_upload(
-                url, headers, upload_id)
+            return self._finish_large_object_upload(url, headers, upload_id)
         except Exception:
             try:
-                self.log.debug(
-                    "Failed to upload large data. Aborting %s", upload_id
-                )
+                self.log.debug("Failed to upload large data. Aborting %s", upload_id)
                 self._abort_multipart_upload(endpoint=url, upload_id=upload_id)
             except Exception:
-                self.log.exception(
-                    "Failed to cleanup multipart upload %s:", upload_id
-                )
+                self.log.exception("Failed to cleanup multipart upload %s:", upload_id)
             raise
 
     def _object_name_from_url(self, url):
-        '''Get container_name/object_name from the full URL called.
+        """Get container_name/object_name from the full URL called.
         Remove the Swift endpoint from the front of the URL, and remove
-        the leaving / that will leave behind.'''
+        the leaving / that will leave behind."""
         endpoint = self.get_endpoint()
-        object_name = url.replace(endpoint, '')
-        if object_name.startswith('/'):
+        object_name = url.replace(endpoint, "")
+        if object_name.startswith("/"):
             object_name = object_name[1:]
         return object_name
 
-    def is_object_stale(
-            self, container, name, filename, file_md5=None):
+    def is_object_stale(self, container, name, filename, file_md5=None):
         """Check to see if an object matches the hashes of a file.
         :param container: Name of the container.
         :param name: Name of the object.
@@ -639,20 +661,23 @@ class Proxy(sdk_proxy.Proxy):
         except (exceptions.NotFoundException, LocationParseError):
             self.log.debug(
                 "swift stale check, no object: {container}/{name}".format(
-                    container=container, name=name))
+                    container=container, name=name
+                )
+            )
             return True
 
         if not file_md5:
             file_md5 = utils._get_file_hashes(filename)
-        if file_md5 == metadata.etag.strip('\"'):
+        if file_md5 == metadata.etag.strip('"'):
             self.log.debug(
                 "swift object up to date: %(container)s/%(name)s",
-                {'container': container, 'name': name})
+                {"container": container, "name": name},
+            )
             return False
         self.log.debug(
-            "swift checksum mismatch: "
-            " %(filename)s!=%(container)s/%(name)s",
-            {'filename': filename, 'container': container, 'name': name})
+            "swift checksum mismatch: " " %(filename)s!=%(container)s/%(name)s",
+            {"filename": filename, "container": container, "name": name},
+        )
         return True
 
     def get_object_segment_size(self, segment_size):
@@ -691,11 +716,14 @@ class Proxy(sdk_proxy.Proxy):
         """
         container_name = self._get_container_name(obj, container)
         endpoint = self.get_container_endpoint(container_name)
-        self._delete(_obj.Object, obj, ignore_missing=ignore_missing,
-                     container=container_name,
-                     endpoint_override=endpoint,
-                     requests_auth=self._get_req_auth(endpoint),
-                     )
+        self._delete(
+            _obj.Object,
+            obj,
+            ignore_missing=ignore_missing,
+            container=container_name,
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint),
+        )
 
     def get_object_metadata(self, obj, container=None):
         """Get metadata for an object.
@@ -713,9 +741,13 @@ class Proxy(sdk_proxy.Proxy):
         container_name = self._get_container_name(obj, container)
         endpoint = self.get_container_endpoint(container_name)
 
-        return self._head(_obj.Object, obj, container=container_name,
-                          endpoint_override=endpoint,
-                          requests_auth=self._get_req_auth(endpoint))
+        return self._head(
+            _obj.Object,
+            obj,
+            container=container_name,
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint),
+        )
 
     def set_object_metadata(self, obj, container=None, **metadata):
         """Set metadata for an object.
@@ -764,19 +796,16 @@ class Proxy(sdk_proxy.Proxy):
         res.delete_metadata(self, keys)
         return res
 
-    def _abort_multipart_upload(
-            self, endpoint, upload_id
-    ):
+    def _abort_multipart_upload(self, endpoint, upload_id):
         """Aborts all multipart upload objects.
         :param endpoint: Container endpoint
         :param upload_id: ID of the multipart upload to be aborted.
         :return:
         """
-        url = f'{endpoint}?uploadId={upload_id}'
+        url = f"{endpoint}?uploadId={upload_id}"
         return self.delete(url, requests_auth=self._get_req_auth(endpoint))
 
-    def wait_for_delete_object(self, obj, container=None,
-                               interval=2, wait=300):
+    def wait_for_delete_object(self, obj, container=None, interval=2, wait=300):
         """Waits for an object to be deleted.
 
         :param obj: The value can be the name of an object or a
@@ -795,10 +824,7 @@ class Proxy(sdk_proxy.Proxy):
         container = self._get_container_name(obj, container)
         for _ in os_utils.iterate_timeout(
             timeout=wait,
-            message=(
-                f"Timeout waiting for {obj.name} "
-                f"in {container} to delete"
-            ),
+            message=(f"Timeout waiting for {obj.name} " f"in {container} to delete"),
             wait=interval,
         ):
             try:
@@ -807,8 +833,7 @@ class Proxy(sdk_proxy.Proxy):
                 return obj
 
         raise exceptions.ResourceTimeout(
-            f"Object {obj.name} in {container} was not "
-            f"deleted in {wait} seconds"
+            f"Object {obj.name} in {container} was not " f"deleted in {wait} seconds"
         )
 
     def wait_for_delete_container(self, container, interval=2, wait=180):
@@ -828,10 +853,7 @@ class Proxy(sdk_proxy.Proxy):
 
         for _ in os_utils.iterate_timeout(
             timeout=wait,
-            message=(
-                f"Timeout waiting for container"
-                f" {container.name} to delete"
-            ),
+            message=(f"Timeout waiting for container" f" {container.name} to delete"),
             wait=interval,
         ):
             try:
@@ -843,21 +865,17 @@ class Proxy(sdk_proxy.Proxy):
         )
 
     def _get_cleanup_dependencies(self):
-        return {
-            'obs': {
-                'before': ['network']
-            }
-        }
+        return {"obs": {"before": ["network"]}}
 
     def _service_cleanup(
-            self,
-            dry_run=True,
-            client_status_queue=None,
-            identified_resources=None,
-            filters=None,
-            resource_evaluation_fn=None,
-            skip_resources=None,
-            cont_name=None,
+        self,
+        dry_run=True,
+        client_status_queue=None,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
+        cont_name=None,
     ):
         pass
         containers = []
@@ -871,7 +889,7 @@ class Proxy(sdk_proxy.Proxy):
                     client_status_queue=client_status_queue,
                     identified_resources=identified_resources,
                     filters=filters,
-                    resource_evaluation_fn=resource_evaluation_fn
+                    resource_evaluation_fn=resource_evaluation_fn,
                 )
                 if not dry_run and need_delete:
                     objects.append(obj)
@@ -890,7 +908,7 @@ class Proxy(sdk_proxy.Proxy):
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn
+                resource_evaluation_fn=resource_evaluation_fn,
             )
             if not dry_run and need_delete:
                 containers.append(container)
@@ -898,6 +916,4 @@ class Proxy(sdk_proxy.Proxy):
             try:
                 self.wait_for_delete_container(container)
             except Exception as e:
-                self.log.warning(
-                    f"Failed to delete container {container.name}: {e}"
-                )
+                self.log.warning(f"Failed to delete container {container.name}: {e}")

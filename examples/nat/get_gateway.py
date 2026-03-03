@@ -13,11 +13,12 @@
 """
 Get details of NAT Gateway by gateway_id or instance of Gateway class
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-gateway = 'gateway_id'
+gateway = "gateway_id"
 gateway = conn.nat.get_gateway(gateway)
 print(gateway)

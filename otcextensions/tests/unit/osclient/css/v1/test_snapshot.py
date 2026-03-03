@@ -23,14 +23,14 @@ from otcextensions.tests.unit.osclient.css.v1 import fakes
 
 
 COLUMNS = (
-    'agency',
-    'backup_keep_days',
-    'backup_path',
-    'backup_period',
-    'bucket_name',
-    'cmk_id',
-    'is_enabled',
-    'prefix',
+    "agency",
+    "backup_keep_days",
+    "backup_path",
+    "backup_period",
+    "bucket_name",
+    "cmk_id",
+    "is_enabled",
+    "prefix",
 )
 
 
@@ -40,23 +40,23 @@ class TestListSnapshots(fakes.TestCss):
     objects = fakes.FakeSnapshot.create_multiple(3)
 
     column_list_headers = (
-        'ID',
-        'Name',
-        'Status',
-        'Backup Method',
-        'Bucket Name',
-        'Created At',
-        'Backup Keep Days',
+        "ID",
+        "Name",
+        "Status",
+        "Backup Method",
+        "Bucket Name",
+        "Created At",
+        "Backup Keep Days",
     )
 
     columns = (
-        'id',
-        'name',
-        'status',
-        'backup_method',
-        'bucket_name',
-        'created_at',
-        'backup_keep_days',
+        "id",
+        "name",
+        "status",
+        "backup_method",
+        "bucket_name",
+        "created_at",
+        "backup_keep_days",
     )
 
     data = []
@@ -88,7 +88,7 @@ class TestListSnapshots(fakes.TestCss):
             self._cluster.name,
         ]
         verifylist = [
-            ('cluster', self._cluster.name),
+            ("cluster", self._cluster.name),
         ]
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -110,7 +110,7 @@ class TestCreateSnapshot(fakes.TestCss):
     _cluster = fakes.FakeCluster.create_one()
     _data = fakes.FakeSnapshot.create_one()
 
-    columns = ('id', 'name')
+    columns = ("id", "name")
 
     data = fakes.gen_data(_data, columns)
 
@@ -128,19 +128,19 @@ class TestCreateSnapshot(fakes.TestCss):
     def test_create(self):
         arglist = [
             self._cluster.name,
-            'test-snapshot',
-            '--indices',
-            '1',
-            '--description',
-            '2',
-            '--wait',
+            "test-snapshot",
+            "--indices",
+            "1",
+            "--description",
+            "2",
+            "--wait",
         ]
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('name', 'test-snapshot'),
-            ('indices', '1'),
-            ('description', '2'),
-            ('wait', True),
+            ("cluster", self._cluster.name),
+            ("name", "test-snapshot"),
+            ("indices", "1"),
+            ("description", "2"),
+            ("wait", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -148,9 +148,9 @@ class TestCreateSnapshot(fakes.TestCss):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'name': 'test-snapshot',
-            'indices': '1',
-            'description': '2',
+            "name": "test-snapshot",
+            "indices": "1",
+            "description": "2",
         }
         self.client.create_snapshot.assert_called_with(self._cluster, **attrs)
         self.client.wait_for_cluster.assert_called_with(
@@ -164,31 +164,31 @@ class TestRestoreSnapshot(fakes.TestCss):
     _cluster = fakes.FakeCluster.create_one()
 
     columns = (
-        'action_progress',
-        'actions',
-        'bandwidth_size',
-        'cmk_id',
-        'created_at',
-        'datastore',
-        'elb_whitelist',
-        'endpoints',
-        'enterprise_project_id',
-        'floating_ip',
-        'id',
-        'is_authority_enabled',
-        'is_backup_enabled',
-        'is_billed',
-        'is_disk_encrypted',
-        'is_https_enabled',
-        'name',
-        'network_id',
-        'nodes',
-        'router_id',
-        'security_group_id',
-        'status',
-        'status_code',
-        'tags',
-        'updated_at',
+        "action_progress",
+        "actions",
+        "bandwidth_size",
+        "cmk_id",
+        "created_at",
+        "datastore",
+        "elb_whitelist",
+        "endpoints",
+        "enterprise_project_id",
+        "floating_ip",
+        "id",
+        "is_authority_enabled",
+        "is_backup_enabled",
+        "is_billed",
+        "is_disk_encrypted",
+        "is_https_enabled",
+        "name",
+        "network_id",
+        "nodes",
+        "router_id",
+        "security_group_id",
+        "status",
+        "status_code",
+        "tags",
+        "updated_at",
     )
 
     data = fakes.gen_data(_cluster, columns, cluster._formatters)
@@ -207,25 +207,25 @@ class TestRestoreSnapshot(fakes.TestCss):
     def test_restore(self):
         arglist = [
             self._cluster.name,
-            'snapshot-uuid',
-            '--target-cluster',
+            "snapshot-uuid",
+            "--target-cluster",
             self._cluster.name,
-            '--indices',
-            '1',
-            '--rename-replacement',
-            '2',
-            '--rename-pattern',
-            '3',
-            '--wait',
+            "--indices",
+            "1",
+            "--rename-replacement",
+            "2",
+            "--rename-pattern",
+            "3",
+            "--wait",
         ]
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('snapshotId', 'snapshot-uuid'),
-            ('target_cluster', self._cluster.name),
-            ('indices', '1'),
-            ('rename_replacement', '2'),
-            ('rename_pattern', '3'),
-            ('wait', True),
+            ("cluster", self._cluster.name),
+            ("snapshotId", "snapshot-uuid"),
+            ("target_cluster", self._cluster.name),
+            ("indices", "1"),
+            ("rename_replacement", "2"),
+            ("rename_pattern", "3"),
+            ("wait", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -233,13 +233,13 @@ class TestRestoreSnapshot(fakes.TestCss):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'targetCluster': self._cluster.id,
-            'indices': '1',
-            'renameReplacement': '2',
-            'renamePattern': '3',
+            "targetCluster": self._cluster.id,
+            "indices": "1",
+            "renameReplacement": "2",
+            "renamePattern": "3",
         }
         self.client.restore_snapshot.assert_called_with(
-            self._cluster, 'snapshot-uuid', **attrs
+            self._cluster, "snapshot-uuid", **attrs
         )
         self.client.wait_for_cluster.assert_called_with(
             self._cluster.id, self.default_timeout
@@ -268,8 +268,8 @@ class TestDeleteSnapshot(fakes.TestCss):
         ]
 
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('snapshot', [self._data[0].id]),
+            ("cluster", self._cluster.name),
+            ("snapshot", [self._data[0].id]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -291,8 +291,8 @@ class TestDeleteSnapshot(fakes.TestCss):
             arglist.append(css_snapshot.id)
 
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('snapshot', snapshot_list),
+            ("cluster", self._cluster.name),
+            ("snapshot", snapshot_list),
         ]
 
         # Verify cm is triggered with default parameters
@@ -303,9 +303,7 @@ class TestDeleteSnapshot(fakes.TestCss):
 
         calls = []
         for css_snapshot in self._data:
-            calls.append(
-                call(self._cluster, css_snapshot.id, ignore_missing=False)
-            )
+            calls.append(call(self._cluster, css_snapshot.id, ignore_missing=False))
         self.client.delete_snapshot.assert_has_calls(calls)
         self.assertIsNone(result)
 
@@ -313,26 +311,24 @@ class TestDeleteSnapshot(fakes.TestCss):
         arglist = [
             self._cluster.name,
             self._data[0].id,
-            'unexist_css_snapshot',
+            "unexist_css_snapshot",
         ]
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('snapshot', [self._data[0].id, 'unexist_css_snapshot']),
+            ("cluster", self._cluster.name),
+            ("snapshot", [self._data[0].id, "unexist_css_snapshot"]),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         delete_mock_results = [None, exceptions.CommandError]
-        self.client.delete_snapshot = mock.Mock(
-            side_effect=delete_mock_results
-        )
+        self.client.delete_snapshot = mock.Mock(side_effect=delete_mock_results)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('1 of 2 Snapshot(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 Snapshot(s) failed to delete.", str(e))
 
         self.client.delete_snapshot.assert_any_call(
             self._cluster, self._data[0].id, ignore_missing=False
@@ -360,25 +356,25 @@ class TestSetSnapshotPolicy(fakes.TestCss):
     def test_setpolicy(self):
         arglist = [
             self._cluster.name,
-            '--name-prefix',
-            '1',
-            '--keep-days',
-            '2',
-            '--period',
-            '3',
-            '--frequency',
-            'DAY',
-            '--disable',
-            '--delete-auto',
+            "--name-prefix",
+            "1",
+            "--keep-days",
+            "2",
+            "--period",
+            "3",
+            "--frequency",
+            "DAY",
+            "--disable",
+            "--delete-auto",
         ]
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('name_prefix', '1'),
-            ('keep_days', 2),
-            ('period', '3'),
-            ('frequency', 'day'),
-            ('disable', True),
-            ('delete_auto', True),
+            ("cluster", self._cluster.name),
+            ("name_prefix", "1"),
+            ("keep_days", 2),
+            ("period", "3"),
+            ("frequency", "day"),
+            ("disable", True),
+            ("delete_auto", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -390,12 +386,10 @@ class TestSetSnapshotPolicy(fakes.TestCss):
             "keepday": 2,
             "period": "3",
             "frequency": "DAY",
-            "enable": 'false',
-            "deleteAuto": 'true',
+            "enable": "false",
+            "deleteAuto": "true",
         }
-        self.client.set_snapshot_policy.assert_called_with(
-            self._cluster, **attrs
-        )
+        self.client.set_snapshot_policy.assert_called_with(self._cluster, **attrs)
         self.client.get_snapshot_policy.assert_called_with(self._cluster)
 
         self.assertEqual(self.columns, columns)
@@ -423,7 +417,7 @@ class TestShowSnapshotPolicy(fakes.TestCss):
             self._cluster.name,
         ]
         verifylist = [
-            ('cluster', self._cluster.name),
+            ("cluster", self._cluster.name),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -449,29 +443,29 @@ class TestConfigureSnapshot(fakes.TestCss):
     def test_configure(self):
         arglist = [
             self._cluster.name,
-            '--backup-path',
-            'css_repository/test-css',
-            '--bucket',
-            'test-bucket',
-            '--agency',
-            'test-agency',
-            '--cmk-id',
-            'cmk-uuid',
+            "--backup-path",
+            "css_repository/test-css",
+            "--bucket",
+            "test-bucket",
+            "--agency",
+            "test-agency",
+            "--cmk-id",
+            "cmk-uuid",
         ]
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('backup_path', 'css_repository/test-css'),
-            ('bucket', 'test-bucket'),
-            ('agency', 'test-agency'),
-            ('cmk_id', 'cmk-uuid'),
+            ("cluster", self._cluster.name),
+            ("backup_path", "css_repository/test-css"),
+            ("bucket", "test-bucket"),
+            ("agency", "test-agency"),
+            ("cmk_id", "cmk-uuid"),
         ]
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         attrs = {
-            'backup_path': 'css_repository/test-css',
-            'bucket': 'test-bucket',
-            'agency': 'test-agency',
-            'snapshotCmkId': 'cmk-uuid',
+            "backup_path": "css_repository/test-css",
+            "bucket": "test-bucket",
+            "agency": "test-agency",
+            "snapshotCmkId": "cmk-uuid",
         }
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -481,10 +475,10 @@ class TestConfigureSnapshot(fakes.TestCss):
         self.assertIsNone(result)
 
     def test_configure_auto(self):
-        arglist = [self._cluster.name, '--auto-configure']
+        arglist = [self._cluster.name, "--auto-configure"]
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('auto_configure', True),
+            ("cluster", self._cluster.name),
+            ("auto_configure", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -516,7 +510,7 @@ class TestDisableSnapshot(fakes.TestCss):
         ]
 
         verifylist = [
-            ('cluster', self._cluster.name),
+            ("cluster", self._cluster.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -524,7 +518,5 @@ class TestDisableSnapshot(fakes.TestCss):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.disable_snapshot_function.assert_called_with(
-            self._cluster
-        )
+        self.client.disable_snapshot_function.assert_called_with(self._cluster)
         self.assertIsNone(result)

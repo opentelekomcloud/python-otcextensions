@@ -13,12 +13,12 @@
 """
 Delete a RDS configuration template by ID
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'configuration'
+name_or_id = "configuration"
 configuration = conn.rds.find_configuration(name_or_id=name_or_id)
 conn.rds.delete_configuration(configuration)

@@ -16,17 +16,13 @@ import os
 from openstack import exceptions
 from openstack import proxy
 from otcextensions.sdk.modelartsv2.v2 import dataset as _dataset
-from otcextensions.sdk.modelartsv2.v2 import \
-    dataset_export_task as _dataset_export_task
-from otcextensions.sdk.modelartsv2.v2 import \
-    dataset_import_task as _dataset_import_task
+from otcextensions.sdk.modelartsv2.v2 import dataset_export_task as _dataset_export_task
+from otcextensions.sdk.modelartsv2.v2 import dataset_import_task as _dataset_import_task
 from otcextensions.sdk.modelartsv2.v2 import dataset_label as _dataset_label
 from otcextensions.sdk.modelartsv2.v2 import dataset_sample as _dataset_sample
-from otcextensions.sdk.modelartsv2.v2 import \
-    dataset_statistics as _dataset_statistics
+from otcextensions.sdk.modelartsv2.v2 import dataset_statistics as _dataset_statistics
 from otcextensions.sdk.modelartsv2.v2 import dataset_sync as _dataset_sync
-from otcextensions.sdk.modelartsv2.v2 import \
-    dataset_version as _dataset_version
+from otcextensions.sdk.modelartsv2.v2 import dataset_version as _dataset_version
 
 
 class Proxy(proxy.Proxy):
@@ -123,9 +119,7 @@ class Proxy(proxy.Proxy):
 
         returns: ``None``
         """
-        return self._delete(
-            _dataset.Dataset, dataset, ignore_missing=ignore_missing
-        )
+        return self._delete(_dataset.Dataset, dataset, ignore_missing=ignore_missing)
 
     # ======== Dataset Statistics ========
 
@@ -203,9 +197,7 @@ class Proxy(proxy.Proxy):
         labels = labels or attrs.get("labels")
         return obj.update_labels(self, labels)
 
-    def delete_dataset_labels(
-        self, dataset, labels=[], delete_policy=None, **attrs
-    ):
+    def delete_dataset_labels(self, dataset, labels=[], delete_policy=None, **attrs):
         """Delete dataset labels in batches.
 
         :param dataset: Dataset id or an instance of
@@ -237,9 +229,7 @@ class Proxy(proxy.Proxy):
             dataset_version.DatasetVersion`) instances.
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
-        return self._list(
-            _dataset_version.DatasetVersion, uri_dataset_id=dataset.id
-        )
+        return self._list(_dataset_version.DatasetVersion, uri_dataset_id=dataset.id)
 
     def create_dataset_version(self, dataset, **attrs):
         """Create a dataset version from attributes.
@@ -280,9 +270,7 @@ class Proxy(proxy.Proxy):
             uri_dataset_id=dataset.id,
         )
 
-    def delete_dataset_version(
-        self, dataset, dataset_version, ignore_missing=False
-    ):
+    def delete_dataset_version(self, dataset, dataset_version, ignore_missing=False):
         """Delete a dataset version
 
         :param dataset: Dataset id or an instance of
@@ -341,7 +329,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`.
         :param dict attrs: Keyword arguments which will be used to create
             upload samples to a dataset and obtain instance of a
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample` # noqa: E501
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample`
 
         :returns: The result after uploading the dataset samples.
         :rtype: Instance of :class:`~otcextensions.sdk.modelartsv2.v2.
@@ -360,9 +348,7 @@ class Proxy(proxy.Proxy):
                 if os.path.isfile(os.path.join(dir_path, f))
             ]
             if not files:
-                raise exceptions.SDKException(
-                    f"The directory {dir_path} is empty."
-                )
+                raise exceptions.SDKException(f"The directory {dir_path} is empty.")
             for file_name in files:
                 file_path = os.path.join(dir_path, file_name)
                 total_size += os.path.getsize(file_path)
@@ -396,9 +382,7 @@ class Proxy(proxy.Proxy):
         for file_path in files:
             sample = {}
             count = count + 1
-            files_size = files_size + os.path.getsize(file_path) / (
-                1024 * 1024
-            )
+            files_size = files_size + os.path.getsize(file_path) / (1024 * 1024)
             if files_size > 7.5:
                 break
             with open(file_path, "rb") as file:
@@ -435,12 +419,8 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
-        dataset_sample = self._get_resource(
-            _dataset_sample.DatasetSample, None
-        )
-        return dataset_sample.delete_samples(
-            self, dataset.id, samples, delete_source
-        )
+        dataset_sample = self._get_resource(_dataset_sample.DatasetSample, None)
+        return dataset_sample.delete_samples(self, dataset.id, samples, delete_source)
 
     def get_dataset_sample(self, dataset, dataset_sample):
         """Get details of the dataset sample.
@@ -595,9 +575,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sync.DatasetSync`.
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
-        return self._create(
-            _dataset_sync.DatasetSync, uri_dataset_id=dataset.id
-        )
+        return self._create(_dataset_sync.DatasetSync, uri_dataset_id=dataset.id)
 
     def get_dataset_sync_status(self, dataset):
         """Query Dataset sync task status.
@@ -609,6 +587,4 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sync.DatasetSync`.
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
-        return self._get(
-            _dataset_sync.DatasetSync, "status", uri_dataset_id=dataset.id
-        )
+        return self._get(_dataset_sync.DatasetSync, "status", uri_dataset_id=dataset.id)

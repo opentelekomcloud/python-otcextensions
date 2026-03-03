@@ -11,23 +11,20 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import reserved_instance
 
-EXAMPLE = {
-    "count": 1
-}
+EXAMPLE = {"count": 1}
 
 
 class TestFunctionInstances(base.TestCase):
 
     def test_basic(self):
         sot = reserved_instance.ReservedInstance()
-        path = '/fgs/functions/%(function_urn)s/reservedinstances'
+        path = "/fgs/functions/%(function_urn)s/reservedinstances"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_commit)
 
     def test_make_it(self):
         sot = reserved_instance.ReservedInstance(**EXAMPLE)
-        self.assertEqual(EXAMPLE['count'], sot.count)
+        self.assertEqual(EXAMPLE["count"], sot.count)

@@ -19,16 +19,16 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'csstest0716'
+cluster_name_or_id = "csstest0716"
 cluster = conn.css.find_cluster(cluster_name_or_id)
 
-upgrade_type = 'cross'
+upgrade_type = "cross"
 target_image = conn.css.get_cluster_version_upgrade_info(cluster, upgrade_type)
 target_image = next(iter(target_image.image_info_list))
 if target_image:
     target_image_id = target_image.id
     indices_backup_check = True
-    agency = 'css_upgrade_agency'
+    agency = "css_upgrade_agency"
     cluster_load_check = True
     conn.css.update_cluster_kernel(
         cluster,

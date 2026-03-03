@@ -11,9 +11,7 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.smn.v2 import subscription
-
 
 EXAMPLE = {
     "topic_urn": "urn:smn:regionId:762bdb3251034f268af0e..",
@@ -22,7 +20,7 @@ EXAMPLE = {
     "owner": "762bdb3251034f268af0e395c53ea09b",
     "endpoint": "xxxxxxxxxx",
     "remark": "",
-    "status": 0
+    "status": 0,
 }
 
 
@@ -30,8 +28,8 @@ class TestSubscription(base.TestCase):
 
     def test_basic(self):
         sot = subscription.Subscription()
-        self.assertEqual('subscriptions', sot.resources_key)
-        path = '/notifications/topics/%(topic_urn)s/subscriptions'
+        self.assertEqual("subscriptions", sot.resources_key)
+        path = "/notifications/topics/%(topic_urn)s/subscriptions"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -41,10 +39,10 @@ class TestSubscription(base.TestCase):
 
     def test_make_it(self):
         sot = subscription.Subscription(**EXAMPLE)
-        self.assertEqual(EXAMPLE['subscription_urn'], sot.id)
-        self.assertEqual(EXAMPLE['topic_urn'], sot.topic_urn)
-        self.assertEqual(EXAMPLE['protocol'], sot.protocol)
-        self.assertEqual(EXAMPLE['owner'], sot.owner)
-        self.assertEqual(EXAMPLE['endpoint'], sot.endpoint)
-        self.assertEqual(EXAMPLE['remark'], sot.remark)
-        self.assertEqual(EXAMPLE['status'], sot.status)
+        self.assertEqual(EXAMPLE["subscription_urn"], sot.id)
+        self.assertEqual(EXAMPLE["topic_urn"], sot.topic_urn)
+        self.assertEqual(EXAMPLE["protocol"], sot.protocol)
+        self.assertEqual(EXAMPLE["owner"], sot.owner)
+        self.assertEqual(EXAMPLE["endpoint"], sot.endpoint)
+        self.assertEqual(EXAMPLE["remark"], sot.remark)
+        self.assertEqual(EXAMPLE["status"], sot.status)

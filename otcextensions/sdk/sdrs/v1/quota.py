@@ -15,26 +15,27 @@ from openstack import resource
 class ResourceType(resource.Resource):
     #: Properties
     #: Maximum quota capacity
-    max = resource.Body('max', type=int)
+    max = resource.Body("max", type=int)
     #: Minimum quota capacity
-    min = resource.Body('min', type=int)
+    min = resource.Body("min", type=int)
     #: Resource quota
-    quota = resource.Body('quota', type=int)
+    quota = resource.Body("quota", type=int)
     #: Specifies the resource types
     #: Values: server_groups, replications
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Specifies the number of used resources
-    used = resource.Body('used', type=int)
+    used = resource.Body("used", type=int)
 
 
 class Quota(resource.Resource):
     """SDRS Tenant Quota Resource"""
-    resources_key = 'quotas'
-    base_path = '/sdrs/quotas'
+
+    resources_key = "quotas"
+    base_path = "/sdrs/quotas"
 
     # capabilities
     allow_list = True
 
     #: Properties
     #: Tenant resource quotas
-    resources = resource.Body('resources', type=list, list_type=ResourceType)
+    resources = resource.Body("resources", type=list, list_type=ResourceType)

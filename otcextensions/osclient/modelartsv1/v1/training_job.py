@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts training job v1 action implementations"""
+
 import logging
 
 from cliff import columns as cliff_columns
@@ -35,9 +36,7 @@ _formatters = {
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class JobStatus(cliff_columns.FormattableColumn):
@@ -114,9 +113,7 @@ class ListTrainingJobs(command.Lister):
             "--status",
             choices=list(JobStatus.CHOICES_MAP.keys()),
             type=int,
-            help=_(
-                "Job status. The options are as follows:\n" + JobStatus.STR
-            ),
+            help=_("Job status. The options are as follows:\n" + JobStatus.STR),
         )
         parser.add_argument(
             "--sort-by",
@@ -170,9 +167,7 @@ class ListTrainingJobs(command.Lister):
         table = (
             self.columns,
             (
-                utils.get_dict_properties(
-                    s, self.columns, formatters=_formatters
-                )
+                utils.get_dict_properties(s, self.columns, formatters=_formatters)
                 for s in data
             ),
         )
@@ -202,9 +197,7 @@ class CreateTrainingJob(command.ShowOne):
             "--app-url",
             metavar="<app_url>",
             required=True,
-            help=_(
-                "Code directory of a training job, for example, /usr/app/."
-            ),
+            help=_("Code directory of a training job, for example, /usr/app/."),
         )
         mandatary_group.add_argument(
             "--boot-file-url",
@@ -220,10 +213,7 @@ class CreateTrainingJob(command.ShowOne):
             metavar="<spec_id>",
             required=True,
             type=int,
-            help=_(
-                "ID of the resource specifications selected for a "
-                "training job."
-            ),
+            help=_("ID of the resource specifications selected for a " "training job."),
         )
         mandatary_group.add_argument(
             "--engine-id",
@@ -329,8 +319,7 @@ class CreateTrainingJob(command.ShowOne):
         parser.add_argument(
             "--host-path",
             metavar=(
-                "src_path=<src_path>,dest_path=<dest_path>,"
-                "read_only=<read_only>"
+                "src_path=<src_path>,dest_path=<dest_path>," "read_only=<read_only>"
             ),
             required_keys=["src_path", "dest_path"],
             optional_keys=["read_only"],
@@ -426,9 +415,7 @@ class UpdateTrainingJob(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        data = client.update_training_job(
-            parsed_args.jobId, parsed_args.description
-        )
+        data = client.update_training_job(parsed_args.jobId, parsed_args.description)
 
         display_columns, columns = _get_columns(data)
         data = utils.get_item_properties(data, columns)
@@ -467,9 +454,7 @@ class DeleteTrainingJob(command.Command):
                 )
         if result > 0:
             total = len(parsed_args.jobId)
-            msg = _(
-                "%(result)s of %(total)s training job(s) failed " "to delete."
-            ) % {
+            msg = _("%(result)s of %(total)s training job(s) failed " "to delete.") % {
                 "result": result,
                 "total": total,
             }

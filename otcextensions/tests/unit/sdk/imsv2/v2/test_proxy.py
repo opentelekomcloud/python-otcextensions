@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import test_proxy_base
-
 from otcextensions.sdk.imsv2.v2 import _proxy
 from otcextensions.sdk.imsv2.v2 import image
 
@@ -23,5 +22,4 @@ class TestImsProxy(test_proxy_base.TestProxyBase):
 
 class TestImsImage(TestImsProxy):
     def test_image_create(self):
-        self.verify_create(self.proxy.create_image,
-                           image.Image)
+        self.verify_create(self.proxy.create_image, image.Image)

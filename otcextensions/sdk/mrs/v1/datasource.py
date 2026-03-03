@@ -12,16 +12,15 @@
 
 from openstack import _log
 from openstack import resource
-
 from otcextensions.sdk.mrs.v1 import _base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class Datasource(_base.Resource):
-    resource_key = 'data_source'
-    resources_key = 'data_sources'
-    base_path = '/data-sources'
+    resource_key = "data_source"
+    resources_key = "data_sources"
+    base_path = "/data-sources"
 
     # capabilities
     allow_create = True
@@ -31,25 +30,25 @@ class Datasource(_base.Resource):
     allow_update = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'name', 'type', 'url', 'description', 'is_public',
-        'is_protected')
+        "id", "name", "type", "url", "description", "is_public", "is_protected"
+    )
 
     #: Properties
     #: Data source ID
-    id = resource.Body('id', alternate_id=True)
+    id = resource.Body("id", alternate_id=True)
     #: Data source name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: type of the ds
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Data source URL
-    url = resource.Body('url')
+    url = resource.Body("url")
     #: Data source description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Whether the data source is public
-    is_public = resource.Body('is_public')
+    is_public = resource.Body("is_public")
     #: Whether the data source is protected
-    is_protected = resource.Body('is_protected')
+    is_protected = resource.Body("is_protected")
     #: Data source creation time
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Data source update time
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")

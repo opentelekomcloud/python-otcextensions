@@ -13,11 +13,14 @@
 """
 List backend servers
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-found = list(conn.apig.list_backend_servers(
-    gateway="gateway_id",
-    vpc_channel="vpc_channel",
-))
+conn = openstack.connect(cloud="otc")
+found = list(
+    conn.apig.list_backend_servers(
+        gateway="gateway_id",
+        vpc_channel="vpc_channel",
+    )
+)

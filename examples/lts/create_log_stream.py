@@ -13,16 +13,17 @@
 """
 Create new log stream in log group
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    'log_group': 'log-group-uuid',
-    'log_stream_name': 'log-stream-uuid',
-    'ttl_in_days': 5
+    "log_group": "log-group-uuid",
+    "log_stream_name": "log-stream-uuid",
+    "ttl_in_days": 5,
 }
 log_stream = conn.lts.create_stream(**attrs)

@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts training job version v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -25,18 +26,14 @@ LOG = logging.getLogger(__name__)
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class TrainingjobVersionLogfileName(command.ShowOne):
     _description = _("Obtain the name of a training job log file")
 
     def get_parser(self, prog_name):
-        parser = super(TrainingjobVersionLogfileName, self).get_parser(
-            prog_name
-        )
+        parser = super(TrainingjobVersionLogfileName, self).get_parser(prog_name)
         parser.add_argument(
             "--job_id",
             metavar="<job_id>",

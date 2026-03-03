@@ -14,26 +14,22 @@ import uuid
 from datetime import datetime
 
 import mock
-
 from openstackclient.tests.unit import utils
 
-from otcextensions.tests.unit.osclient import test_base
-
-from otcextensions.sdk.smn.v2 import topic
-from otcextensions.sdk.smn.v2 import template
 from otcextensions.sdk.smn.v2 import subscription
+from otcextensions.sdk.smn.v2 import template
+from otcextensions.sdk.smn.v2 import topic
+from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(getattr(data, attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(getattr(data, attr, "") for attr in columns)
 
 
 def gen_data_dict(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(data.get(attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(data.get(attr, "") for attr in columns)
 
 
 class TestSmn(utils.TestCommand):
@@ -47,6 +43,7 @@ class TestSmn(utils.TestCommand):
 
 class FakeTopic(test_base.Fake):
     """Fake one or more Topics."""
+
     @classmethod
     def generate(cls):
         """Create a fake Topic..
@@ -62,7 +59,7 @@ class FakeTopic(test_base.Fake):
             "name": "name-" + uuid.uuid4().hex,
             "topic_urn": "id-" + uuid.uuid4().hex,
             "display_name": "display-name-" + uuid.uuid4().hex,
-            "request_id": "request-" + uuid.uuid4().hex
+            "request_id": "request-" + uuid.uuid4().hex,
         }
 
         return topic.Topic(**object_info)
@@ -70,6 +67,7 @@ class FakeTopic(test_base.Fake):
 
 class FakeTemplate(test_base.Fake):
     """Fake one or more Templates."""
+
     @classmethod
     def generate(cls):
         """Create a fake Templates.
@@ -85,10 +83,8 @@ class FakeTemplate(test_base.Fake):
             "create_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
             "update_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
             "request_id": "request-" + uuid.uuid4().hex,
-            "tag_names": [
-                "topic_id_id4"
-            ],
-            "content": "Test Content"
+            "tag_names": ["topic_id_id4"],
+            "content": "Test Content",
         }
 
         return template.Template.existing(**object_info)
@@ -96,6 +92,7 @@ class FakeTemplate(test_base.Fake):
 
 class FakeSubscription(test_base.Fake):
     """Fake one or more subscriptions"""
+
     @classmethod
     def generate(cls):
         """Create a fake subscription.
@@ -111,7 +108,7 @@ class FakeSubscription(test_base.Fake):
             "owner": "owner-" + uuid.uuid4().hex,
             "endpoint": "xxxxxxxxxx",
             "remark": "",
-            "status": 0
+            "status": 0,
         }
 
         obj = subscription.Subscription.existing(**object_info)

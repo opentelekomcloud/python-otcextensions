@@ -20,46 +20,45 @@ class OperationDefinition(resource.Resource):
     #: specified by 'max_backups'.0
     #: value: 0 to 100
     #: If this property is configured, 'timezone' is mandatory.
-    day_backups = resource.Body('day_backups', type=int)
+    day_backups = resource.Body("day_backups", type=int)
     #: Maximum number of retained backups.
     #: value: -1 or ranges from 0 to 99999
     #: If -1 is set, the backups will not be cleared even though the
     #: configured retained backup quantity is exceeded.
     #: If this parameter and 'retention_duration_days' are both left blank,
     #: the backups will be retained permanently
-    max_backups = resource.Body('max_backups', type=int)
+    max_backups = resource.Body("max_backups", type=int)
     #: Specifies the number of retained monthly backups.
     #: The latest backup of each month is saved in the long term. This
     #: parameter can be effective together with the max number of  retained
     #: backups specified by 'max_backups'.
     #: value: ranges from 0 to 100
     #: If this parameter is configured 'timezone' is mandatory.
-    month_backups = resource.Body('month_backups', type=int)
+    month_backups = resource.Body("month_backups", type=int)
     #: Duration of retaining a backup in days
     #: value: -1 or ranges from 0 to 99999
     #: -1 indicates that the backups will not be cleared bassed on the
     #: retention duration. if this parameter and 'max_backups' are left blank
     #: at the same time, the backups will be retained permanently.
-    retention_duration_days = resource.Body('retention_duration_days',
-                                            type=int)
+    retention_duration_days = resource.Body("retention_duration_days", type=int)
     #: Time where the user is located, e.g.: UTC+08:00
     #: This paramter is only configurable if 'day_backups, 'week_backups',
     #: 'month_backups' or 'year_backups' are set.
-    timezone = resource.Body('timezone')
+    timezone = resource.Body("timezone")
     #: Specifies the number or retained weekly backups.
     #: The latest backup of each week is saved in the long term. This
     #: param can be effective together with the max number of retained
     #: backups specified by 'max_backups'. If this param is configured,
     #: 'timezone' is mandatory.
     #: value: ranges from 0 to 100
-    week_backups = resource.Body('week_backups', type=int)
+    week_backups = resource.Body("week_backups", type=int)
     #: Specifies the number or retained yearly backups.
     #: The latest backup of each year is saved in the long term. This
     #: param can be effective together with the max number of retained
     #: backups specified by 'max_backups'. If this param is configured,
     #: 'timezone' is mandatory.
     #: value: ranges from 0 to 100
-    year_backups = resource.Body('year_backups', type=int)
+    year_backups = resource.Body("year_backups", type=int)
 
 
 class Properties(resource.Resource):
@@ -80,30 +79,31 @@ class Properties(resource.Resource):
     #: 'FREQ=WEEKLY;BYDAY=MO;TU;WE;TH;FR;SA;SU;BYHOUR=14;BYMINUTE=00'
     #: If the scheduling time is 14:00 every day:
     #: FREQ=DAILY;INTERVAL=1;BYHOUR=14;BYMINUTE=00
-    pattern = resource.Body('pattern', type=list)
+    pattern = resource.Body("pattern", type=list)
     #: Start time of the scheduler in the format 2020-01-08 09:59:49
-    start_time = resource.Body('start_time')
+    start_time = resource.Body("start_time")
 
 
 class Trigger(resource.Resource):
     #: Properties
     #: Scheduler attributes
-    properties = resource.Body('properties', type=Properties)
+    properties = resource.Body("properties", type=Properties)
 
 
 class Vault(resource.Resource):
     #: Properties
     #: ID of the associated remote vault
-    destination_vault_id = resource.Body('destination_vault_id')
+    destination_vault_id = resource.Body("destination_vault_id")
     #: Vault ID
-    vault_id = resource.Body('vault_id')
+    vault_id = resource.Body("vault_id")
 
 
 class Policy(resource.Resource):
     """CBR Policy Resource"""
-    resource_key = 'policy'
-    resources_key = 'policies'
-    base_path = '/policies'
+
+    resource_key = "policy"
+    resources_key = "policies"
+    base_path = "/policies"
 
     # capabilities
     allow_create = True
@@ -112,25 +112,24 @@ class Policy(resource.Resource):
     allow_delete = True
     allow_commit = True
 
-    _query_mapping = resource.QueryParameters(
-        'operation_type', 'vault_id')
+    _query_mapping = resource.QueryParameters("operation_type", "vault_id")
 
     #: Properties
     #: associated vault
-    associated_vaults = resource.Body('associated_vaults', type=list,
-                                      list_type=Vault)
+    associated_vaults = resource.Body("associated_vaults", type=list, list_type=Vault)
     #: Whether to enable the policy
-    enabled = resource.Body('enabled', type=bool)
+    enabled = resource.Body("enabled", type=bool)
     #: Policy ID
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Policy Name
     #: Max: 64 chars
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Scheduling parameter
-    operation_definition = resource.Body('operation_definition',
-                                         type=OperationDefinition)
+    operation_definition = resource.Body(
+        "operation_definition", type=OperationDefinition
+    )
     #: Policy type
     #: values: backup, replication
-    operation_type = resource.Body('operation_type')
+    operation_type = resource.Body("operation_type")
     #: Time rule for the policy execution
-    trigger = resource.Body('trigger', type=Trigger)
+    trigger = resource.Body("trigger", type=Trigger)

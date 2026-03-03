@@ -13,14 +13,21 @@ from openstack import _log
 from openstack import exceptions
 from openstack import proxy as os_proxy
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class Proxy(os_proxy.Proxy):
 
-    def _find(self, resource_type, name_or_id, ignore_missing=True,
-              endpoint_override=None, headers=None, requests_auth=None,
-              **attrs):
+    def _find(
+        self,
+        resource_type,
+        name_or_id,
+        ignore_missing=True,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **attrs
+    ):
         """Find a resource
 
         :param name_or_id: The name or ID of a resource to find.
@@ -35,22 +42,32 @@ class Proxy(os_proxy.Proxy):
 
         :returns: An instance of ``resource_type`` or None
         """
-        result = resource_type.find(self, name_or_id,
-                                    ignore_missing=ignore_missing,
-                                    endpoint_override=endpoint_override,
-                                    headers=headers,
-                                    requests_auth=requests_auth,
-                                    **attrs)
+        result = resource_type.find(
+            self,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            endpoint_override=endpoint_override,
+            headers=headers,
+            requests_auth=requests_auth,
+            **attrs
+        )
         # Inject endpoint_override into the resource for potential
         # direct use (i.e. instance.reboot)
         if endpoint_override:
-            setattr(result, 'endpoint_override', endpoint_override)
+            setattr(result, "endpoint_override", endpoint_override)
 
         return result
 
-    def _delete(self, resource_type, value, ignore_missing=True,
-                endpoint_override=None, headers=None, requests_auth=None,
-                **attrs):
+    def _delete(
+        self,
+        resource_type,
+        value,
+        ignore_missing=True,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **attrs
+    ):
         """Delete a resource
 
         :param resource_type: The type of resource to delete. This should
@@ -90,7 +107,7 @@ class Proxy(os_proxy.Proxy):
                 ),
                 endpoint_override=endpoint_override,
                 headers=headers,
-                requests_auth=requests_auth
+                requests_auth=requests_auth,
             )
         except exceptions.NotFoundException:
             if ignore_missing:
@@ -99,9 +116,15 @@ class Proxy(os_proxy.Proxy):
 
         return rv
 
-    def _update(self, resource_type, value,
-                endpoint_override=None, headers=None, requests_auth=None,
-                **attrs):
+    def _update(
+        self,
+        resource_type,
+        value,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **attrs
+    ):
         """Update a resource
 
         :param resource_type: The type of resource to update.
@@ -124,13 +147,18 @@ class Proxy(os_proxy.Proxy):
             self,
             endpoint_override=endpoint_override,
             headers=headers,
-            requests_auth=requests_auth
+            requests_auth=requests_auth,
         )
 
-    def _create(self, resource_type,
-                endpoint_override=None, headers=None, requests_auth=None,
-                prepend_key=True,
-                **attrs):
+    def _create(
+        self,
+        resource_type,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        prepend_key=True,
+        **attrs
+    ):
         """Create a resource from attributes
 
         :param resource_type: The type of resource to create.
@@ -163,9 +191,16 @@ class Proxy(os_proxy.Proxy):
 
         return persist
 
-    def _get(self, resource_type, value=None, requires_id=True,
-             endpoint_override=None, headers=None, requests_auth=None,
-             **attrs):
+    def _get(
+        self,
+        resource_type,
+        value=None,
+        requires_id=True,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **attrs
+    ):
         """Get a resource
 
         :param resource_type: The type of resource to get.
@@ -186,9 +221,11 @@ class Proxy(os_proxy.Proxy):
         res = self._get_resource(resource_type, value, **attrs)
 
         persist = res.get(
-            self, requires_id=requires_id,
+            self,
+            requires_id=requires_id,
             error_message="No {resource_type} found for {value}".format(
-                resource_type=resource_type.__name__, value=value),
+                resource_type=resource_type.__name__, value=value
+            ),
             endpoint_override=endpoint_override,
             headers=headers,
             requests_auth=requests_auth,
@@ -201,9 +238,16 @@ class Proxy(os_proxy.Proxy):
 
         return persist
 
-    def _list(self, resource_type, value=None, paginated=False,
-              endpoint_override=None, headers=None, requests_auth=None,
-              **attrs):
+    def _list(
+        self,
+        resource_type,
+        value=None,
+        paginated=False,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **attrs
+    ):
         """List a resource
 
         :param resource_type: The type of resource to delete. This should
@@ -227,15 +271,24 @@ class Proxy(os_proxy.Proxy):
                  the ``resource_type``.
         """
         res = self._get_resource(resource_type, value, **attrs)
-        return res.list(self, paginated=paginated,
-                        endpoint_override=endpoint_override,
-                        headers=headers,
-                        requests_auth=requests_auth,
-                        **attrs)
+        return res.list(
+            self,
+            paginated=paginated,
+            endpoint_override=endpoint_override,
+            headers=headers,
+            requests_auth=requests_auth,
+            **attrs
+        )
 
-    def _head(self, resource_type, value=None,
-              endpoint_override=None, headers=None, requests_auth=None,
-              **attrs):
+    def _head(
+        self,
+        resource_type,
+        value=None,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **attrs
+    ):
         """Retrieve a resource's header
 
         :param resource_type: The type of resource to retrieve.
@@ -253,8 +306,9 @@ class Proxy(os_proxy.Proxy):
         :rtype: :class:`~openstack.resource.Resource`
         """
         res = self._get_resource(resource_type, value, **attrs)
-        return res.head(self,
-                        endpoint_override=endpoint_override,
-                        headers=headers,
-                        requests_auth=requests_auth,
-                        )
+        return res.head(
+            self,
+            endpoint_override=endpoint_override,
+            headers=headers,
+            requests_auth=requests_auth,
+        )

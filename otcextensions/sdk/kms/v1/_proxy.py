@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.kms.v1 import data_key as _data_key
 from otcextensions.sdk.kms.v1 import key as _key
@@ -27,8 +26,8 @@ class Proxy(proxy.Proxy):
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
         self.additional_headers = {
-            'Content-Type': 'application/json',
-            'X-Language': 'en-us'
+            "Content-Type": "application/json",
+            "X-Language": "en-us",
         }
 
     # ======== CMK Keys ========
@@ -56,9 +55,7 @@ class Proxy(proxy.Proxy):
 
         :returns: instance of :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
-        return self._create(
-            _key.Key, prepend_key=False, **attrs
-        )
+        return self._create(_key.Key, prepend_key=False, **attrs)
 
     def get_key(self, key):
         """Describe a encrypt key by given key id or key object
@@ -68,7 +65,8 @@ class Proxy(proxy.Proxy):
         :returns: instance of :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
         return self._get(
-            _key.Key, key,
+            _key.Key,
+            key,
         )
 
     def find_key(self, alias, ignore_missing=False):
@@ -84,7 +82,8 @@ class Proxy(proxy.Proxy):
         :returns: instance of :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
         return self._find(
-            _key.Key, alias,
+            _key.Key,
+            alias,
             ignore_missing=ignore_missing,
         )
 
@@ -148,10 +147,8 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
         """
         key = self._get_resource(_key.Key, cmk)
-        attrs['key_id'] = key.id
-        return self._create(
-            _data_key.DataKey, prepend_key=False, **attrs
-        )
+        attrs["key_id"] = key.id
+        return self._create(_data_key.DataKey, prepend_key=False, **attrs)
 
     def create_datakey_wo_plain(self, cmk, **attrs):
         """Create a data key without plain text
@@ -164,7 +161,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
         """
         key = self._get_resource(_key.Key, cmk)
-        attrs['key_id'] = key.id
+        attrs["key_id"] = key.id
         res = _data_key.DataKey.new(**attrs)
         persist = res.create_wo_plain(
             self,
@@ -218,9 +215,9 @@ class Proxy(proxy.Proxy):
         """
         cmk_key = self._get_resource(_key.Key, cmk)
         key_attrs = {
-            'key_id': cmk_key.id,
-            'cipher_text': cipher_text,
-            'datakey_cipher_length': datakey_cipher_length
+            "key_id": cmk_key.id,
+            "cipher_text": cipher_text,
+            "datakey_cipher_length": datakey_cipher_length,
         }
         key = self._get_resource(_data_key.DataKey, value=None, **key_attrs)
         key.decrypt(self)
@@ -234,8 +231,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of :class:`~otcextensions.sdk.kms.v1.random.Random`
         """
         return self._create(
-            _misc.Random, prepend_key=False,
-            random_data_length=random_data_length
+            _misc.Random, prepend_key=False, random_data_length=random_data_length
         )
 
     def get_instance_number(self):

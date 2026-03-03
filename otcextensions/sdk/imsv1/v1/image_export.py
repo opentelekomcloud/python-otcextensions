@@ -15,16 +15,16 @@ from openstack import resource
 
 
 class ImageExport(resource.Resource):
-    base_path = '/cloudimages/%(image_id)s/file'
+    base_path = "/cloudimages/%(image_id)s/file"
 
     allow_create = True
     requires_id = False
 
-    image_id = resource.URI('image_id')
-    bucket_url = resource.Body('bucket_url')
-    file_format = resource.Body('file_format')
-    is_quick_export = resource.Body('is_quick_export', type=bool)
-    job_id = resource.Body('job_id')
+    image_id = resource.URI("image_id")
+    bucket_url = resource.Body("bucket_url")
+    file_format = resource.Body("file_format")
+    is_quick_export = resource.Body("is_quick_export", type=bool)
+    job_id = resource.Body("job_id")
 
     def create(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value

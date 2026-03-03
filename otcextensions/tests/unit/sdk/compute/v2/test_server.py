@@ -10,13 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-from openstack.tests.unit import base
 
+from openstack.tests.unit import base
 from otcextensions.sdk.compute.v2 import server
 
-
-IDENTIFIER = 'fake_id'
-ENDPOINT = 'https://ecs.fake.otc.t-systems.com/v1/my-0346-43be-bc65-project'
+IDENTIFIER = "fake_id"
+ENDPOINT = "https://ecs.fake.otc.t-systems.com/v1/my-0346-43be-bc65-project"
 
 
 class TestServer(base.TestCase):
@@ -37,40 +36,30 @@ class TestServer(base.TestCase):
 
     def test__get_tag_struct(self):
         self.assertDictEqual(
-            {'key': 'k1', 'value': 'v1'},
-            self.sot._get_tag_struct('k1=v1')
+            {"key": "k1", "value": "v1"}, self.sot._get_tag_struct("k1=v1")
         )
-        self.assertDictEqual(
-            {'key': 'k1', 'value': ''},
-            self.sot._get_tag_struct('k1')
-        )
+        self.assertDictEqual({"key": "k1", "value": ""}, self.sot._get_tag_struct("k1"))
 
     def test_add_tag(self):
         # Let the translate pass through, that portion is tested elsewhere
         self.sot._translate_response = lambda arg: arg
 
-        result = self.sot.add_tag(self.sess, 'a=b')
+        result = self.sot.add_tag(self.sess, "a=b")
 
         self.assertIsInstance(result, server.Server)
 
-        url = 'cloudservers/%s/tags/action' % (IDENTIFIER)
-        body = {
-            "action": "create",
-            "tags": [{'key': 'a', 'value': 'b'}]
-        }
+        url = "cloudservers/%s/tags/action" % (IDENTIFIER)
+        body = {"action": "create", "tags": [{"key": "a", "value": "b"}]}
         self.sess.post.assert_called_with(url, json=body)
 
     def test_remove_tag(self):
         # Let the translate pass through, that portion is tested elsewhere
         self.sot._translate_response = lambda arg: arg
 
-        result = self.sot.remove_tag(self.sess, 'a=b')
+        result = self.sot.remove_tag(self.sess, "a=b")
 
         self.assertIsInstance(result, server.Server)
 
-        url = 'cloudservers/%s/tags/action' % (IDENTIFIER)
-        body = {
-            "action": "delete",
-            "tags": [{'key': 'a', 'value': 'b'}]
-        }
+        url = "cloudservers/%s/tags/action" % (IDENTIFIER)
+        body = {"action": "delete", "tags": [{"key": "a", "value": "b"}]}
         self.sess.post.assert_called_with(url, json=body)

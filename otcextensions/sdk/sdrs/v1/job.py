@@ -15,66 +15,67 @@ from openstack import resource
 class EntitySpecSub(resource.Resource):
     #: Properties
     #: Protection group ID
-    server_group_id = resource.Body('server_group_id')
+    server_group_id = resource.Body("server_group_id")
 
 
 class SubJob(resource.Resource):
     #: Properties
     #: Task begin time
-    begin_time = resource.Body('begin_time')
+    begin_time = resource.Body("begin_time")
     #: Error status code
-    code = resource.Body('code')
+    code = resource.Body("code")
     #: Task end time
-    end_time = resource.Body('end_time')
+    end_time = resource.Body("end_time")
     #: Additional info on job
-    entities = resource.Body('entities', type=EntitySpecSub)
+    entities = resource.Body("entities", type=EntitySpecSub)
     #: SDRS Error code
-    error_code = resource.Body('error_code')
+    error_code = resource.Body("error_code")
     #: Fail reason
-    fail_reason = resource.Body('fail_reason')
+    fail_reason = resource.Body("fail_reason")
     #: Job id
-    job_id = resource.Body('job_id')
+    job_id = resource.Body("job_id")
     #: Job type
-    job_type = resource.Body('job_type')
+    job_type = resource.Body("job_type")
     #: Error message
-    message = resource.Body('message')
+    message = resource.Body("message")
     #: Job status
-    status = resource.Body('status')
+    status = resource.Body("status")
 
 
 class EntitySpec(resource.Resource):
     #: Properties
     #: Protection group ID
-    server_group_id = resource.Body('server_group_id')
+    server_group_id = resource.Body("server_group_id")
     #: Sub job information
-    sub_jobs = resource.Body('sub_jobs', type=list, list_type=SubJob)
+    sub_jobs = resource.Body("sub_jobs", type=list, list_type=SubJob)
 
 
 class Job(resource.Resource):
     """SDRS Job Resource"""
-    base_path = '/jobs'
+
+    base_path = "/jobs"
 
     # capabilities
     allow_fetch = True
 
     #: Properties
     #: Task begin time
-    begin_time = resource.Body('begin_time')
+    begin_time = resource.Body("begin_time")
     #: Error status code
-    code = resource.Body('code')
+    code = resource.Body("code")
     #: Task end time
-    end_time = resource.Body('end_time')
+    end_time = resource.Body("end_time")
     #: Additional info on job
-    entities = resource.Body('entities', type=EntitySpec)
+    entities = resource.Body("entities", type=EntitySpec)
     #: SDRS Error code
-    error_code = resource.Body('error_code')
+    error_code = resource.Body("error_code")
     #: Fail reason
-    fail_reason = resource.Body('fail_reason')
+    fail_reason = resource.Body("fail_reason")
     #: Job id
-    job_id = resource.Body('job_id')
+    job_id = resource.Body("job_id")
     #: Job type
-    job_type = resource.Body('job_type')
+    job_type = resource.Body("job_type")
     #: Error message
-    message = resource.Body('message')
+    message = resource.Body("message")
     #: Job status
-    status = resource.Body('status')
+    status = resource.Body("status")

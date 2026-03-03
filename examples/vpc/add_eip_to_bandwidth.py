@@ -11,15 +11,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Add eip to bandwidth
+Add eip to bandwidth
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='test-dmd')
+conn = openstack.connect(cloud="test-dmd")
 
 example_bandwidth = conn.vpc.add_eip_to_bandwidth(
     bandwidth="bandwidth-id",
-    publicip_info=[{'publicip_id': "publicip-id", 'publicip_type': '5_bgp'}])
+    publicip_info=[{"publicip_id": "publicip-id", "publicip_type": "5_bgp"}],
+)
 print(example_bandwidth)

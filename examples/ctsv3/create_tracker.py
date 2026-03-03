@@ -13,10 +13,11 @@
 """
 Create Cloud Trace Service Tracker
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "tracker_type": "system",

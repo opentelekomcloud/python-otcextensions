@@ -13,10 +13,11 @@
 """
 Start a Distributed Message Service Instance
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 instance = "instance_id_or_name"

@@ -10,13 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import resource
 from openstack import exceptions
+from openstack import resource
 
 
 class Alias(resource.Resource):
-    base_path = '/fgs/functions/%(function_urn)s/aliases'
-    resources_key = ''
+    base_path = "/fgs/functions/%(function_urn)s/aliases"
+    resources_key = ""
 
     # Capabilities
     allow_create = True
@@ -26,26 +26,23 @@ class Alias(resource.Resource):
     allow_commit = True
 
     # Properties
-    function_urn = resource.URI('function_urn', type=str)
-    name = resource.Body('name', type=str, alternate_id=True)
-    version = resource.Body('version', type=str)
-    description = resource.Body('description', type=str)
-    additional_version_weights = resource.Body(
-        'additional_version_weights', type=dict
-    )
+    function_urn = resource.URI("function_urn", type=str)
+    name = resource.Body("name", type=str, alternate_id=True)
+    version = resource.Body("version", type=str)
+    description = resource.Body("description", type=str)
+    additional_version_weights = resource.Body("additional_version_weights", type=dict)
     additional_version_strategy = resource.Body(
-        'additional_version_strategy', type=dict
+        "additional_version_strategy", type=dict
     )
 
     # Attributes
-    last_modified = resource.Body('last_modified', type=str)
-    alias_urn = resource.Body('alias_urn', type=str)
+    last_modified = resource.Body("last_modified", type=str)
+    alias_urn = resource.Body("alias_urn", type=str)
 
     def _update_alias(self, session, function, alias, **attrs):
-        """Update Function Alias
-        """
-        urn = function.func_urn.rpartition(':')[0]
-        url = self.base_path % {'function_urn': urn} + f'/{alias.id}'
+        """Update Function Alias"""
+        urn = function.func_urn.rpartition(":")[0]
+        url = self.base_path % {"function_urn": urn} + f"/{alias.id}"
         response = session.put(url, json=attrs)
         exceptions.raise_from_response(response)
         self._translate_response(response)

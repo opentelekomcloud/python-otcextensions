@@ -12,6 +12,7 @@
 # under the License.
 #
 """Restart a visualization job."""
+
 import openstack
 
 openstack.enable_logging(True)

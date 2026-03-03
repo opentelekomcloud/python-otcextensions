@@ -13,13 +13,11 @@
 """
 Enable public access
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "bandwidth_size": "5",
-    "bandwidth_charging_mode": "bandwidth"
-}
+attrs = {"bandwidth_size": "5", "bandwidth_charging_mode": "bandwidth"}
 conn.apig.enable_public_access("gateway.id", **attrs)

@@ -13,18 +13,12 @@
 """
 Add certificate to domain name
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "name": "cert",
-    "private_key": "key",
-    "cert_content": "content"
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"name": "cert", "private_key": "key", "cert_content": "content"}
 created = conn.apig.create_certificate_for_domain_name(
-    gateway="gateway_id",
-    group="group_id",
-    domain="domain_id",
-    **attrs
+    gateway="gateway_id", group="group_id", domain="domain_id", **attrs
 )

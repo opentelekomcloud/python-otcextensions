@@ -16,10 +16,7 @@ List Cloud Trace Service Traces
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    'trace_type': 'system',
-    'limit': 2
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"trace_type": "system", "limit": 2}
 traces = list(conn.ctsv3.traces(**attrs))
 print(traces)

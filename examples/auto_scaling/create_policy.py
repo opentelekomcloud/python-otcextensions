@@ -13,10 +13,11 @@
 """
 Create Auto-Scaling Policy.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "scaling_group_id": "as_group_id",
@@ -25,10 +26,7 @@ attrs = {
     "alarm_id": "cloudeye_alarm_id",
     "scheduled_policy": {},
     "cool_down_time": 300,
-    "scaling_policy_action": {
-        "operation": "ADD",
-        "instance_number": 1
-    }
+    "scaling_policy_action": {"operation": "ADD", "instance_number": 1},
 }
 
 policy = conn.auto_scaling.create_policy(**attrs)

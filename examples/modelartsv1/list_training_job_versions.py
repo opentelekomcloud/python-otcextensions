@@ -12,6 +12,7 @@
 # under the License.
 #
 """List all Training Job Versions"""
+
 import openstack
 
 openstack.enable_logging(True)

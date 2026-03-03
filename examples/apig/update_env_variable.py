@@ -13,15 +13,14 @@
 """
 Update env variable
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "variable_value": "192.168.1.6",
 }
 var = conn.apig.update_environment_variable(
-    gateway="gateway_id",
-    var="variable_id",
-    **attrs
+    gateway="gateway_id", var="variable_id", **attrs
 )

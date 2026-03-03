@@ -13,10 +13,10 @@
 """
 List Configs for Gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-configs = list(conn.apig.configs_for_gateway(
-    gateway_id="gateway_id"))
+configs = list(conn.apig.configs_for_gateway(gateway_id="gateway_id"))

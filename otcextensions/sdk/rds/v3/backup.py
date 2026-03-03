@@ -12,15 +12,14 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
 from otcextensions.sdk.rds.v3 import _base
 
 
 class Backup(_base.Resource):
 
-    base_path = '/backups'
-    resources_key = 'backups'
-    resource_key = 'backup'
+    base_path = "/backups"
+    resources_key = "backups"
+    resource_key = "backup"
 
     # capabilities
     allow_create = True
@@ -29,52 +28,61 @@ class Backup(_base.Resource):
     allow_fetch = True
 
     _query_mapping = resource.QueryParameters(
-        'offset', 'begin_time', 'instance_id', 'id',
-        'type', 'begin_time', 'end_time', 'offset', 'limit',
-        id='backup_id', type='backup_type')
+        "offset",
+        "begin_time",
+        "instance_id",
+        "id",
+        "type",
+        "begin_time",
+        "end_time",
+        "offset",
+        "limit",
+        id="backup_id",
+        type="backup_type",
+    )
 
     #: Backup id
     #: Type: uuid*
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Begin time
-    begin_time = resource.Body('begin_time')
+    begin_time = resource.Body("begin_time")
     #: Create back of specific dbs
     #: *Type:list*
-    databases = resource.Body('databases', type=list)
+    databases = resource.Body("databases", type=list)
     #: Datastore
     #: *Type:dict*
-    datastore = resource.Body('datastore', type=dict)
+    datastore = resource.Body("datastore", type=dict)
     #: Data backup description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Instance id
-    instance_id = resource.Body('instance_id')
+    instance_id = resource.Body("instance_id")
     #: Back file size in GB
     #: *Type:int*
-    size = resource.Body('size', type=int)
+    size = resource.Body("size", type=int)
     #: Backup status
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Finished time
-    end_time = resource.Body('end_time')
+    end_time = resource.Body("end_time")
     #: Backup type
     #:  `auto`: automated full backup
     #:  `manual`: manual full backup
     #:  `fragment`: differential full backup
     #:  `incremental`: automated incremental backup
-    type = resource.Body('type')
+    type = resource.Body("type")
 
     def create(self, session, prepend_key=False, base_path=None):
-        return super(Backup, self).create(session,
-                                          prepend_key=prepend_key,
-                                          base_path=base_path)
+        return super(Backup, self).create(
+            session, prepend_key=prepend_key, base_path=base_path
+        )
 
     def commit(self, session, prepend_key=False, **further_attrs):
         return super(Backup, self).commit(
-            session,
-            prepend_key=prepend_key,
-            **further_attrs)
+            session, prepend_key=prepend_key, **further_attrs
+        )
 
-    def fetch(self, session, requires_id=True,
-              base_path=None, error_message=None, **params):
+    def fetch(
+        self, session, requires_id=True, base_path=None, error_message=None, **params
+    ):
         """Get a remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -97,10 +105,7 @@ class Backup(_base.Resource):
             raise exceptions.MethodNotSupported(self, "fetch")
 
         # Create request parameters
-        request_params = {
-            'instance_id': self.instance_id,
-            'backup_id': self.id
-        }
+        request_params = {"instance_id": self.instance_id, "backup_id": self.id}
 
         # Merge with additional params if provided
         request_params.update(params)
@@ -111,9 +116,11 @@ class Backup(_base.Resource):
         session = self._get_session(session)
         microversion = self._get_microversion(session)
         response = session.get(
-            url, microversion=microversion,
+            url,
+            microversion=microversion,
             headers={"Accept": "application/json"},
-            params=query_params.copy())
+            params=query_params.copy(),
+        )
 
         exceptions.raise_from_response(response)
 
@@ -123,7 +130,7 @@ class Backup(_base.Resource):
                 body = body[self.resources_key]
 
             if not len(body) == 1:
-                raise exceptions.SDKException('Not a single result returned')
+                raise exceptions.SDKException("Not a single result returned")
 
             body = body[0]
             body_attrs = self._consume_body_attrs(body)
@@ -142,24 +149,24 @@ class Backup(_base.Resource):
 
 class BackupFile(resource.Resource):
 
-    base_path = '/backup-files'
-    resources_key = 'files'
+    base_path = "/backup-files"
+    resources_key = "files"
 
     # capabilities
     allow_list = True
 
-    _query_mapping = resource.QueryParameters('backup_id')
+    _query_mapping = resource.QueryParameters("backup_id")
 
     #:  Indicates the file name
     #:  *Type: string*
-    name = resource.Body('name')
+    name = resource.Body("name")
     #:  Indicates the file size in KB.
     #:  *Type: long*
-    size = resource.Body('size', type=int)
+    size = resource.Body("size", type=int)
     #:  Indicates the link for downloading the backup file.
     #:  *Type: string*
-    download_link = resource.Body('download_link')
+    download_link = resource.Body("download_link")
     #:  Indicates the link expiration time.
     #:  The format is "yyyy-mmddThh:mm:ssZ".
     #:  *Type: string*
-    expires_at = resource.Body('link_expired_time')
+    expires_at = resource.Body("link_expired_time")

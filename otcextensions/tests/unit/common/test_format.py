@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import base
-
 from otcextensions.common import format
 
 
@@ -19,15 +18,11 @@ class TestTimeTMsStr(base.TestCase):
     def test_serialize(self):
         obj = format.TimeTMsStr()
 
-        self.assertEqual(
-            1534583170000,
-            obj.serialize('2018-08-18T09:06:10+00:00')
-        )
+        self.assertEqual(1534583170000, obj.serialize("2018-08-18T09:06:10+00:00"))
 
     def test_deserialize(self):
         obj = format.TimeTMsStr()
 
         self.assertEqual(
-            '2018-08-18T09:06:10.432+00:00',
-            obj.deserialize(1534583170432)
+            "2018-08-18T09:06:10.432+00:00", obj.deserialize(1534583170432)
         )

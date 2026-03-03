@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.dds.v3 import _proxy
 
 
 class DdsService(service_description.ServiceDescription):
     """The Document Database service."""
 
-    supported_versions = {
-        '3': _proxy.Proxy
-    }
+    supported_versions = {"3": _proxy.Proxy}

@@ -10,14 +10,20 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import exceptions
-
 from otcextensions.sdk import sdk_resource
 
 
 class Resource(sdk_resource.Resource):
 
-    def update(self, session, prepend_key=False, has_body=True,
-               endpoint_override=None, headers=None, requests_auth=None):
+    def update(
+        self,
+        session,
+        prepend_key=False,
+        has_body=True,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+    ):
         """Update the remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -47,20 +53,19 @@ class Resource(sdk_resource.Resource):
             endpoint_override=endpoint_override,
             request_headers=request.headers,
             additional_headers=headers,
-            requests_auth=requests_auth)
+            requests_auth=requests_auth,
+        )
 
-        if self.commit_method == 'PATCH':
-            response = session.patch(
-                request.url, json=request.body, **args)
-        elif self.commit_method == 'POST':
-            response = session.post(
-                request.url, json=request.body, **args)
-        elif self.commit_method == 'PUT':
-            response = session.put(
-                request.url, json=request.body, **args)
+        if self.commit_method == "PATCH":
+            response = session.patch(request.url, json=request.body, **args)
+        elif self.commit_method == "POST":
+            response = session.post(request.url, json=request.body, **args)
+        elif self.commit_method == "PUT":
+            response = session.put(request.url, json=request.body, **args)
         else:
             raise exceptions.ResourceFailure(
-                message="Invalid update method: %s" % self.commit_method)
+                message="Invalid update method: %s" % self.commit_method
+            )
 
         self._translate_response(response, has_body=has_body)
         return self

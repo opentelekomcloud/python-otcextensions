@@ -9,40 +9,44 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
-
 from openstack import _log
-
+from openstack import resource
 from otcextensions.sdk.dms.v1 import _base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class Quota(_base.Resource):
     """DMS Quota resource"""
-    resources_key = 'quotas.resources'
-    base_path = '/quotas/dms'
+
+    resources_key = "quotas.resources"
+    base_path = "/quotas/dms"
 
     # capabilities
     allow_list = True
 
     #: Properties
     #: Quota of type
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Quota amount has been used
-    used = resource.Body('used', type=int)
+    used = resource.Body("used", type=int)
     #: Quota max amount
-    max = resource.Body('max', type=int)
+    max = resource.Body("max", type=int)
     #: Quota min amount
-    min = resource.Body('min', type=int)
+    min = resource.Body("min", type=int)
     #: Quota amount
-    quota = resource.Body('quota', type=int)
+    quota = resource.Body("quota", type=int)
 
     @classmethod
-    def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, requests_auth=None,
-             **params):
+    def list(
+        cls,
+        session,
+        paginated=False,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **params
+    ):
         return super(Quota, cls).list_ext(
-            session, paginated,
-            endpoint_override, headers,
-            **params)
+            session, paginated, endpoint_override, headers, **params
+        )

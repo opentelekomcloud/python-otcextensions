@@ -10,16 +10,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import uuid
+
 import openstack
 from openstack import exceptions
 from otcextensions.tests.functional.sdk.ctsv3 import TestCtsv3
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestTracker(TestCtsv3):
     uuid_v4 = uuid.uuid4().hex[:8]
-    bucket_name = 'obs-test-' + uuid_v4
+    bucket_name = "obs-test-" + uuid_v4
     container = None
 
     def setUp(self):
@@ -27,7 +28,7 @@ class TestTracker(TestCtsv3):
         self.client_obs = self.conn.obs
         self.container = self.client_obs.create_container(
             name=self.bucket_name,
-            storage_acl='public-read',
+            storage_acl="public-read",
         )
         self.cts = self.conn.ctsv3
         attrs = {
@@ -36,7 +37,7 @@ class TestTracker(TestCtsv3):
             "obs_info": {
                 "is_obs_created": False,
                 "bucket_name": self.bucket_name,
-                "file_prefix_name": "test-prefix"
+                "file_prefix_name": "test-prefix",
             },
             "status": "enabled",
             "is_lts_enabled": True,
@@ -49,11 +50,8 @@ class TestTracker(TestCtsv3):
             if self.tracker:
                 self.client.delete_tracker(self.tracker)
         except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
-        objects = self.client_obs.objects(
-            container=self.container
-        )
+            _logger.warning("Got exception during clearing resources %s" % e.message)
+        objects = self.client_obs.objects(container=self.container)
         for obj in objects:
             self.client_obs.delete_object(obj, container=self.container)
         self.addCleanup(self.client_obs.delete_container, self.container)
@@ -69,7 +67,7 @@ class TestTracker(TestCtsv3):
             "obs_info": {
                 "is_obs_created": False,
                 "bucket_name": self.bucket_name,
-                "file_prefix_name": "test-prefix"
+                "file_prefix_name": "test-prefix",
             },
             "status": "disabled",
             "is_lts_enabled": False,
@@ -78,8 +76,6 @@ class TestTracker(TestCtsv3):
             "is_support_validate": False,
         }
         self.conn.ctsv3.update_tracker(**attrs)
-        attrs = {
-            "tracker_name": "system"
-        }
+        attrs = {"tracker_name": "system"}
         tracker = list(self.conn.ctsv3.trackers(**attrs))[0]
         self.assertEqual(tracker.status, "disabled")

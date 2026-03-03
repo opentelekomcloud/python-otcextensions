@@ -14,8 +14,8 @@ from openstack import resource
 
 
 class RecyclePolicy(resource.Resource):
-    base_path = 'instances/recycle-policy'
-    resource_key = 'recycle_policy'
+    base_path = "instances/recycle-policy"
+    resource_key = "recycle_policy"
 
     requires_id = False
 
@@ -23,13 +23,21 @@ class RecyclePolicy(resource.Resource):
     allow_create = True
     create_method = "PUT"
 
-    enabled = resource.Body('enabled', type=bool)
-    retention_period_in_days = resource.Body('retention_period_in_days')
+    enabled = resource.Body("enabled", type=bool)
+    retention_period_in_days = resource.Body("retention_period_in_days")
 
-    def fetch(self, session, requires_id=False, base_path=None,
-              error_message=None, skip_cache=False, *,
-              resource_response_key=None,
-              microversion=None, **params,):
+    def fetch(
+        self,
+        session,
+        requires_id=False,
+        base_path=None,
+        error_message=None,
+        skip_cache=False,
+        *,
+        resource_response_key=None,
+        microversion=None,
+        **params,
+    ):
         request = self._prepare_request(
             requires_id=requires_id,
             base_path=self.base_path,
@@ -48,11 +56,19 @@ class RecyclePolicy(resource.Resource):
         self._translate_response(response)
         return self
 
-    def create(self, session, prepend_key=True, base_path=None, *,
-               resource_request_key=None, resource_response_key=None,
-               microversion=None, **params,):
+    def create(
+        self,
+        session,
+        prepend_key=True,
+        base_path=None,
+        *,
+        resource_request_key=None,
+        resource_response_key=None,
+        microversion=None,
+        **params,
+    ):
         if not self.allow_create:
-            raise exceptions.MethodNotSupported(self, 'create')
+            raise exceptions.MethodNotSupported(self, "create")
         session = self._get_session(session)
         if microversion is None:
             microversion = self._get_microversion(session)

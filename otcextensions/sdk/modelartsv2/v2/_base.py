@@ -157,9 +157,7 @@ class Resource(resource.Resource):
                 # Iterate over client filters and return only if matching
                 for key in client_filters.keys():
                     if isinstance(client_filters[key], dict):
-                        if not _dict_filter(
-                            client_filters[key], value.get(key, None)
-                        ):
+                        if not _dict_filter(client_filters[key], value.get(key, None)):
                             filters_matched = False
                             break
                     elif value.get(key, None) != client_filters[key]:

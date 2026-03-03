@@ -11,12 +11,11 @@
 # under the License.
 # import mock
 
+from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.anti_ddos.v1 import _proxy
 from otcextensions.sdk.anti_ddos.v1 import config as _config
 from otcextensions.sdk.anti_ddos.v1 import floating_ip as _floating_ip
 from otcextensions.sdk.anti_ddos.v1 import status as _status
-
-from openstack.tests.unit import test_proxy_base
 
 
 class TestAntiDdosProxy(test_proxy_base.TestProxyBase):
@@ -27,75 +26,66 @@ class TestAntiDdosProxy(test_proxy_base.TestProxyBase):
 
     def test_floating_ips(self):
         self.verify_list(
-            self.proxy.floating_ips, _floating_ip.FloatingIP,
-            expected_kwargs={'paginated': False}
+            self.proxy.floating_ips,
+            _floating_ip.FloatingIP,
+            expected_kwargs={"paginated": False},
         )
 
     def test_unprotect_floating_ip(self):
         self.verify_delete(
-            self.proxy.unprotect_floating_ip, _floating_ip.FloatingIP, True,
+            self.proxy.unprotect_floating_ip,
+            _floating_ip.FloatingIP,
+            True,
         )
 
     def test_get_floating_ip_policies(self):
         self.verify_get(
-            self.proxy.get_floating_ip_policies, _floating_ip.FloatingIP,
+            self.proxy.get_floating_ip_policies,
+            _floating_ip.FloatingIP,
         )
 
     def test_update_floating_ip_policies(self):
         self.verify_update(
-            self.proxy.update_floating_ip_policies, _floating_ip.FloatingIP,
+            self.proxy.update_floating_ip_policies,
+            _floating_ip.FloatingIP,
         )
 
     def test_configs(self):
         self.verify_list(
-            self.proxy.configs, _config.Config,
-            expected_kwargs={'paginated': False}
+            self.proxy.configs, _config.Config, expected_kwargs={"paginated": False}
         )
 
     def test_get_floating_ip_status(self):
         self.verify_get(
-            self.proxy.get_floating_ip_status, _status.FloatingIPStatus,
+            self.proxy.get_floating_ip_status,
+            _status.FloatingIPStatus,
             expected_kwargs={
-                'requires_id': False,
-            }
+                "requires_id": False,
+            },
         )
 
     def test_float_ip_logs(self):
         self.verify_list(
-            self.proxy.floating_ip_events, _status.FloatingIPEvent,
-            method_kwargs={
-                'floating_ip_id': 'ip_id'
-            },
-            expected_kwargs={
-                'paginated': False,
-                'floating_ip_id': 'ip_id'
-            }
+            self.proxy.floating_ip_events,
+            _status.FloatingIPEvent,
+            method_kwargs={"floating_ip_id": "ip_id"},
+            expected_kwargs={"paginated": False, "floating_ip_id": "ip_id"},
         )
 
     def test_float_ip_stat_day(self):
         self.verify_list(
-            self.proxy.floating_ip_stat_day, _status.FloatingIPDayStat,
-            method_kwargs={
-                'floating_ip_id': 'ip_id'
-            },
-            expected_kwargs={
-                'paginated': False,
-                'floating_ip_id': 'ip_id'
-            }
+            self.proxy.floating_ip_stat_day,
+            _status.FloatingIPDayStat,
+            method_kwargs={"floating_ip_id": "ip_id"},
+            expected_kwargs={"paginated": False, "floating_ip_id": "ip_id"},
         )
 
     def test_float_ip_stat_week(self):
         self._verify(
-            'openstack.proxy.Proxy._get',
+            "openstack.proxy.Proxy._get",
             self.proxy.floating_ip_stat_week,
             method_args=None,
-            method_kwargs={
-                'a': 'b'
-            },
+            method_kwargs={"a": "b"},
             expected_args=[_status.FloatingIPWeekStat],
-            expected_kwargs={
-                'a': 'b',
-                'requires_id': False,
-                'value': None
-            }
+            expected_kwargs={"a": "b", "requires_id": False, "value": None},
         )

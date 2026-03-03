@@ -13,8 +13,8 @@
 
 import mock
 from openstackclient.tests.unit import utils as tests_utils
-from otcextensions.common import cli_utils
 
+from otcextensions.common import cli_utils
 from otcextensions.osclient.modelartsv2.v2 import dataset_import_task
 from otcextensions.tests.unit.osclient.modelartsv2.v2 import fakes
 
@@ -86,9 +86,7 @@ class TestListDatasetImportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_dataset.assert_called_with(
-            "dataset-id", ignore_missing=False
-        )
+        self.client.find_dataset.assert_called_with("dataset-id", ignore_missing=False)
         self.client.api_mock.assert_called_with(self._dataset)
 
         self.assertEqual(self.column_list_headers, columns)
@@ -118,12 +116,8 @@ class TestListDatasetImportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_dataset.assert_called_with(
-            "dataset-id", ignore_missing=False
-        )
-        self.client.api_mock.assert_called_with(
-            self._dataset, limit=1, offset=2
-        )
+        self.client.find_dataset.assert_called_with("dataset-id", ignore_missing=False)
+        self.client.api_mock.assert_called_with(self._dataset, limit=1, offset=2)
 
 
 class TestShowDatasetImportTask(fakes.TestModelartsv2):
@@ -143,9 +137,7 @@ class TestShowDatasetImportTask(fakes.TestModelartsv2):
         self.cmd = dataset_import_task.ShowDatasetImportTask(self.app, None)
 
         self.client.find_dataset = mock.Mock(return_value=self._dataset)
-        self.client.get_dataset_import_task = mock.Mock(
-            return_value=self.object
-        )
+        self.client.get_dataset_import_task = mock.Mock(return_value=self.object)
 
     def test_show_no_options(self):
         arglist = []
@@ -175,12 +167,8 @@ class TestShowDatasetImportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_dataset.assert_called_with(
-            "dataset-id", ignore_missing=False
-        )
-        self.client.get_dataset_import_task.assert_called_with(
-            self._dataset, "task-id"
-        )
+        self.client.find_dataset.assert_called_with("dataset-id", ignore_missing=False)
+        self.client.get_dataset_import_task.assert_called_with(self._dataset, "task-id")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

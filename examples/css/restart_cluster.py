@@ -17,7 +17,7 @@ Restart CSS Cluster by cluster_id or instance of Cluster class
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluter-uuid'
+cluster_id = "cluter-uuid"
 conn.css.restart_cluster(cluster_id)

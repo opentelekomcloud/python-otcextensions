@@ -11,6 +11,7 @@
 #   under the License.
 #
 """Flavor v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -23,37 +24,37 @@ LOG = logging.getLogger(__name__)
 
 def set_attributes_for_print_detail(instance):
     info = {}  # instance.copy()
-    info['id'] = instance.id
-    info['ram'] = instance.ram
-    info['name'] = instance.name
+    info["id"] = instance.id
+    info["ram"] = instance.ram
+    info["name"] = instance.name
     # info['str_id'] = instance['str_id']
-    if getattr(instance, 'flavor_detail', None):
+    if getattr(instance, "flavor_detail", None):
         for det in instance.flavor_detail:
-            if det['name'] == 'cpu':
-                info['vcpus'] = det['value']
+            if det["name"] == "cpu":
+                info["vcpus"] = det["value"]
     return info
 
 
 class ListDatabaseFlavors(command.Lister):
 
     _description = _("List database flavors")
-    columns = ['ID', 'Name', 'ram', 'spec_code']
+    columns = ["ID", "Name", "ram", "spec_code"]
 
     def get_parser(self, prog_name):
         parser = super(ListDatabaseFlavors, self).get_parser(prog_name)
 
         parser.add_argument(
-            'dbId',
-            metavar='<dbId>',
-            help=_('ID of the datastore version.'),
+            "dbId",
+            metavar="<dbId>",
+            help=_("ID of the datastore version."),
         )
 
         parser.add_argument(
-            'region',
-            metavar='<region>',
-            default='eu-de',
-            nargs='?',
-            help=_('Region. `eu-de` is left empty'),
+            "region",
+            metavar="<region>",
+            default="eu-de",
+            nargs="?",
+            help=_("Region. `eu-de` is left empty"),
         )
 
         return parser
@@ -65,23 +66,26 @@ class ListDatabaseFlavors(command.Lister):
 
         return (
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
         )
 
 
 class ShowDatabaseFlavor(command.ShowOne):
     _description = _("Shows details of a database flavor")
-    columns = ('ID', 'Name', 'ram', 'spec_code')
+    columns = ("ID", "Name", "ram", "spec_code")
 
     def get_parser(self, prog_name):
         parser = super(ShowDatabaseFlavor, self).get_parser(prog_name)
         parser.add_argument(
-            'flavor',
-            metavar='<flavor>',
-            help=_('ID or name of the flavor'),
+            "flavor",
+            metavar="<flavor>",
+            help=_("ID or name of the flavor"),
         )
         return parser
 
@@ -95,5 +99,5 @@ class ShowDatabaseFlavor(command.ShowOne):
             utils.get_item_properties(
                 obj,
                 self.columns,
-            )
+            ),
         )

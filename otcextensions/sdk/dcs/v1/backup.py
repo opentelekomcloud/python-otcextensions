@@ -16,7 +16,7 @@ class DcsBool(object):
     val = False
 
     def __init__(self, value):
-        if value.lower() == 'true':
+        if value.lower() == "true":
             self.val = True
         else:
             self.val = False
@@ -25,7 +25,7 @@ class DcsBool(object):
         return self.val
 
     def __set__(self, value):
-        if value.lower() == 'true':
+        if value.lower() == "true":
             self.val = True
         else:
             self.val = False
@@ -36,9 +36,9 @@ class DcsBool(object):
 
 class Backup(resource.Resource):
 
-    resources_key = 'backup_record_response'
+    resources_key = "backup_record_response"
 
-    base_path = '/instances/%(instance_id)s/backups'
+    base_path = "/instances/%(instance_id)s/backups"
 
     # capabilities
     allow_create = True
@@ -47,32 +47,36 @@ class Backup(resource.Resource):
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
-        'limit', 'start', 'begin_time', 'end_time',
-        begin_time='beginTime',
-        end_time='endTime')
+        "limit",
+        "start",
+        "begin_time",
+        "end_time",
+        begin_time="beginTime",
+        end_time="endTime",
+    )
 
     # Properties
-    instance_id = resource.URI('instance_id')
+    instance_id = resource.URI("instance_id")
     #: Time at which the backup task is created.
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #:  Description of the DCS instance backup.
-    description = resource.Body('remark')
+    description = resource.Body("remark")
     #: Error code returned if DCS instance backup fails.
-    error_code = resource.Body('error_code')
+    error_code = resource.Body("error_code")
     #: Backup ID
-    id = resource.Body('backup_id', alternate_id=True)
+    id = resource.Body("backup_id", alternate_id=True)
     #: An indicator of whether restoration is supported. The
     #: value can be TRUE or FALSE.
-    is_restorable = resource.Body('is_support_restore', type=DcsBool)
+    is_restorable = resource.Body("is_support_restore", type=DcsBool)
     #: Backup name
-    name = resource.Body('backup_name')
+    name = resource.Body("backup_name")
     #: Time segment in which DCS instance backup was performed.
-    period = resource.Body('period')
+    period = resource.Body("period")
     #: Backup progress.
-    progress = resource.Body('progress')
+    progress = resource.Body("progress")
     #: Size of the backup file.
     #: Unit: byte.
-    size = resource.Body('size', type=int)
+    size = resource.Body("size", type=int)
     #: Backup status.
     #: * waiting: DCS instance backup is waiting to begin.
     #: * backuping: DCS instance backup is in progress.
@@ -80,10 +84,10 @@ class Backup(resource.Resource):
     #: * failed: DCS instance backup failed.
     #: * expired: The backup file has expired.
     #: * deleted: The backup file has been deleted manually.
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Backup type.
     #: * manual: manual backup.
     #: * auto: automatic backup.
-    type = resource.Body('backup_type')
+    type = resource.Body("backup_type")
     #: Time at which DCS instance backup is completed.
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")

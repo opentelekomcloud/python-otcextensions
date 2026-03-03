@@ -13,9 +13,9 @@
 """
 Get Access Control Policy
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-acl = conn.apig.get_acl_policy(gateway='gateway_id',
-                               acl_policy='acl_id')
+conn = openstack.connect(cloud="otc")
+acl = conn.apig.get_acl_policy(gateway="gateway_id", acl_policy="acl_id")

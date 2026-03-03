@@ -11,19 +11,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Update virtual interface
+Update virtual interface
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    "virtual_interface": "virtual_interface_uuid",
-    "name": "newname"
-}
+attrs = {"virtual_interface": "virtual_interface_uuid", "name": "newname"}
 
 vi = conn.dcaas.update_virtual_interface(**attrs)
 print(vi)

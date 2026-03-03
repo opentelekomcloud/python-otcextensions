@@ -36,7 +36,7 @@ Create Alarm Rule
 This interface is used to create a CES alarm with parameters.
 
 .. literalinclude:: ../examples/ces/create_alarm.py
-   :lines: 16-89
+   :lines: 16-86
 
 Get Alarm Rule
 ^^^^^^^^^^^^^^

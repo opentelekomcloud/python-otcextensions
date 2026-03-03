@@ -18,19 +18,28 @@ from otcextensions.tests.unit.osclient.sdrs.v1 import fakes
 class TestActiveDomains(fakes.TestSDRS):
     object = fakes.FakeActiveDomain.create_multiple(2)
 
-    columns = ('ID', 'name', 'description', 'sold_out',
-               'local_replication_cluster', 'remote_replication_cluster')
+    columns = (
+        "ID",
+        "name",
+        "description",
+        "sold_out",
+        "local_replication_cluster",
+        "remote_replication_cluster",
+    )
 
     flat_data = [(active_domains._flatten_domain(obj)) for obj in object]
 
     data = [
-        (flat_d['id'],
-         flat_d['name'],
-         flat_d['description'],
-         flat_d['sold_out'],
-         flat_d['local_replication_cluster'],
-         flat_d['remote_replication_cluster']
-         ) for flat_d in flat_data]
+        (
+            flat_d["id"],
+            flat_d["name"],
+            flat_d["description"],
+            flat_d["sold_out"],
+            flat_d["local_replication_cluster"],
+            flat_d["remote_replication_cluster"],
+        )
+        for flat_d in flat_data
+    ]
 
     def setUp(self):
         super(TestActiveDomains, self).setUp()
@@ -43,21 +52,21 @@ class TestActiveDomains(fakes.TestSDRS):
         flat_data = active_domains._flatten_domain(obj)
 
         data = (
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['description'],
-            flat_data['sold_out'],
-            flat_data['local_replication_cluster'],
-            flat_data['remote_replication_cluster']
+            flat_data["id"],
+            flat_data["name"],
+            flat_data["description"],
+            flat_data["sold_out"],
+            flat_data["local_replication_cluster"],
+            flat_data["remote_replication_cluster"],
         )
 
         cmp_data = (
-            obj['domains'][0].id,
-            obj['domains'][0].name,
-            obj['domains'][0].description,
-            obj['domains'][0].sold_out,
-            obj['domains'][0].local_replication_cluster.availability_zone,
-            obj['domains'][0].remote_replication_cluster.availability_zone
+            obj["domains"][0].id,
+            obj["domains"][0].name,
+            obj["domains"][0].description,
+            obj["domains"][0].sold_out,
+            obj["domains"][0].local_replication_cluster.availability_zone,
+            obj["domains"][0].remote_replication_cluster.availability_zone,
         )
 
         self.assertEqual(data, cmp_data)
@@ -71,9 +80,7 @@ class TestActiveDomains(fakes.TestSDRS):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.object
-        ]
+        self.client.api_mock.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)

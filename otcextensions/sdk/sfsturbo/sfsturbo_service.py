@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.sfsturbo.v1 import _proxy
 
 
 class SfsturboService(service_description.ServiceDescription):
     """The SFS Turbo service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {"1": _proxy.Proxy}

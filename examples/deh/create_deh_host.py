@@ -13,17 +13,17 @@
 """
 Allocate Dedicated Host
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'name': 'deh-name',
-    'availability_zone': 'eu-de-01',
-    'host_type': 's2-medium',
-    'quantity': 1
+    "name": "deh-name",
+    "availability_zone": "eu-de-01",
+    "host_type": "s2-medium",
+    "quantity": 1,
 }
 
 host = conn.deh.create_host(**attrs)

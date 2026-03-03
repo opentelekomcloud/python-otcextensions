@@ -10,14 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from openstack import _log
 from otcextensions.sdk.function_graph.v2 import function
 from otcextensions.sdk.function_graph.v2 import log
-
-from openstack import _log
-
 from otcextensions.tests.functional.sdk.function_graph import TestFg
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestFunctionLog(TestFg):
@@ -29,12 +27,8 @@ class TestFunctionLog(TestFg):
 
         self.log = self.client.enable_lts_log()
         assert isinstance(self.log, log.Log)
-        self.addCleanup(
-            self.client.delete_function,
-            self.function
-        )
+        self.addCleanup(self.client.delete_function, self.function)
 
     def test_get_lts_log_details(self):
-        lg = self.client.get_lts_log_settings(
-            self.function)
+        lg = self.client.get_lts_log_settings(self.function)
         self.assertIsNotNone(lg)

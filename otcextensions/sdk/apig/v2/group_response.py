@@ -13,19 +13,20 @@ from openstack import resource
 
 
 class ResponseInfoHeaderSpec(resource.Resource):
-    key = resource.Body('key', type=str)
-    value = resource.Body('value', type=str)
+    key = resource.Body("key", type=str)
+    value = resource.Body("value", type=str)
 
 
 class ResponseInfoSpec(resource.Resource):
-    status = resource.Body('status', type=int)
-    body = resource.Body('body', type=str)
-    headers = resource.Body('headers', type=ResponseInfoHeaderSpec)
+    status = resource.Body("status", type=int)
+    body = resource.Body("body", type=str)
+    headers = resource.Body("headers", type=ResponseInfoHeaderSpec)
 
 
 class GroupResponse(resource.Resource):
-    base_path = ('/apigw/instances/%(gateway_id)s/api-groups/%(group_id)s'
-                 '/gateway-responses')
+    base_path = (
+        "/apigw/instances/%(gateway_id)s/api-groups/%(group_id)s" "/gateway-responses"
+    )
 
     allow_list = True
     allow_create = True
@@ -33,13 +34,16 @@ class GroupResponse(resource.Resource):
     allow_delete = True
     allow_commit = True
 
-    _query_mapping = resource.QueryParameters('limit', 'offset')
-    resources_key = 'responses'
+    _query_mapping = resource.QueryParameters("limit", "offset")
+    resources_key = "responses"
 
     # Properties
-    gateway_id = resource.URI('gateway_id')
-    group_id = resource.URI('group_id')
+    gateway_id = resource.URI("gateway_id")
+    group_id = resource.URI("group_id")
 
     # Group name.
-    name = resource.Body('name', type=str)
-    responses = resource.Body('responses', type=dict,)
+    name = resource.Body("name", type=str)
+    responses = resource.Body(
+        "responses",
+        type=dict,
+    )

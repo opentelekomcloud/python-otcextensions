@@ -26,14 +26,14 @@ class TestMember(fakes.TestCBR):
         flat_data = member._flatten_member(obj)
 
         data = (
-            flat_data['id'],
-            flat_data['status'],
-            flat_data['created_at'],
-            flat_data['updated_at'],
-            flat_data['backup_id'],
-            flat_data['image_id'],
-            flat_data['dest_project_id'],
-            flat_data['vault_id']
+            flat_data["id"],
+            flat_data["status"],
+            flat_data["created_at"],
+            flat_data["updated_at"],
+            flat_data["backup_id"],
+            flat_data["image_id"],
+            flat_data["dest_project_id"],
+            flat_data["vault_id"],
         )
 
         cmp_data = (
@@ -44,7 +44,7 @@ class TestMember(fakes.TestCBR):
             obj.backup_id,
             obj.image_id,
             obj.dest_project_id,
-            obj.vault_id
+            obj.vault_id,
         )
 
         self.assertEqual(data, cmp_data)
@@ -55,23 +55,33 @@ class TestListMembers(fakes.TestCBR):
     objects = fakes.FakeMember.create_multiple(3)
     backup_obj = fakes.FakeBackup.create_one()
 
-    columns = ('id', 'status', 'created_at', 'updated_at', 'backup_id',
-               'image_id', 'dest_project_id', 'vault_id')
+    columns = (
+        "id",
+        "status",
+        "created_at",
+        "updated_at",
+        "backup_id",
+        "image_id",
+        "dest_project_id",
+        "vault_id",
+    )
 
     data = []
 
     for s in objects:
         flat_data = member._flatten_member(s)
-        data.append((
-            flat_data['id'],
-            flat_data['status'],
-            flat_data['created_at'],
-            flat_data['updated_at'],
-            flat_data['backup_id'],
-            flat_data['image_id'],
-            flat_data['dest_project_id'],
-            flat_data['vault_id']
-        ))
+        data.append(
+            (
+                flat_data["id"],
+                flat_data["status"],
+                flat_data["created_at"],
+                flat_data["updated_at"],
+                flat_data["backup_id"],
+                flat_data["image_id"],
+                flat_data["dest_project_id"],
+                flat_data["vault_id"],
+            )
+        )
 
     def setUp(self):
         super(TestListMembers, self).setUp()
@@ -84,52 +94,56 @@ class TestListMembers(fakes.TestCBR):
 
     def test_default(self):
         arglist = [
-            'backup',
-            '--dest-project-id', 'project_uuid',
-            '--image-id', 'image_uuid',
-            '--limit', '5',
-            '--marker', 'marker',
-            '--offset', '5',
-            '--sort', 'sort',
-            '--status', 'status',
-            '--vault-id', 'vault_uuid'
+            "backup",
+            "--dest-project-id",
+            "project_uuid",
+            "--image-id",
+            "image_uuid",
+            "--limit",
+            "5",
+            "--marker",
+            "marker",
+            "--offset",
+            "5",
+            "--sort",
+            "sort",
+            "--status",
+            "status",
+            "--vault-id",
+            "vault_uuid",
         ]
 
         verifylist = [
-            ('dest_project_id', 'project_uuid'),
-            ('image_id', 'image_uuid'),
-            ('limit', 5),
-            ('marker', 'marker'),
-            ('offset', 5),
-            ('sort', 'sort'),
-            ('status', 'status'),
-            ('vault_id', 'vault_uuid'),
+            ("dest_project_id", "project_uuid"),
+            ("image_id", "image_uuid"),
+            ("limit", 5),
+            ("marker", "marker"),
+            ("offset", 5),
+            ("sort", "sort"),
+            ("status", "status"),
+            ("vault_id", "vault_uuid"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
-        self.client.find_backup.side_effect = [
-            self.backup_obj
-        ]
+        self.client.api_mock.side_effect = [self.objects]
+        self.client.find_backup.side_effect = [self.backup_obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
             backup=self.backup_obj.id,
-            dest_project_id='project_uuid',
-            image_id='image_uuid',
+            dest_project_id="project_uuid",
+            image_id="image_uuid",
             limit=5,
-            marker='marker',
+            marker="marker",
             offset=5,
-            sort='sort',
-            status='status',
-            vault_id='vault_uuid'
+            sort="sort",
+            status="status",
+            vault_id="vault_uuid",
         )
 
         self.assertEqual(self.columns, columns)
@@ -141,20 +155,28 @@ class TestShowMember(fakes.TestCBR):
     object = fakes.FakeMember.create_one()
     backup_obj = fakes.FakeBackup.create_one()
 
-    columns = ('id', 'status', 'created_at', 'updated_at', 'backup_id',
-               'image_id', 'dest_project_id', 'vault_id')
+    columns = (
+        "id",
+        "status",
+        "created_at",
+        "updated_at",
+        "backup_id",
+        "image_id",
+        "dest_project_id",
+        "vault_id",
+    )
 
     flat_data = member._flatten_member(object)
 
     data = (
-        flat_data['id'],
-        flat_data['status'],
-        flat_data['created_at'],
-        flat_data['updated_at'],
-        flat_data['backup_id'],
-        flat_data['image_id'],
-        flat_data['dest_project_id'],
-        flat_data['vault_id']
+        flat_data["id"],
+        flat_data["status"],
+        flat_data["created_at"],
+        flat_data["updated_at"],
+        flat_data["backup_id"],
+        flat_data["image_id"],
+        flat_data["dest_project_id"],
+        flat_data["vault_id"],
     )
 
     def setUp(self):
@@ -166,29 +188,21 @@ class TestShowMember(fakes.TestCBR):
         self.client.find_backup = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'backup',
-            'member'
-        ]
-        verifylist = [
-        ]
+        arglist = ["backup", "member"]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_backup.side_effect = [
-            self.backup_obj
-        ]
-        self.client.get_member.side_effect = [
-            self.object
-        ]
+        self.client.find_backup.side_effect = [self.backup_obj]
+        self.client.get_member.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.get_member.assert_called_once_with(
-            member='member',
+            member="member",
             backup=self.backup_obj.id,
         )
 
@@ -201,21 +215,31 @@ class TestAddMembers(fakes.TestCBR):
     object = fakes.FakeMember.create_one()
     backup_obj = fakes.FakeBackup.create_one()
 
-    columns = ('id', 'status', 'created_at', 'updated_at', 'backup_id',
-               'image_id', 'dest_project_id', 'vault_id')
+    columns = (
+        "id",
+        "status",
+        "created_at",
+        "updated_at",
+        "backup_id",
+        "image_id",
+        "dest_project_id",
+        "vault_id",
+    )
 
     data = []
     flat_data = member._flatten_member(object)
-    data.append((
-        flat_data['id'],
-        flat_data['status'],
-        flat_data['created_at'],
-        flat_data['updated_at'],
-        flat_data['backup_id'],
-        flat_data['image_id'],
-        flat_data['dest_project_id'],
-        flat_data['vault_id']
-    ))
+    data.append(
+        (
+            flat_data["id"],
+            flat_data["status"],
+            flat_data["created_at"],
+            flat_data["updated_at"],
+            flat_data["backup_id"],
+            flat_data["image_id"],
+            flat_data["dest_project_id"],
+            flat_data["vault_id"],
+        )
+    )
 
     def setUp(self):
         super(TestAddMembers, self).setUp()
@@ -228,33 +252,22 @@ class TestAddMembers(fakes.TestCBR):
         self.client.find_backup = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'backup',
-            '--members', 'project_uuid'
-        ]
-        verifylist = [
-            ('backup', 'backup'),
-            ('members', ['project_uuid'])
-        ]
+        arglist = ["backup", "--members", "project_uuid"]
+        verifylist = [("backup", "backup"), ("members", ["project_uuid"])]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.backup_client.add_members.side_effect = [
-            [self.object]
-        ]
+        self.backup_client.add_members.side_effect = [[self.object]]
 
-        self.client.find_backup.side_effect = [
-            self.backup_obj
-        ]
+        self.client.find_backup.side_effect = [self.backup_obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.backup_client.add_members.assert_called_once_with(
-            backup=self.backup_obj.id,
-            members=['project_uuid']
+            backup=self.backup_obj.id, members=["project_uuid"]
         )
 
         self.assertEqual(self.columns, columns)
@@ -268,20 +281,28 @@ class TestUpdateMember(fakes.TestCBR):
 
     object = fakes.FakeMember.create_one()
 
-    columns = ('id', 'status', 'created_at', 'updated_at', 'backup_id',
-               'image_id', 'dest_project_id', 'vault_id')
+    columns = (
+        "id",
+        "status",
+        "created_at",
+        "updated_at",
+        "backup_id",
+        "image_id",
+        "dest_project_id",
+        "vault_id",
+    )
 
     flat_data = member._flatten_member(object)
 
     data = (
-        flat_data['id'],
-        flat_data['status'],
-        flat_data['created_at'],
-        flat_data['updated_at'],
-        flat_data['backup_id'],
-        flat_data['image_id'],
-        flat_data['dest_project_id'],
-        flat_data['vault_id']
+        flat_data["id"],
+        flat_data["status"],
+        flat_data["created_at"],
+        flat_data["updated_at"],
+        flat_data["backup_id"],
+        flat_data["image_id"],
+        flat_data["dest_project_id"],
+        flat_data["vault_id"],
     )
 
     def setUp(self):
@@ -294,34 +315,31 @@ class TestUpdateMember(fakes.TestCBR):
 
     def test_default(self):
         arglist = [
-            'backup',
-            'member',
-            '--status', 'pending',
-            '--vault-id', 'vault_uuid'
+            "backup",
+            "member",
+            "--status",
+            "pending",
+            "--vault-id",
+            "vault_uuid",
         ]
         verifylist = [
-            ('backup', 'backup'),
-            ('member', 'member'),
-            ('status', 'pending'),
-            ('vault_id', 'vault_uuid')
+            ("backup", "backup"),
+            ("member", "member"),
+            ("status", "pending"),
+            ("vault_id", "vault_uuid"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_member.side_effect = [
-            self.object
-        ]
+        self.client.update_member.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_member.assert_called_once_with(
-            backup='backup',
-            member='member',
-            status='pending',
-            vault='vault_uuid'
+            backup="backup", member="member", status="pending", vault="vault_uuid"
         )
 
         self.assertEqual(self.columns, columns)
@@ -340,12 +358,8 @@ class TestDeleteMember(fakes.TestCBR):
         self.client.delete_member = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'backup',
-            'member-uuid'
-        ]
-        verifylist = [
-        ]
+        arglist = ["backup", "member-uuid"]
+        verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -353,18 +367,15 @@ class TestDeleteMember(fakes.TestCBR):
         self.client.delete_member.side_effect = [{}]
 
         # Set the response for find_policy
-        self.client.find_backup.side_effect = [
-            self.backup_obj
-        ]
+        self.client.find_backup.side_effect = [self.backup_obj]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         delete_calls = [
             mock.call(
-                backup=self.backup_obj.id,
-                member='member-uuid',
-                ignore_missing=False),
+                backup=self.backup_obj.id, member="member-uuid", ignore_missing=False
+            ),
         ]
 
         self.client.delete_member.assert_has_calls(delete_calls)

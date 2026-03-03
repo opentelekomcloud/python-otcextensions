@@ -11,12 +11,12 @@
 # under the License.
 import mock
 from keystoneauth1 import adapter
-from openstack.tests.unit import base
 
+from openstack.tests.unit import base
 from otcextensions.sdk.elb.v2 import listener_tag
 
 EXAMPLE = {
-    "key": 'fake_key',
+    "key": "fake_key",
     "value": "fake_name",
 }
 
@@ -31,9 +31,9 @@ class TestElbLoadBalancerTag(base.TestCase):
     def test_basic(self):
         sot = listener_tag.Tag()
 
-        self.assertEqual('/listeners/%(listener_id)s/tags', sot.base_path)
-        self.assertEqual('tags', sot.resources_key)
-        self.assertEqual('tag', sot.resource_key)
+        self.assertEqual("/listeners/%(listener_id)s/tags", sot.base_path)
+        self.assertEqual("tags", sot.resources_key)
+        self.assertEqual("tag", sot.resource_key)
 
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
@@ -43,5 +43,5 @@ class TestElbLoadBalancerTag(base.TestCase):
 
     def test_make(self):
         sot = listener_tag.Tag(**EXAMPLE)
-        self.assertEqual(EXAMPLE['key'], sot.key)
-        self.assertEqual(EXAMPLE['value'], sot.value)
+        self.assertEqual(EXAMPLE["key"], sot.key)
+        self.assertEqual(EXAMPLE["value"], sot.value)

@@ -54,7 +54,7 @@ This interface is used to create a DNS zone with
 parameters.
 
 .. literalinclude:: ../examples/dns/create_zone.py
-   :lines: 16-49
+   :lines: 16-48
 
 Get Zone
 ^^^^^^^^
@@ -82,7 +82,7 @@ id or an instance of class
 :class:`~otcextensions.sdk.dns.v2.zone.Zone`.
 
 .. literalinclude:: ../examples/dns/update_zone.py
-   :lines: 16-27
+   :lines: 16-26
 
 Delete Zone
 ^^^^^^^^^^^
@@ -125,7 +125,7 @@ This interface is used to create a DNS Recordset with
 parameters.
 
 .. literalinclude:: ../examples/dns/create_recordset.py
-   :lines: 16-33
+   :lines: 16-25
 
 Get Recordset
 ^^^^^^^^^^^^^
@@ -153,7 +153,7 @@ id or an instance of class
 :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`.
 
 .. literalinclude:: ../examples/dns/update_recordset.py
-   :lines: 16-32
+   :lines: 16-30
 
 Delete Recordset
 ^^^^^^^^^^^^^^^^
@@ -163,7 +163,7 @@ id or an instance of class
 :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`.
 
 .. literalinclude:: ../examples/dns/delete_recordset.py
-   :lines: 16-24
+   :lines: 16-25
 
 Floating IP PTR Records
 -----------------------
@@ -175,7 +175,7 @@ This interface is used to query all Floating IP PTR records to filter
 the output with query parameters.
 
 .. literalinclude:: ../examples/dns/list_floating_ips.py
-   :lines: 16-23
+   :lines: 16-24
 
 Set Floating IP PTR Record
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

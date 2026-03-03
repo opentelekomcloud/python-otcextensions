@@ -9,27 +9,24 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import openstack
 import uuid
 
+import openstack
 from otcextensions.tests.functional.sdk.dns import TestDns
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestFloatingIps(TestDns):
     uuid_v4 = uuid.uuid4().hex[:8]
-    ptr_dname = uuid_v4 + 'dns.ptr.test.com'
+    ptr_dname = uuid_v4 + "dns.ptr.test.com"
 
     def setUp(self):
         super(TestFloatingIps, self).setUp()
-        pub_net = self.conn.get_network('admin_external_net')
-        self.floating_ip = self.conn.network.create_ip(
-            floating_network_id=pub_net.id
-        )
+        pub_net = self.conn.get_network("admin_external_net")
+        self.floating_ip = self.conn.network.create_ip(floating_network_id=pub_net.id)
         self.floatingip = self.client.set_floating_ip(
-            floating_ip=('eu-de:' + self.floating_ip.id),
-            ptrdname=self.ptr_dname
+            floating_ip=("eu-de:" + self.floating_ip.id), ptrdname=self.ptr_dname
         )
 
     def tearDown(self):
@@ -45,7 +42,7 @@ class TestFloatingIps(TestDns):
 
     def test_get_floatingip(self):
         ip = self.client.get_floating_ip(self.floatingip.id)
-        self.assertEqual(ip['address'], self.floatingip['address'])
+        self.assertEqual(ip["address"], self.floatingip["address"])
 
     # BUG
     # https://jira.tsi-dev.otc-service.com/browse/ONS-5716

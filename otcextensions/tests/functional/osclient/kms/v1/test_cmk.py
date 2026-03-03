@@ -15,13 +15,12 @@ from openstackclient.tests.functional import base
 
 
 class TestCmk(base.TestCase):
-    """Functional tests for KMS CMK. """
+    """Functional tests for KMS CMK."""
 
     def test_cmk_list(self):
-        json_output = json.loads(self.openstack(
-            'kms cmk list -f json',
-            cloud='functest_cloud')
+        json_output = json.loads(
+            self.openstack("kms cmk list -f json", cloud="functest_cloud")
         )
         self.assertGreater(len(json_output), 0)
-        name = json_output[0]['key_alias']
-        self.openstack(f'kms cmk show {name}', cloud='terraform')
+        name = json_output[0]["key_alias"]
+        self.openstack(f"kms cmk show {name}", cloud="terraform")

@@ -17,33 +17,34 @@ import logging
 from osc_lib import utils
 from osc_lib.command import command
 
-from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class SendSms(command.ShowOne):
-    _description = _("Send a transactional SMS message to a specified "
-                     "phone number, usually used for verification code "
-                     "or notification.")
+    _description = _(
+        "Send a transactional SMS message to a specified "
+        "phone number, usually used for verification code "
+        "or notification."
+    )
 
     def get_parser(self, prog_name):
         parser = super(SendSms, self).get_parser(prog_name)
         parser.add_argument(
-            'endpoint',
-            metavar='<endpoint>',
+            "endpoint",
+            metavar="<endpoint>",
             help=_("Phone number."),
         )
         parser.add_argument(
-            'message',
-            metavar='<message>',
+            "message",
+            metavar="<message>",
             help=_("SMS message content."),
         )
         return parser
@@ -51,9 +52,7 @@ class SendSms(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.smn
 
-        args_list = [
-            'endpoint',
-            'message']
+        args_list = ["endpoint", "message"]
         attrs = {}
         for arg in args_list:
             val = getattr(parsed_args, arg)

@@ -13,10 +13,11 @@
 """
 Get a Job by id or instance of class Job
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 job_id = "123456_job_id"

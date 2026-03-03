@@ -13,12 +13,12 @@
 """
 Find an RDS instance by name or id
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-instance = 'instance_name_or_id'
+instance = "instance_name_or_id"
 instance = conn.rds.find_instance(instance)
 print(instance)

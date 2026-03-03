@@ -13,26 +13,22 @@
 import uuid
 
 import mock
-
 from openstackclient.tests.unit import utils
-
-from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.dcaas.v2 import connection
 from otcextensions.sdk.dcaas.v2 import endpoint_group
 from otcextensions.sdk.dcaas.v2 import virtual_gateway
+from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(getattr(data, attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(getattr(data, attr, "") for attr in columns)
 
 
 def gen_data_dict(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(data.get(attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(data.get(attr, "") for attr in columns)
 
 
 class TestDcaas(utils.TestCommand):
@@ -44,6 +40,7 @@ class TestDcaas(utils.TestCommand):
 
 class FakeDirectConnection(test_base.Fake):
     """Fake one or more Direct Connection"""
+
     @classmethod
     def generate(cls):
         """Create a fake Direct Connection.
@@ -58,26 +55,27 @@ class FakeDirectConnection(test_base.Fake):
             "bandwidth": 10,
             "provider": "OTC",
             "location": "Biere",
-            "description": 'test description',
-            "peer_location": 'test_peer_loc',
-            "device_id": '172.16.40.2',
-            "interface_name": 'Eth-Trunk2',
-            "redundant_id": '11111',
-            "provider_status": 'ACTIVE',
-            "type": 'hosted',
-            "hosting_id": 'test_11',
+            "description": "test description",
+            "peer_location": "test_peer_loc",
+            "device_id": "172.16.40.2",
+            "interface_name": "Eth-Trunk2",
+            "redundant_id": "11111",
+            "provider_status": "ACTIVE",
+            "type": "hosted",
+            "hosting_id": "test_11",
             "vlan": 11,
-            "charge_mode": 'traffic',
-            "order_id": 'id1',
-            "product_id": 'idp1',
-            "status": 'ACTIVE',
-            "admin_state_up": True
+            "charge_mode": "traffic",
+            "order_id": "id1",
+            "product_id": "idp1",
+            "status": "ACTIVE",
+            "admin_state_up": True,
         }
         return connection.Connection(**object_info)
 
 
 class FakeEndpointGroup(test_base.Fake):
     """Fake one or more Endpoint Group"""
+
     @classmethod
     def generate(cls):
         """Create a fake Endpoint Group.
@@ -98,6 +96,7 @@ class FakeEndpointGroup(test_base.Fake):
 
 class FakeVirtualGateway(test_base.Fake):
     """Fake one or more Virtual Gateway."""
+
     @classmethod
     def generate(cls):
         """Create a fake Virtual Gateway.
@@ -117,6 +116,6 @@ class FakeVirtualGateway(test_base.Fake):
             "bgp_asn": 10,
             "ipsec_bandwidth": 50,
             "status": "ACTIVE",
-            "admin_state_up": True
+            "admin_state_up": True,
         }
         return virtual_gateway.VirtualGateway(**object_info)

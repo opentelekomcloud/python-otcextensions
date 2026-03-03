@@ -14,10 +14,10 @@ from openstack import resource
 
 
 class Quota(resource.Resource):
-    base_path = '/quotas'
+    base_path = "/quotas"
     allow_list = True
-    resources_key = 'resources'
+    resources_key = "resources"
 
-    type = resource.Body('type')
-    used = resource.Body('used')
-    quota = resource.Body('quota')
+    type = resource.Body("type")
+    used = resource.Body("used")
+    quota = resource.Body("quota")

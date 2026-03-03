@@ -14,20 +14,20 @@ from openstack import resource
 
 
 class Log(resource.Resource):
-    base_path = '/fgs/functions/%(function_urn)s/lts-log-detail'
+    base_path = "/fgs/functions/%(function_urn)s/lts-log-detail"
     # Capabilities
     allow_create = True
     allow_fetch = True
 
     # Properties
-    function_urn = resource.URI('function_urn', type=str)
+    function_urn = resource.URI("function_urn", type=str)
 
     # Attributes
     #: Log group name.
-    group_name = resource.Body('group_name', type=str)
+    group_name = resource.Body("group_name", type=str)
     #: Log group ID.
-    group_id = resource.Body('group_id', type=str)
+    group_id = resource.Body("group_id", type=str)
     #: Log stream ID.
-    stream_id = resource.Body('stream_id', type=str)
+    stream_id = resource.Body("stream_id", type=str)
     #: Log stream name.
-    stream_name = resource.Body('stream_name', type=str)
+    stream_name = resource.Body("stream_name", type=str)

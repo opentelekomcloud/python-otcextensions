@@ -13,14 +13,14 @@
 """
 Remove an Auto-Scaling Instances of a specific AS Group.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 instance = "instance_id"
 
 conn.auto_scaling.remove_instance(
-    instance,
-    delete=False  # If True, instance will be deleted after remove
+    instance, delete=False  # If True, instance will be deleted after remove
 )

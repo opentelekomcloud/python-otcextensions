@@ -26,30 +26,44 @@ class TestListDMSInstance(TestDMSInstance):
 
     instances = fakes.FakeInstance.create_multiple(3)
 
-    columns = ('ID', 'name', 'engine_name', 'engine_version',
-               'storage_spec_code', 'status', 'connect_address',
-               'router_id', 'network_id', 'security_group_id',
-               'user_name', 'storage', 'total_storage', 'used_storage')
+    columns = (
+        "ID",
+        "name",
+        "engine_name",
+        "engine_version",
+        "storage_spec_code",
+        "status",
+        "connect_address",
+        "router_id",
+        "network_id",
+        "security_group_id",
+        "user_name",
+        "storage",
+        "total_storage",
+        "used_storage",
+    )
 
     data = []
 
     for s in instances:
-        data.append((
-            s.id,
-            s.name,
-            s.engine_name,
-            s.engine_version,
-            s.storage_spec_code,
-            s.status,
-            s.connect_address,
-            s.router_id,
-            s.network_id,
-            s.security_group_id,
-            s.user_name,
-            s.storage,
-            s.total_storage,
-            s.used_storage
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.engine_name,
+                s.engine_version,
+                s.storage_spec_code,
+                s.status,
+                s.connect_address,
+                s.router_id,
+                s.network_id,
+                s.security_group_id,
+                s.user_name,
+                s.storage,
+                s.total_storage,
+                s.used_storage,
+            )
+        )
 
     def setUp(self):
         super(TestListDMSInstance, self).setUp()
@@ -59,19 +73,15 @@ class TestListDMSInstance(TestDMSInstance):
         self.client.instances = mock.Mock()
 
     def test_list(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.instances.side_effect = [
-            self.instances
-        ]
+        self.client.instances.side_effect = [self.instances]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -83,32 +93,31 @@ class TestListDMSInstance(TestDMSInstance):
 
     def test_list_args(self):
         arglist = [
-            '--engine-name', 'engine',
-            '--status', 'Creating',
-            '--include-failure'
+            "--engine-name",
+            "engine",
+            "--status",
+            "Creating",
+            "--include-failure",
         ]
 
         verifylist = [
-            ('engine_name', 'engine'),
-            ('status', 'CREATING'),
-            ('include_failure', True)
+            ("engine_name", "engine"),
+            ("status", "CREATING"),
+            ("include_failure", True),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.instances.side_effect = [
-            self.instances
-        ]
+        self.client.instances.side_effect = [self.instances]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.instances.assert_called_once_with(
-            engine_name='engine',
-            status='CREATING',
-            include_failure=True)
+            engine_name="engine", status="CREATING", include_failure=True
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -118,13 +127,29 @@ class TestShowDMSInstance(TestDMSInstance):
 
     _data = fakes.FakeInstance.create_one()
 
-    columns = ('access_user', 'availability_zones', 'description',
-               'engine_name', 'engine_version', 'is_public', 'is_ssl',
-               'kafka_public_status', 'maintenance_end', 'name', 'network_id',
-               'password', 'product_id', 'public_bandwidth',
-               'retention_policy', 'router_id', 'router_name',
-               'security_group_id',
-               'security_group_name', 'storage', 'storage_spec_code')
+    columns = (
+        "access_user",
+        "availability_zones",
+        "description",
+        "engine_name",
+        "engine_version",
+        "is_public",
+        "is_ssl",
+        "kafka_public_status",
+        "maintenance_end",
+        "name",
+        "network_id",
+        "password",
+        "product_id",
+        "public_bandwidth",
+        "retention_policy",
+        "router_id",
+        "router_name",
+        "security_group_id",
+        "security_group_name",
+        "storage",
+        "storage_spec_code",
+    )
 
     data = fakes.gen_data(_data, columns)
 
@@ -136,19 +161,13 @@ class TestShowDMSInstance(TestDMSInstance):
         self.client.find_instance = mock.Mock()
 
     def test_show_default(self):
-        arglist = [
-            'test_instance'
-        ]
-        verifylist = [
-            ('instance', 'test_instance')
-        ]
+        arglist = ["test_instance"]
+        verifylist = [("instance", "test_instance")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_instance.side_effect = [
-            self._data
-        ]
+        self.client.find_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -169,10 +188,8 @@ class TestDeleteDMSInstance(TestDMSInstance):
         self.client.delete_instance = mock.Mock()
 
     def test_delete(self):
-        arglist = ['t1']
-        verifylist = [
-            ('instance', ['t1'])
-        ]
+        arglist = ["t1"]
+        verifylist = [("instance", ["t1"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -182,19 +199,17 @@ class TestDeleteDMSInstance(TestDMSInstance):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [mock.call('t1')]
+        calls = [mock.call("t1")]
 
         self.client.delete_instance.assert_has_calls(calls)
         self.assertEqual(1, self.client.delete_instance.call_count)
 
     def test_delete_multiple(self):
         arglist = [
-            't1',
-            't2',
+            "t1",
+            "t2",
         ]
-        verifylist = [
-            ('instance', ['t1', 't2'])
-        ]
+        verifylist = [("instance", ["t1", "t2"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -204,7 +219,7 @@ class TestDeleteDMSInstance(TestDMSInstance):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [mock.call('t1'), mock.call('t2')]
+        calls = [mock.call("t1"), mock.call("t2")]
 
         self.client.delete_instance.assert_has_calls(calls)
         self.assertEqual(2, self.client.delete_instance.call_count)
@@ -214,13 +229,29 @@ class TestCreateDMSInstance(TestDMSInstance):
 
     _data = fakes.FakeInstance.create_one()
 
-    columns = ('access_user', 'availability_zones', 'description',
-               'engine_name', 'engine_version', 'is_public', 'is_ssl',
-               'kafka_public_status', 'maintenance_end', 'name', 'network_id',
-               'password',
-               'product_id', 'public_bandwidth', 'retention_policy',
-               'router_id', 'router_name', 'security_group_id',
-               'security_group_name', 'storage', 'storage_spec_code')
+    columns = (
+        "access_user",
+        "availability_zones",
+        "description",
+        "engine_name",
+        "engine_version",
+        "is_public",
+        "is_ssl",
+        "kafka_public_status",
+        "maintenance_end",
+        "name",
+        "network_id",
+        "password",
+        "product_id",
+        "public_bandwidth",
+        "retention_policy",
+        "router_id",
+        "router_name",
+        "security_group_id",
+        "security_group_name",
+        "storage",
+        "storage_spec_code",
+    )
 
     data = fakes.gen_data(_data, columns)
 
@@ -237,86 +268,104 @@ class TestCreateDMSInstance(TestDMSInstance):
 
     def test_create_default(self):
         arglist = [
-            'name',
-            '--description', 'descr',
-            '--engine-name', 'kafka',
-            '--engine-version', '2.1.0',
-            '--storage', '15',
-            '--access-user', 'u1',
-            '--password', 'pwd',
-            '--router', 'router_id',
-            '--security-group', 'sg_id',
-            '--network', 'net_id',
-            '--availability-zone', 'az1',
-            '--availability-zone', 'az2',
-            '--product-id', 'pid',
-            '--maintenance-begin', 'mwb',
-            '--maintenance-end', 'mwe',
-            '--enable-public-access',
-            '--enable-ssl',
-            '--public-bandwidth', '14',
-            '--retention-policy', 'produce_reject',
-            '--storage-spec-code', 'dms.physical.storage.high'
+            "name",
+            "--description",
+            "descr",
+            "--engine-name",
+            "kafka",
+            "--engine-version",
+            "2.1.0",
+            "--storage",
+            "15",
+            "--access-user",
+            "u1",
+            "--password",
+            "pwd",
+            "--router",
+            "router_id",
+            "--security-group",
+            "sg_id",
+            "--network",
+            "net_id",
+            "--availability-zone",
+            "az1",
+            "--availability-zone",
+            "az2",
+            "--product-id",
+            "pid",
+            "--maintenance-begin",
+            "mwb",
+            "--maintenance-end",
+            "mwe",
+            "--enable-public-access",
+            "--enable-ssl",
+            "--public-bandwidth",
+            "14",
+            "--retention-policy",
+            "produce_reject",
+            "--storage-spec-code",
+            "dms.physical.storage.high",
         ]
         verifylist = [
-            ('name', 'name'),
-            ('description', 'descr'),
-            ('engine_name', 'kafka'),
-            ('engine_version', '2.1.0'),
-            ('storage', 15),
-            ('access_user', 'u1'),
-            ('password', 'pwd'),
-            ('router', 'router_id'),
-            ('security_group', 'sg_id'),
-            ('network', 'net_id'),
-            ('availability_zone', ['az1', 'az2']),
-            ('product_id', 'pid'),
-            ('maintenance_begin', 'mwb'),
-            ('maintenance_end', 'mwe'),
-            ('enable_public_access', True),
-            ('enable_ssl', True),
-            ('public_bandwidth', 14),
-            ('retention_policy', 'produce_reject'),
-            ('storage_spec_code', 'dms.physical.storage.high')
+            ("name", "name"),
+            ("description", "descr"),
+            ("engine_name", "kafka"),
+            ("engine_version", "2.1.0"),
+            ("storage", 15),
+            ("access_user", "u1"),
+            ("password", "pwd"),
+            ("router", "router_id"),
+            ("security_group", "sg_id"),
+            ("network", "net_id"),
+            ("availability_zone", ["az1", "az2"]),
+            ("product_id", "pid"),
+            ("maintenance_begin", "mwb"),
+            ("maintenance_end", "mwe"),
+            ("enable_public_access", True),
+            ("enable_ssl", True),
+            ("public_bandwidth", 14),
+            ("retention_policy", "produce_reject"),
+            ("storage_spec_code", "dms.physical.storage.high"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_instance.side_effect = [
-            self._data
-        ]
+        self.client.create_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.app.client_manager.network.find_router.assert_called_with(
-            'router_id', ignore_missing=False)
+            "router_id", ignore_missing=False
+        )
         self.app.client_manager.network.find_network.assert_called_with(
-            'net_id', ignore_missing=False)
+            "net_id", ignore_missing=False
+        )
         self.app.client_manager.compute.find_security_group.assert_called_with(
-            'sg_id', ignore_missing=False)
+            "sg_id", ignore_missing=False
+        )
 
         self.client.create_instance.assert_called_with(
-            access_user='u1',
-            availability_zone=['az1', 'az2'],
-            description='descr',
-            engine_name='kafka',
-            engine_version='2.1.0',
+            access_user="u1",
+            availability_zone=["az1", "az2"],
+            description="descr",
+            engine_name="kafka",
+            engine_version="2.1.0",
             is_public=True,
             is_ssl=True,
-            maintenance_begin='mwb',
-            maintenance_end='mwe',
-            name='name',
-            password='pwd',
-            product_id='pid',
+            maintenance_begin="mwb",
+            maintenance_end="mwe",
+            name="name",
+            password="pwd",
+            product_id="pid",
             public_bandwidth=14,
-            retention_policy='produce_reject',
+            retention_policy="produce_reject",
             router_id=mock.ANY,
             security_group_id=mock.ANY,
             storage=15,
-            storage_spec_code='dms.physical.storage.high',
-            network_id=mock.ANY
+            storage_spec_code="dms.physical.storage.high",
+            network_id=mock.ANY,
         )
 
         self.assertEqual(self.columns, columns)
@@ -327,13 +376,29 @@ class TestUpdateDMSInstance(TestDMSInstance):
 
     _data = fakes.FakeInstance.create_one()
 
-    columns = ('access_user', 'availability_zones', 'description',
-               'engine_name', 'engine_version', 'is_public', 'is_ssl',
-               'kafka_public_status', 'maintenance_end', 'name', 'network_id',
-               'password',
-               'product_id', 'public_bandwidth', 'retention_policy',
-               'router_id', 'router_name', 'security_group_id',
-               'security_group_name', 'storage', 'storage_spec_code')
+    columns = (
+        "access_user",
+        "availability_zones",
+        "description",
+        "engine_name",
+        "engine_version",
+        "is_public",
+        "is_ssl",
+        "kafka_public_status",
+        "maintenance_end",
+        "name",
+        "network_id",
+        "password",
+        "product_id",
+        "public_bandwidth",
+        "retention_policy",
+        "router_id",
+        "router_name",
+        "security_group_id",
+        "security_group_name",
+        "storage",
+        "storage_spec_code",
+    )
 
     data = fakes.gen_data(_data, columns)
 
@@ -348,44 +413,47 @@ class TestUpdateDMSInstance(TestDMSInstance):
 
     def test_update_default(self):
         arglist = [
-            'inst',
-            '--name', 'new_name',
-            '--description', 'descr',
-            '--security-group', 'sg_id',
-            '--maintenance-begin', 'mwb',
-            '--maintenance-end', 'mwe'
+            "inst",
+            "--name",
+            "new_name",
+            "--description",
+            "descr",
+            "--security-group",
+            "sg_id",
+            "--maintenance-begin",
+            "mwb",
+            "--maintenance-end",
+            "mwe",
         ]
         verifylist = [
-            ('instance', 'inst'),
-            ('name', 'new_name'),
-            ('description', 'descr'),
-            ('security_group', 'sg_id'),
-            ('maintenance_begin', 'mwb'),
-            ('maintenance_end', 'mwe'),
+            ("instance", "inst"),
+            ("name", "new_name"),
+            ("description", "descr"),
+            ("security_group", "sg_id"),
+            ("maintenance_begin", "mwb"),
+            ("maintenance_end", "mwe"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_instance.side_effect = [
-            self._data
-        ]
+        self.client.update_instance.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with(
-            'inst', ignore_missing=False)
+        self.client.find_instance.assert_called_with("inst", ignore_missing=False)
         self.app.client_manager.compute.find_security_group.assert_called_with(
-            'sg_id', ignore_missing=False)
+            "sg_id", ignore_missing=False
+        )
 
         self.client.update_instance.assert_called_with(
             self._data,
-            description='descr',
-            maintenance_begin='mwb',
-            maintenance_end='mwe',
-            name='new_name',
-            security_group_id=mock.ANY
+            description="descr",
+            maintenance_begin="mwb",
+            maintenance_end="mwe",
+            name="new_name",
+            security_group_id=mock.ANY,
         )
 
         self.assertEqual(self.columns, columns)
@@ -405,23 +473,18 @@ class TestRestartDMSInstance(TestDMSInstance):
         self.client.restart_instance = mock.Mock()
 
     def test_show_default(self):
-        arglist = [
-            'test_instance'
-        ]
-        verifylist = [
-            ('instance', 'test_instance')
-        ]
+        arglist = ["test_instance"]
+        verifylist = [("instance", "test_instance")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_instance.side_effect = [
-            self._data
-        ]
+        self.client.find_instance.side_effect = [self._data]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('test_instance',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with(
+            "test_instance", ignore_missing=False
+        )
         self.client.restart_instance.assert_called_with(self._data)

@@ -13,11 +13,11 @@
 """
 List all KMS keys
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for key in conn.kms.keys():
     print(key)

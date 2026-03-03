@@ -12,6 +12,7 @@
 # under the License.
 #
 """Create a training job version from attributes."""
+
 import openstack
 
 openstack.enable_logging(True)
@@ -43,7 +44,5 @@ attrs = {
     },
 }
 
-trainingjob_version = conn.modelartsv1.create_trainingjob_version(
-    job_id, **attrs
-)
+trainingjob_version = conn.modelartsv1.create_trainingjob_version(job_id, **attrs)
 print(trainingjob_version)

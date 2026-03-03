@@ -10,10 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from keystoneauth1 import adapter
 import mock
-from openstack.tests.unit import base
+from keystoneauth1 import adapter
 
+from openstack.tests.unit import base
 from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
 
 
@@ -23,14 +23,13 @@ class TestActiveDomains(base.TestCase):
         super(TestActiveDomains, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.list = mock.Mock()
-        self.sess.default_microversion = '1'
+        self.sess.default_microversion = "1"
         self.sess._get_connection = mock.Mock(return_value=self.cloud)
         self.sot = _active_domains.ActiveDomains()
 
     def test_basic(self):
         sot = _active_domains.ActiveDomains()
-        self.assertEqual('/active-domains',
-                         sot.base_path)
+        self.assertEqual("/active-domains", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)

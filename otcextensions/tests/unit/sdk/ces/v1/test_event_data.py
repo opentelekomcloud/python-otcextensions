@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.ces.v1 import event_data
 
 
@@ -19,7 +18,7 @@ class TestEventData(base.TestCase):
 
     def test_basic(self):
         sot = event_data.EventData()
-        self.assertEqual('/event-data', sot.base_path)
+        self.assertEqual("/event-data", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)

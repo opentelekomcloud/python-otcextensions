@@ -14,16 +14,14 @@ import random
 import uuid
 
 import mock
-
 from openstackclient.tests.unit import utils
 
-from otcextensions.tests.unit.osclient import test_base
-
+from otcextensions.sdk.rds.v1 import backup
+from otcextensions.sdk.rds.v1 import flavor
 from otcextensions.sdk.rds.v1.configuration import ConfigurationGroup
 from otcextensions.sdk.rds.v1.datastore import Datastore
-from otcextensions.sdk.rds.v1 import flavor
 from otcextensions.sdk.rds.v1.instance import Instance
-from otcextensions.sdk.rds.v1 import backup
+from otcextensions.tests.unit.osclient import test_base
 
 
 class TestRds(utils.TestCommand):
@@ -60,12 +58,12 @@ class FakeDatastore(object):
 
         # Set default attributes.
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'datastore': 'datastore-' + uuid.uuid4().hex,
-            'image': 'image-' + uuid.uuid4().hex,
-            'packages': 'packages-' + uuid.uuid4().hex,
-            'active': 1,
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "datastore": "datastore-" + uuid.uuid4().hex,
+            "image": "image-" + uuid.uuid4().hex,
+            "packages": "packages-" + uuid.uuid4().hex,
+            "active": 1,
         }
 
         # Overwrite default attributes.
@@ -98,10 +96,10 @@ class FakeFlavor(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'spec_code': uuid.uuid4().hex,
-            'ram': random.randint(1, 10280),
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "spec_code": uuid.uuid4().hex,
+            "ram": random.randint(1, 10280),
         }
         obj = flavor.Flavor.existing(**object_info)
         return obj
@@ -126,12 +124,12 @@ class FakeConfiguration(object):
 
         # Set default attributes.
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'description': 'descriptions-' + uuid.uuid4().hex,
-            'datastore_name': uuid.uuid4().hex,
-            'datastore_version_name': uuid.uuid4().hex,
-            'values': {},
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "description": "descriptions-" + uuid.uuid4().hex,
+            "datastore_name": uuid.uuid4().hex,
+            "datastore_version_name": uuid.uuid4().hex,
+            "values": {},
         }
 
         # Overwrite default attributes.
@@ -153,9 +151,7 @@ class FakeConfiguration(object):
         """
         objects = []
         for i in range(0, count):
-            objects.append(
-                FakeConfiguration.create_one(attrs, methods)
-            )
+            objects.append(FakeConfiguration.create_one(attrs, methods))
 
         return objects
 
@@ -179,19 +175,19 @@ class FakeInstance(object):
 
         # Set default attributes.
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'status': 'status-' + uuid.uuid4().hex,
-            'datastore': {
-                'type': 'datastore-' + uuid.uuid4().hex,
-                'version': 'version-' + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "status": "status-" + uuid.uuid4().hex,
+            "datastore": {
+                "type": "datastore-" + uuid.uuid4().hex,
+                "version": "version-" + uuid.uuid4().hex,
             },
-            'flavor': {'id': uuid.uuid4().hex},
-            'volume': {
-                'type': 'type' + uuid.uuid4().hex,
-                'size': random.randint(1, 10280),
+            "flavor": {"id": uuid.uuid4().hex},
+            "volume": {
+                "type": "type" + uuid.uuid4().hex,
+                "size": random.randint(1, 10280),
             },
-            'region': 'region' + uuid.uuid4().hex,
+            "region": "region" + uuid.uuid4().hex,
         }
 
         # Overwrite default attributes.
@@ -213,9 +209,7 @@ class FakeInstance(object):
         """
         objects = []
         for i in range(0, count):
-            objects.append(
-                FakeInstance.create_one(attrs, methods)
-            )
+            objects.append(FakeInstance.create_one(attrs, methods))
 
         return objects
 
@@ -226,19 +220,18 @@ class FakeBackup(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'description': uuid.uuid4().hex,
-            'datastore': {
-                'type': 'datastore-' + uuid.uuid4().hex,
-                'version': 'version-' + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "description": uuid.uuid4().hex,
+            "datastore": {
+                "type": "datastore-" + uuid.uuid4().hex,
+                "version": "version-" + uuid.uuid4().hex,
             },
-            'instance_id': 'instance_id-' + uuid.uuid4().hex,
-            'size': random.randint(0, 100),
-            'status': random.choice(['BUILDING', 'COMPLETED', 'FAILED',
-                                     'DELETING']),
-            'created': uuid.uuid4().hex,
-            'updated': uuid.uuid4().hex,
+            "instance_id": "instance_id-" + uuid.uuid4().hex,
+            "size": random.randint(0, 100),
+            "status": random.choice(["BUILDING", "COMPLETED", "FAILED", "DELETING"]),
+            "created": uuid.uuid4().hex,
+            "updated": uuid.uuid4().hex,
         }
         obj = backup.Backup.existing(**object_info)
         return obj

@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.volume_backup.v2 import _proxy
 
 
 class VolumeBackupService(service_description.ServiceDescription):
     """The Volume Backup service."""
 
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+    supported_versions = {"2": _proxy.Proxy}

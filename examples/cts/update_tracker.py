@@ -13,10 +13,11 @@
 """
 Update CTS Tracker by using id or an instance of class Tracker
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 tracker = "system"
@@ -28,11 +29,11 @@ attrs = {
         "log_group_name": "CTS",
         "log_topic_name": "system-trace",
         "log_group_id": "1186622b-78ec-11ea-997c-286ed488c87f",
-        "log_topic_id": "751f0409-78ec-11ea-90c7-286ed488c880"
+        "log_topic_id": "751f0409-78ec-11ea-90c7-286ed488c880",
     },
     "status": "enabled",
     "tracker_name": "system",
-    "detail": ""
+    "detail": "",
 }
 
 tracker = conn.cts.get_tracker(tracker)

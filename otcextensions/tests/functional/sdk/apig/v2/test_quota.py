@@ -20,10 +20,7 @@ class TestQuota(TestApiG):
         super(TestQuota, self).setUp()
         self.create_gateway()
         self.gateway_id = TestQuota.gateway.id
-        self.attrs = {
-            "name": "app_demo",
-            "remark": "Demo app"
-        }
+        self.attrs = {"name": "app_demo", "remark": "Demo app"}
         TestQuota.app = self.client.create_app(self.gateway_id, **self.attrs)
         self.assertIsNotNone(self.app.id)
         self.addCleanup(
@@ -33,6 +30,8 @@ class TestQuota(TestApiG):
         )
 
     def test_quotas(self):
-        found = self.client.quotas(gateway=TestQuota.gateway.id,
-                                   app=TestQuota.app.id,)
+        found = self.client.quotas(
+            gateway=TestQuota.gateway.id,
+            app=TestQuota.app.id,
+        )
         self.assertIsNotNone(found)

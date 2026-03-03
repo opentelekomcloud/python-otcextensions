@@ -10,13 +10,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Update MRS Job binary
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
@@ -24,10 +25,10 @@ attrs = {
     "url": "/simple/mapreduce/program",
     "is_protected": False,
     "is_public": False,
-    "description": "this is the job binary template"
+    "description": "this is the job binary template",
 }
 
-job_binary = 'jb1'
+job_binary = "jb1"
 job_binary = conn.mrs.find_jobbinary(name_or_id=job_binary)
 job_binary = conn.mrs.update_jobbinary(jobbinary=job_binary, **attrs)
 print(job_binary)

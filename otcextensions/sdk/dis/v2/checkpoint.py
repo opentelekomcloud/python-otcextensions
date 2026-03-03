@@ -14,7 +14,7 @@ from openstack import resource
 
 
 class Checkpoint(resource.Resource):
-    base_path = '/checkpoints'
+    base_path = "/checkpoints"
 
     allow_create = True
     allow_delete = True
@@ -23,31 +23,29 @@ class Checkpoint(resource.Resource):
     # Properties
     #: Name of the app, which is the unique identifier of a user data "
     #:  consumption program.
-    app_name = resource.Body('app_name')
+    app_name = resource.Body("app_name")
     #: Type of the checkpoint
     #:  \nLAST_READ: Only sequence numbers are recorded in databases.
-    checkpoint_type = resource.Body('checkpoint_type')
+    checkpoint_type = resource.Body("checkpoint_type")
     #: Metadata information of the consumer application.
     #:  The metadata information can contain a maximum of 1,000 characters.
-    metadata = resource.Body('metadata')
+    metadata = resource.Body("metadata")
     #: Partition ID of the stream.
-    partition_id = resource.Body('partition_id')
+    partition_id = resource.Body("partition_id")
     #: Sequence number to be submitted, which is used to record the
     #:  consumption checkpoint of the stream.
-    sequence_number = resource.Body('sequence_number')
+    sequence_number = resource.Body("sequence_number")
     #: Name of the stream.
-    stream_name = resource.Body('stream_name')
+    stream_name = resource.Body("stream_name")
 
     def get_checkpoint(self, session, **params):
-        """Querying Checkpoint Details.
-        """
+        """Querying Checkpoint Details."""
         response = session.get(self.base_path, params=params)
         self._translate_response(response)
         return self
 
     def delete_checkpoint(self, session, **params):
-        """Deleting Checkpoint.
-        """
+        """Deleting Checkpoint."""
         response = session.delete(self.base_path, params=params)
         self._translate_response(response, has_body=False)
         return self

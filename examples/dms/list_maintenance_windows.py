@@ -13,10 +13,11 @@
 """
 List all Maintenance Windows
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for raw in conn.dms.maintenance_windows():
     print(raw)

@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from pathlib import Path
+
 from otcextensions.tests.functional.sdk.apig import TestApiG
 
 
@@ -24,11 +25,13 @@ class TestSSLCert(TestApiG):
         attrs = {
             "name": "cert_demo",
             "cert_content": Path("/mnt/c/Users/sand1/fullchain.pem")
-            .read_text().replace('\r\n', '\n'),
+            .read_text()
+            .replace("\r\n", "\n"),
             "private_key": Path("/mnt/c/Users/sand1/privkey.pem")
-            .read_text().replace('\r\n', '\n'),
+            .read_text()
+            .replace("\r\n", "\n"),
             "type": "instance",
-            "instance_id": TestSSLCert.gateway_id
+            "instance_id": TestSSLCert.gateway_id,
         }
         certificate = self.client.create_ssl_certificate(**attrs)
         self.assertIsNotNone(certificate.id)
@@ -37,13 +40,9 @@ class TestSSLCert(TestApiG):
             self.client.delete_ssl_certificate,
             ssl_certificate=certificate.id,
         )
-        attrs = {
-            "url_domain": "test-domain-ssl-cert.com"
-        }
+        attrs = {"url_domain": "test-domain-ssl-cert.com"}
         domain = self.client.bind_domain_name(
-            gateway=TestSSLCert.gateway_id,
-            group=TestSSLCert.group_id,
-            **attrs
+            gateway=TestSSLCert.gateway_id, group=TestSSLCert.group_id, **attrs
         )
         TestSSLCert.domain = domain
         self.addCleanup(
@@ -54,8 +53,7 @@ class TestSSLCert(TestApiG):
         )
 
     def test_get_ssl_certificate(self):
-        found = self.client.get_ssl_certificate(
-            ssl_certificate=TestSSLCert.cert_id)
+        found = self.client.get_ssl_certificate(ssl_certificate=TestSSLCert.cert_id)
         self.assertEqual(found.id, TestSSLCert.cert_id)
 
     def test_list_ssl_certificates(self):
@@ -63,7 +61,7 @@ class TestSSLCert(TestApiG):
             "limit": 10,
             "offset": 0,
             "type": "instance",
-            "instance_id": TestSSLCert.gateway
+            "instance_id": TestSSLCert.gateway,
         }
         found = list(self.client.ssl_certificates(**attrs))
         self.assertGreater(len(found), 0)
@@ -72,20 +70,19 @@ class TestSSLCert(TestApiG):
         attrs = {
             "name": "cert_demo",
             "cert_content": Path("/mnt/c/Users/sand1/fullchain.pem")
-            .read_text().replace('\r\n', '\n'),
+            .read_text()
+            .replace("\r\n", "\n"),
             "private_key": Path("/mnt/c/Users/sand1/privkey.pem")
-            .read_text().replace('\r\n', '\n'),
+            .read_text()
+            .replace("\r\n", "\n"),
         }
         result = self.client.update_ssl_certificate(
-            ssl_certificate=TestSSLCert.cert_id,
-            **attrs
+            ssl_certificate=TestSSLCert.cert_id, **attrs
         )
         self.assertEqual(result.name, attrs["name"])
 
     def test_bind_domain_to_cert(self):
-        attrs = {
-            "certificate_ids": [TestSSLCert.cert_id]
-        }
+        attrs = {"certificate_ids": [TestSSLCert.cert_id]}
         self.client.bind_domain_to_certificate(
             gateway=TestSSLCert.gateway_id,
             group=TestSSLCert.group_id,
@@ -94,9 +91,7 @@ class TestSSLCert(TestApiG):
         )
 
     def test_unbind_domain_from_cert(self):
-        attrs = {
-            "certificate_ids": [TestSSLCert.cert_id]
-        }
+        attrs = {"certificate_ids": [TestSSLCert.cert_id]}
         self.client.unbind_domain_from_certificate(
             gateway=TestSSLCert.gateway_id,
             group=TestSSLCert.group_id,

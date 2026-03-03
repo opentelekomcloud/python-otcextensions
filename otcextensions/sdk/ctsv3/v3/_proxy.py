@@ -10,11 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.sdk.ctsv3.v3 import key_event as _key_event
+from otcextensions.sdk.ctsv3.v3 import quota as _quota
 from otcextensions.sdk.ctsv3.v3 import trace as _trace
 from otcextensions.sdk.ctsv3.v3 import tracker as _tracker
-from otcextensions.sdk.ctsv3.v3 import quota as _quota
 
 
 class Proxy(proxy.Proxy):
@@ -27,7 +26,7 @@ class Proxy(proxy.Proxy):
              :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         :returns: The key event
         :rtype: :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
-         """
+        """
         return self._create(_key_event.KeyEvent, **attrs)
 
     def update_key_event(self, **attrs):
@@ -37,7 +36,7 @@ class Proxy(proxy.Proxy):
              :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         :returns: The updated key event
         :rtype: :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
-         """
+        """
         return self._update(_key_event.KeyEvent, "", **attrs)
 
     def delete_key_event(self, notification):
@@ -46,7 +45,7 @@ class Proxy(proxy.Proxy):
         :param notification: The key event to delete a
             :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         :returns: None
-         """
+        """
         notification.delete_key(self)
 
     def key_events(self, notification_type, **attrs):
@@ -56,10 +55,8 @@ class Proxy(proxy.Proxy):
         :returns: A generator of key event object of
         :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         """
-        base_path = f'{_key_event.KeyEvent.base_path}/{notification_type}'
-        return self._list(_key_event.KeyEvent,
-                          base_path=base_path,
-                          **attrs)
+        base_path = f"{_key_event.KeyEvent.base_path}/{notification_type}"
+        return self._list(_key_event.KeyEvent, base_path=base_path, **attrs)
 
     def traces(self, **attrs):
         """Query traces
@@ -88,11 +85,10 @@ class Proxy(proxy.Proxy):
              :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
         :returns: The key event
         :rtype: :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
-         """
+        """
         return self._create(
-            _tracker.Tracker,
-            base_path=_tracker.Tracker.base_path[:-1],
-            **attrs)
+            _tracker.Tracker, base_path=_tracker.Tracker.base_path[:-1], **attrs
+        )
 
     def delete_tracker(self, tracker):
         """Delete a single tracker
@@ -100,7 +96,7 @@ class Proxy(proxy.Proxy):
         :param tracker: The tracker to delete a
             :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
         :returns: None
-         """
+        """
         tracker.delete_tracker(self)
 
     def update_tracker(self, **attrs):
@@ -110,9 +106,9 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
         :returns: None
         """
-        self._update(_tracker.Tracker,
-                     base_path=_tracker.Tracker.base_path[:-1],
-                     **attrs)
+        self._update(
+            _tracker.Tracker, base_path=_tracker.Tracker.base_path[:-1], **attrs
+        )
 
     def quotas(self):
         """Query quotas

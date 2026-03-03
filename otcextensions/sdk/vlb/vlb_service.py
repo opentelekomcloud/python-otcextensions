@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.vlb.v3 import _proxy
 
 
 class VlbService(service_description.ServiceDescription):
     """The ELB v3 service."""
 
-    supported_versions = {
-        '3': _proxy.Proxy
-    }
+    supported_versions = {"3": _proxy.Proxy}

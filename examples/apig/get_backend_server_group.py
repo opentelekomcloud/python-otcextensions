@@ -13,11 +13,11 @@
 """
 Get backend server group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 found = conn.apig.get_backend_server_group(
-    gateway="gateway_id",
-    vpc_channel="vpc_channel_id",
-    backend_group="backend_group_id")
+    gateway="gateway_id", vpc_channel="vpc_channel_id", backend_group="backend_group_id"
+)

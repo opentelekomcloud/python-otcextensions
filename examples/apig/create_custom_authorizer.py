@@ -13,16 +13,17 @@
 """
 Create custom authorizer
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
-    'name': 'custom_auth_test',
-    'type': 'BACKEND',
-    'authorizer_type': 'FUNC',
-    'authorizer_uri': 'urn:fss:eu-de:7ed5f793b8354ea9b27a849f17af4733'
-                      ':function:default:test_apig_authorizer:latest',
-    'authorizer_version': '1'
+    "name": "custom_auth_test",
+    "type": "BACKEND",
+    "authorizer_type": "FUNC",
+    "authorizer_uri": "urn:fss:eu-de:7ed5f793b8354ea9b27a849f17af4733"
+    ":function:default:test_apig_authorizer:latest",
+    "authorizer_version": "1",
 }
-result = conn.apig.create_custom_authorizer(gateway='gateway_id', **attrs)
+result = conn.apig.create_custom_authorizer(gateway="gateway_id", **attrs)

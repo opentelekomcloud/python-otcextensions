@@ -15,34 +15,35 @@ from openstack import resource
 
 class Job(resource.Resource):
 
-    base_path = '/jobs'
+    base_path = "/jobs"
 
     # capabilities
     allow_fetch = True
 
     # Properties
     #: Created (RDS)
-    created = resource.Body('created')
+    created = resource.Body("created")
     #: id
-    id = resource.Body('job_id', alternate_id=True)
+    id = resource.Body("job_id", alternate_id=True)
     #: Additional sub information
-    entities = resource.Body('entities', type=dict)
+    entities = resource.Body("entities", type=dict)
     #: Error code
-    error_code = resource.Body('error_code')
+    error_code = resource.Body("error_code")
     #: Fail reason
-    fail_reason = resource.Body('fail_reason')
+    fail_reason = resource.Body("fail_reason")
     #: Job finish time
-    finish_time = resource.Body('end_time')
+    finish_time = resource.Body("end_time")
     #: Job start time
-    start_time = resource.Body('begin_time', alias='created')
+    start_time = resource.Body("begin_time", alias="created")
     #: Status
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Job type
     #: *Type:str*
-    type = resource.Body('job_type')
+    type = resource.Body("job_type")
 
-    def fetch(self, session, requires_id=True,
-              base_path=None, error_message=None, **params):
+    def fetch(
+        self, session, requires_id=True, base_path=None, error_message=None, **params
+    ):
         """Get a remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -64,18 +65,16 @@ class Job(resource.Resource):
         if not self.allow_fetch:
             raise exceptions.MethodNotSupported(self, "fetch")
 
-        request = self._prepare_request(requires_id=requires_id,
-                                        base_path=base_path)
-        if session.service_type == 'rdsv3':
-            request.url = self.base_path + '?id=' + self.id
-            self.resource_key = 'job'
+        request = self._prepare_request(requires_id=requires_id, base_path=base_path)
+        if session.service_type == "rdsv3":
+            request.url = self.base_path + "?id=" + self.id
+            self.resource_key = "job"
         session = self._get_session(session)
         microversion = self._get_microversion(session)
-        response = session.get(request.url, microversion=microversion,
-                               params=params)
+        response = session.get(request.url, microversion=microversion, params=params)
         kwargs = {}
         if error_message:
-            kwargs['error_message'] = error_message
+            kwargs["error_message"] = error_message
 
         self.microversion = microversion
         self._translate_response(response, **kwargs)
@@ -84,16 +83,22 @@ class Job(resource.Resource):
 
 class JobProxyMixin(object):
 
-    def wait_for_job(self, job_id, status='success',
-                     failures=None, interval=5, wait=3600,
-                     attribute='status'):
-        if self.service_type == 'rdsv3':
-            status = 'completed'
-            failures = ['failed']
+    def wait_for_job(
+        self,
+        job_id,
+        status="success",
+        failures=None,
+        interval=5,
+        wait=3600,
+        attribute="status",
+    ):
+        if self.service_type == "rdsv3":
+            status = "completed"
+            failures = ["failed"]
         else:
-            failures = ['FAIL'] if failures is None else failures
+            failures = ["FAIL"] if failures is None else failures
 
         job = Job.existing(id=job_id).fetch(self)
         return resource.wait_for_status(
-            self, job, status, failures, interval, wait, attribute='status'
+            self, job, status, failures, interval, wait, attribute="status"
         )

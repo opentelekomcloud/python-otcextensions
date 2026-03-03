@@ -11,32 +11,30 @@
 # under the License.
 from openstack import exceptions
 from openstack import resource
-
 from otcextensions.sdk.dds.v3.instance import DatastoreSpec
 
 
 class RecycleInstanceSpec(resource.Resource):
-    id = resource.Body('id')
-    name = resource.Body('name')
-    mode = resource.Body('mode')
-    datastore = resource.Body('datastore', type=DatastoreSpec)
-    pay_mode = resource.Body('pay_mode')
-    enterprise_project_id = resource.Body('enterprise_project_id')
-    backup_id = resource.Body('backup_id')
-    created_at = resource.Body('created_at')
-    deleted_at = resource.Body('deleted_at')
-    retained_until = resource.Body('retained_until')
-    status = resource.Body('status')
+    id = resource.Body("id")
+    name = resource.Body("name")
+    mode = resource.Body("mode")
+    datastore = resource.Body("datastore", type=DatastoreSpec)
+    pay_mode = resource.Body("pay_mode")
+    enterprise_project_id = resource.Body("enterprise_project_id")
+    backup_id = resource.Body("backup_id")
+    created_at = resource.Body("created_at")
+    deleted_at = resource.Body("deleted_at")
+    retained_until = resource.Body("retained_until")
+    status = resource.Body("status")
 
 
 class RecycleInstance(resource.Resource):
-    base_path = '/recycle-instances'
+    base_path = "/recycle-instances"
 
     allow_list = True
     requires_id = False
-    total_count = resource.Body('total_count', type=int)
-    instances = resource.Body('instances', type=list,
-                              list_type=RecycleInstanceSpec)
+    total_count = resource.Body("total_count", type=int)
+    instances = resource.Body("instances", type=list, list_type=RecycleInstanceSpec)
 
     @classmethod
     def list(cls, session, paginated=True, base_path=None, **params):
@@ -55,11 +53,12 @@ class RecycleInstance(resource.Resource):
             resources = [resources]
 
         for raw_resource in resources:
-            raw_resource.pop('self', None)
+            raw_resource.pop("self", None)
             value = cls.existing(
                 microversion=microversion,
                 connection=session._get_connection(),
-                **raw_resource,)
+                **raw_resource,
+            )
             yield value
         else:
             return

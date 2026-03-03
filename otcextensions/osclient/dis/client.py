@@ -19,8 +19,8 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '2'
-API_VERSION_OPTION = 'os_dis_api_version'
+DEFAULT_API_VERSION = "2"
+API_VERSION_OPTION = "os_dis_api_version"
 API_NAME = "dis"
 API_VERSIONS = {
     "2": "openstack.connection.Connection",
@@ -32,22 +32,21 @@ def make_client(instance):
 
     conn = instance.sdk_connection
 
-    if getattr(conn, 'dis', None) is None:
-        LOG.debug('OTC extensions are not registered. Do that now')
+    if getattr(conn, "dis", None) is None:
+        LOG.debug("OTC extensions are not registered. Do that now")
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('DIS client initialized using OpenStack OTC SDK: %s',
-              conn.dis)
+    LOG.debug("DIS client initialized using OpenStack OTC SDK: %s", conn.dis)
     return conn.dis
 
 
 def build_option_parser(parser):
     """Hook to add global options"""
     parser.add_argument(
-        '--os-dis-api-version',
-        metavar='<dis-api-version>',
-        default=utils.env('OS_DIS_API_VERSION'),
-        help=_("DIS API version, default=%s "
-               "(Env: OS_DIS_API_VERSION)") % DEFAULT_API_VERSION
+        "--os-dis-api-version",
+        metavar="<dis-api-version>",
+        default=utils.env("OS_DIS_API_VERSION"),
+        help=_("DIS API version, default=%s " "(Env: OS_DIS_API_VERSION)")
+        % DEFAULT_API_VERSION,
     )
     return parser

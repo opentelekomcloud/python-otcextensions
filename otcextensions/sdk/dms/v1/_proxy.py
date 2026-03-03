@@ -12,7 +12,7 @@
 
 from openstack import exceptions
 from openstack import proxy
-
+from openstack import resource
 from otcextensions.sdk.dms.v1 import az as _az
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import instance as _instance
@@ -21,7 +21,6 @@ from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import product as _product
 from otcextensions.sdk.dms.v1 import queue as _queue
 from otcextensions.sdk.dms.v1 import topic as _topic
-from openstack import resource
 
 
 class Proxy(proxy.Proxy):
@@ -31,7 +30,7 @@ class Proxy(proxy.Proxy):
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
         self.additional_headers = {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         }
 
     # ======== Queues ========
@@ -111,10 +110,9 @@ class Proxy(proxy.Proxy):
         """
         queue_obj = self._get_resource(_queue.Queue, queue)
 
-        return self._list(_group.Group,
-                          queue_id=queue_obj.id,
-                          paginated=False,
-                          **kwargs)
+        return self._list(
+            _group.Group, queue_id=queue_obj.id, paginated=False, **kwargs
+        )
 
     def find_group(self, queue, name_or_id, ignore_missing=False):
         """Find group by name or id
@@ -126,9 +124,12 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         """
         queue_obj = self._get_resource(_queue.Queue, queue)
-        return self._find(_group.Group, name_or_id,
-                          ignore_missing=ignore_missing,
-                          queue_id=queue_obj.id)
+        return self._find(
+            _group.Group,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            queue_id=queue_obj.id,
+        )
 
     def delete_group(self, queue, group, ignore_missing=True):
         """Delete a consume on the queue
@@ -141,8 +142,9 @@ class Proxy(proxy.Proxy):
         """
         queue_obj = self._get_resource(_queue.Queue, queue)
 
-        self._delete(_group.Group, group, queue_id=queue_obj.id,
-                     ignore_missing=ignore_missing)
+        self._delete(
+            _group.Group, group, queue_id=queue_obj.id, ignore_missing=ignore_missing
+        )
 
     # ======== Messages ========
     def send_messages(self, queue, messages, return_id=False, **kwargs):
@@ -163,11 +165,13 @@ class Proxy(proxy.Proxy):
                 obj = msg
             messages_list.append(obj.to_dict(computed=False, ignore_none=True))
 
-        return self._create(_message.Messages,
-                            base_path='/queues/%(queue_id)s/messages',
-                            queue_id=queue_obj.id,
-                            messages=messages_list,
-                            return_id=return_id)
+        return self._create(
+            _message.Messages,
+            base_path="/queues/%(queue_id)s/messages",
+            queue_id=queue_obj.id,
+            messages=messages_list,
+            return_id=return_id,
+        )
 
     def send_message(self, queue, return_id=True, body=None, **attrs):
         """Send single message into a given queue
@@ -183,12 +187,13 @@ class Proxy(proxy.Proxy):
         queue_obj = self._get_resource(_queue.Queue, queue)
         msg = _message.Message(body=body, **attrs)
 
-        return self._create(_message.Messages,
-                            base_path='/queues/%(queue_id)s/messages',
-                            queue_id=queue_obj.id,
-                            messages=[msg.to_dict(computed=False,
-                                                  ignore_none=True)],
-                            return_id=return_id).messages[0]
+        return self._create(
+            _message.Messages,
+            base_path="/queues/%(queue_id)s/messages",
+            queue_id=queue_obj.id,
+            messages=[msg.to_dict(computed=False, ignore_none=True)],
+            return_id=return_id,
+        ).messages[0]
 
     def consume_message(self, queue, group, **query):
         """Consume queue's message
@@ -207,12 +212,13 @@ class Proxy(proxy.Proxy):
 
         return self._list(
             _message.Message,
-            base_path='/queues/%(queue_id)s/groups/%(group_id)s/messages',
+            base_path="/queues/%(queue_id)s/groups/%(group_id)s/messages",
             queue_id=queue_obj.id,
             group_id=group_obj.id,
-            **query)
+            **query
+        )
 
-    def ack_message(self, queue, group, messages, status='success'):
+    def ack_message(self, queue, group, messages, status="success"):
         """Confirm consumed message
 
         :param queue: An queue object
@@ -259,8 +265,7 @@ class Proxy(proxy.Proxy):
             raised when the instance does not exist.
         :returns: `None`
         """
-        self._delete(_instance.Instance, instance,
-                     ignore_missing=ignore_missing)
+        self._delete(_instance.Instance, instance, ignore_missing=ignore_missing)
 
     def find_instance(self, name_or_id, ignore_missing=False):
         """Find DMS Instance by name or id
@@ -273,8 +278,7 @@ class Proxy(proxy.Proxy):
         :returns: one object of class
             :class:`~otcextensions.sdk.dms.v1.instance.Instance`
         """
-        return self._find(_instance.Instance, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_instance.Instance, name_or_id, ignore_missing=ignore_missing)
 
     def get_instance(self, instance):
         """Get detail about a given instance id
@@ -297,8 +301,7 @@ class Proxy(proxy.Proxy):
         :returns: The updated instance
         :rtype: :class:`~otcextensions.sdk.dms.v1.instance.Instance`
         """
-        return self._update(_instance.Instance, instance,
-                            **attrs)
+        return self._update(_instance.Instance, instance, **attrs)
 
     def restart_instance(self, instance):
         """Restart instance
@@ -310,20 +313,17 @@ class Proxy(proxy.Proxy):
         return instance.restart(self)
 
     def restart_instances(self, instances_list):
-        """Restart multiple instances
-        """
+        """Restart multiple instances"""
         dummy_instance = _instance.Instance()
         return dummy_instance.restart_batch(self, instances_list)
 
     def delete_batch(self, instances_list):
-        """Delete multiple instances
-        """
+        """Delete multiple instances"""
         dummy_instance = _instance.Instance()
         return dummy_instance.delete_batch(self, instances_list)
 
     def delete_failed(self):
-        """Delete failed Kafka instances
-        """
+        """Delete failed Kafka instances"""
         dummy_instance = _instance.Instance()
         return dummy_instance.delete_failed(self)
 
@@ -339,9 +339,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.topic.Topic`
         """
         instance_obj = self._get_resource(_instance.Instance, instance)
-        return self._list(_topic.Topic,
-                          instance_id=instance_obj.id
-                          )
+        return self._list(_topic.Topic, instance_id=instance_obj.id)
 
     def create_topic(self, instance, **attrs):
         """Create a topic on DMS Instance
@@ -354,9 +352,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.topic.Topic`
         """
         instance_obj = self._get_resource(_instance.Instance, instance)
-        return self._create(_topic.Topic,
-                            instance_id=instance_obj.id,
-                            **attrs)
+        return self._create(_topic.Topic, instance_id=instance_obj.id, **attrs)
 
     def delete_topic(self, instance, topics, ignore_missing=True):
         """Delete topic on DMS instance
@@ -382,8 +378,8 @@ class Proxy(proxy.Proxy):
                     topics_list.append(i.id)
 
         response = self.post(
-            '/instances/%s/topics/delete' % (instance_obj.id),
-            json={'topics': topics_list}
+            "/instances/%s/topics/delete" % (instance_obj.id),
+            json={"topics": topics_list},
         )
         exceptions.raise_from_response(response)
 
@@ -431,20 +427,16 @@ class Proxy(proxy.Proxy):
         return resource.wait_for_delete(self, res, interval, wait, callback)
 
     def _get_cleanup_dependencies(self):
-        return {
-            'rds': {
-                'before': ['network']
-            }
-        }
+        return {"rds": {"before": ["network"]}}
 
     def _service_cleanup(
-            self,
-            dry_run=True,
-            client_status_queue=None,
-            identified_resources=None,
-            filters=None,
-            resource_evaluation_fn=None,
-            skip_resources=None,
+        self,
+        dry_run=True,
+        client_status_queue=None,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
     ):
         if self.should_skip_resource_cleanup("instance", skip_resources):
             return

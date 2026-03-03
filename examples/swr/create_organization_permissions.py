@@ -13,20 +13,21 @@
 """
 Create new organization permissions
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    'namespace': 'test',
-    'permissions': [
+    "namespace": "test",
+    "permissions": [
         {
             "user_id": "5a23ecb3999b458d92d51d524bb7fb4c",
             "user_name": "test",
-            "user_auth": 1
+            "user_auth": 1,
         }
     ],
 }

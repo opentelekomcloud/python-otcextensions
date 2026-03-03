@@ -21,6 +21,6 @@ class TestPublicService(TestVpcepBase):
         self.assertIsInstance(services, list)
         if services:
             svc = services[0]
-            self.assertTrue(hasattr(svc, 'service_name'))
-            self.assertTrue(hasattr(svc, 'service_type'))
-            self.assertTrue(hasattr(svc, 'owner'))
+            self.assertTrue(hasattr(svc, "service_name"))
+            self.assertTrue(hasattr(svc, "service_type"))
+            self.assertTrue(hasattr(svc, "owner"))

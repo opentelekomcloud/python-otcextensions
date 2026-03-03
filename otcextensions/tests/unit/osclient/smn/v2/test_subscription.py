@@ -10,9 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import mock
 from unittest.mock import call
 
+import mock
 from osc_lib import exceptions
 
 from otcextensions.osclient.smn.v2 import subscription
@@ -24,34 +24,14 @@ class TestListSubscription(fakes.TestSmn):
     objects = fakes.FakeSubscription.create_multiple(3)
     _topic = fakes.FakeTopic.create_one()
 
-    column_list_headers = (
-        'ID',
-        'Protocol',
-        'Topic URN',
-        'Owner',
-        'Endpoint',
-        'Status'
-    )
+    column_list_headers = ("ID", "Protocol", "Topic URN", "Owner", "Endpoint", "Status")
 
-    columns = (
-        'id',
-        'protocol',
-        'topic_urn',
-        'owner',
-        'endpoint',
-        'status'
-    )
+    columns = ("id", "protocol", "topic_urn", "owner", "endpoint", "status")
 
     data = []
 
     for s in objects:
-        data.append(
-            (s.id,
-             s.protocol,
-             s.topic_urn,
-             s.owner,
-             s.endpoint,
-             s.status))
+        data.append((s.id, s.protocol, s.topic_urn, s.owner, s.endpoint, s.status))
 
     def setUp(self):
         super(TestListSubscription, self).setUp()
@@ -82,16 +62,12 @@ class TestListSubscription(fakes.TestSmn):
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
-        arglist = [
-            '--topic', '1',
-            '--limit', '2',
-            '--offset', '3'
-        ]
+        arglist = ["--topic", "1", "--limit", "2", "--offset", "3"]
 
         verifylist = [
-            ('topic', '1'),
-            ('limit', 2),
-            ('offset', 3),
+            ("topic", "1"),
+            ("limit", 2),
+            ("offset", 3),
         ]
 
         # Verify cm is triggered with default parameters
@@ -115,7 +91,7 @@ class TestCreateSubscription(fakes.TestSmn):
     _data = fakes.FakeSubscription.create_one()
     _topic = fakes.FakeTopic.create_one()
 
-    columns = ('endpoint', 'id', 'owner', 'protocol', 'remark', 'status')
+    columns = ("endpoint", "id", "owner", "protocol", "remark", "status")
 
     data = fakes.gen_data(_data, columns)
 
@@ -129,16 +105,19 @@ class TestCreateSubscription(fakes.TestSmn):
 
     def test_create(self):
         arglist = [
-            'test-topic',
-            '--endpoint', 'test@otce.com',
-            '--protocol', 'email',
-            '--remark', 'test subscription',
+            "test-topic",
+            "--endpoint",
+            "test@otce.com",
+            "--protocol",
+            "email",
+            "--remark",
+            "test subscription",
         ]
         verifylist = [
-            ('topic', 'test-topic'),
-            ('endpoint', 'test@otce.com'),
-            ('protocol', 'email'),
-            ('remark', 'test subscription'),
+            ("topic", "test-topic"),
+            ("endpoint", "test@otce.com"),
+            ("protocol", "email"),
+            ("remark", "test subscription"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -148,9 +127,9 @@ class TestCreateSubscription(fakes.TestSmn):
 
         self.client.create_subscription.assert_called_with(
             self._topic,
-            endpoint='test@otce.com',
-            protocol='email',
-            remark='test subscription',
+            endpoint="test@otce.com",
+            protocol="email",
+            remark="test subscription",
         )
         self.assertEqual(self.columns, columns)
 
@@ -168,10 +147,10 @@ class TestDeleteSubscription(fakes.TestSmn):
         self.cmd = subscription.DeleteSubscription(self.app, None)
 
     def test_delete(self):
-        arglist = ['subscription-urn']
+        arglist = ["subscription-urn"]
 
         verifylist = [
-            ('subscription', arglist),
+            ("subscription", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -180,7 +159,8 @@ class TestDeleteSubscription(fakes.TestSmn):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.delete_subscription.assert_called_with(
-            'subscription-urn', ignore_missing=False)
+            "subscription-urn", ignore_missing=False
+        )
         self.assertIsNone(result)
 
     def test_multiple_delete(self):
@@ -190,7 +170,7 @@ class TestDeleteSubscription(fakes.TestSmn):
             arglist.append(data.id)
 
         verifylist = [
-            ('subscription', arglist),
+            ("subscription", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -208,28 +188,27 @@ class TestDeleteSubscription(fakes.TestSmn):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._data[0].id,
-            'unexist_subscription',
+            "unexist_subscription",
         ]
         verifylist = [
-            ('subscription', arglist),
+            ("subscription", arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_result = [None, exceptions.CommandError]
-        self.client.delete_subscription = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        self.client.delete_subscription = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual(
-                '1 of 2 SMN Subscription(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 SMN Subscription(s) failed to delete.", str(e))
 
         self.client.delete_subscription.assert_any_call(
-            self._data[0].id, ignore_missing=False)
+            self._data[0].id, ignore_missing=False
+        )
         self.client.delete_subscription.assert_any_call(
-            'unexist_subscription', ignore_missing=False)
+            "unexist_subscription", ignore_missing=False
+        )

@@ -11,25 +11,24 @@
 # under the License.
 
 from openstack import resource
-
 from otcextensions.sdk.identity.v3 import _bad_base as _base
 
 
 class SecurityToken(_base.BadBaseResource):
-    resource_key = 'credential'
-    base_path = '/v3.0/OS-CREDENTIAL/securitytokens'
+    resource_key = "credential"
+    base_path = "/v3.0/OS-CREDENTIAL/securitytokens"
 
     # capabilities
     allow_create = True
 
     # Properties
     #: Authorization data (used to request token)
-    auth = resource.Body('auth', type=dict)
+    auth = resource.Body("auth", type=dict)
     #: Access Key
-    access = resource.Body('access')
+    access = resource.Body("access")
     #: Expiration time
-    expires_at = resource.Body('expires_at')
+    expires_at = resource.Body("expires_at")
     #: Secret Key
-    secret = resource.Body('secret')
+    secret = resource.Body("secret")
     #: Security Token
-    security_token = resource.Body('securitytoken')
+    security_token = resource.Body("securitytoken")

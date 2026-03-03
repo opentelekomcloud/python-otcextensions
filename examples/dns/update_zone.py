@@ -13,15 +13,14 @@
 """
 Update a DNS zone with new parameters
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 zone = conn.dns.update_zone(
-    zone='zone_id',
-    description='My other private Zone',
-    ttl=400
+    zone="zone_id", description="My other private Zone", ttl=400
 )
 print(zone)

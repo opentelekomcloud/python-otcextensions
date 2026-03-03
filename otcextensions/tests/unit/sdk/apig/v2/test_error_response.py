@@ -13,10 +13,10 @@ from openstack.tests.unit import base
 from otcextensions.sdk.apig.v2 import error_response
 
 EXAMPLE_DATA = {
-    'status': 403,
-    'body': '{"error": "Access Denied"}',
-    'headers': [{'key': 'Content-Type', 'value': 'application/json'}],
-    'ACCESS_DENIED': 'Custom access denied message',
+    "status": 403,
+    "body": '{"error": "Access Denied"}',
+    "headers": [{"key": "Content-Type", "value": "application/json"}],
+    "ACCESS_DENIED": "Custom access denied message",
 }
 
 
@@ -26,7 +26,7 @@ class TestErrorResponse(base.TestCase):
         sot = error_response.ErrorResponse(**EXAMPLE_DATA)
         self.assertEqual(403, sot.status)
         self.assertEqual('{"error": "Access Denied"}', sot.body)
-        self.assertEqual('Custom access denied message', sot.access_denied)
+        self.assertEqual("Custom access denied message", sot.access_denied)
         self.assertEqual(1, len(sot.headers))
-        self.assertEqual('Content-Type', sot.headers[0].key)
-        self.assertEqual('application/json', sot.headers[0].value)
+        self.assertEqual("Content-Type", sot.headers[0].key)
+        self.assertEqual("application/json", sot.headers[0].value)

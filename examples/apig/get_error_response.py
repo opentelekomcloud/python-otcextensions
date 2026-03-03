@@ -13,13 +13,14 @@
 """
 Get error response for api group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 error_response = conn.apig.get_error_response(
     gateway="gateway_id",
     group="group_id",
     response="response_id",
-    response_type='NOT_FOUND'
+    response_type="NOT_FOUND",
 )

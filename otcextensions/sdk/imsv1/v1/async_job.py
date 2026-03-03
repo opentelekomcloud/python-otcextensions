@@ -15,24 +15,24 @@ from openstack import resource
 
 
 class AsyncJobEntities(resource.Resource):
-    image_id = resource.Body('image_id')
-    image_name = resource.Body('image_name')
-    process_percent = resource.Body('process_percent')
+    image_id = resource.Body("image_id")
+    image_name = resource.Body("image_name")
+    process_percent = resource.Body("process_percent")
 
 
 class AsyncJob(resource.Resource):
     allow_fetch = True
     requires_id = False
 
-    project_id = resource.Body('project_id')
-    job_id = resource.Body('job_id')
-    status = resource.Body('status')
-    job_type = resource.Body('job_type')
-    begin_time = resource.Body('begin_time')
-    end_time = resource.Body('end_time')
-    error_code = resource.Body('error_code')
-    fail_reason = resource.Body('fail_reason')
-    entities = resource.Body('entities', type=AsyncJobEntities)
+    project_id = resource.Body("project_id")
+    job_id = resource.Body("job_id")
+    status = resource.Body("status")
+    job_type = resource.Body("job_type")
+    begin_time = resource.Body("begin_time")
+    end_time = resource.Body("end_time")
+    error_code = resource.Body("error_code")
+    fail_reason = resource.Body("fail_reason")
+    entities = resource.Body("entities", type=AsyncJobEntities)
 
     def get(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value

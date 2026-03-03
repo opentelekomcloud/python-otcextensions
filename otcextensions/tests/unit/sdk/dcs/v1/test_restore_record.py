@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dcs.v1 import restore_record
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
@@ -26,7 +25,7 @@ EXAMPLE = {
     "updated_at": "2017-07-18T21:41:35.182Z",
     "restore_name": "restore_20170718214120",
     "backup_name": "backup_20170718000002",
-    "error_code": None
+    "error_code": None,
 }
 
 
@@ -35,25 +34,23 @@ class TestRestoreRecord(base.TestCase):
     def test_basic(self):
         sot = restore_record.RestoreRecord()
 
-        self.assertEqual('/instances/%(instance_id)s/restores', sot.base_path)
+        self.assertEqual("/instances/%(instance_id)s/restores", sot.base_path)
 
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
 
-        sot = restore_record.RestoreRecord(
-            instance_id=FAKE_INSTANCE_ID,
-            **EXAMPLE)
+        sot = restore_record.RestoreRecord(instance_id=FAKE_INSTANCE_ID, **EXAMPLE)
         self.assertEqual(FAKE_INSTANCE_ID, sot.instance_id)
-        self.assertEqual(EXAMPLE['restore_id'], sot.id)
-        self.assertEqual(EXAMPLE['backup_id'], sot.backup_id)
-        self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['progress'], sot.progress)
-        self.assertEqual(EXAMPLE['restore_remark'], sot.restore_description)
-        self.assertEqual(EXAMPLE['backup_remark'], sot.backup_description)
-        self.assertEqual(EXAMPLE['restore_name'], sot.restore_name)
-        self.assertEqual(EXAMPLE['backup_name'], sot.backup_name)
-        self.assertEqual(EXAMPLE['created_at'], sot.created_at)
-        self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
-        self.assertEqual(EXAMPLE['error_code'], sot.error_code)
+        self.assertEqual(EXAMPLE["restore_id"], sot.id)
+        self.assertEqual(EXAMPLE["backup_id"], sot.backup_id)
+        self.assertEqual(EXAMPLE["status"], sot.status)
+        self.assertEqual(EXAMPLE["progress"], sot.progress)
+        self.assertEqual(EXAMPLE["restore_remark"], sot.restore_description)
+        self.assertEqual(EXAMPLE["backup_remark"], sot.backup_description)
+        self.assertEqual(EXAMPLE["restore_name"], sot.restore_name)
+        self.assertEqual(EXAMPLE["backup_name"], sot.backup_name)
+        self.assertEqual(EXAMPLE["created_at"], sot.created_at)
+        self.assertEqual(EXAMPLE["updated_at"], sot.updated_at)
+        self.assertEqual(EXAMPLE["error_code"], sot.error_code)

@@ -13,13 +13,12 @@
 """
 Show list of AZs
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "eip_id": "eip_id"
-}
+attrs = {"eip_id": "eip_id"}
 for az in conn.apig.azs():
     print(az)

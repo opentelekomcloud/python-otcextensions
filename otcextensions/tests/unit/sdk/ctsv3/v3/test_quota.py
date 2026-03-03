@@ -13,21 +13,17 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.ctsv3.v3 import quota
 
-EXAMPLE = {
-    "quota": 100,
-    "used": 2,
-    "type": "smn_notification"
-}
+EXAMPLE = {"quota": 100, "used": 2, "type": "smn_notification"}
 
 
 class TestQuota(base.TestCase):
     def test_basic(self):
         sot = quota.Quota()
-        self.assertEqual('/quotas', sot.base_path)
+        self.assertEqual("/quotas", sot.base_path)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
         sot = quota.Quota(**EXAMPLE)
-        self.assertEqual(EXAMPLE['quota'], sot.quota)
-        self.assertEqual(EXAMPLE['used'], sot.used)
-        self.assertEqual(EXAMPLE['type'], sot.type)
+        self.assertEqual(EXAMPLE["quota"], sot.quota)
+        self.assertEqual(EXAMPLE["used"], sot.used)
+        self.assertEqual(EXAMPLE["type"], sot.type)

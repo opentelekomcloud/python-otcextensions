@@ -14,9 +14,9 @@ from openstack import resource
 
 
 class Quota(resource.Resource):
-    base_path = '/fgs/quotas'
+    base_path = "/fgs/quotas"
     # Capabilities
     allow_list = True
 
     # Attributes
-    quotas = resource.Body('quotas', type=dict)
+    quotas = resource.Body("quotas", type=dict)

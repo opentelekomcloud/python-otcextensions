@@ -11,8 +11,8 @@
 #   under the License.
 #
 import mock
-# from osc_lib import utils as common_utils
 
+# from osc_lib import utils as common_utils
 from otcextensions.osclient.rds.v1 import instance
 from otcextensions.tests.unit.osclient.rds.v1 import fakes as rds_fakes
 
@@ -20,9 +20,16 @@ from otcextensions.tests.unit.osclient.rds.v1 import fakes as rds_fakes
 class TestListDatabaseInstances(rds_fakes.TestRds):
 
     column_list_headers = [
-        'ID', 'Name', 'Datastore Type',
-        'Datastore Version', 'Status',
-        'Flavor ID', 'Type', 'Size', 'Region']
+        "ID",
+        "Name",
+        "Datastore Type",
+        "Datastore Version",
+        "Status",
+        "Flavor ID",
+        "Type",
+        "Size",
+        "Region",
+    ]
 
     def setUp(self):
         super(TestListDatabaseInstances, self).setUp()
@@ -34,33 +41,31 @@ class TestListDatabaseInstances(rds_fakes.TestRds):
         self.objects = self.instance_mock.create_multiple(3)
         self.object_data = []
         for s in self.objects:
-            self.object_data.append((
-                s.id,
-                s.name,
-                s.datastore['type'],
-                s.datastore['version'],
-                s.status,
-                s.flavor['id'],
-                s.type,
-                s.volume['size'],
-                s.region
-                # s.flavor_detail,
-            ))
+            self.object_data.append(
+                (
+                    s.id,
+                    s.name,
+                    s.datastore["type"],
+                    s.datastore["version"],
+                    s.status,
+                    s.flavor["id"],
+                    s.type,
+                    s.volume["size"],
+                    s.region,
+                    # s.flavor_detail,
+                )
+            )
 
     def test_list(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.instances.side_effect = [
-            self.objects
-        ]
+        self.app.client_manager.rds.instances.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -74,8 +79,13 @@ class TestListDatabaseInstances(rds_fakes.TestRds):
 class TestShowDatabaseInstance(rds_fakes.TestRds):
 
     column_list_headers = [
-        'datastore', 'flavor', 'id', 'name', 'region'
-        'status', 'volume']
+        "datastore",
+        "flavor",
+        "id",
+        "name",
+        "region" "status",
+        "volume",
+    ]
 
     def setUp(self):
         super(TestShowDatabaseInstance, self).setUp()
@@ -98,20 +108,18 @@ class TestShowDatabaseInstance(rds_fakes.TestRds):
 
     def test_show(self):
         arglist = [
-            'test_obj',
+            "test_obj",
         ]
 
         verifylist = [
-            ('instance', 'test_obj'),
+            ("instance", "test_obj"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.find_instance.side_effect = [
-            self.object
-        ]
+        self.app.client_manager.rds.find_instance.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -133,20 +141,18 @@ class TestDeleteDatabaseInstance(rds_fakes.TestRds):
 
     def test_delete(self):
         arglist = [
-            'test_obj',
+            "test_obj",
         ]
 
         verifylist = [
-            ('instance', 'test_obj'),
+            ("instance", "test_obj"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.delete_instance.side_effect = [
-            True
-        ]
+        self.app.client_manager.rds.delete_instance.side_effect = [True]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -168,29 +174,22 @@ class TestResizeDatabaseInstanceFlavor(rds_fakes.TestRds):
         self.flavor = self.flavor_mock.create_one()
         self.instance.resize = mock.Mock()
 
-        self.instance._update(project_id='123')
+        self.instance._update(project_id="123")
 
     def test_delete(self):
         arglist = [
-            'curr_inst',
-            'new_flavor',
+            "curr_inst",
+            "new_flavor",
         ]
 
-        verifylist = [
-            ('instance', 'curr_inst'),
-            ('flavor_id', 'new_flavor')
-        ]
+        verifylist = [("instance", "curr_inst"), ("flavor_id", "new_flavor")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.find_instance.side_effect = [
-            self.instance
-        ]
-        self.app.client_manager.rds.find_flavor.side_effect = [
-            self.flavor
-        ]
+        self.app.client_manager.rds.find_instance.side_effect = [self.instance]
+        self.app.client_manager.rds.find_flavor.side_effect = [self.flavor]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -218,31 +217,27 @@ class TestCreateDatabaseInstance(rds_fakes.TestRds):
 
     def test_action(self):
         arglist = [
-            '--users',
-            'a:b',
-            '--size',
-            '15',
-            'inst_name',
-            'flavor',
+            "--users",
+            "a:b",
+            "--size",
+            "15",
+            "inst_name",
+            "flavor",
         ]
 
         verifylist = [
-            ('users', ['a:b']),
-            ('size', 15),
-            ('name', 'inst_name'),
-            ('flavor', 'flavor'),
+            ("users", ["a:b"]),
+            ("size", 15),
+            ("name", "inst_name"),
+            ("flavor", "flavor"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.create_instance.side_effect = [
-            self.instance
-        ]
-        self.app.client_manager.rds.find_flavor.side_effect = [
-            self.flavor
-        ]
+        self.app.client_manager.rds.create_instance.side_effect = [self.instance]
+        self.app.client_manager.rds.find_flavor.side_effect = [self.flavor]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -260,18 +255,17 @@ class TestResetDatabaseInstanceStatus(rds_fakes.TestRds):
 
     def test_delete(self):
         arglist = [
-            'curr_inst',
+            "curr_inst",
         ]
 
         verifylist = [
-            ('instance', 'curr_inst'),
+            ("instance", "curr_inst"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(
-            NotImplementedError, self.cmd.take_action, parsed_args)
+        self.assertRaises(NotImplementedError, self.cmd.take_action, parsed_args)
 
 
 class TestUpgradeDatabaseInstance(rds_fakes.TestRds):
@@ -282,21 +276,17 @@ class TestUpgradeDatabaseInstance(rds_fakes.TestRds):
         self.cmd = instance.UpgradeDatabaseInstance(self.app, None)
 
     def test_delete(self):
-        arglist = [
-            'curr_inst',
-            'dv'
-        ]
+        arglist = ["curr_inst", "dv"]
 
         verifylist = [
-            ('instance', 'curr_inst'),
-            ('datastore_version', 'dv'),
+            ("instance", "curr_inst"),
+            ("datastore_version", "dv"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(
-            NotImplementedError, self.cmd.take_action, parsed_args)
+        self.assertRaises(NotImplementedError, self.cmd.take_action, parsed_args)
 
 
 class TestEnableDatabaseInstanceLog(rds_fakes.TestRds):
@@ -307,21 +297,17 @@ class TestEnableDatabaseInstanceLog(rds_fakes.TestRds):
         self.cmd = instance.EnableDatabaseInstanceLog(self.app, None)
 
     def test_delete(self):
-        arglist = [
-            'curr_inst',
-            'dv'
-        ]
+        arglist = ["curr_inst", "dv"]
 
         verifylist = [
-            ('instance', 'curr_inst'),
-            ('log_name', 'dv'),
+            ("instance", "curr_inst"),
+            ("log_name", "dv"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(
-            NotImplementedError, self.cmd.take_action, parsed_args)
+        self.assertRaises(NotImplementedError, self.cmd.take_action, parsed_args)
 
 
 class TestResizeDatabaseInstanceVolume(rds_fakes.TestRds):
@@ -332,21 +318,17 @@ class TestResizeDatabaseInstanceVolume(rds_fakes.TestRds):
         self.cmd = instance.ResizeDatabaseInstanceVolume(self.app, None)
 
     def test_delete(self):
-        arglist = [
-            'curr_inst',
-            '15'
-        ]
+        arglist = ["curr_inst", "15"]
 
         verifylist = [
-            ('instance', 'curr_inst'),
-            ('size', 15),
+            ("instance", "curr_inst"),
+            ("size", 15),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(
-            NotImplementedError, self.cmd.take_action, parsed_args)
+        self.assertRaises(NotImplementedError, self.cmd.take_action, parsed_args)
 
 
 class TestForceDeleteDatabaseInstance(rds_fakes.TestRds):
@@ -358,18 +340,17 @@ class TestForceDeleteDatabaseInstance(rds_fakes.TestRds):
 
     def test_delete(self):
         arglist = [
-            'curr_inst',
+            "curr_inst",
         ]
 
         verifylist = [
-            ('instance', 'curr_inst'),
+            ("instance", "curr_inst"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(
-            NotImplementedError, self.cmd.take_action, parsed_args)
+        self.assertRaises(NotImplementedError, self.cmd.take_action, parsed_args)
 
 
 class TestRestartDatabaseInstance(rds_fakes.TestRds):
@@ -382,20 +363,18 @@ class TestRestartDatabaseInstance(rds_fakes.TestRds):
 
     def test_delete(self):
         arglist = [
-            'curr_inst',
+            "curr_inst",
         ]
 
         verifylist = [
-            ('instance', 'curr_inst'),
+            ("instance", "curr_inst"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.restart_instance.side_effect = [
-            {}
-        ]
+        self.app.client_manager.rds.restart_instance.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -412,23 +391,15 @@ class TestRestoreDatabaseInstance(rds_fakes.TestRds):
         self.app.client_manager.rds.restore_instance = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'curr_inst',
-            '--backup', 'bck'
-        ]
+        arglist = ["curr_inst", "--backup", "bck"]
 
-        verifylist = [
-            ('instance', 'curr_inst'),
-            ('backup', 'bck')
-        ]
+        verifylist = [("instance", "curr_inst"), ("backup", "bck")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.restore_instance.side_effect = [
-            {}
-        ]
+        self.app.client_manager.rds.restore_instance.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -445,15 +416,14 @@ class TestUpdateDatabaseInstance(rds_fakes.TestRds):
 
     def test_delete(self):
         arglist = [
-            'curr_inst',
+            "curr_inst",
         ]
 
         verifylist = [
-            ('instance', 'curr_inst'),
+            ("instance", "curr_inst"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(
-            NotImplementedError, self.cmd.take_action, parsed_args)
+        self.assertRaises(NotImplementedError, self.cmd.take_action, parsed_args)

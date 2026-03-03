@@ -11,14 +11,10 @@
 # under the License.
 
 from openstack.tests.unit import base
-
-from otcextensions.sdk.function_graph.v2 import import_function
 from otcextensions.sdk.function_graph.v2 import export_function
+from otcextensions.sdk.function_graph.v2 import import_function
 
-EXAMPLE_EXPORT = {
-    'file_name': 'test',
-    'code_url': 'url'
-}
+EXAMPLE_EXPORT = {"file_name": "test", "code_url": "url"}
 EXAMPLE_IMPORT = {
     "func_urn": "urn",
     "func_name": "test_v1_2",
@@ -37,10 +33,8 @@ EXAMPLE_IMPORT = {
     "version": "latest",
     "image_name": "latest-191025153727@zehht",
     "last_modified": "2019-10-25 15:37:27",
-    "strategy_config": {
-        "concurrency": -1
-    },
-    "enterprise_project_id": "123"
+    "strategy_config": {"concurrency": -1},
+    "enterprise_project_id": "123",
 }
 
 
@@ -48,25 +42,25 @@ class TestFunctionExport(base.TestCase):
 
     def test_basic(self):
         sot = export_function.Export()
-        path = '/fgs/functions/%(function_urn)s/export'
+        path = "/fgs/functions/%(function_urn)s/export"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_fetch)
 
     def test_make_it(self):
         sot = export_function.Export(**EXAMPLE_EXPORT)
-        self.assertEqual(EXAMPLE_EXPORT['file_name'], sot.file_name)
-        self.assertEqual(EXAMPLE_EXPORT['code_url'], sot.code_url)
+        self.assertEqual(EXAMPLE_EXPORT["file_name"], sot.file_name)
+        self.assertEqual(EXAMPLE_EXPORT["code_url"], sot.code_url)
 
 
 class TestFunctionImport(base.TestCase):
 
     def test_basic(self):
         sot = import_function.Import()
-        path = '/fgs/functions/import'
+        path = "/fgs/functions/import"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
 
     def test_make_it(self):
         sot = import_function.Import(**EXAMPLE_IMPORT)
-        self.assertEqual(EXAMPLE_IMPORT['func_name'], sot.func_name)
-        self.assertEqual(EXAMPLE_IMPORT['code_type'], sot.code_type)
+        self.assertEqual(EXAMPLE_IMPORT["func_name"], sot.func_name)
+        self.assertEqual(EXAMPLE_IMPORT["code_type"], sot.code_type)

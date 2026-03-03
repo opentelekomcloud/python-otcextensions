@@ -17,6 +17,4 @@ from otcextensions.sdk.anti_ddos.v1 import _proxy
 class AntiDdosService(service_description.ServiceDescription):
     """The Anti_DDOS service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {"1": _proxy.Proxy}

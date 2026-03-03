@@ -13,12 +13,13 @@
 """
 Get one SMN message template
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-template = 'template_id'
+template = "template_id"
 template = conn.smn.get_template(template)
 print(template)

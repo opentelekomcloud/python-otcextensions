@@ -15,9 +15,9 @@ from openstack import resource
 
 class MaintenanceTimeWindow(resource.Resource):
 
-    resources_key = 'maintain_windows'
+    resources_key = "maintain_windows"
 
-    base_path = '/instances/maintain-windows'
+    base_path = "/instances/maintain-windows"
 
     # capabilities
     allow_list = True
@@ -25,10 +25,10 @@ class MaintenanceTimeWindow(resource.Resource):
     #: Properties
     #: An indicator of whether the maintenance time window is set to the
     # default time segment.
-    default = resource.Body('default', type=bool)
+    default = resource.Body("default", type=bool)
     #: Sequence number of the maintenance time window.
-    seq = resource.Body('seq', type=int)
+    seq = resource.Body("seq", type=int)
     #: Start time of the maintenance time window.
-    begin = resource.Body('begin')
+    begin = resource.Body("begin")
     #: End time of the maintenance time window.
-    end = resource.Body('end')
+    end = resource.Body("end")

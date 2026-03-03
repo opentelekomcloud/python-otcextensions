@@ -12,13 +12,12 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.apig.v2 import appcode
 
-
 EXAMPLE_APP_CODE = {
-    'gateway_id': 'gateway-67890',
-    'app_id': 'app-12345',
-    'app_code': 'code-12345',
-    'id': 'code-1',
-    'create_time': '2025-02-07T12:45:00Z'
+    "gateway_id": "gateway-67890",
+    "app_id": "app-12345",
+    "app_code": "code-12345",
+    "id": "code-1",
+    "create_time": "2025-02-07T12:45:00Z",
 }
 
 
@@ -26,9 +25,10 @@ class TestAppCode(base.TestCase):
 
     def test_basic(self):
         sot = appcode.AppCode()
-        self.assertEqual('/apigw/instances/%(gateway_id)s/apps/'
-                         '%(app_id)s/app-codes',
-                         sot.base_path)
+        self.assertEqual(
+            "/apigw/instances/%(gateway_id)s/apps/" "%(app_id)s/app-codes",
+            sot.base_path,
+        )
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_create)
@@ -36,8 +36,8 @@ class TestAppCode(base.TestCase):
 
     def test_make_it(self):
         sot = appcode.AppCode(**EXAMPLE_APP_CODE)
-        self.assertEqual(EXAMPLE_APP_CODE['gateway_id'], sot.gateway_id)
-        self.assertEqual(EXAMPLE_APP_CODE['app_id'], sot.app_id)
-        self.assertEqual(EXAMPLE_APP_CODE['app_code'], sot.app_code)
-        self.assertEqual(EXAMPLE_APP_CODE['id'], sot.id)
-        self.assertEqual(EXAMPLE_APP_CODE['create_time'], sot.create_time)
+        self.assertEqual(EXAMPLE_APP_CODE["gateway_id"], sot.gateway_id)
+        self.assertEqual(EXAMPLE_APP_CODE["app_id"], sot.app_id)
+        self.assertEqual(EXAMPLE_APP_CODE["app_code"], sot.app_code)
+        self.assertEqual(EXAMPLE_APP_CODE["id"], sot.id)
+        self.assertEqual(EXAMPLE_APP_CODE["create_time"], sot.create_time)

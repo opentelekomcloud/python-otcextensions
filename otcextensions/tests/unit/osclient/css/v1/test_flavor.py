@@ -21,25 +21,25 @@ class TestListFlavors(fakes.TestCss):
     objects = fakes.FakeFlavor.create_multiple(3)
 
     column_list_headers = (
-        'Id',
-        'Name',
-        'Version',
-        'Type',
-        'Availability Zones',
-        'Disk Range',
-        'vCPUs',
-        'RAM',
+        "Id",
+        "Name",
+        "Version",
+        "Type",
+        "Availability Zones",
+        "Disk Range",
+        "vCPUs",
+        "RAM",
     )
 
     columns = (
-        'id',
-        'name',
-        'version',
-        'type',
-        'availability_zones',
-        'disk_range',
-        'vcpus',
-        'ram',
+        "id",
+        "name",
+        "version",
+        "type",
+        "availability_zones",
+        "disk_range",
+        "vcpus",
+        "ram",
     )
 
     data = []
@@ -87,15 +87,15 @@ class TestListFlavors(fakes.TestCss):
 
     def test_list_args(self):
         arglist = [
-            '--datastore-version',
-            '7.6.2',
-            '--node-type',
-            'ess',
+            "--datastore-version",
+            "7.6.2",
+            "--node-type",
+            "ess",
         ]
 
         verifylist = [
-            ('datastore_version', '7.6.2'),
-            ('node_type', 'ess'),
+            ("datastore_version", "7.6.2"),
+            ("node_type", "ess"),
         ]
 
         # Verify cm is triggered with default parameters

@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-
 from otcextensions.sdk import sdk_resource
 
 
@@ -19,30 +18,30 @@ class Metadata(sdk_resource.Resource):
     # Properties
     #: UUID
     #: *Type:str
-    id = resource.Body('uuid', alternate_id=True)
+    id = resource.Body("uuid", alternate_id=True)
     #: Name
     #: *Type:str
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Space UUID
     #: *Type:str
-    space_uuid = resource.Body('spaceuuid')
+    space_uuid = resource.Body("spaceuuid")
     #: Create time
     #: *Type:str
-    create_time = resource.Body('createAt')
+    create_time = resource.Body("createAt")
     #: Update time
     #: *Type:str
-    update_time = resource.Body('updateAt')
+    update_time = resource.Body("updateAt")
 
 
 class Resource(sdk_resource.Resource):
-    base_path = ''
+    base_path = ""
 
     service_expectes_json_type = True
 
     # Properties
     #: Kind
-    kind = resource.Body('kind')
+    kind = resource.Body("kind")
     #: api version
-    api_version = resource.Body('apiVersion', default='v1')
+    api_version = resource.Body("apiVersion", default="v1")
     #: metadata
-    metadata = resource.Body('metadata', type=Metadata)
+    metadata = resource.Body("metadata", type=Metadata)

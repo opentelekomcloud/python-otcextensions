@@ -9,18 +9,17 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
 from openstack import _log
+from openstack import resource
 from otcextensions.sdk import dnsmixin
 
-
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class NameServer(dnsmixin.DNSProxyMixin, resource.Resource):
-    resource_key = 'nameserver'
-    resources_key = 'nameservers'
-    base_path = '/zones/%(zone_id)s/nameservers'
+    resource_key = "nameserver"
+    resources_key = "nameservers"
+    base_path = "/zones/%(zone_id)s/nameservers"
 
     # capabilities
     allow_create = False
@@ -31,10 +30,10 @@ class NameServer(dnsmixin.DNSProxyMixin, resource.Resource):
 
     #: Properties
     #: The ID of zone using this name-server
-    zone_id = resource.URI('zone_id')
+    zone_id = resource.URI("zone_id")
     #: NameServer priority
-    priority = resource.Body('priority')
+    priority = resource.Body("priority")
     #: NameServer private DNS address
-    address = resource.Body('address')
+    address = resource.Body("address")
     #: NameServer public DNS address
-    hostname = resource.Body('hostname')
+    hostname = resource.Body("hostname")

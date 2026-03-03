@@ -17,8 +17,8 @@ Get CSS Cluster Snapshot Policy
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluster-uuid'
+cluster_id = "cluster-uuid"
 resp = conn.css.get_snapshot_policy(cluster_id)
 print(resp)

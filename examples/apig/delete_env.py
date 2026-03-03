@@ -13,9 +13,12 @@
 """
 Delete env from gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-conn.apig.delete_environment(gateway="gateway_id",
-                             environment="env_id",)
+conn = openstack.connect(cloud="otc")
+conn.apig.delete_environment(
+    gateway="gateway_id",
+    environment="env_id",
+)

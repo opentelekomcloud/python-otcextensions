@@ -10,11 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dcs.v1 import statistic
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
@@ -27,7 +25,7 @@ EXAMPLE = {
     "cmd_set_count": 0,
     "used_cpu": "0.0",
     "input_kbps": "0.03",
-    "output_kbps": "1.19"
+    "output_kbps": "1.19",
 }
 
 
@@ -41,19 +39,19 @@ class TestStatistics(base.TestCase):
     def test_basic(self):
         sot = statistic.Statistic()
 
-        self.assertEqual('/instances/statistic', sot.base_path)
+        self.assertEqual("/instances/statistic", sot.base_path)
 
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
 
         sot = statistic.Statistic(**EXAMPLE)
-        self.assertEqual(EXAMPLE['instance_id'], sot.id)
-        self.assertEqual(EXAMPLE['keys'], sot.keys)
-        self.assertEqual(EXAMPLE['used_memory'], sot.used_memory)
-        self.assertEqual(EXAMPLE['max_memory'], sot.max_memory)
-        self.assertEqual(EXAMPLE['cmd_get_count'], sot.cmd_get_count)
-        self.assertEqual(EXAMPLE['cmd_set_count'], sot.cmd_set_count)
-        self.assertEqual(EXAMPLE['used_cpu'], sot.used_cpu)
-        self.assertEqual(EXAMPLE['input_kbps'], sot.input_kbps)
-        self.assertEqual(EXAMPLE['output_kbps'], sot.output_kbps)
+        self.assertEqual(EXAMPLE["instance_id"], sot.id)
+        self.assertEqual(EXAMPLE["keys"], sot.keys)
+        self.assertEqual(EXAMPLE["used_memory"], sot.used_memory)
+        self.assertEqual(EXAMPLE["max_memory"], sot.max_memory)
+        self.assertEqual(EXAMPLE["cmd_get_count"], sot.cmd_get_count)
+        self.assertEqual(EXAMPLE["cmd_set_count"], sot.cmd_set_count)
+        self.assertEqual(EXAMPLE["used_cpu"], sot.used_cpu)
+        self.assertEqual(EXAMPLE["input_kbps"], sot.input_kbps)
+        self.assertEqual(EXAMPLE["output_kbps"], sot.output_kbps)

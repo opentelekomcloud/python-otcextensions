@@ -11,12 +11,11 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.vlb.v3 import quota
 
 EXAMPLE = {
-    'id': 'id',
-    'name': 'name',
+    "id": "id",
+    "name": "name",
 }
 
 
@@ -24,7 +23,7 @@ class TestLoadBalancer(base.TestCase):
 
     def test_basic(self):
         sot = quota.Quota()
-        path = '/elb/quotas'
+        path = "/elb/quotas"
         self.assertEqual(path, sot.base_path)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_list)
@@ -34,5 +33,5 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = quota.Quota(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['id'], sot.id)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["id"], sot.id)

@@ -15,24 +15,30 @@ from openstack import utils
 
 
 class Datastore(resource.Resource):
-    base_path = '/datastores'
+    base_path = "/datastores"
 
     # capabilities
     allow_list = True
 
-    datastore_name = resource.URI('datastore_name')
+    datastore_name = resource.URI("datastore_name")
 
     #: Storage engine
-    storage_engine = resource.Body('storage_engine')
+    storage_engine = resource.Body("storage_engine")
     #: Datastore type
-    type = resource.Body('type')
+    type = resource.Body("type")
     # Indicates the database version.
     # :*Type:string*
-    version = resource.Body('version')
+    version = resource.Body("version")
 
     @classmethod
-    def list(cls, session, paginated=True, base_path=None,
-             allow_unknown_params=False, **params):
+    def list(
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        **params
+    ):
 
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
@@ -42,21 +48,16 @@ class Datastore(resource.Resource):
         if base_path is None:
             base_path = cls.base_path
 
-        datastore_type = params.get('datastore_name', 'DDS-Community')
-        uri = utils.urljoin(
-            base_path,
-            datastore_type,
-            'versions'
-        )
+        datastore_type = params.get("datastore_name", "DDS-Community")
+        uri = utils.urljoin(base_path, datastore_type, "versions")
 
         response = session.get(
-            uri,
-            headers={"Accept": "application/json"},
-            microversion=microversion)
+            uri, headers={"Accept": "application/json"}, microversion=microversion
+        )
         exceptions.raise_from_response(response)
         data = response.json()
 
-        resources = data['versions']
+        resources = data["versions"]
 
         if not isinstance(resources, list):
             resources = [resources]
@@ -66,6 +67,7 @@ class Datastore(resource.Resource):
                 microversion=microversion,
                 connection=session._get_connection(),
                 type=datastore_type,
-                storage_engine='wiredTiger',
-                version=raw_resource)
+                storage_engine="wiredTiger",
+                version=raw_resource,
+            )
             yield value

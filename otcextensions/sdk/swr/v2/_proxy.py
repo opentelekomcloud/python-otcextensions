@@ -10,17 +10,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.swr.v2 import _base
+from otcextensions.sdk.swr.v2 import domain as _domain
 from otcextensions.sdk.swr.v2 import organization as _organization
 from otcextensions.sdk.swr.v2 import repository as _repository
-from otcextensions.sdk.swr.v2 import domain as _domain
 
 
 def update_permissions_attrs(attrs):
-    for permission in attrs.get('permissions', []):
-        permission['auth'] = permission.pop('user_auth', None)
+    for permission in attrs.get("permissions", []):
+        permission["auth"] = permission.pop("user_auth", None)
     return attrs
 
 
@@ -73,8 +72,9 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         orgobj = self._get_resource(_organization.Organization, namespace)
-        return self._delete(_organization.Organization, orgobj.id,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _organization.Organization, orgobj.id, ignore_missing=ignore_missing
+        )
 
     def find_organization(self, name_or_id, ignore_missing=True):
         """Find a single organization
@@ -88,8 +88,9 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_organization.Organization, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _organization.Organization, name_or_id, ignore_missing=ignore_missing
+        )
 
     def create_organization_permissions(self, **attrs):
         """Create a new organization from attributes
@@ -110,12 +111,9 @@ class Proxy(proxy.Proxy):
 
         :returns: A generator of organization permissions instances
         """
-        return self._list(_organization.Permission,
-                          namespace=namespace, **query)
+        return self._list(_organization.Permission, namespace=namespace, **query)
 
-    def delete_organization_permissions(
-            self, namespace, user_ids, ignore_missing=True
-    ):
+    def delete_organization_permissions(self, namespace, user_ids, ignore_missing=True):
         """Delete an organization permissions
 
         :param user_ids: Users IDs whose permissions need to be deleted.
@@ -130,7 +128,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        base_path = f'/manage/namespaces/{namespace}/access'
+        base_path = f"/manage/namespaces/{namespace}/access"
         res = self._get_resource(_base.Resource, namespace)
         return res._delete(self, user_ids, base_path)
 
@@ -160,9 +158,7 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_repository.Repository, **attrs)
 
-    def delete_repository(
-            self, namespace, repository, ignore_missing=True
-    ):
+    def delete_repository(self, namespace, repository, ignore_missing=True):
         """Delete a repository
 
         :param repository: Image repository name need to be deleted.
@@ -180,8 +176,9 @@ class Proxy(proxy.Proxy):
         orgobj = self._get_resource(_organization.Organization, namespace)
         repotype = _repository.Repository
         repotype.requires_id = True
-        self._delete(repotype, repository,
-                     ignore_missing=ignore_missing, namespace=orgobj.id)
+        self._delete(
+            repotype, repository, ignore_missing=ignore_missing, namespace=orgobj.id
+        )
 
     def get_repository(self, namespace, repository):
         """Get a repository
@@ -190,15 +187,14 @@ class Proxy(proxy.Proxy):
              :class:`~otcextensions.sdk.swr.v2.repository.Repository`
         """
         orgobj = self._get_resource(_organization.Organization, namespace)
-        return self._get(_repository.Repository, repository,
-                         namespace=orgobj.id)
+        return self._get(_repository.Repository, repository, namespace=orgobj.id)
 
     def repositories(self, **query):
         """Retrieve a generator of repositories
 
         :returns: A generator of repositories instances
         """
-        base_path = '/manage/repos'
+        base_path = "/manage/repos"
         return self._list(_repository.Repository, base_path=base_path, **query)
 
     def update_repository(self, **attrs):
@@ -235,13 +231,12 @@ class Proxy(proxy.Proxy):
 
         :returns: A generator of repository permissions instances
         """
-        return self._list(_repository.Permission,
-                          namespace=namespace,
-                          repository=repository,
-                          **query)
+        return self._list(
+            _repository.Permission, namespace=namespace, repository=repository, **query
+        )
 
     def delete_repository_permissions(
-            self, namespace, repository, user_ids, ignore_missing=True
+        self, namespace, repository, user_ids, ignore_missing=True
     ):
         """Delete a repository permissions
 
@@ -260,7 +255,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        bp = f'/manage/namespaces/{namespace}/repos/{repository}/access'
+        bp = f"/manage/namespaces/{namespace}/repos/{repository}/access"
         res = self._get_resource(_base.Resource, namespace)
         return res._delete(self, user_ids, bp)
 
@@ -290,9 +285,7 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_domain.Domain, **attrs)
 
-    def delete_domain(
-            self, namespace, repository, access_domain, ignore_missing=True
-    ):
+    def delete_domain(self, namespace, repository, access_domain, ignore_missing=True):
         """Delete a domain
 
         :param access_domain: Name of the account need to be deleted.
@@ -306,10 +299,13 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        self._delete(_domain.Domain, repository=repository,
-                     id=access_domain,
-                     ignore_missing=ignore_missing,
-                     namespace=namespace)
+        self._delete(
+            _domain.Domain,
+            repository=repository,
+            id=access_domain,
+            ignore_missing=ignore_missing,
+            namespace=namespace,
+        )
 
     def domains(self, **query):
         """Retrieve a generator of domains
@@ -328,7 +324,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.swr.v2.domain.Domain`
         """
-        return self._update(_domain.Domain, id=attrs['access_domain'], **attrs)
+        return self._update(_domain.Domain, id=attrs["access_domain"], **attrs)
 
     def get_domain(self, namespace, repository, access_domain):
         """Get a domain
@@ -336,7 +332,6 @@ class Proxy(proxy.Proxy):
         :returns: One
              :class:`~otcextensions.sdk.swr.v2.domain.Domain`
         """
-        return self._get(_domain.Domain,
-                         repository=repository,
-                         id=access_domain,
-                         namespace=namespace)
+        return self._get(
+            _domain.Domain, repository=repository, id=access_domain, namespace=namespace
+        )

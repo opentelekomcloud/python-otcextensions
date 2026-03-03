@@ -13,16 +13,16 @@ from openstack import resource
 
 
 class HostType(resource.Resource):
-    resource_key = ''
-    resources_key = 'dedicated_host_types'
-    base_path = '/availability-zone/%(availability_zone)s/dedicated-host-types'
+    resource_key = ""
+    resources_key = "dedicated_host_types"
+    base_path = "/availability-zone/%(availability_zone)s/dedicated-host-types"
 
     # capabilities
     allow_list = True
 
     #: Properties
-    availability_zone = resource.URI('availability_zone')
+    availability_zone = resource.URI("availability_zone")
     #: Specifes the DeH type
-    host_type = resource.Body('host_type')
+    host_type = resource.Body("host_type")
     #: Specifes the DeH name of type
-    host_type_name = resource.Body('host_type_name')
+    host_type_name = resource.Body("host_type_name")

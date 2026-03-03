@@ -12,7 +12,6 @@
 #
 
 from openstack.tests.unit import base
-
 from otcextensions import sdk
 
 

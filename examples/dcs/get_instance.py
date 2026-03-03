@@ -13,10 +13,11 @@
 """
 Get Distributed Message Service Instance by id or class Instance
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 instance = "instance_id"

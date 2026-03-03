@@ -13,11 +13,11 @@
 """
 List all backups of an RDS instance
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-for backup in conn.rds.backups(instance='instance_id'):
+for backup in conn.rds.backups(instance="instance_id"):
     print(backup)

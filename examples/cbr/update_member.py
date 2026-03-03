@@ -13,16 +13,15 @@
 """
 Update a CBR share member
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-member = 'member_id'
-backup = 'backup_id'
-vault = 'vault_id'
+member = "member_id"
+backup = "backup_id"
+vault = "vault_id"
 member = conn.cbr.update_member(
-    member=member,
-    backup=backup,
-    status='accepted',
-    vault=vault)
+    member=member, backup=backup, status="accepted", vault=vault
+)

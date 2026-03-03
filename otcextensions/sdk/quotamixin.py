@@ -19,7 +19,7 @@ class QuotaProxyMixin:
     def find_value_by_accessor(input_dict, accessor):
         """Gets value from a dictionary using a dotted accessor"""
         current_data = input_dict
-        for chunk in accessor.split('.'):
+        for chunk in accessor.split("."):
             if isinstance(current_data, dict):
                 current_data = current_data.get(chunk, {})
             else:
@@ -27,38 +27,34 @@ class QuotaProxyMixin:
         return current_data
 
     @classmethod
-    def list(cls, session, paginated=False,
-             base_path=None, **params):
+    def list(cls, session, paginated=False, base_path=None, **params):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
 
         session = cls._get_session(session)
 
         # pop scaling_group_id, as it should not be also present in the query
-        scaling_group_id = params.pop('scaling_group_id', None)
+        scaling_group_id = params.pop("scaling_group_id", None)
         uri_params = {}
 
         if scaling_group_id:
-            uri_params = {'scaling_group_id': scaling_group_id}
+            uri_params = {"scaling_group_id": scaling_group_id}
 
         cls._query_mapping._validate(params, base_path=cls.base_path)
         query_params = cls._query_mapping._transpose(params, cls)
         uri = cls.base_path % uri_params
 
-        limit = query_params.get('limit')
+        limit = query_params.get("limit")
 
         total_yielded = 0
         while uri:
-            response = session.get(
-                uri,
-                params=query_params.copy()
-            )
+            response = session.get(uri, params=query_params.copy())
             exceptions.raise_from_response(response)
             data = response.json()
 
             # Discard any existing pagination keys
-            query_params.pop('marker', None)
-            query_params.pop('limit', None)
+            query_params.pop("marker", None)
+            query_params.pop("limit", None)
 
             if cls.resources_key:
                 resources = cls.find_value_by_accessor(data, cls.resources_key)
@@ -88,7 +84,8 @@ class QuotaProxyMixin:
 
             if resources and paginated:
                 uri, next_params = cls._get_next_link(
-                    uri, response, data, marker, limit, total_yielded)
+                    uri, response, data, marker, limit, total_yielded
+                )
                 query_params.update(next_params)
             else:
                 return

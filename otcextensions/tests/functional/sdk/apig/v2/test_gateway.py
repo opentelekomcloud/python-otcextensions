@@ -10,8 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.tests.functional.sdk.apig import TestApiG
 import uuid
+
+from otcextensions.tests.functional.sdk.apig import TestApiG
 
 
 class TestGateway(TestApiG):
@@ -26,9 +27,7 @@ class TestGateway(TestApiG):
         super(TestGateway, self).tearDown()
 
     def test_01_list_gateways(self):
-        attrs = {
-            'limit': 2
-        }
+        attrs = {"limit": 2}
         gateways = list(self.client.gateways(**attrs))
         self.assertGreater(len(gateways), 0)
 
@@ -44,11 +43,9 @@ class TestGateway(TestApiG):
     def test_04_update_gateway(self):
         self.client.wait_for_gateway(TestGateway.gateway)
         test_nmb = uuid.uuid4().hex[:8]
-        attrs = {
-            "description": test_nmb
-        }
+        attrs = {"description": test_nmb}
         found = self.client.update_gateway(TestGateway.gateway, **attrs)
-        self.assertEqual(found.description, attrs['description'])
+        self.assertEqual(found.description, attrs["description"])
 
     def test_05_get_constraints(self):
         found = self.client.get_constraints(TestGateway.gateway.id)
@@ -56,22 +53,14 @@ class TestGateway(TestApiG):
 
     def test_06_enable_public_access(self):
         self.client.wait_for_gateway(TestGateway.gateway)
-        attrs = {
-            "bandwidth_size": "5",
-            "bandwidth_charging_mode": "bandwidth"
-        }
-        found = self.client.enable_public_access(TestGateway.gateway.id,
-                                                 **attrs)
+        attrs = {"bandwidth_size": "5", "bandwidth_charging_mode": "bandwidth"}
+        found = self.client.enable_public_access(TestGateway.gateway.id, **attrs)
         self.assertIsNotNone(found.bandwidth_name)
 
     def test_07_update_public_access(self):
         self.client.wait_for_gateway(TestGateway.gateway)
-        attrs = {
-            "bandwidth_size": "7",
-            "bandwidth_charging_mode": "bandwidth"
-        }
-        found = self.client.update_public_access(TestGateway.gateway.id,
-                                                 **attrs)
+        attrs = {"bandwidth_size": "7", "bandwidth_charging_mode": "bandwidth"}
+        found = self.client.update_public_access(TestGateway.gateway.id, **attrs)
         self.assertIsNotNone(found.bandwidth_name)
 
     def test_08_disable_public_access(self):

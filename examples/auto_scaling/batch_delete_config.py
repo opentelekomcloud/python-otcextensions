@@ -13,13 +13,14 @@
 """
 Delete multiple Auto-Scaling Configurations by id or instance of class Config
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-config1 = conn.auto_scaling.find_config('test-config1')
-config2 = conn.auto_scaling.find_config('test-config2')
+config1 = conn.auto_scaling.find_config("test-config1")
+config2 = conn.auto_scaling.find_config("test-config2")
 
 configs = [config1, config2]
 

@@ -15,7 +15,7 @@ from otcextensions.sdk.apig.v2 import signature
 EXAMPLE = {
     "name": "signature_demo",
     "sign_key": "signkeysignkey",
-    "sign_secret": "sig************ret"
+    "sign_secret": "sig************ret",
 }
 
 
@@ -23,17 +23,15 @@ class TestThrottlingPolicy(base.TestCase):
 
     def test_basic(self):
         sot = signature.Signature()
-        self.assertEqual(
-            '/apigw/instances/%(gateway_id)s/signs',
-            sot.base_path)
+        self.assertEqual("/apigw/instances/%(gateway_id)s/signs", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
-        self.assertEqual('signs', sot.resources_key)
+        self.assertEqual("signs", sot.resources_key)
 
     def test_make_it(self):
         sot = signature.Signature(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['sign_key'], sot.sign_key)
-        self.assertEqual(EXAMPLE['sign_secret'], sot.sign_secret)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["sign_key"], sot.sign_key)
+        self.assertEqual(EXAMPLE["sign_secret"], sot.sign_secret)

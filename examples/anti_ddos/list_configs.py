@@ -13,10 +13,11 @@
 """
 List Anti-DDoS alarm configurations.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 for config in conn.anti_ddos.configs():

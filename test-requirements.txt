@@ -28,4 +28,6 @@ tempest>=17.1.0 # Apache-2.0
 python-openstackclient>=5.0.0 # Apache-2.0
 python-novaclient>=18.9.0 # Apache-2.0
 # Usability of venv
+black
 flake8
+ruff

@@ -13,11 +13,11 @@
 """
 List all NAT Gateways
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for gateway in conn.nat.gateways():
     print(gateway)

@@ -17,33 +17,32 @@ class DatapointsSpec(resource.Resource):
     # Properties
     # Metric Value, the value is the same as that of
     # parameter filter
-    average = resource.Body('average')
-    maximum = resource.Body('max')
-    minimum = resource.Body('min')
-    sumspec = resource.Body('sum')
-    variance = resource.Body('variance')
+    average = resource.Body("average")
+    maximum = resource.Body("max")
+    minimum = resource.Body("min")
+    sumspec = resource.Body("sum")
+    variance = resource.Body("variance")
     # time of the metric collection
-    timestamp = resource.Body('timestamp')
+    timestamp = resource.Body("timestamp")
     # indicates the metric unit
-    unit = resource.Body('unit')
+    unit = resource.Body("unit")
 
 
 class MetricData(resource.Resource):
 
-    resource_key = ''
-    resources_key = ''
-    base_path = '/metric-data'
+    resource_key = ""
+    resources_key = ""
+    base_path = "/metric-data"
 
     # capabilities
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'namespace', 'period', 'filter', 'metric_name', 'dim.0', 'from',
-        'to')
+        "namespace", "period", "filter", "metric_name", "dim.0", "from", "to"
+    )
 
     # Properties
     # Datapoints retrieve the metrics data list
-    datapoints = resource.Body('datapoints', type=list,
-                               list_type=DatapointsSpec)
+    datapoints = resource.Body("datapoints", type=list, list_type=DatapointsSpec)
     # Metric Name like 'cpu_util'
-    metric_name = resource.Body('metric_name')
+    metric_name = resource.Body("metric_name")

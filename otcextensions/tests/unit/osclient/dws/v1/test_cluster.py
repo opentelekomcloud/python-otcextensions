@@ -23,42 +23,42 @@ from otcextensions.tests.unit.osclient.dws.v1 import fakes
 
 
 _COLUMNS = (
-    'action_progress',
-    'availability_zone',
-    'created_at',
-    'endpoints',
-    'enterprise_project_id',
-    'flavor',
-    'flavor_id',
-    'floating_ip',
-    'guest_agent_version',
-    'id',
-    'is_logical_cluster_enabled',
-    'is_logical_cluster_initialed',
-    'is_logical_cluster_mode',
-    'maintenance_window',
-    'name',
-    'network_id',
-    'nodes',
-    'num_free_nodes',
-    'num_nodes',
-    'num_recent_events',
-    'parameter_group',
-    'port',
-    'private_domain',
-    'private_ip',
-    'public_domain',
-    'public_endpoints',
-    'router_id',
-    'security_group_id',
-    'spec_version',
-    'status',
-    'sub_status',
-    'tags',
-    'task_status',
-    'updated_at',
-    'user_name',
-    'version',
+    "action_progress",
+    "availability_zone",
+    "created_at",
+    "endpoints",
+    "enterprise_project_id",
+    "flavor",
+    "flavor_id",
+    "floating_ip",
+    "guest_agent_version",
+    "id",
+    "is_logical_cluster_enabled",
+    "is_logical_cluster_initialed",
+    "is_logical_cluster_mode",
+    "maintenance_window",
+    "name",
+    "network_id",
+    "nodes",
+    "num_free_nodes",
+    "num_nodes",
+    "num_recent_events",
+    "parameter_group",
+    "port",
+    "private_domain",
+    "private_ip",
+    "public_domain",
+    "public_endpoints",
+    "router_id",
+    "security_group_id",
+    "spec_version",
+    "status",
+    "sub_status",
+    "tags",
+    "task_status",
+    "updated_at",
+    "user_name",
+    "version",
 )
 
 
@@ -66,23 +66,23 @@ class TestListClusters(fakes.TestDws):
     objects = fakes.FakeCluster.create_multiple(3)
 
     column_list_headers = (
-        'ID',
-        'Name',
-        'Num Nodes',
-        'Flavor',
-        'Status',
-        'Version',
-        'Created At',
+        "ID",
+        "Name",
+        "Num Nodes",
+        "Flavor",
+        "Status",
+        "Version",
+        "Created At",
     )
 
     columns = (
-        'id',
-        'name',
-        'num_nodes',
-        'flavor',
-        'status',
-        'version',
-        'created_at',
+        "id",
+        "name",
+        "num_nodes",
+        "flavor",
+        "status",
+        "version",
+        "created_at",
     )
 
     data = []
@@ -148,36 +148,48 @@ class TestCreateCluster(fakes.TestDws):
 
     def test_create(self):
         arglist = [
-            'test-dws',
-            '--flavor', 'dws-flavor',
-            '--router-id', 'router-uuid',
-            '--network-id', 'network-uuid',
-            '--security-group-id', 'sg-uuid',
-            '--num-nodes', '3',
-            '--num-cn', '2',
-            '--port', '8000',
-            '--username', 'dbadmin',
-            '--password', 'testtest!',
-            '--enterprise-project-id', 'enterprise-uuid',
-            '--availability-zone', 'test-az',
-            '--floating-ip', 'auto',
-            '--wait',
+            "test-dws",
+            "--flavor",
+            "dws-flavor",
+            "--router-id",
+            "router-uuid",
+            "--network-id",
+            "network-uuid",
+            "--security-group-id",
+            "sg-uuid",
+            "--num-nodes",
+            "3",
+            "--num-cn",
+            "2",
+            "--port",
+            "8000",
+            "--username",
+            "dbadmin",
+            "--password",
+            "testtest!",
+            "--enterprise-project-id",
+            "enterprise-uuid",
+            "--availability-zone",
+            "test-az",
+            "--floating-ip",
+            "auto",
+            "--wait",
         ]
         verifylist = [
-            ('name', 'test-dws'),
-            ('flavor', 'dws-flavor'),
-            ('router_id', 'router-uuid'),
-            ('network_id', 'network-uuid'),
-            ('security_group_id', 'sg-uuid'),
-            ('num_nodes', 3),
-            ('num_cn', 2),
-            ('port', 8000),
-            ('user_name', 'dbadmin'),
-            ('user_pwd', 'testtest!'),
-            ('enterprise_project_id', 'enterprise-uuid'),
-            ('availability_zone', 'test-az'),
-            ('floating_ip', 'auto'),
-            ('wait', True),
+            ("name", "test-dws"),
+            ("flavor", "dws-flavor"),
+            ("router_id", "router-uuid"),
+            ("network_id", "network-uuid"),
+            ("security_group_id", "sg-uuid"),
+            ("num_nodes", 3),
+            ("num_cn", 2),
+            ("port", 8000),
+            ("user_name", "dbadmin"),
+            ("user_pwd", "testtest!"),
+            ("enterprise_project_id", "enterprise-uuid"),
+            ("availability_zone", "test-az"),
+            ("floating_ip", "auto"),
+            ("wait", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -185,22 +197,19 @@ class TestCreateCluster(fakes.TestDws):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'name': 'test-dws',
-            'num_nodes': 3,
-            'num_cn': 2,
-            'flavor': 'dws-flavor',
-            'router_id': 'router-uuid',
-            'network_id': 'network-uuid',
-            'security_group_id': 'sg-uuid',
-            'user_name': 'dbadmin',
-            'user_pwd': 'testtest!',
-            'port': 8000,
-            'enterprise_project_id': 'enterprise-uuid',
-            'availability_zone': 'test-az',
-            'public_ip': {
-                'public_bind_type': 'auto_assign',
-                'eip_id': ''
-            }
+            "name": "test-dws",
+            "num_nodes": 3,
+            "num_cn": 2,
+            "flavor": "dws-flavor",
+            "router_id": "router-uuid",
+            "network_id": "network-uuid",
+            "security_group_id": "sg-uuid",
+            "user_name": "dbadmin",
+            "user_pwd": "testtest!",
+            "port": 8000,
+            "enterprise_project_id": "enterprise-uuid",
+            "availability_zone": "test-az",
+            "public_ip": {"public_bind_type": "auto_assign", "eip_id": ""},
         }
         self.client.create_cluster.assert_called_with(**attrs)
         self.client.wait_for_cluster.assert_called_with(
@@ -228,12 +237,12 @@ class TestRestartCluster(fakes.TestDws):
     def test_restart(self):
         arglist = [
             self._cluster.name,
-            '--wait',
+            "--wait",
         ]
 
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('wait', True),
+            ("cluster", self._cluster.name),
+            ("wait", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -263,11 +272,11 @@ class TestClusterPasswordReset(fakes.TestDws):
         self.client.reset_password = mock.Mock(return_value=None)
 
     def test_password_reset(self):
-        arglist = [self._cluster.name, '--password', 'TestPasswordReset']
+        arglist = [self._cluster.name, "--password", "TestPasswordReset"]
 
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('password', 'TestPasswordReset'),
+            ("cluster", self._cluster.name),
+            ("password", "TestPasswordReset"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -279,7 +288,7 @@ class TestClusterPasswordReset(fakes.TestDws):
             self._cluster.name, ignore_missing=False
         )
         self.client.reset_password.assert_called_with(
-            self._cluster, 'TestPasswordReset'
+            self._cluster, "TestPasswordReset"
         )
         self.assertIsNone(result)
 
@@ -301,15 +310,15 @@ class TestScaleOutCluster(fakes.TestDws):
     def test_scale_out(self):
         arglist = [
             self._cluster.name,
-            '--add-nodes',
-            '2',
-            '--wait',
+            "--add-nodes",
+            "2",
+            "--wait",
         ]
 
         verifylist = [
-            ('cluster', self._cluster.name),
-            ('add_nodes', 2),
-            ('wait', True),
+            ("cluster", self._cluster.name),
+            ("add_nodes", 2),
+            ("wait", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -361,7 +370,7 @@ class TestShowCluster(fakes.TestDws):
         ]
 
         verifylist = [
-            ('cluster', self._cluster.id),
+            ("cluster", self._cluster.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -378,26 +387,26 @@ class TestShowCluster(fakes.TestDws):
 
     def test_show_non_existent(self):
         arglist = [
-            'unexist_dws_cluster',
+            "unexist_dws_cluster",
         ]
 
         verifylist = [
-            ('cluster', 'unexist_dws_cluster'),
+            ("cluster", "unexist_dws_cluster"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
+        find_mock_result = exceptions.CommandError("Resource Not Found")
         self.client.find_cluster = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
+            self.assertEqual("Resource Not Found", str(e))
         self.client.find_cluster.assert_called_with(
-            'unexist_dws_cluster', ignore_missing=False
+            "unexist_dws_cluster", ignore_missing=False
         )
 
 
@@ -419,8 +428,8 @@ class TestDeleteCluster(fakes.TestDws):
         ]
 
         verifylist = [
-            ('cluster', arglist),
-            ('keep_last_manual_snapshot', 0),
+            ("cluster", arglist),
+            ("keep_last_manual_snapshot", 0),
         ]
 
         # Verify cm is triggered with default parameters
@@ -441,8 +450,8 @@ class TestDeleteCluster(fakes.TestDws):
             arglist.append(dws_cluster.name)
 
         verifylist = [
-            ('cluster', arglist),
-            ('keep_last_manual_snapshot', 0),
+            ("cluster", arglist),
+            ("keep_last_manual_snapshot", 0),
         ]
 
         # Verify cm is triggered with default parameters
@@ -466,11 +475,11 @@ class TestDeleteCluster(fakes.TestDws):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._cluster[0].id,
-            'unexist_dws_cluster',
+            "unexist_dws_cluster",
         ]
         verifylist = [
-            ('cluster', arglist),
-            ('keep_last_manual_snapshot', 0),
+            ("cluster", arglist),
+            ("keep_last_manual_snapshot", 0),
         ]
 
         # Verify cm is triggered with default parameters
@@ -483,6 +492,6 @@ class TestDeleteCluster(fakes.TestDws):
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('1 of 2 Cluster(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 Cluster(s) failed to delete.", str(e))
 
         self.client.delete_cluster.assert_any_call(self._cluster[0].id, 0)

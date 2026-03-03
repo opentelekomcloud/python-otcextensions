@@ -13,11 +13,11 @@
 """
 List VPC Routes
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for route in conn.vpc.routes():
     print(route)

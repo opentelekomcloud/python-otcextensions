@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.csbs.v1 import _proxy
 
 
 class CsbsService(service_description.ServiceDescription):
     """The CSBS service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {"1": _proxy.Proxy}

@@ -11,30 +11,26 @@
 # under the License.
 import os
 
-from openstack import resource
 from openstack import exceptions
+from openstack import resource
 
 
 class CronConfig(resource.Resource):
-    name = resource.Body('name', type=str)
-    cron = resource.Body('cron', type=str)
-    count = resource.Body('count', type=int)
-    start_time = resource.Body('start_time', type=int)
-    expired_time = resource.Body('expired_time', type=int)
+    name = resource.Body("name", type=str)
+    cron = resource.Body("cron", type=str)
+    count = resource.Body("count", type=int)
+    start_time = resource.Body("start_time", type=int)
+    expired_time = resource.Body("expired_time", type=int)
 
 
 class TacticsConfig(resource.Resource):
-    cron_configs = resource.Body(
-        'cron_configs', type=list, list_type=CronConfig
-    )
+    cron_configs = resource.Body("cron_configs", type=list, list_type=CronConfig)
 
 
 class ReservedInstance(resource.Resource):
-    base_path = '/fgs/functions/%(function_urn)s/reservedinstances'
+    base_path = "/fgs/functions/%(function_urn)s/reservedinstances"
     requires_id = False
-    _query_mapping = resource.QueryParameters(
-        'marker', 'limit', 'urn'
-    )
+    _query_mapping = resource.QueryParameters("marker", "limit", "urn")
 
     # Capabilities
     allow_fetch = True
@@ -42,29 +38,29 @@ class ReservedInstance(resource.Resource):
     allow_commit = True
 
     # Properties
-    function_urn = resource.URI('function_urn', type=str)
+    function_urn = resource.URI("function_urn", type=str)
     #: Number of reserved instances.
-    count = resource.Body('count', type=int)
+    count = resource.Body("count", type=int)
     #: Whether to enable the idle mode.
-    idle_mode = resource.Body('idle_mode', type=bool)
-    tactics_config = resource.Body('tactics_config', type=dict)
+    idle_mode = resource.Body("idle_mode", type=bool)
+    tactics_config = resource.Body("tactics_config", type=dict)
 
     # Attributes
-    qualifier_type = resource.Body('qualifier_type', type=str)
-    qualifier_name = resource.Body('qualifier_name', type=str)
-    min_count = resource.Body('min_count', type=int)
-    func_urn = resource.Body('func_urn', type=str)
+    qualifier_type = resource.Body("qualifier_type", type=str)
+    qualifier_name = resource.Body("qualifier_name", type=str)
+    min_count = resource.Body("min_count", type=int)
+    func_urn = resource.Body("func_urn", type=str)
 
     @classmethod
     def list(
-            cls,
-            session,
-            paginated=True,
-            base_path=None,
-            allow_unknown_params=False,
-            *,
-            microversion=None,
-            **params,
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        *,
+        microversion=None,
+        **params,
     ):
         """This method is a generator which yields resource objects.
 
@@ -111,10 +107,10 @@ class ReservedInstance(resource.Resource):
             base_path = cls.base_path
 
         last_part = os.path.basename(base_path)
-        if last_part == 'reservedinstanceconfigs':
-            cls.resources_key = 'reserved_instances'
+        if last_part == "reservedinstanceconfigs":
+            cls.resources_key = "reserved_instances"
         else:
-            cls.resources_key = 'reservedinstances'
+            cls.resources_key = "reservedinstances"
 
         cls._query_mapping._validate(params, base_path=base_path)
         query_params = cls._query_mapping._transpose(params, cls)
@@ -125,9 +121,11 @@ class ReservedInstance(resource.Resource):
             response = session.get(
                 uri,
                 headers={
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'},
-                params=query_params.copy())
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                params=query_params.copy(),
+            )
             exceptions.raise_from_response(response)
 
             data = response.json()
@@ -144,7 +142,8 @@ class ReservedInstance(resource.Resource):
                 value = cls.existing(
                     microversion=microversion,
                     connection=session._get_connection(),
-                    **raw_resource)
+                    **raw_resource,
+                )
                 yield value
 
             return

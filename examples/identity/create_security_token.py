@@ -13,15 +13,15 @@
 """
 Create Temporary AK/SK credentials
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 token = conn.identity.create_security_token(
-    duration=60,    # duration in seconds
-    method='token'  # get temporary AK/SK based on current token
+    duration=60,  # duration in seconds
+    method="token",  # get temporary AK/SK based on current token
 )
 
 print(token)

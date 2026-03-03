@@ -11,10 +11,11 @@
 # under the License.
 #
 """Get Public VPC Endpoint Services."""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 public_services = list(conn.vpcep.public_services())
 print(public_services)

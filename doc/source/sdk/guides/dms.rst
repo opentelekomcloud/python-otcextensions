@@ -107,7 +107,7 @@ This interface is used to create a Queue Group with
 parameters.
 
 .. literalinclude:: ../examples/dms/create_queue_group.py
-   :lines: 16-26
+   :lines: 16-24
 
 Find Queue Group
 ^^^^^^^^^^^^^^^^
@@ -144,7 +144,7 @@ This interface is used to send a message with
 parameters.
 
 .. literalinclude:: ../examples/dms/send_messages.py
-   :lines: 16-42
+   :lines: 16-37
 
 Consume message
 ^^^^^^^^^^^^^^^
@@ -156,7 +156,7 @@ and
 :class:`~otcextensions.sdk.dms.v1.group.Group`.
 
 .. literalinclude:: ../examples/dms/consume_message.py
-   :lines: 16-26
+   :lines: 16-24
 
 Confirm message
 ^^^^^^^^^^^^^^^
@@ -166,7 +166,7 @@ class
 :class:`~otcextensions.sdk.dms.v1.message.Messages`.
 
 .. literalinclude:: ../examples/dms/confirm_message.py
-   :lines: 16-38
+   :lines: 16-34
 
 DMS Instances
 -------------
@@ -270,7 +270,7 @@ This interface is used to create an Instance topic with
 parameters.
 
 .. literalinclude:: ../examples/dms/create_instance_topic.py
-   :lines: 16-28
+   :lines: 16-27
 
 Delete Instance Topic
 ^^^^^^^^^^^^^^^^^^^^^

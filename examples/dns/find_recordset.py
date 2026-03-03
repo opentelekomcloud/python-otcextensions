@@ -13,13 +13,14 @@
 """
 Find DNS recordset by name or id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-zone = 'zone_id'
-name_or_id = 'recordset_name_or_id'
+zone = "zone_id"
+name_or_id = "recordset_name_or_id"
 recordset = conn.dns.find_recordset(zone=zone, name_or_id=name_or_id)
 print(recordset)

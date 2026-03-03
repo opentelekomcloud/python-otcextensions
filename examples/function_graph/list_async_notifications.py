@@ -13,12 +13,13 @@
 """
 List asynchronous invocation setting of a function version
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-for fg in conn.functiongraph.async_notifications(function='urn'):
+for fg in conn.functiongraph.async_notifications(function="urn"):
     print(fg)

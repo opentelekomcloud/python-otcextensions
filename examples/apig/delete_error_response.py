@@ -13,13 +13,14 @@
 """
 Delete error response from api group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 response = conn.apig.delete_error_response(
     gateway="gateway_id",
     group="group_id",
     response="response_id",
-    response_type='NOT_FOUND'
+    response_type="NOT_FOUND",
 )

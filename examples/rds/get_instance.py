@@ -13,12 +13,12 @@
 """
 Get a RDS instance by id or class Instance
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-instance = 'instance_id'
+instance = "instance_id"
 instance = conn.rds.get_instance(instance)
 print(instance)

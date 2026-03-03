@@ -11,10 +11,11 @@
 # under the License.
 #
 """Delete VPC Endpoint."""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-endpoint_id = 'endpoint-uuid'
+endpoint_id = "endpoint-uuid"
 conn.vpcep.delete_endpoint(endpoint_id, ignore_missing=False)

@@ -13,15 +13,10 @@
 """
 Verify the API definition
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "type": "name",
-    "name": "api_name"
-}
-check = conn.apig.check_api(
-    gateway="gateway_id",
-    **attrs
-)
+conn = openstack.connect(cloud="otc")
+attrs = {"type": "name", "name": "api_name"}
+check = conn.apig.check_api(gateway="gateway_id", **attrs)

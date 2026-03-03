@@ -13,13 +13,13 @@
 """
 List API calls for a specified period
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
-    'api_id': '64182cc7e77245ebbae8cf3b8522a540',
-    'duration': '1h',
+    "api_id": "64182cc7e77245ebbae8cf3b8522a540",
+    "duration": "1h",
 }
-found = conn.apig.list_api_calls_for_period(gateway='gateway_id_here',
-                                            **attrs)
+found = conn.apig.list_api_calls_for_period(gateway="gateway_id_here", **attrs)

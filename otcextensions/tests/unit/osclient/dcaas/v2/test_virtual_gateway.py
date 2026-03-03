@@ -11,13 +11,11 @@
 # under the License.
 #
 import mock
+from openstackclient.tests.unit import utils as tests_utils
+from osc_lib import exceptions
 
 from otcextensions.osclient.dcaas.v2 import virtual_gateway
 from otcextensions.tests.unit.osclient.dcaas.v2 import fakes
-
-from osc_lib import exceptions
-
-from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListVirtualGateway(fakes.TestDcaas):
@@ -25,31 +23,17 @@ class TestListVirtualGateway(fakes.TestDcaas):
     objects = fakes.FakeVirtualGateway.create_multiple(3)
 
     column_list_headers = (
-        'id',
-        'name',
-        'vpc id',
-        'local ep group id',
-        'type',
-        'status'
+        "id",
+        "name",
+        "vpc id",
+        "local ep group id",
+        "type",
+        "status",
     )
-    columns = (
-        'id',
-        'name',
-        'vpc id',
-        'local ep group id',
-        'type',
-        'status'
-    )
+    columns = ("id", "name", "vpc id", "local ep group id", "type", "status")
     data = []
     for s in objects:
-        data.append((
-            s.id,
-            s.name,
-            s.vpc_id,
-            s.local_ep_group_id,
-            s.type,
-            s.status
-        ))
+        data.append((s.id, s.name, s.vpc_id, s.local_ep_group_id, s.type, s.status))
 
     def setUp(self):
         super(TestListVirtualGateway, self).setUp()
@@ -71,20 +55,26 @@ class TestListVirtualGateway(fakes.TestDcaas):
 
     def test_list_args(self):
         arglist = [
-            '--id', '1',
-            '--name', 'test',
-            '--vpc_id', 'vpc_id1',
-            '--local_ep_group_id', 'lepg_id1',
-            '--type', 'double ipsec',
-            '--status', 'ACTIVE'
+            "--id",
+            "1",
+            "--name",
+            "test",
+            "--vpc_id",
+            "vpc_id1",
+            "--local_ep_group_id",
+            "lepg_id1",
+            "--type",
+            "double ipsec",
+            "--status",
+            "ACTIVE",
         ]
         verifylist = [
-            ('id', '1'),
-            ('name', 'test'),
-            ('vpc_id', 'vpc_id1'),
-            ('local_ep_group_id', 'lepg_id1'),
-            ('type', 'double ipsec'),
-            ('status', 'ACTIVE')
+            ("id", "1"),
+            ("name", "test"),
+            ("vpc_id", "vpc_id1"),
+            ("local_ep_group_id", "lepg_id1"),
+            ("type", "double ipsec"),
+            ("status", "ACTIVE"),
         ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -92,12 +82,12 @@ class TestListVirtualGateway(fakes.TestDcaas):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            id='1',
-            name='test',
-            vpc_id='vpc_id1',
-            local_ep_group_id='lepg_id1',
-            type='double ipsec',
-            status='ACTIVE'
+            id="1",
+            name="test",
+            vpc_id="vpc_id1",
+            local_ep_group_id="lepg_id1",
+            type="double ipsec",
+            status="ACTIVE",
         )
 
 
@@ -105,18 +95,18 @@ class TestCreateVirtualGateway(fakes.TestDcaas):
     _data = fakes.FakeVirtualGateway.create_one()
 
     columns = (
-        'admin_state_up',
-        'bgp_asn',
-        'description',
-        'device_id',
-        'id',
-        'ipsec_bandwidth',
-        'local_ep_group_id',
-        'name',
-        'redundant_device_id',
-        'status',
-        'type',
-        'vpc_id'
+        "admin_state_up",
+        "bgp_asn",
+        "description",
+        "device_id",
+        "id",
+        "ipsec_bandwidth",
+        "local_ep_group_id",
+        "name",
+        "redundant_device_id",
+        "status",
+        "type",
+        "vpc_id",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -128,43 +118,51 @@ class TestCreateVirtualGateway(fakes.TestDcaas):
 
     def test_create(self):
         arglist = [
-            'vpc_id1',
-            'lepg_id1',
-            '--name', 'test',
-            '--description', 'test description',
-            '--device_id', 'device_id1',
-            '--redundant_device_id', 'red_dev_id1',
-            '--type', 'default',
-            '--ipsec_bandwidth', '50',
-            '--bgp_asn', '10',
-            '--admin_state_up', 'True'
+            "vpc_id1",
+            "lepg_id1",
+            "--name",
+            "test",
+            "--description",
+            "test description",
+            "--device_id",
+            "device_id1",
+            "--redundant_device_id",
+            "red_dev_id1",
+            "--type",
+            "default",
+            "--ipsec_bandwidth",
+            "50",
+            "--bgp_asn",
+            "10",
+            "--admin_state_up",
+            "True",
         ]
         verifylist = [
-            ('vpc_id', 'vpc_id1'),
-            ('local_ep_group_id', 'lepg_id1'),
-            ('name', 'test'),
-            ('description', 'test description'),
-            ('device_id', 'device_id1'),
-            ('redundant_device_id', 'red_dev_id1'),
-            ('type', 'default'),
-            ('ipsec_bandwidth', 50),
-            ('bgp_asn', 10),
-            ('admin_state_up', True)
+            ("vpc_id", "vpc_id1"),
+            ("local_ep_group_id", "lepg_id1"),
+            ("name", "test"),
+            ("description", "test description"),
+            ("device_id", "device_id1"),
+            ("redundant_device_id", "red_dev_id1"),
+            ("type", "default"),
+            ("ipsec_bandwidth", 50),
+            ("bgp_asn", 10),
+            ("admin_state_up", True),
         ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
         self.client.create_virtual_gateway.assert_called_with(
-            name='test',
-            vpc_id='vpc_id1',
-            local_ep_group_id='lepg_id1',
-            description='test description',
-            device_id='device_id1',
-            redundant_device_id='red_dev_id1',
-            type='default',
+            name="test",
+            vpc_id="vpc_id1",
+            local_ep_group_id="lepg_id1",
+            description="test description",
+            device_id="device_id1",
+            redundant_device_id="red_dev_id1",
+            type="default",
             ipsec_bandwidth=50,
             bgp_asn=10,
-            admin_state_up=True
+            admin_state_up=True,
         )
         self.assertEqual(self.columns, columns)
 
@@ -174,18 +172,18 @@ class TestShowVirtualGateway(fakes.TestDcaas):
     _data = fakes.FakeVirtualGateway.create_one()
 
     columns = (
-        'admin_state_up',
-        'bgp_asn',
-        'description',
-        'device_id',
-        'id',
-        'ipsec_bandwidth',
-        'local_ep_group_id',
-        'name',
-        'redundant_device_id',
-        'status',
-        'type',
-        'vpc_id'
+        "admin_state_up",
+        "bgp_asn",
+        "description",
+        "device_id",
+        "id",
+        "ipsec_bandwidth",
+        "local_ep_group_id",
+        "name",
+        "redundant_device_id",
+        "status",
+        "type",
+        "vpc_id",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -198,15 +196,20 @@ class TestShowVirtualGateway(fakes.TestDcaas):
     def test_show_no_option(self):
         arglist = []
         verifylist = []
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
             self._data.id,
         ]
         verifylist = [
-            ('virtual_gateway', self._data.id),
+            ("virtual_gateway", self._data.id),
         ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -218,25 +221,19 @@ class TestShowVirtualGateway(fakes.TestDcaas):
         self.assertEqual(self.data, data)
 
     def test_show_non_existing(self):
-        arglist = [
-            'unexisting_virtual_gateway'
-        ]
-        verifylist = [
-            ('virtual_gateway', 'unexisting_virtual_gateway')
-        ]
+        arglist = ["unexisting_virtual_gateway"]
+        verifylist = [("virtual_gateway", "unexisting_virtual_gateway")]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.find_virtual_gateway = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        find_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.find_virtual_gateway = mock.Mock(side_effect=find_mock_result)
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
+            self.assertEqual("Resource Not Found", str(e))
         self.client.find_virtual_gateway.assert_called_with(
-            'unexisting_virtual_gateway'
+            "unexisting_virtual_gateway"
         )
 
 
@@ -245,18 +242,18 @@ class TestUpdateVirtualGateway(fakes.TestDcaas):
     _data = fakes.FakeVirtualGateway.create_one()
 
     columns = (
-        'admin_state_up',
-        'bgp_asn',
-        'description',
-        'device_id',
-        'id',
-        'ipsec_bandwidth',
-        'local_ep_group_id',
-        'name',
-        'redundant_device_id',
-        'status',
-        'type',
-        'vpc_id'
+        "admin_state_up",
+        "bgp_asn",
+        "description",
+        "device_id",
+        "id",
+        "ipsec_bandwidth",
+        "local_ep_group_id",
+        "name",
+        "redundant_device_id",
+        "status",
+        "type",
+        "vpc_id",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -271,29 +268,30 @@ class TestUpdateVirtualGateway(fakes.TestDcaas):
     def test_update(self):
         arglist = [
             self._data.id,
-            '--name', 'updated_name',
-            '--description', 'updated description',
-            '--local_ep_group_id', 'lepg_id2'
+            "--name",
+            "updated_name",
+            "--description",
+            "updated description",
+            "--local_ep_group_id",
+            "lepg_id2",
         ]
         verifylist = [
-            ('virtual_gateway', self._data.id),
-            ('name', 'updated_name'),
-            ('description', 'updated description'),
-            ('local_ep_group_id', 'lepg_id2')
+            ("virtual_gateway", self._data.id),
+            ("name", "updated_name"),
+            ("description", "updated description"),
+            ("local_ep_group_id", "lepg_id2"),
         ]
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.api_mock.side_effect = [self._data]
 
         self.client.api_mock.assert_called_with(
             self._data.id,
-            name='updated_name',
-            description='updated description',
-            local_ep_group_id='lepg_id2'
+            name="updated_name",
+            description="updated description",
+            local_ep_group_id="lepg_id2",
         )
         self.assertEqual(self.columns, columns)
 
@@ -310,13 +308,9 @@ class TestDeleteVirtualGateway(fakes.TestDcaas):
         arglist = [
             self._data.name,
         ]
-        verifylist = [
-            ('virtual_gateway', self._data.name)
-        ]
+        verifylist = [("virtual_gateway", self._data.name)]
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-        self.client.find_virtual_gateway = (
-            mock.Mock(return_value=self._data)
-        )
+        self.client.find_virtual_gateway = mock.Mock(return_value=self._data)
         result = self.cmd.take_action(parsed_args)
         self.client.delete_virtual_gateway.assert_called_with(self._data.id)
         self.assertIsNone(result)

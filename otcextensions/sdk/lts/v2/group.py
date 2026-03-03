@@ -15,14 +15,13 @@ import typing as ty
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
 from otcextensions.sdk.lts.v2 import stream as _stream
 
 
 class Group(resource.Resource):
-    resource_key = 'log_groups'
-    resources_key = 'log_groups'
-    base_path = '/groups'
+    resource_key = "log_groups"
+    resources_key = "log_groups"
+    base_path = "/groups"
 
     # capabilities
     allow_create = True
@@ -32,20 +31,20 @@ class Group(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'id',
+        "id",
     )
 
     # Properties
     #: Time when a log group was created
-    creation_time = resource.Body('creation_time')
+    creation_time = resource.Body("creation_time")
     #: ID of the log group.
-    id = resource.Body('log_group_id', alternate_id=True)
+    id = resource.Body("log_group_id", alternate_id=True)
     #: Name of the log group.
-    name = resource.Body('log_group_name')
+    name = resource.Body("log_group_name")
     #: Log retention duration, in days (fixed to 7 days).
-    ttl_in_days = resource.Body('ttl_in_days', type=int)
+    ttl_in_days = resource.Body("ttl_in_days", type=int)
     #: Log group tag.
-    tag = resource.Body('tag')
+    tag = resource.Body("tag")
 
     def _prepare_request_body(
         self,
@@ -59,9 +58,7 @@ class Group(resource.Resource):
             # Default case
             body = self._body.dirty
         else:
-            body = self._unpack_properties_to_resource_root(
-                self._body.dirty
-            )
+            body = self._unpack_properties_to_resource_root(self._body.dirty)
         return body
 
     def commit(
@@ -85,7 +82,7 @@ class Group(resource.Resource):
         # Avoid providing patch unconditionally to avoid breaking subclasses
         # without it.
         if self.commit_jsonpatch:
-            kwargs['patch'] = True
+            kwargs["patch"] = True
 
         request = self._prepare_request(
             prepend_key=prepend_key,
@@ -111,7 +108,7 @@ class Group(resource.Resource):
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param dict query: Additional parameters to create stream
         """
-        url = utils.urljoin(self.base_path, self.id, '/streams')
+        url = utils.urljoin(self.base_path, self.id, "/streams")
         resp = session.post(url, json=query)
         stream = _stream.Stream()
         stream._translate_response(resp)
@@ -126,11 +123,11 @@ class Group(resource.Resource):
         :param bool ignore_missing: Should it be deleted
          if doesn't exist or not
         """
-        url = utils.urljoin(self.base_path, self.id, '/streams/',
-                            log_stream_id)
+        url = utils.urljoin(self.base_path, self.id, "/streams/", log_stream_id)
         resp = session.delete(url)
         if resp.status_code == 404:
             if not ignore_missing:
                 raise exceptions.NotFoundException(
-                    str(ast.literal_eval(resp._content.decode('utf-8'))))
+                    str(ast.literal_eval(resp._content.decode("utf-8")))
+                )
         return None

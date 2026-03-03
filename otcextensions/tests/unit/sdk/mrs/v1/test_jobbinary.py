@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.mrs.v1 import jobbinary
 
 EXAMPLE = {
@@ -19,7 +18,7 @@ EXAMPLE = {
     "url": "/simple/mapreduce/program",
     "is_protected": False,
     "is_public": False,
-    "description": "this is the job binary template"
+    "description": "this is the job binary template",
 }
 
 
@@ -27,9 +26,9 @@ class TestJobBinary(base.TestCase):
 
     def test_basic(self):
         sot = jobbinary.Jobbinary()
-        self.assertEqual('job_binary', sot.resource_key)
-        self.assertEqual('binaries', sot.resources_key)
-        path = '/job-binaries'
+        self.assertEqual("job_binary", sot.resource_key)
+        self.assertEqual("binaries", sot.resources_key)
+        path = "/job-binaries"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -40,8 +39,8 @@ class TestJobBinary(base.TestCase):
 
     def test_make_it(self):
         sot = jobbinary.Jobbinary(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['url'], sot.url)
-        self.assertEqual(EXAMPLE['is_public'], sot.is_public)
-        self.assertEqual(EXAMPLE['is_protected'], sot.is_protected)
-        self.assertEqual(EXAMPLE['description'], sot.description)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["url"], sot.url)
+        self.assertEqual(EXAMPLE["is_public"], sot.is_public)
+        self.assertEqual(EXAMPLE["is_protected"], sot.is_protected)
+        self.assertEqual(EXAMPLE["description"], sot.description)

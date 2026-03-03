@@ -13,19 +13,20 @@
 """
 Publish Message via SMN
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
-    'subject': 'my_message_subject',
-    'message_structure': '{"default":"test v2 default", "email":"abc"}',
-    'message_template_name': 'template_name',
-    'message': 'my_message',
-    'endpoint': '+49123123456789',
-    'time_to_live': '3600'
+    "subject": "my_message_subject",
+    "message_structure": '{"default":"test v2 default", "email":"abc"}',
+    "message_template_name": "template_name",
+    "message": "my_message",
+    "endpoint": "+49123123456789",
+    "time_to_live": "3600",
 }
 response = conn.smn.publish_message(**attrs)
 print(response)

@@ -13,14 +13,15 @@
 """
 Get CCE Node Pool by ID
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-cluster = 'name_or_id'
-node_pool_id = 'node_pool_id'
+cluster = "name_or_id"
+node_pool_id = "node_pool_id"
 cluster = conn.cce.find_cluster(cluster)
 pool = conn.cce.get_node_pool(cluster=cluster, node_pool_id=node_pool_id)
 print(pool)

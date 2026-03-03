@@ -26,17 +26,12 @@ class TestListAutoScalingQuota(TestAutoScalingQuota):
 
     quotas = fakes.FakeQuota.create_multiple(3)
 
-    columns = ('type', 'used', 'quota', 'max')
+    columns = ("type", "used", "quota", "max")
 
     data = []
 
     for s in quotas:
-        data.append((
-            s.type,
-            s.used,
-            s.quota,
-            s.max
-        ))
+        data.append((s.type, s.used, s.quota, s.max))
 
     def setUp(self):
         super(TestListAutoScalingQuota, self).setUp()
@@ -46,20 +41,17 @@ class TestListAutoScalingQuota(TestAutoScalingQuota):
         self.client.quotas = mock.Mock()
 
     def test_list_quota(self):
-        arglist = [
-        ]
+        arglist = []
 
         verifylist = [
-            ('group', None),
+            ("group", None),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.quotas.side_effect = [
-            self.quotas
-        ]
+        self.client.quotas.side_effect = [self.quotas]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -71,20 +63,19 @@ class TestListAutoScalingQuota(TestAutoScalingQuota):
 
     def test_list_group_quota(self):
         arglist = [
-            '--group', 'grp',
+            "--group",
+            "grp",
         ]
 
         verifylist = [
-            ('group', 'grp'),
+            ("group", "grp"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.quotas.side_effect = [
-            self.quotas
-        ]
+        self.client.quotas.side_effect = [self.quotas]
 
         grp_mock = mock.Mock()
         grp_mock.id = 2

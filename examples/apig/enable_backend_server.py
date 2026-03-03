@@ -13,13 +13,12 @@
 """
 Enable backend server
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "member_ids": ["id"]
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"member_ids": ["id"]}
 conn.apig.enable_backend_server(
     gateway="gateway_id",
     vpc_channel="vpc_channel_id",

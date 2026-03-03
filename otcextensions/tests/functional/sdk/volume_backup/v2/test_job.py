@@ -18,6 +18,7 @@ class TestJob(base.BaseFunctionalTest):
     def setUp(self):
         super(TestJob, self).setUp()
 
+
 #     def test_get_job(self):
 #
 #         job = self.client.get_job('gf')

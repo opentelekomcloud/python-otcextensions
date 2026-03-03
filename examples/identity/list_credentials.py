@@ -13,11 +13,11 @@
 """
 List all AK/SK credentials
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for cred in conn.identity.credentials():
     print(cred)

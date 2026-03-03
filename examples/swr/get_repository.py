@@ -13,17 +13,15 @@
 """
 Get one swr repository
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-org_name = 'swr_org'
-repo_name = 'swr_repo'
-repo = conn.swr.get_repository(
-    namespace=org_name,
-    repository=repo_name
-)
+org_name = "swr_org"
+repo_name = "swr_repo"
+repo = conn.swr.get_repository(namespace=org_name, repository=repo_name)
 print(repo)

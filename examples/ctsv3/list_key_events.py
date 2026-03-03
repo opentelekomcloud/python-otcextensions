@@ -13,10 +13,11 @@
 """
 List Cloud Trace Service Key Events
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-events = list(conn.ctsv3.key_events(notification_type='smn'))
+events = list(conn.ctsv3.key_events(notification_type="smn"))
 print(events)

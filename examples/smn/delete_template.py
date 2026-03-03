@@ -13,12 +13,13 @@
 """
 Delete one SMN message template
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-template = 'name_or_id'
+template = "name_or_id"
 template = conn.smn.find_template(name_or_id=template)
 conn.smn.delete_template(template)

@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts training job v1 action implementations"""
+
 import logging
 
 from cliff import columns as cliff_columns
@@ -34,9 +35,7 @@ _formatters = {
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class JobStatus(cliff_columns.FormattableColumn):
@@ -125,9 +124,7 @@ class ListTrainingJobVersions(command.Lister):
         return (
             self.columns,
             (
-                utils.get_dict_properties(
-                    s, self.columns, formatters=_formatters
-                )
+                utils.get_dict_properties(s, self.columns, formatters=_formatters)
                 for s in data
             ),
         )
@@ -156,9 +153,7 @@ class CreateTrainingJobVersion(command.ShowOne):
             "--app-url",
             metavar="<app_url>",
             required=True,
-            help=_(
-                "Code directory of a training job, for example, /usr/app/."
-            ),
+            help=_("Code directory of a training job, for example, /usr/app/."),
         )
         mandatary_group.add_argument(
             "--boot-file-url",
@@ -174,10 +169,7 @@ class CreateTrainingJobVersion(command.ShowOne):
             metavar="<spec_id>",
             required=True,
             type=int,
-            help=_(
-                "ID of the resource specifications selected for a "
-                "training job."
-            ),
+            help=_("ID of the resource specifications selected for a " "training job."),
         )
         mandatary_group.add_argument(
             "--engine-id",
@@ -327,9 +319,7 @@ class ShowTrainingJobVersion(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        obj = client.get_training_job_version(
-            parsed_args.jobId, parsed_args.versionId
-        )
+        obj = client.get_training_job_version(parsed_args.jobId, parsed_args.versionId)
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
@@ -358,9 +348,7 @@ class StopTrainingJobVersion(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        obj = client.stop_training_job_version(
-            parsed_args.jobId, parsed_args.versionId
-        )
+        obj = client.stop_training_job_version(parsed_args.jobId, parsed_args.versionId)
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
         return (display_columns, data)
@@ -387,6 +375,4 @@ class DeleteTrainingJobVersion(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        client.delete_training_job_version(
-            parsed_args.jobId, parsed_args.versionId
-        )
+        client.delete_training_job_version(parsed_args.jobId, parsed_args.versionId)

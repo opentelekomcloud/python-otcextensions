@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.obs.v1 import _proxy
 
 
 class ObsService(service_description.ServiceDescription):
     """The OBS service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {"1": _proxy.Proxy}

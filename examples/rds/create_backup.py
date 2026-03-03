@@ -13,13 +13,13 @@
 """
 Create a backup of an RDS instance
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-backup = conn.rds.create_backup(instance='instance_id',
-                                name='my_backup',
-                                description='This is new')
+backup = conn.rds.create_backup(
+    instance="instance_id", name="my_backup", description="This is new"
+)
 print(backup)

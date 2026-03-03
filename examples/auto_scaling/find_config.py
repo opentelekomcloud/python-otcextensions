@@ -13,10 +13,11 @@
 """
 Find Auto-Scaling Configuration by name or id.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 config = "config_name_or_id"
 

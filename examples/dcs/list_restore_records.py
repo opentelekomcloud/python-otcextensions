@@ -13,12 +13,13 @@
 """
 List all Restore Records of a Distributed Message Service instance
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-instance = 'instance_id'
+instance = "instance_id"
 for rr in conn.dcs.restore_records(instance):
     print(rr)

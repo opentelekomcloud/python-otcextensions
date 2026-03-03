@@ -13,12 +13,10 @@
 """
 Get throttling policy
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.get_throttling_policy(
-    gateway="gateway_id",
-    policy="policy_id"
-)
+conn.apig.get_throttling_policy(gateway="gateway_id", policy="policy_id")

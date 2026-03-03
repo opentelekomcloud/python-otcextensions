@@ -13,19 +13,20 @@
 """
 Update exist repository
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    'namespace': 'org_name',
-    'repository': 'repo_name',
-    'category': 'windows',
-    'description': 'desc',
-    'is_public': False,
+    "namespace": "org_name",
+    "repository": "repo_name",
+    "category": "windows",
+    "description": "desc",
+    "is_public": False,
 }
 
 repo = conn.swr.update_repository(**attrs)

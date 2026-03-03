@@ -13,10 +13,9 @@ import uuid
 
 from openstack import _log
 from openstack import exceptions
-
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestDataKey(base.BaseFunctionalTest):
@@ -24,9 +23,7 @@ class TestDataKey(base.BaseFunctionalTest):
     def setUp(self):
         super(TestDataKey, self).setUp()
         # self.cmk = self.conn.kms.find_key(alias='sdk_test_key1')
-        self.cmk = self.conn.kms.create_key(
-            key_alias=uuid.uuid4().hex
-        )
+        self.cmk = self.conn.kms.create_key(key_alias=uuid.uuid4().hex)
 
     def tearDown(self):
         try:
@@ -35,8 +32,9 @@ class TestDataKey(base.BaseFunctionalTest):
                 if key.id:
                     self.conn.kms.schedule_key_deletion(key, 7)
         except exceptions.SDKException as e:
-            self.warning = _logger.warning('Got exception during '
-                                           'clearing resources %s' % e.message)
+            self.warning = _logger.warning(
+                "Got exception during " "clearing resources %s" % e.message
+            )
         super(TestDataKey, self).tearDown()
 
     def test_dek(self):
@@ -44,15 +42,13 @@ class TestDataKey(base.BaseFunctionalTest):
         cmk = self.cmk
 
         dek = self.conn.kms.create_datakey(
-            cmk=cmk,
-            datakey_length=512,
-            encryption_context={"a": "b", "c": "d"})
+            cmk=cmk, datakey_length=512, encryption_context={"a": "b", "c": "d"}
+        )
         self.assertIsNotNone(dek.plain_text)
 
         dek2 = self.conn.kms.create_datakey_wo_plain(
-            cmk=cmk,
-            datakey_length=512,
-            encryption_context={"a": "b", "c": "d"})
+            cmk=cmk, datakey_length=512, encryption_context={"a": "b", "c": "d"}
+        )
         self.assertIsNone(dek2.plain_text)
 
         not_encrypted_value = dek.plain_text
@@ -62,11 +58,12 @@ class TestDataKey(base.BaseFunctionalTest):
 
         self.assertIsNotNone(encrypted_value)
         self.assertNotEqual(not_encrypted_value, encrypted_value)
-        _logger.debug('encrypted DEK = %s' % encrypted_value)
+        _logger.debug("encrypted DEK = %s" % encrypted_value)
 
         decrypt_key = self.conn.kms.decrypt_datakey(
             cmk=cmk,
             cipher_text=encrypted_value,
-            datakey_cipher_length=dek.datakey_cipher_length)
+            datakey_cipher_length=dek.datakey_cipher_length,
+        )
         decrypted_value = decrypt_key.plain_text
         self.assertEqual(not_encrypted_value, decrypted_value)

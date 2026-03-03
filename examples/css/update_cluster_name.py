@@ -19,9 +19,9 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'asomogyi_0506_update_vpruthi'
+cluster_name_or_id = "asomogyi_0506_update_vpruthi"
 
-new_name = 'asomogyi_0506_test'
+new_name = "asomogyi_0506_test"
 
 cluster = conn.css.find_cluster(cluster_name_or_id)
 

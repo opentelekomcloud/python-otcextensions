@@ -15,19 +15,19 @@ from openstack.tests.unit import base
 from otcextensions.sdk.dws.v1 import flavor
 
 EXAMPLE = {
-    'id': uuid.uuid4().hex,
-    'detail': [
-        {'value': '32', 'type': 'vCPU'},
-        {'value': '4000', 'type': 'SSD', 'unit': 'GB'},
-        {'value': '256', 'type': 'mem', 'unit': 'GB'},
-        {'value': 'eu-de-02,eu-de-01', 'type': 'availableZones'},
+    "id": uuid.uuid4().hex,
+    "detail": [
+        {"value": "32", "type": "vCPU"},
+        {"value": "4000", "type": "SSD", "unit": "GB"},
+        {"value": "256", "type": "mem", "unit": "GB"},
+        {"value": "eu-de-02,eu-de-01", "type": "availableZones"},
     ],
-    'spec_name': 'dws2.m6.8xlarge.8',
-    'vCPU': '32',
-    'disk_type': 'SSD',
-    'disk_size': '4000',
-    'mem': '256',
-    'availableZones': 'eu-de-02,eu-de-01',
+    "spec_name": "dws2.m6.8xlarge.8",
+    "vCPU": "32",
+    "disk_type": "SSD",
+    "disk_size": "4000",
+    "mem": "256",
+    "availableZones": "eu-de-02,eu-de-01",
 }
 
 
@@ -38,8 +38,8 @@ class TestFlavor(base.TestCase):
     def test_basic(self):
         sot = flavor.Flavor()
 
-        self.assertEqual('/node-types', sot.base_path)
-        self.assertEqual('node_types', sot.resources_key)
+        self.assertEqual("/node-types", sot.base_path)
+        self.assertEqual("node_types", sot.resources_key)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_create)
@@ -48,12 +48,12 @@ class TestFlavor(base.TestCase):
 
     def test_make_it(self):
         sot = flavor.Flavor(**EXAMPLE)
-        self.assertEqual(EXAMPLE['availableZones'], sot.availability_zones)
-        self.assertEqual(EXAMPLE['detail'], sot.detail)
-        self.assertEqual(EXAMPLE['disk_type'], sot.disk_type)
-        self.assertEqual(int(EXAMPLE['disk_size']), sot.disk_size)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(int(EXAMPLE['mem']), sot.ram)
-        self.assertEqual(EXAMPLE['spec_name'], sot.name)
-        self.assertEqual(EXAMPLE['spec_name'], sot.spec_name)
-        self.assertEqual(int(EXAMPLE['vCPU']), sot.vcpu)
+        self.assertEqual(EXAMPLE["availableZones"], sot.availability_zones)
+        self.assertEqual(EXAMPLE["detail"], sot.detail)
+        self.assertEqual(EXAMPLE["disk_type"], sot.disk_type)
+        self.assertEqual(int(EXAMPLE["disk_size"]), sot.disk_size)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(int(EXAMPLE["mem"]), sot.ram)
+        self.assertEqual(EXAMPLE["spec_name"], sot.name)
+        self.assertEqual(EXAMPLE["spec_name"], sot.spec_name)
+        self.assertEqual(int(EXAMPLE["vCPU"]), sot.vcpu)

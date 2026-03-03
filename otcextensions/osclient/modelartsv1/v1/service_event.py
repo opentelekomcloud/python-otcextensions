@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts Service Update Logs v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -53,8 +54,7 @@ class ServiceEvents(command.Lister):
             metavar="<start_time>",
             type=int,
             help=_(
-                "Start time of the event to be filtered. The value is "
-                "milliseconds."
+                "Start time of the event to be filtered. The value is " "milliseconds."
             ),
         )
         parser.add_argument(
@@ -62,8 +62,7 @@ class ServiceEvents(command.Lister):
             metavar="<end_time>",
             type=int,
             help=_(
-                "End time of the event to be filtered. The value is "
-                "milliseconds."
+                "End time of the event to be filtered. The value is " "milliseconds."
             ),
         )
         parser.add_argument(
@@ -84,9 +83,7 @@ class ServiceEvents(command.Lister):
         parser.add_argument(
             "--sort-by",
             metavar="<sort_by>",
-            help=_(
-                "Specified sorting field. The default value is occur_time."
-            ),
+            help=_("Specified sorting field. The default value is occur_time."),
         )
         parser.add_argument(
             "--order",
@@ -116,9 +113,7 @@ class ServiceEvents(command.Lister):
             if val or str(val) == "0":
                 query_params[arg] = val
 
-        service = client.find_service(
-            parsed_args.service, ignore_missing=False
-        )
+        service = client.find_service(parsed_args.service, ignore_missing=False)
         data = client.service_events(service.id, **query_params)
 
         formatters = {
@@ -128,9 +123,7 @@ class ServiceEvents(command.Lister):
         return (
             self.columns,
             (
-                utils.get_item_properties(
-                    s, self.columns, formatters=formatters
-                )
+                utils.get_item_properties(s, self.columns, formatters=formatters)
                 for s in data
             ),
         )

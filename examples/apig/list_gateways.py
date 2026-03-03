@@ -13,13 +13,12 @@
 """
 Show list of gateways
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    'limit': 2
-}
+attrs = {"limit": 2}
 for gw in conn.apig.gateways(**attrs):
     print(gw.name)

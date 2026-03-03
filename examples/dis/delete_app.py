@@ -13,10 +13,11 @@
 """
 Delete DIS Consumption App by app name.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-app_name = 'newapp'
+app_name = "newapp"
 conn.dis.delete_app(app_name)

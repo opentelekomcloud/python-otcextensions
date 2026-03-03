@@ -12,19 +12,18 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.apig.v2 import app
 
-
 EXAMPLE_QUOTA = {
-    'gateway_id': 'gateway-67890',
-    'app_id': 'app-12345',
-    'app_quota_id': 'quota-123',
-    'name': 'Test Quota',
-    'call_limits': 1000,
-    'time_unit': 'minute',
-    'time_interval': 60,
-    'remark': 'This is a test quota',
-    'reset_time': '2025-02-07T12:00:00Z',
-    'create_time': '2025-02-07T12:30:00Z',
-    'bound_app_num': 5
+    "gateway_id": "gateway-67890",
+    "app_id": "app-12345",
+    "app_quota_id": "quota-123",
+    "name": "Test Quota",
+    "call_limits": 1000,
+    "time_unit": "minute",
+    "time_interval": 60,
+    "remark": "This is a test quota",
+    "reset_time": "2025-02-07T12:00:00Z",
+    "create_time": "2025-02-07T12:30:00Z",
+    "bound_app_num": 5,
 }
 
 
@@ -32,21 +31,22 @@ class TestQuota(base.TestCase):
 
     def test_basic(self):
         sot = app.Quota()
-        self.assertEqual('/apigw/instances/%(gateway_id)s/apps/'
-                         '%(app_id)s/bound-quota',
-                         sot.base_path)
+        self.assertEqual(
+            "/apigw/instances/%(gateway_id)s/apps/" "%(app_id)s/bound-quota",
+            sot.base_path,
+        )
         self.assertTrue(sot.allow_fetch)
 
     def test_make_it(self):
         sot = app.Quota(**EXAMPLE_QUOTA)
-        self.assertEqual(EXAMPLE_QUOTA['gateway_id'], sot.gateway_id)
-        self.assertEqual(EXAMPLE_QUOTA['app_id'], sot.app_id)
-        self.assertEqual(EXAMPLE_QUOTA['app_quota_id'], sot.app_quota_id)
-        self.assertEqual(EXAMPLE_QUOTA['name'], sot.name)
-        self.assertEqual(EXAMPLE_QUOTA['call_limits'], sot.call_limits)
-        self.assertEqual(EXAMPLE_QUOTA['time_unit'], sot.time_unit)
-        self.assertEqual(EXAMPLE_QUOTA['time_interval'], sot.time_interval)
-        self.assertEqual(EXAMPLE_QUOTA['remark'], sot.remark)
-        self.assertEqual(EXAMPLE_QUOTA['reset_time'], sot.reset_time)
-        self.assertEqual(EXAMPLE_QUOTA['create_time'], sot.create_time)
-        self.assertEqual(EXAMPLE_QUOTA['bound_app_num'], sot.bound_app_num)
+        self.assertEqual(EXAMPLE_QUOTA["gateway_id"], sot.gateway_id)
+        self.assertEqual(EXAMPLE_QUOTA["app_id"], sot.app_id)
+        self.assertEqual(EXAMPLE_QUOTA["app_quota_id"], sot.app_quota_id)
+        self.assertEqual(EXAMPLE_QUOTA["name"], sot.name)
+        self.assertEqual(EXAMPLE_QUOTA["call_limits"], sot.call_limits)
+        self.assertEqual(EXAMPLE_QUOTA["time_unit"], sot.time_unit)
+        self.assertEqual(EXAMPLE_QUOTA["time_interval"], sot.time_interval)
+        self.assertEqual(EXAMPLE_QUOTA["remark"], sot.remark)
+        self.assertEqual(EXAMPLE_QUOTA["reset_time"], sot.reset_time)
+        self.assertEqual(EXAMPLE_QUOTA["create_time"], sot.create_time)
+        self.assertEqual(EXAMPLE_QUOTA["bound_app_num"], sot.bound_app_num)

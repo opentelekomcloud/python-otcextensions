@@ -11,25 +11,22 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dds.v3 import recycle_policy
 
-EXAMPLE = {
-    "enabled": True,
-    "retention_period_in_days": 3
-}
+EXAMPLE = {"enabled": True, "retention_period_in_days": 3}
 
 
 class TestRecyclePolicy(base.TestCase):
     def test_basic(self):
         sot = recycle_policy.RecyclePolicy()
-        path = 'instances/recycle-policy'
+        path = "instances/recycle-policy"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
 
     def test_make_it(self):
         sot = recycle_policy.RecyclePolicy(**EXAMPLE)
-        self.assertEqual(EXAMPLE['enabled'], sot.enabled)
-        self.assertEqual(EXAMPLE['retention_period_in_days'],
-                         sot.retention_period_in_days)
+        self.assertEqual(EXAMPLE["enabled"], sot.enabled)
+        self.assertEqual(
+            EXAMPLE["retention_period_in_days"], sot.retention_period_in_days
+        )

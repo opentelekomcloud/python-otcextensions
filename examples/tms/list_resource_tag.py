@@ -13,17 +13,18 @@
 """
 List Resource Tags
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 query = {
     "resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
     "resource_type": "vpc",
-    "project_id": "786ef11caa5c43ff80256be4c7fee8b7"
+    "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
 }
 tags = conn.tms.resource_tags(**query)
 print(tags)

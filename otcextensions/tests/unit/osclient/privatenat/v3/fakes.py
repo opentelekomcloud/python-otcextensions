@@ -13,7 +13,6 @@
 import uuid
 
 import mock
-
 from openstackclient.tests.unit import utils
 
 from otcextensions.sdk.natv3.v3 import gateway
@@ -21,7 +20,7 @@ from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
-    return tuple(getattr(data, attr, '') for attr in columns)
+    return tuple(getattr(data, attr, "") for attr in columns)
 
 
 class TestPrivateNat(utils.TestCommand):
@@ -37,12 +36,12 @@ class FakePrivateNatGateway(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'spec': 'Small',
-            'status': 'ACTIVE',
-            'project_id': 'project-' + uuid.uuid4().hex,
-            'enterprise_project_id': 'ep-' + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "spec": "Small",
+            "status": "ACTIVE",
+            "project_id": "project-" + uuid.uuid4().hex,
+            "enterprise_project_id": "ep-" + uuid.uuid4().hex,
         }
 
         return gateway.PrivateNatGateway(**object_info)

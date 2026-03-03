@@ -13,11 +13,12 @@
 """
 Get single CBR Vault
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-vault = 'vault_id'
+vault = "vault_id"
 vault = conn.cbr.get_vault(vault=vault)
 print(vault)

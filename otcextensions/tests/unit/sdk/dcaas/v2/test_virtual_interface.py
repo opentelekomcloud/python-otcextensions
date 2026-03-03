@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dcaas.v2 import virtual_interface
-
 
 EXAMPLE = {
     "name": "test-vi",
@@ -39,7 +36,7 @@ EXAMPLE = {
     "delete_time": "2016-01-28T16:25:27.690Z",
     "admin_state_up": True,
     "rate_limit": False,
-    "status": "PENDING_CREATE"
+    "status": "PENDING_CREATE",
 }
 
 
@@ -52,9 +49,9 @@ class TestVirtualInterface(base.TestCase):
 
     def test_basic(self):
         sot = virtual_interface.VirtualInterface()
-        self.assertEqual('virtual_interface', sot.resource_key)
-        self.assertEqual('virtual_interfaces', sot.resources_key)
-        self.assertEqual('/dcaas/virtual-interfaces', sot.base_path)
+        self.assertEqual("virtual_interface", sot.resource_key)
+        self.assertEqual("virtual_interfaces", sot.resources_key)
+        self.assertEqual("/dcaas/virtual-interfaces", sot.base_path)
 
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -65,29 +62,24 @@ class TestVirtualInterface(base.TestCase):
     def test_make_it(self):
 
         sot = virtual_interface.VirtualInterface(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['tenant_id'], sot.project_id)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['direct_connect_id'], sot.direct_connect_id)
-        self.assertEqual(EXAMPLE['vgw_id'], sot.vgw_id)
-        self.assertEqual(EXAMPLE['type'], sot.type)
-        self.assertEqual(EXAMPLE['service_type'], sot.service_type)
-        self.assertEqual(EXAMPLE['vlan'], sot.vlan)
-        self.assertEqual(EXAMPLE['bandwidth'], sot.bandwidth)
-        self.assertEqual(EXAMPLE['local_gateway_v4_ip'],
-                         sot.local_gateway_v4_ip)
-        self.assertEqual(EXAMPLE['remote_gateway_v4_ip'],
-                         sot.remote_gateway_v4_ip)
-        self.assertEqual(EXAMPLE['route_mode'], sot.route_mode)
-        self.assertEqual(EXAMPLE['bgp_asn'], sot.bgp_asn)
-        self.assertEqual(EXAMPLE['bgp_md5'], sot.bgp_md5)
-        self.assertEqual(EXAMPLE['remote_ep_group_id'],
-                         sot.remote_ep_group_id)
-        self.assertEqual(EXAMPLE['service_ep_group_id'],
-                         sot.service_ep_group_id)
-        self.assertEqual(EXAMPLE['create_time'], sot.create_time)
-        self.assertEqual(EXAMPLE['delete_time'], sot.delete_time)
-        self.assertEqual(EXAMPLE['admin_state_up'],
-                         sot.admin_state_up)
-        self.assertEqual(EXAMPLE['rate_limit'], sot.rate_limit)
-        self.assertEqual(EXAMPLE['status'], sot.status)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["tenant_id"], sot.project_id)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["direct_connect_id"], sot.direct_connect_id)
+        self.assertEqual(EXAMPLE["vgw_id"], sot.vgw_id)
+        self.assertEqual(EXAMPLE["type"], sot.type)
+        self.assertEqual(EXAMPLE["service_type"], sot.service_type)
+        self.assertEqual(EXAMPLE["vlan"], sot.vlan)
+        self.assertEqual(EXAMPLE["bandwidth"], sot.bandwidth)
+        self.assertEqual(EXAMPLE["local_gateway_v4_ip"], sot.local_gateway_v4_ip)
+        self.assertEqual(EXAMPLE["remote_gateway_v4_ip"], sot.remote_gateway_v4_ip)
+        self.assertEqual(EXAMPLE["route_mode"], sot.route_mode)
+        self.assertEqual(EXAMPLE["bgp_asn"], sot.bgp_asn)
+        self.assertEqual(EXAMPLE["bgp_md5"], sot.bgp_md5)
+        self.assertEqual(EXAMPLE["remote_ep_group_id"], sot.remote_ep_group_id)
+        self.assertEqual(EXAMPLE["service_ep_group_id"], sot.service_ep_group_id)
+        self.assertEqual(EXAMPLE["create_time"], sot.create_time)
+        self.assertEqual(EXAMPLE["delete_time"], sot.delete_time)
+        self.assertEqual(EXAMPLE["admin_state_up"], sot.admin_state_up)
+        self.assertEqual(EXAMPLE["rate_limit"], sot.rate_limit)
+        self.assertEqual(EXAMPLE["status"], sot.status)

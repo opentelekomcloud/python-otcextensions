@@ -13,30 +13,25 @@
 """
 Create Messages
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
-    'queue': 'queue_id',
-    'messages': [
+    "queue": "queue_id",
+    "messages": [
         {
-            'body': 'test1',
-            'attributes': {
-                'attribute1': 'value1',
-                'attribute2': 'value2'
-            }
+            "body": "test1",
+            "attributes": {"attribute1": "value1", "attribute2": "value2"},
         },
         {
-            'body': 'test2',
-            'attributes': {
-                'attribute1': 'value1',
-                'attribute2': 'value2'
-            }
-        }
-    ]
+            "body": "test2",
+            "attributes": {"attribute1": "value1", "attribute2": "value2"},
+        },
+    ],
 }
 for raw in conn.dms.send_messages(**attrs):
     print(raw)

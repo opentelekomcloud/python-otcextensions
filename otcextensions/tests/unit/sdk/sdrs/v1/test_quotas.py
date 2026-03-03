@@ -10,29 +10,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from keystoneauth1 import adapter
 import mock
-from openstack.tests.unit import base
+from keystoneauth1 import adapter
 
+from openstack.tests.unit import base
 from otcextensions.sdk.sdrs.v1 import quota as _quota
 
-
 EXAMPLE = {
-    'resources': [
-        {
-            'type': 'server_groups',
-            'used': 2,
-            'quota': 10,
-            'min': 0,
-            'max': -1
-        },
-        {
-            'type': 'replications',
-            'used': 1,
-            'quota': 100,
-            'min': 0,
-            'max': -1
-        }
+    "resources": [
+        {"type": "server_groups", "used": 2, "quota": 10, "min": 0, "max": -1},
+        {"type": "replications", "used": 1, "quota": 100, "min": 0, "max": -1},
     ]
 }
 
@@ -43,15 +30,14 @@ class TestQuota(base.TestCase):
         super(TestQuota, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
-        self.sess.default_microversion = '1'
+        self.sess.default_microversion = "1"
         self.sess._get_connection = mock.Mock(return_value=self.cloud)
         self.sot = _quota.Quota()
 
     def test_basic(self):
         sot = _quota.Quota()
-        self.assertEqual('quotas', sot.resources_key)
-        self.assertEqual('/sdrs/quotas',
-                         sot.base_path)
+        self.assertEqual("quotas", sot.resources_key)
+        self.assertEqual("/sdrs/quotas", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)
@@ -60,23 +46,17 @@ class TestQuota(base.TestCase):
 
     def test_make_it(self):
         test_quota = _quota.Quota(**EXAMPLE)
-        self.assertEqual(EXAMPLE['resources'][0]['type'],
-                         test_quota.resources[0].type)
-        self.assertEqual(EXAMPLE['resources'][0]['used'],
-                         test_quota.resources[0].used)
-        self.assertEqual(EXAMPLE['resources'][0]['quota'],
-                         test_quota.resources[0].quota)
-        self.assertEqual(EXAMPLE['resources'][0]['min'],
-                         test_quota.resources[0].min)
-        self.assertEqual(EXAMPLE['resources'][0]['max'],
-                         test_quota.resources[0].max)
-        self.assertEqual(EXAMPLE['resources'][1]['type'],
-                         test_quota.resources[1].type)
-        self.assertEqual(EXAMPLE['resources'][1]['used'],
-                         test_quota.resources[1].used)
-        self.assertEqual(EXAMPLE['resources'][1]['quota'],
-                         test_quota.resources[1].quota)
-        self.assertEqual(EXAMPLE['resources'][1]['min'],
-                         test_quota.resources[1].min)
-        self.assertEqual(EXAMPLE['resources'][1]['max'],
-                         test_quota.resources[1].max)
+        self.assertEqual(EXAMPLE["resources"][0]["type"], test_quota.resources[0].type)
+        self.assertEqual(EXAMPLE["resources"][0]["used"], test_quota.resources[0].used)
+        self.assertEqual(
+            EXAMPLE["resources"][0]["quota"], test_quota.resources[0].quota
+        )
+        self.assertEqual(EXAMPLE["resources"][0]["min"], test_quota.resources[0].min)
+        self.assertEqual(EXAMPLE["resources"][0]["max"], test_quota.resources[0].max)
+        self.assertEqual(EXAMPLE["resources"][1]["type"], test_quota.resources[1].type)
+        self.assertEqual(EXAMPLE["resources"][1]["used"], test_quota.resources[1].used)
+        self.assertEqual(
+            EXAMPLE["resources"][1]["quota"], test_quota.resources[1].quota
+        )
+        self.assertEqual(EXAMPLE["resources"][1]["min"], test_quota.resources[1].min)
+        self.assertEqual(EXAMPLE["resources"][1]["max"], test_quota.resources[1].max)

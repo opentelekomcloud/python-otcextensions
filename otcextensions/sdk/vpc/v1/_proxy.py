@@ -9,18 +9,17 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from dataclasses import dataclass
+from typing import List
+
 from openstack import exceptions
 from openstack import proxy
-
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.vpc.v1 import bandwidth as _bandwidth
 from otcextensions.sdk.vpc.v1 import peering as _peering
 from otcextensions.sdk.vpc.v1 import route as _route
 from otcextensions.sdk.vpc.v1 import subnet as _subnet
 from otcextensions.sdk.vpc.v1 import vpc as _vpc
-
-from dataclasses import dataclass
-from typing import List
 
 
 @dataclass
@@ -43,11 +42,14 @@ class Proxy(proxy.Proxy):
             a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
         """
         project_id = self.get_project_id()
-        version = 'v2.0'
-        base_path = _bandwidth.Bandwidth.base_path % {'version': version,
-                                                      'project_id': project_id}
-        return self._create(_bandwidth.Bandwidth, project_id=project_id,
-                            base_path=base_path, **attrs)
+        version = "v2.0"
+        base_path = _bandwidth.Bandwidth.base_path % {
+            "version": version,
+            "project_id": project_id,
+        }
+        return self._create(
+            _bandwidth.Bandwidth, project_id=project_id, base_path=base_path, **attrs
+        )
 
     def find_bandwidth(self, name_or_id, ignore_missing=False):
         """Find a single bandwidth
@@ -62,13 +64,18 @@ class Proxy(proxy.Proxy):
         :returns: One :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
         """
         project_id = self.get_project_id()
-        version = 'v1'
-        base_path = _bandwidth.Bandwidth.base_path % {'version': version,
-                                                      'project_id': project_id}
+        version = "v1"
+        base_path = _bandwidth.Bandwidth.base_path % {
+            "version": version,
+            "project_id": project_id,
+        }
         return self._find(
-            _bandwidth.Bandwidth, name_or_id,
-            project_id=project_id, base_path=base_path,
-            ignore_missing=ignore_missing)
+            _bandwidth.Bandwidth,
+            name_or_id,
+            project_id=project_id,
+            base_path=base_path,
+            ignore_missing=ignore_missing,
+        )
 
     def update_bandwidth(self, bandwidth, **attrs):
         """Update a vpc peering
@@ -85,12 +92,8 @@ class Proxy(proxy.Proxy):
         """
         bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
         project_id = self.get_project_id()
-        version = 'v1'
-        return bandwidth.update_bandwidth(
-            self,
-            project_id,
-            version,
-            **attrs)
+        version = "v1"
+        return bandwidth.update_bandwidth(self, project_id, version, **attrs)
 
     def add_eip_to_bandwidth(self, bandwidth, publicip_info: List[PublicInfo]):
         """Add an EIP to a shared bandwidth.
@@ -102,12 +105,10 @@ class Proxy(proxy.Proxy):
            {'publicip_id': id, 'publicip_type': type}
         """
         bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
-        version = 'v2.0'
+        version = "v2.0"
         return bandwidth.add_eip_to_bandwidth(
-            self,
-            version,
-            publicip_info,
-            project_id=self.get_project_id())
+            self, version, publicip_info, project_id=self.get_project_id()
+        )
 
     def remove_eip_from_bandwidth(self, bandwidth, **attrs):
         """Add an EIP to a shared bandwidth.
@@ -120,12 +121,8 @@ class Proxy(proxy.Proxy):
         """
         bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
         project_id = self.get_project_id()
-        version = 'v2.0'
-        return bandwidth.remove_eip_from_bandwidth(
-            self,
-            project_id,
-            version,
-            **attrs)
+        version = "v2.0"
+        return bandwidth.remove_eip_from_bandwidth(self, project_id, version, **attrs)
 
     def delete_bandwidth(self, bandwidth, ignore_missing=True):
         """Delete a bandwidth
@@ -141,13 +138,18 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         project_id = self.get_project_id()
-        version = 'v2.0'
-        base_path = _bandwidth.Bandwidth.base_path % {'version': version,
-                                                      'project_id': project_id}
+        version = "v2.0"
+        base_path = _bandwidth.Bandwidth.base_path % {
+            "version": version,
+            "project_id": project_id,
+        }
         return self._delete(
-            _bandwidth.Bandwidth, bandwidth,
-            ignore_missing=ignore_missing, project_id=project_id,
-            base_path=base_path)
+            _bandwidth.Bandwidth,
+            bandwidth,
+            ignore_missing=ignore_missing,
+            project_id=project_id,
+            base_path=base_path,
+        )
 
     # ======== Peering ========
     def create_peering(self, **attrs):
@@ -171,9 +173,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(
-            _peering.Peering, peering,
-            ignore_missing=ignore_missing)
+        return self._delete(_peering.Peering, peering, ignore_missing=ignore_missing)
 
     def peerings(self, **query):
         """Return a generator of vpc peerings
@@ -213,9 +213,7 @@ class Proxy(proxy.Proxy):
 
         :returns: One :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
         """
-        return self._find(
-            _peering.Peering, name_or_id,
-            ignore_missing=ignore_missing)
+        return self._find(_peering.Peering, name_or_id, ignore_missing=ignore_missing)
 
     def update_peering(self, peering, **attrs):
         """Update a vpc peering
@@ -244,10 +242,9 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
         """
-        valid_status = ['accept', 'reject']
+        valid_status = ["accept", "reject"]
         if set_status.lower() not in valid_status:
-            raise ValueError(
-                "results: status must be one of %r." % valid_status)
+            raise ValueError("results: status must be one of %r." % valid_status)
         peering = self._get_resource(_peering.Peering, peering)
         return peering._set_peering(self, set_status.lower())
 
@@ -273,8 +270,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(_route.Route, route,
-                            ignore_missing=ignore_missing)
+        return self._delete(_route.Route, route, ignore_missing=ignore_missing)
 
     def routes(self, **query):
         """Return a generator of vpc routes
@@ -313,7 +309,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
         """
-        query['project_id'] = self.get_project_id()
+        query["project_id"] = self.get_project_id()
         return self._list(_vpc.Vpc, **query)
 
     def create_vpc(self, **attrs):
@@ -322,8 +318,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create a
             :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
         """
-        return self._create(_vpc.Vpc, **attrs,
-                            project_id=self.get_project_id())
+        return self._create(_vpc.Vpc, **attrs, project_id=self.get_project_id())
 
     def delete_vpc(self, vpc, ignore_missing=True):
         """Delete a vpc
@@ -339,9 +334,12 @@ class Proxy(proxy.Proxy):
 
         :returns: none
         """
-        return self._delete(_vpc.Vpc, vpc,
-                            project_id=self.get_project_id(),
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _vpc.Vpc,
+            vpc,
+            project_id=self.get_project_id(),
+            ignore_missing=ignore_missing,
+        )
 
     def get_vpc(self, vpc):
         """Get a vpc by id
@@ -367,9 +365,11 @@ class Proxy(proxy.Proxy):
         :returns: One :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
         """
         return self._find(
-            _vpc.Vpc, name_or_id,
+            _vpc.Vpc,
+            name_or_id,
             ignore_missing=ignore_missing,
-            project_id=self.get_project_id())
+            project_id=self.get_project_id(),
+        )
 
     def update_vpc(self, vpc, **attrs):
         """Update vpc
@@ -380,7 +380,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: The attributes to update on the vpc
             represented by ``vpcd``.
         """
-        attrs['project_id'] = self.get_project_id()
+        attrs["project_id"] = self.get_project_id()
         return self._update(_vpc.Vpc, vpc, **attrs)
 
     # ========== Subnet ==========
@@ -394,7 +394,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
         """
-        query['project_id'] = self.get_project_id()
+        query["project_id"] = self.get_project_id()
         return self._list(_subnet.Subnet, **query)
 
     def create_subnet(self, **attrs):
@@ -403,7 +403,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
         """
-        attrs['project_id'] = self.get_project_id()
+        attrs["project_id"] = self.get_project_id()
         return self._create(_subnet.Subnet, **attrs)
 
     def get_subnet(self, subnet):
@@ -414,8 +414,7 @@ class Proxy(proxy.Proxy):
 
         :returns: One :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
         """
-        return self._get(_subnet.Subnet, subnet,
-                         project_id=self.get_project_id())
+        return self._get(_subnet.Subnet, subnet, project_id=self.get_project_id())
 
     def find_subnet(self, name_or_id, ignore_missing=False):
         """Find a single subnet
@@ -431,9 +430,11 @@ class Proxy(proxy.Proxy):
         :returns: One :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
         """
         return self._find(
-            _subnet.Subnet, name_or_id,
+            _subnet.Subnet,
+            name_or_id,
             ignore_missing=ignore_missing,
-            project_id=self.get_project_id())
+            project_id=self.get_project_id(),
+        )
 
     def update_subnet(self, subnet, **attrs):
         """Update subnet
@@ -444,24 +445,21 @@ class Proxy(proxy.Proxy):
         :param dict attrs: The attributes to update on the subnet
             represented by ``subnet``.
         """
-        attrs['project_id'] = self.get_project_id()
+        attrs["project_id"] = self.get_project_id()
 
         rs = self._get_resource(_subnet.Subnet, subnet)
-        if rs.vpc_id is None and 'vpc_id' not in attrs:
-            raise AttributeError('Updating subnet requires VPC ID')
-        vpc_id = attrs.pop('vpc_id', rs.vpc_id)  # vpc_id can't be changed
+        if rs.vpc_id is None and "vpc_id" not in attrs:
+            raise AttributeError("Updating subnet requires VPC ID")
+        vpc_id = attrs.pop("vpc_id", rs.vpc_id)  # vpc_id can't be changed
 
-        attrs.pop('base_path', None)
+        attrs.pop("base_path", None)
         base_path = _subnet.vpc_subnet_base_path(vpc_id)
 
-        return self._update(_subnet.Subnet,
-                            subnet,
-                            base_path=base_path,
-                            **attrs)
+        return self._update(_subnet.Subnet, subnet, base_path=base_path, **attrs)
 
     def _delete(self, resource_type, value, ignore_missing=True, **attrs):
         """Override of ``_delete`` with support of ``base_path``"""
-        base_path = attrs.pop('base_path', None)
+        base_path = attrs.pop("base_path", None)
 
         res = self._get_resource(resource_type, value, **attrs)
 
@@ -493,26 +491,27 @@ class Proxy(proxy.Proxy):
         sn_res = self._get_resource(_subnet.Subnet, subnet)
         sn_res.vpc_id = vpc_id or sn_res.vpc_id
         if sn_res.vpc_id is None:
-            raise AttributeError('Deleting subnet requires VPC ID')
+            raise AttributeError("Deleting subnet requires VPC ID")
 
         base_path = _subnet.vpc_subnet_base_path(sn_res.vpc_id)
 
-        return self._delete(_subnet.Subnet, subnet,
-                            ignore_missing=ignore_missing,
-                            base_path=base_path)
+        return self._delete(
+            _subnet.Subnet, subnet, ignore_missing=ignore_missing, base_path=base_path
+        )
 
     # ========== Project cleanup ==========
     def _get_cleanup_dependencies(self):
-        return {
-            'vpc': {
-                'before': ['network']
-            }
-        }
+        return {"vpc": {"before": ["network"]}}
 
-    def _service_cleanup(self, dry_run=True, client_status_queue=None,
-                         identified_resources=None,
-                         filters=None, resource_evaluation_fn=None,
-                         skip_resources=None):
+    def _service_cleanup(
+        self,
+        dry_run=True,
+        client_status_queue=None,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
+    ):
         for obj in self.peerings():
             self._service_cleanup_del_res(
                 self.delete_peering,
@@ -521,4 +520,5 @@ class Proxy(proxy.Proxy):
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn)
+                resource_evaluation_fn=resource_evaluation_fn,
+            )

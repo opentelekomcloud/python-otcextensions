@@ -10,11 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.anti_ddos.v1 import floating_ip
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
@@ -24,7 +22,7 @@ EXAMPLE = {
     "http_request_pos_id": 1,
     "cleaning_access_pos_id": 1,
     "app_type_id": 1,
-    "floating_ip_id": FAKE_ID
+    "floating_ip_id": FAKE_ID,
 }
 
 
@@ -37,8 +35,8 @@ class TestFloatingIP(base.TestCase):
     def test_basic(self):
         sot = floating_ip.FloatingIP()
 
-        self.assertEqual('/antiddos', sot.base_path)
-        self.assertEqual('ddosStatus', sot.resources_key)
+        self.assertEqual("/antiddos", sot.base_path)
+        self.assertEqual("ddosStatus", sot.resources_key)
 
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)
@@ -48,15 +46,9 @@ class TestFloatingIP(base.TestCase):
     def test_make_it(self):
 
         sot = floating_ip.FloatingIP(**EXAMPLE)
-        self.assertEqual(EXAMPLE['floating_ip_id'], sot.id)
-        self.assertEqual(EXAMPLE['enable_L7'], sot.is_enable_l7)
-        self.assertEqual(EXAMPLE['traffic_pos_id'], sot.traffic_pos_id)
-        self.assertEqual(
-            EXAMPLE['http_request_pos_id'],
-            sot.http_request_pos_id)
-        self.assertEqual(
-            EXAMPLE['cleaning_access_pos_id'],
-            sot.cleaning_access_pos_id)
-        self.assertEqual(
-            EXAMPLE['app_type_id'],
-            sot.app_type_id)
+        self.assertEqual(EXAMPLE["floating_ip_id"], sot.id)
+        self.assertEqual(EXAMPLE["enable_L7"], sot.is_enable_l7)
+        self.assertEqual(EXAMPLE["traffic_pos_id"], sot.traffic_pos_id)
+        self.assertEqual(EXAMPLE["http_request_pos_id"], sot.http_request_pos_id)
+        self.assertEqual(EXAMPLE["cleaning_access_pos_id"], sot.cleaning_access_pos_id)
+        self.assertEqual(EXAMPLE["app_type_id"], sot.app_type_id)

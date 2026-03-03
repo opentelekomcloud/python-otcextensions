@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dcs.v1 import availability_zone
 
 
@@ -19,8 +18,8 @@ class TestAvailabilityZone(base.TestCase):
 
     def test_basic(self):
         sot = availability_zone.AvailabilityZone()
-        self.assertEqual('available_zones', sot.resources_key)
-        self.assertEqual('/availableZones', sot.base_path)
+        self.assertEqual("available_zones", sot.resources_key)
+        self.assertEqual("/availableZones", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)

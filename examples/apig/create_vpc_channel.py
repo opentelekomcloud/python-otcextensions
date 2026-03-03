@@ -13,15 +13,15 @@
 """
 Create VPC channel
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "balance_strategy": 1,
     "member_type": "ip",
     "name": "VPC_demo",
     "port": 22,
 }
-vpc = conn.apig.create_vpc_channel(gateway="gateway_id",
-                                   **attrs)
+vpc = conn.apig.create_vpc_channel(gateway="gateway_id", **attrs)

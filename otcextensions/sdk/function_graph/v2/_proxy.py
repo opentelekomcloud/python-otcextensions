@@ -10,23 +10,22 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.common.utils import extract_url_parts
-from otcextensions.sdk.function_graph.v2 import function as _function
-from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
-from otcextensions.sdk.function_graph.v2 import quota as _quota
+from otcextensions.sdk.function_graph.v2 import alias as _alias
+from otcextensions.sdk.function_graph.v2 import async_notification as _async
 from otcextensions.sdk.function_graph.v2 import dependency as _d
 from otcextensions.sdk.function_graph.v2 import event as _event
-from otcextensions.sdk.function_graph.v2 import alias as _alias
-from otcextensions.sdk.function_graph.v2 import version as _version
-from otcextensions.sdk.function_graph.v2 import metric as _metric
-from otcextensions.sdk.function_graph.v2 import log as _log
-from otcextensions.sdk.function_graph.v2 import template as _t
-from otcextensions.sdk.function_graph.v2 import reserved_instance as _r
 from otcextensions.sdk.function_graph.v2 import export_function as _export
+from otcextensions.sdk.function_graph.v2 import function as _function
+from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
 from otcextensions.sdk.function_graph.v2 import import_function as _import
+from otcextensions.sdk.function_graph.v2 import log as _log
+from otcextensions.sdk.function_graph.v2 import metric as _metric
+from otcextensions.sdk.function_graph.v2 import quota as _quota
+from otcextensions.sdk.function_graph.v2 import reserved_instance as _r
+from otcextensions.sdk.function_graph.v2 import template as _t
 from otcextensions.sdk.function_graph.v2 import trigger as _trigger
-from otcextensions.sdk.function_graph.v2 import async_notification as _async
+from otcextensions.sdk.function_graph.v2 import version as _version
 
 
 class Proxy(proxy.Proxy):
@@ -184,10 +183,9 @@ class Proxy(proxy.Proxy):
             function_invocation.FunctionInvocation`
         """
         fi = self._get_resource(
-            _fi.FunctionInvocation, func_urn,
-            func_urn=func_urn.rpartition(":")[0]
+            _fi.FunctionInvocation, func_urn, func_urn=func_urn.rpartition(":")[0]
         )
-        return fi._invocation(self, 'invocations', **attrs)
+        return fi._invocation(self, "invocations", **attrs)
 
     def executing_function_asynchronously(self, func_urn, **attrs):
         """Execute a function asynchronously.
@@ -198,10 +196,9 @@ class Proxy(proxy.Proxy):
             function_invocation.FunctionInvocation`
         """
         fi = self._get_resource(
-            _fi.FunctionInvocation, func_urn,
-            func_urn=func_urn.rpartition(":")[0]
+            _fi.FunctionInvocation, func_urn, func_urn=func_urn.rpartition(":")[0]
         )
-        return fi._invocation(self, 'invocations-async', **attrs)
+        return fi._invocation(self, "invocations-async", **attrs)
 
     # ======== Function Quotas Methods ========
 
@@ -259,8 +256,9 @@ class Proxy(proxy.Proxy):
         :param dependency: Dependency instance
         :returns: A generator of Dependency instances.
         """
-        base_path = (f"/fgs/dependencies/{dependency.dep_id}"
-                     f"/version/{dependency.version}")
+        base_path = (
+            f"/fgs/dependencies/{dependency.dep_id}" f"/version/{dependency.version}"
+        )
         return self._get(_d.Dependency, base_path=base_path, requires_id=False)
 
     # ======== Test Events Methods ========
@@ -276,9 +274,7 @@ class Proxy(proxy.Proxy):
         """
         function = self._get_resource(_function.Function, function)
         function_urn = function.func_urn.rpartition(":")[0]
-        return self._create(
-            _event.Event, function_urn=function_urn, **attrs
-        )
+        return self._create(_event.Event, function_urn=function_urn, **attrs)
 
     def delete_event(self, function, event, ignore_missing=True):
         """Delete an event.
@@ -296,8 +292,10 @@ class Proxy(proxy.Proxy):
         function = self._get_resource(_function.Function, function)
         function_urn = function.func_urn.rpartition(":")[0]
         return self._delete(
-            _event.Event, event,
-            function_urn=function_urn, ignore_missing=ignore_missing
+            _event.Event,
+            event,
+            function_urn=function_urn,
+            ignore_missing=ignore_missing,
         )
 
     def events(self, func_urn):
@@ -322,10 +320,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.function_graph.v2.event.Event`
         """
         function = self._get_resource(_function.Function, function)
-        return self._get(
-            _event.Event, event,
-            function_urn=function.func_urn
-        )
+        return self._get(_event.Event, event, function_urn=function.func_urn)
 
     def update_event(self, function, event, **attrs):
         """Update an event from attributes.
@@ -340,9 +335,7 @@ class Proxy(proxy.Proxy):
         """
         function = self._get_resource(_function.Function, function)
         function_urn = function.func_urn.rpartition(":")[0]
-        return self._update(
-            _event.Event, event, function_urn=function_urn, **attrs
-        )
+        return self._update(_event.Event, event, function_urn=function_urn, **attrs)
 
     # ======== Versions Methods ========
     def versions(self, func_urn):
@@ -366,9 +359,7 @@ class Proxy(proxy.Proxy):
         """
         function = self._get_resource(_function.Function, function)
         function_urn = function.func_urn.rpartition(":")[0]
-        return self._create(
-            _version.Version, function_urn=function_urn, **attrs
-        )
+        return self._create(_version.Version, function_urn=function_urn, **attrs)
 
     # ======== Aliases Methods ========
 
@@ -393,9 +384,7 @@ class Proxy(proxy.Proxy):
         """
         function = self._get_resource(_function.Function, function)
         function_urn = function.id.rpartition(":")[0]
-        return self._create(
-            _alias.Alias, function_urn=function_urn, **attrs
-        )
+        return self._create(_alias.Alias, function_urn=function_urn, **attrs)
 
     def delete_alias(self, function, alias, ignore_missing=True):
         """Delete an alias.
@@ -413,8 +402,10 @@ class Proxy(proxy.Proxy):
         function = self._get_resource(_function.Function, function)
         function_urn = function.func_urn.rpartition(":")[0]
         return self._delete(
-            _alias.Alias, alias,
-            function_urn=function_urn, ignore_missing=ignore_missing
+            _alias.Alias,
+            alias,
+            function_urn=function_urn,
+            ignore_missing=ignore_missing,
         )
 
     def update_alias(self, function, alias, **attrs):
@@ -444,10 +435,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.function_graph.v2.alias.Alias`
         """
         function = self._get_resource(_function.Function, function)
-        return self._get(
-            _alias.Alias, alias,
-            function_urn=function.func_urn
-        )
+        return self._get(_alias.Alias, alias, function_urn=function.func_urn)
 
     # ======== Metric Methods ========
 
@@ -465,7 +453,7 @@ class Proxy(proxy.Proxy):
         """
         function = self._get_resource(_function.Function, function)
         func_urn = function.func_urn.rpartition(":")[0]
-        base_path = f'/fgs/functions/{func_urn}/statistics/{period}'
+        base_path = f"/fgs/functions/{func_urn}/statistics/{period}"
         return self._list(_metric.Metric, base_path=base_path)
 
     # ======== Log Methods ========
@@ -481,11 +469,7 @@ class Proxy(proxy.Proxy):
         """
         func = self._get_resource(_function.Function, function)
         function_urn = func.func_urn.rpartition(":")[0]
-        return self._get(
-            _log.Log,
-            function_urn=function_urn,
-            requires_id=False
-        )
+        return self._get(_log.Log, function_urn=function_urn, requires_id=False)
 
     def enable_lts_log(self):
         """Enable log reporting to LTS.
@@ -493,10 +477,8 @@ class Proxy(proxy.Proxy):
         :returns: The created Log instance.
         :rtype: :class:`~otcextensions.sdk.function_graph.v2.log.Log`
         """
-        base_path = '/fgs/functions/enable-lts-logs'
-        return self._create(
-            _log.Log, base_path=base_path
-        )
+        base_path = "/fgs/functions/enable-lts-logs"
+        return self._create(_log.Log, base_path=base_path)
 
     # ======== Templates Methods ========
 
@@ -507,11 +489,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.function_graph.v2.template.Template`
         """
-        return self._get(
-            _t.Template,
-            template_id=template_id,
-            requires_id=False
-        )
+        return self._get(_t.Template, template_id=template_id, requires_id=False)
 
     # ======== Reserved Instances Methods ========
 
@@ -525,9 +503,7 @@ class Proxy(proxy.Proxy):
         """
         function = self._get_resource(_function.Function, function)
         function_urn = function.func_urn.rpartition(":")[0]
-        return self._update(
-            _r.ReservedInstance, function_urn=function_urn, **attrs
-        )
+        return self._update(_r.ReservedInstance, function_urn=function_urn, **attrs)
 
     def reserved_instances_config(self, **query):
         """List all reserved instances of a function.
@@ -564,9 +540,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments to import Function.
         :returns: The Import instance.
         """
-        return self._create(
-            _import.Import, **attrs
-        )
+        return self._create(_import.Import, **attrs)
 
     # ======== Trigger Methods ========
 
@@ -579,12 +553,11 @@ class Proxy(proxy.Proxy):
         """
         function = self._get_resource(_function.Function, function)
         function_urn = function.func_urn.rpartition(":")[0]
-        base_path = f'/fgs/triggers/{function_urn}'
+        base_path = f"/fgs/triggers/{function_urn}"
         return self._create(_trigger.Trigger, base_path=base_path, **attrs)
 
     def delete_trigger(
-            self, function_urn, trigger_type_code, trigger_id,
-            ignore_missing=True
+        self, function_urn, trigger_type_code, trigger_id, ignore_missing=True
     ):
         """Delete a function trigger.
 
@@ -629,18 +602,12 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.function_graph.v2.trigger.Trigger`
         """
         function_urn = function_urn.rpartition(":")[0]
-        base_path = (f'/fgs/triggers/{function_urn}'
-                     f'/{trigger_type_code}'
-                     f'/{trigger_id}')
-        return self._get(
-            _trigger.Trigger,
-            base_path=base_path,
-            requires_id=False
+        base_path = (
+            f"/fgs/triggers/{function_urn}" f"/{trigger_type_code}" f"/{trigger_id}"
         )
+        return self._get(_trigger.Trigger, base_path=base_path, requires_id=False)
 
-    def update_trigger(
-            self, function_urn, trigger_type_code, trigger_id, **attrs
-    ):
+    def update_trigger(self, function_urn, trigger_type_code, trigger_id, **attrs):
         """Update a number of reserved instances from attributes.
 
         :param function_urn: Function URN.
@@ -650,11 +617,8 @@ class Proxy(proxy.Proxy):
         :returns: The updated Trigger instance.
         """
         function_urn = function_urn.rpartition(":")[0]
-        base_path = (f'/fgs/triggers/{function_urn}/{trigger_type_code}'
-                     f'/{trigger_id}')
-        return self._update(
-            _trigger.Trigger, base_path=base_path, **attrs
-        )
+        base_path = f"/fgs/triggers/{function_urn}/{trigger_type_code}" f"/{trigger_id}"
+        return self._update(_trigger.Trigger, base_path=base_path, **attrs)
 
     # ======== Asynchronous Invocation Methods ========
 
@@ -671,9 +635,7 @@ class Proxy(proxy.Proxy):
             function_urn = function.func_urn.rpartition(":")[0]
         return self._list(_async.Notification, function_urn=function_urn)
 
-    def configure_async_notification(
-            self, function, **attrs
-    ):
+    def configure_async_notification(self, function, **attrs):
         """Configure asynchronous execution notification for a function.
 
         :param function: Function instance or function URN
@@ -686,9 +648,7 @@ class Proxy(proxy.Proxy):
             function_urn = function.id.rpartition(":")[0]
         else:
             function_urn = function.func_urn.rpartition(":")[0]
-        return self._create(
-            _async.Notification, function_urn=function_urn, **attrs
-        )
+        return self._create(_async.Notification, function_urn=function_urn, **attrs)
 
     def delete_async_notification(self, function, ignore_missing=True):
         """Delete asynchronous execution notification for a function.
@@ -709,7 +669,8 @@ class Proxy(proxy.Proxy):
             function_urn = function.func_urn.rpartition(":")[0]
         return self._delete(
             _async.Notification,
-            function_urn=function_urn, ignore_missing=ignore_missing,
+            function_urn=function_urn,
+            ignore_missing=ignore_missing,
         )
 
     def all_versions_async_notifications(self, function, **query):
@@ -723,10 +684,7 @@ class Proxy(proxy.Proxy):
             function_urn = function.id
         else:
             function_urn = function.func_urn
-        return self._list(
-            _async.Notification,
-            function_urn=function_urn,
-            **query)
+        return self._list(_async.Notification, function_urn=function_urn, **query)
 
     def async_invocation_requests(self, function, **query):
         """Get asynchronous invocation requests of a function.
@@ -739,11 +697,7 @@ class Proxy(proxy.Proxy):
             function_urn = function.id.rpartition(":")[0]
         else:
             function_urn = function.func_urn.rpartition(":")[0]
-        return self._list(
-            _async.Requests,
-            function_urn=function_urn,
-            **query
-        )
+        return self._list(_async.Requests, function_urn=function_urn, **query)
 
     def stop_async_invocation_request(self, function, **attrs):
         """Stop asynchronous invocation request of a function.

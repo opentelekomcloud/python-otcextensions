@@ -11,7 +11,6 @@
 #   under the License.
 #
 import mock
-
 from openstackclient.tests.unit import utils
 
 from otcextensions.common import sdk_utils
@@ -23,18 +22,20 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
 
     _objects = fakes.FakeHealthMonitor.create_multiple(3)
 
-    columns = ('id', 'name', 'project_id', 'type', 'admin_state_up')
+    columns = ("id", "name", "project_id", "type", "admin_state_up")
 
     data = []
 
     for s in _objects:
-        data.append((
-            s.id,
-            s.name,
-            s.project_id,
-            s.type,
-            s.is_admin_state_up,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.project_id,
+                s.type,
+                s.is_admin_state_up,
+            )
+        )
 
     def setUp(self):
         super(TestListHealthMonitor, self).setUp()
@@ -44,18 +45,14 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
         self.client.health_monitors = mock.Mock()
 
     def test_list_default(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.health_monitors.side_effect = [
-            self._objects
-        ]
+        self.client.health_monitors.side_effect = [self._objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -73,7 +70,8 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
             # '--max_retries', '2',
             # '--timeout', '3',
             # '--url_path', 'url_path',
-            '--type', 'HTTP',
+            "--type",
+            "HTTP",
         ]
 
         verifylist = [
@@ -83,15 +81,13 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
             # ('expected_codes', 'codes'),
             # ('http_method', 'GET'),
             # ('url_path', 'url_path'),
-            ('type', 'HTTP'),
+            ("type", "HTTP"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.health_monitors.side_effect = [
-            {}
-        ]
+        self.client.health_monitors.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -103,36 +99,34 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
             # expected_codes='codes',
             # http_method='GET',
             # url_path='url_path',
-            type='HTTP'
+            type="HTTP"
         )
 
     def test_list_filter_exceptions_method(self):
         arglist = [
-            '--http_method', 'bad',
+            "--http_method",
+            "bad",
         ]
 
-        verifylist = [
-            ('http_method', 'bad')
-        ]
+        verifylist = [("http_method", "bad")]
 
         # Ensure exception is raised
         self.assertRaises(
-            utils.ParserException,
-            self.check_parser, self.cmd, arglist, verifylist)
+            utils.ParserException, self.check_parser, self.cmd, arglist, verifylist
+        )
 
     def test_list_filter_exceptions_type(self):
         arglist = [
-            '--type', 'bad',
+            "--type",
+            "bad",
         ]
 
-        verifylist = [
-            ('type', 'bad')
-        ]
+        verifylist = [("type", "bad")]
 
         # Ensure exception is raised
         self.assertRaises(
-            utils.ParserException,
-            self.check_parser, self.cmd, arglist, verifylist)
+            utils.ParserException, self.check_parser, self.cmd, arglist, verifylist
+        )
 
 
 class TestShowHealthMonitor(fakes.TestLoadBalancer):
@@ -140,9 +134,17 @@ class TestShowHealthMonitor(fakes.TestLoadBalancer):
     _object = fakes.FakeHealthMonitor.create_one()
 
     columns = (
-        'admin_state_up', 'expected_codes', 'http_method',
-        'id', 'max_retries', 'name', 'pool_ids', 'timeout',
-        'type', 'url_path')
+        "admin_state_up",
+        "expected_codes",
+        "http_method",
+        "id",
+        "max_retries",
+        "name",
+        "pool_ids",
+        "timeout",
+        "type",
+        "url_path",
+    )
 
     data = (
         _object.is_admin_state_up,
@@ -165,27 +167,22 @@ class TestShowHealthMonitor(fakes.TestLoadBalancer):
         self.client.find_health_monitor = mock.Mock()
 
     def test_show_default(self):
-        arglist = [
-            'hm'
-        ]
+        arglist = ["hm"]
 
         verifylist = [
-            ('health_monitor', 'hm'),
+            ("health_monitor", "hm"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_health_monitor.side_effect = [
-            self._object
-        ]
+        self.client.find_health_monitor.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_health_monitor.assert_called_once_with(
-            name_or_id='hm',
-            ignore_missing=False
+            name_or_id="hm", ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)
@@ -198,9 +195,17 @@ class TestCreateHealthMonitor(fakes.TestLoadBalancer):
     _pool = fakes.FakePool.create_one()
 
     columns = (
-        'admin_state_up', 'expected_codes', 'http_method',
-        'id', 'max_retries', 'name', 'pool_ids', 'timeout',
-        'type', 'url_path')
+        "admin_state_up",
+        "expected_codes",
+        "http_method",
+        "id",
+        "max_retries",
+        "name",
+        "pool_ids",
+        "timeout",
+        "type",
+        "url_path",
+    )
 
     data = (
         _object.is_admin_state_up,
@@ -225,40 +230,44 @@ class TestCreateHealthMonitor(fakes.TestLoadBalancer):
 
     def test_create_default(self):
         arglist = [
-            'pool_id',
-            '--disable',
-            '--delay', '1',
-            '--expected_codes', '100',
-            '--http_method', 'CONNECT',
-            '--name', 'name',
-            '--max_retries', '2',
-            '--timeout', '3',
-            '--type', 'PING',
-            '--url_path', 'url'
+            "pool_id",
+            "--disable",
+            "--delay",
+            "1",
+            "--expected_codes",
+            "100",
+            "--http_method",
+            "CONNECT",
+            "--name",
+            "name",
+            "--max_retries",
+            "2",
+            "--timeout",
+            "3",
+            "--type",
+            "PING",
+            "--url_path",
+            "url",
         ]
 
         verifylist = [
-            ('disable', True),
-            ('delay', 1),
-            ('expected_codes', '100'),
-            ('http_method', 'CONNECT'),
-            ('name', 'name'),
-            ('max_retries', 2),
-            ('pool', 'pool_id'),
-            ('timeout', 3),
-            ('type', 'PING'),
-            ('url_path', 'url')
+            ("disable", True),
+            ("delay", 1),
+            ("expected_codes", "100"),
+            ("http_method", "CONNECT"),
+            ("name", "name"),
+            ("max_retries", 2),
+            ("pool", "pool_id"),
+            ("timeout", 3),
+            ("type", "PING"),
+            ("url_path", "url"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_health_monitor.side_effect = [
-            self._object
-        ]
-        self.client.find_pool.side_effect = [
-            self._pool
-        ]
+        self.client.create_health_monitor.side_effect = [self._object]
+        self.client.find_pool.side_effect = [self._pool]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -266,14 +275,14 @@ class TestCreateHealthMonitor(fakes.TestLoadBalancer):
         self.client.create_health_monitor.assert_called_once_with(
             is_admin_state_up=False,
             delay=1,
-            expected_codes='100',
-            http_method='CONNECT',
+            expected_codes="100",
+            http_method="CONNECT",
             max_retries=2,
-            name='name',
+            name="name",
             pool_id=self._pool.id,
             timeout=3,
-            type='PING',
-            url_path='url'
+            type="PING",
+            url_path="url",
         )
 
         self.assertEqual(self.columns, columns)
@@ -285,9 +294,17 @@ class TestUpdateHealthMonitor(fakes.TestLoadBalancer):
     _object = fakes.FakeHealthMonitor.create_one()
 
     columns = (
-        'admin_state_up', 'expected_codes', 'http_method',
-        'id', 'max_retries', 'name', 'pool_ids', 'timeout',
-        'type', 'url_path')
+        "admin_state_up",
+        "expected_codes",
+        "http_method",
+        "id",
+        "max_retries",
+        "name",
+        "pool_ids",
+        "timeout",
+        "type",
+        "url_path",
+    )
 
     data = (
         _object.is_admin_state_up,
@@ -312,38 +329,41 @@ class TestUpdateHealthMonitor(fakes.TestLoadBalancer):
 
     def test_update_default(self):
         arglist = [
-            'hm',
-            '--disable',
-            '--delay', '1',
-            '--expected_codes', '100',
-            '--http_method', 'CONNECT',
-            '--name', 'name',
-            '--max_retries', '2',
-            '--timeout', '3',
-            '--url_path', 'url'
+            "hm",
+            "--disable",
+            "--delay",
+            "1",
+            "--expected_codes",
+            "100",
+            "--http_method",
+            "CONNECT",
+            "--name",
+            "name",
+            "--max_retries",
+            "2",
+            "--timeout",
+            "3",
+            "--url_path",
+            "url",
         ]
 
         verifylist = [
-            ('health_monitor', 'hm'),
-            ('disable', True),
-            ('delay', 1),
-            ('expected_codes', '100'),
-            ('http_method', 'CONNECT'),
-            ('name', 'name'),
-            ('max_retries', 2),
-            ('timeout', 3),
-            ('url_path', 'url')
+            ("health_monitor", "hm"),
+            ("disable", True),
+            ("delay", 1),
+            ("expected_codes", "100"),
+            ("http_method", "CONNECT"),
+            ("name", "name"),
+            ("max_retries", 2),
+            ("timeout", 3),
+            ("url_path", "url"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_health_monitor.side_effect = [
-            self._object
-        ]
-        self.client.find_health_monitor.side_effect = [
-            self._object
-        ]
+        self.client.update_health_monitor.side_effect = [self._object]
+        self.client.find_health_monitor.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -352,12 +372,12 @@ class TestUpdateHealthMonitor(fakes.TestLoadBalancer):
             health_monitor=self._object.id,
             is_admin_state_up=False,
             delay=1,
-            expected_codes='100',
-            http_method='CONNECT',
+            expected_codes="100",
+            http_method="CONNECT",
             max_retries=2,
-            name='name',
+            name="name",
             timeout=3,
-            url_path='url'
+            url_path="url",
         )
 
         self.assertEqual(self.columns, columns)
@@ -378,27 +398,22 @@ class TestDeleteHealthMonitor(fakes.TestLoadBalancer):
 
     def test_delete_default(self):
         arglist = [
-            'hm',
+            "hm",
         ]
 
         verifylist = [
-            ('health_monitor', ['hm']),
+            ("health_monitor", ["hm"]),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.delete_health_monitor.side_effect = [
-            {}
-        ]
-        self.client.find_health_monitor.side_effect = [
-            self._object
-        ]
+        self.client.delete_health_monitor.side_effect = [{}]
+        self.client.find_health_monitor.side_effect = [self._object]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.delete_health_monitor.assert_called_once_with(
-            health_monitor=self._object.id,
-            ignore_missing=False
+            health_monitor=self._object.id, ignore_missing=False
         )

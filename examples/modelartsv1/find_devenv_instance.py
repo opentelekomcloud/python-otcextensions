@@ -12,13 +12,12 @@
 # under the License.
 #
 """Query a Devenv Instance by name or Id."""
+
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 name_or_id = "notebook-1234"
-response = conn.modelartsv1.find_devenv_instance(
-    name_or_id, ignore_missing=False
-)
+response = conn.modelartsv1.find_devenv_instance(name_or_id, ignore_missing=False)
 print(response)

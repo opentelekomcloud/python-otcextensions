@@ -12,9 +12,9 @@
 #
 import mock
 
+from otcextensions.osclient.cce.v2 import cluster_node
 from otcextensions.sdk.cce.v3 import cluster
 from otcextensions.sdk.cce.v3 import cluster_node as clusterNode
-from otcextensions.osclient.cce.v2 import cluster_node
 from otcextensions.tests.unit.osclient.cce.v2 import fakes
 
 
@@ -23,40 +23,41 @@ class TestCreateClusterNode(fakes.TestCCE):
     _obj = fakes.FakeClusterNode.create_one()
 
     columns = (
-        'id',
-        'name',
-        'private_ip',
-        'public_ip',
-        'status',
-        'flavor',
-        'ssh_key',
-        'availability_zone',
-        'operating_system',
-        'root_volume_type',
-        'root_volume_size',
-        'data_volume_type_1',
-        'data_volume_size_1',
-        'data_volume_type_2',
-        'data_volume_size_2')
+        "id",
+        "name",
+        "private_ip",
+        "public_ip",
+        "status",
+        "flavor",
+        "ssh_key",
+        "availability_zone",
+        "operating_system",
+        "root_volume_type",
+        "root_volume_size",
+        "data_volume_type_1",
+        "data_volume_size_1",
+        "data_volume_type_2",
+        "data_volume_size_2",
+    )
 
     flat_data = cluster_node._flatten_cluster_node(_obj)
 
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['private_ip'],
-        flat_data['public_ip'],
-        flat_data['status'],
-        flat_data['flavor'],
-        flat_data['ssh_key'],
-        flat_data['availability_zone'],
-        flat_data['operating_system'],
-        flat_data['root_volume_type'],
-        flat_data['root_volume_size'],
-        flat_data['data_volume_type_1'],
-        flat_data['data_volume_size_1'],
-        flat_data['data_volume_type_2'],
-        flat_data['data_volume_size_2']
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["private_ip"],
+        flat_data["public_ip"],
+        flat_data["status"],
+        flat_data["flavor"],
+        flat_data["ssh_key"],
+        flat_data["availability_zone"],
+        flat_data["operating_system"],
+        flat_data["root_volume_type"],
+        flat_data["root_volume_size"],
+        flat_data["data_volume_type_1"],
+        flat_data["data_volume_size_1"],
+        flat_data["data_volume_type_2"],
+        flat_data["data_volume_size_2"],
     )
 
     def setUp(self):
@@ -71,76 +72,95 @@ class TestCreateClusterNode(fakes.TestCCE):
         self.cloud_client.create_cce_cluster_node = mock.Mock()
 
         self.client.find_cluster = mock.Mock(
-            return_value=cluster.Cluster(id='cluster_id'))
+            return_value=cluster.Cluster(id="cluster_id")
+        )
 
     def test_create(self):
         arglist = [
-            'cluster_name',
-            '--name', 'node_name',
-            '--annotation', 'a1=v1',
-            '--annotation', 'a2=v2',
-            '--availability-zone', 'az',
-            '--bandwidth', '30',
-            '--count', '12',
-            '--data-volume', 'volumetype=SATA,size=100',
-            '--data-volume', 'volumetype=SAS,size=200',
-            '--flavor', 'flvr',
-            '--label', 'l1=v1',
-            '--label', 'l2=v2',
-            '--network', 'nw',
-            '--root-volume-size', '230',
-            '--root-volume-type', 'SATA',
-            '--ssh-key', 'key',
+            "cluster_name",
+            "--name",
+            "node_name",
+            "--annotation",
+            "a1=v1",
+            "--annotation",
+            "a2=v2",
+            "--availability-zone",
+            "az",
+            "--bandwidth",
+            "30",
+            "--count",
+            "12",
+            "--data-volume",
+            "volumetype=SATA,size=100",
+            "--data-volume",
+            "volumetype=SAS,size=200",
+            "--flavor",
+            "flvr",
+            "--label",
+            "l1=v1",
+            "--label",
+            "l2=v2",
+            "--network",
+            "nw",
+            "--root-volume-size",
+            "230",
+            "--root-volume-type",
+            "SATA",
+            "--ssh-key",
+            "key",
         ]
 
         verifylist = [
-            ('cluster', 'cluster_name'),
-            ('name', 'node_name'),
-            ('annotations', {'a1': 'v1', 'a2': 'v2'}),
-            ('availability_zone', 'az'),
-            ('bandwidth', 30),
-            ('count', 12),
-            ('data_volumes', [
-                {'volumetype': 'SATA', 'size': '100'},
-                {'volumetype': 'SAS', 'size': '200'}]),
-            ('flavor', 'flvr'),
-            ('labels', {'l1': 'v1', 'l2': 'v2'}),
-            ('network', 'nw'),
-            ('root_volume_size', 230),
-            ('root_volume_type', 'SATA'),
-            ('ssh_key', 'key'),
+            ("cluster", "cluster_name"),
+            ("name", "node_name"),
+            ("annotations", {"a1": "v1", "a2": "v2"}),
+            ("availability_zone", "az"),
+            ("bandwidth", 30),
+            ("count", 12),
+            (
+                "data_volumes",
+                [
+                    {"volumetype": "SATA", "size": "100"},
+                    {"volumetype": "SAS", "size": "200"},
+                ],
+            ),
+            ("flavor", "flvr"),
+            ("labels", {"l1": "v1", "l2": "v2"}),
+            ("network", "nw"),
+            ("root_volume_size", 230),
+            ("root_volume_type", "SATA"),
+            ("ssh_key", "key"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.cloud_client.create_cce_cluster_node.side_effect = [
-            self._obj
-        ]
+        self.cloud_client.create_cce_cluster_node.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.cloud_client.create_cce_cluster_node.assert_called_once_with(
-            availability_zone='az',
-            cluster='cluster_name',
+            availability_zone="az",
+            cluster="cluster_name",
             count=12,
-            flavor='flvr',
-            network='nw',
-            ssh_key='key',
-            annotations={'a1': 'v1', 'a2': 'v2'},
+            flavor="flvr",
+            network="nw",
+            ssh_key="key",
+            annotations={"a1": "v1", "a2": "v2"},
             bandwidth=30,
             data_volumes=[
-                {'volumetype': 'SATA', 'size': '100'},
-                {'volumetype': 'SAS', 'size': '200'}],
-            labels={'l1': 'v1', 'l2': 'v2'},
-            name='node_name',
+                {"volumetype": "SATA", "size": "100"},
+                {"volumetype": "SAS", "size": "200"},
+            ],
+            labels={"l1": "v1", "l2": "v2"},
+            name="node_name",
             root_volume_size=230,
-            root_volume_type='SATA',
+            root_volume_type="SATA",
             wait=False,
             wait_interval=5,
-            wait_timeout=3600
+            wait_timeout=3600,
         )
 
         self.assertEqual(self.columns, columns)
@@ -158,14 +178,14 @@ class TestClusterNode(fakes.TestCCE):
         flat_data = cluster_node._flatten_cluster_node(_obj)
 
         data = (
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['flavor'],
-            flat_data['private_ip'],
-            flat_data['public_ip'],
-            flat_data['availability_zone'],
-            flat_data['ssh_key'],
-            flat_data['status'],
+            flat_data["id"],
+            flat_data["name"],
+            flat_data["flavor"],
+            flat_data["private_ip"],
+            flat_data["public_ip"],
+            flat_data["availability_zone"],
+            flat_data["ssh_key"],
+            flat_data["status"],
         )
 
         cmp_data = (
@@ -175,7 +195,7 @@ class TestClusterNode(fakes.TestCCE):
             _obj.status.private_ip,
             _obj.status.floating_ip,
             _obj.spec.availability_zone,
-            _obj.spec.login.get('sshKey', None),
+            _obj.spec.login.get("sshKey", None),
             _obj.status.status,
         )
 
@@ -186,21 +206,22 @@ class TestListClusterNode(fakes.TestCCE):
 
     _objs = fakes.FakeClusterNode.create_multiple(3)
 
-    columns = ('ID', 'name', 'private_ip', 'public_ip',
-               'status')
+    columns = ("ID", "name", "private_ip", "public_ip", "status")
 
     data = []
 
     for s in _objs:
         flat_data = cluster_node._flatten_cluster_node(s)
 
-        data.append((
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['private_ip'],
-            flat_data['public_ip'],
-            flat_data['status'],
-        ))
+        data.append(
+            (
+                flat_data["id"],
+                flat_data["name"],
+                flat_data["private_ip"],
+                flat_data["public_ip"],
+                flat_data["status"],
+            )
+        )
 
     def setUp(self):
         super(TestListClusterNode, self).setUp()
@@ -209,29 +230,24 @@ class TestListClusterNode(fakes.TestCCE):
 
         self.client.cluster_nodes = mock.Mock()
         self.client.find_cluster = mock.Mock(
-            return_value=cluster.Cluster(id='cluster_id'))
+            return_value=cluster.Cluster(id="cluster_id")
+        )
 
     def test_list_default(self):
-        arglist = ['cluster_id']
+        arglist = ["cluster_id"]
 
-        verifylist = [
-            ('cluster', 'cluster_id')
-        ]
+        verifylist = [("cluster", "cluster_id")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.cluster_nodes.side_effect = [
-            self._objs
-        ]
+        self.client.cluster_nodes.side_effect = [self._objs]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.cluster_nodes.assert_called_once_with(
-            'cluster_id'
-        )
+        self.client.cluster_nodes.assert_called_once_with("cluster_id")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -242,40 +258,41 @@ class TestShowClusterNode(fakes.TestCCE):
     _obj = fakes.FakeClusterNode.create_one()
 
     columns = (
-        'id',
-        'name',
-        'private_ip',
-        'public_ip',
-        'status',
-        'flavor',
-        'ssh_key',
-        'availability_zone',
-        'operating_system',
-        'root_volume_type',
-        'root_volume_size',
-        'data_volume_type_1',
-        'data_volume_size_1',
-        'data_volume_type_2',
-        'data_volume_size_2')
+        "id",
+        "name",
+        "private_ip",
+        "public_ip",
+        "status",
+        "flavor",
+        "ssh_key",
+        "availability_zone",
+        "operating_system",
+        "root_volume_type",
+        "root_volume_size",
+        "data_volume_type_1",
+        "data_volume_size_1",
+        "data_volume_type_2",
+        "data_volume_size_2",
+    )
 
     flat_data = cluster_node._flatten_cluster_node(_obj)
 
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['private_ip'],
-        flat_data['public_ip'],
-        flat_data['status'],
-        flat_data['flavor'],
-        flat_data['ssh_key'],
-        flat_data['availability_zone'],
-        flat_data['operating_system'],
-        flat_data['root_volume_type'],
-        flat_data['root_volume_size'],
-        flat_data['data_volume_type_1'],
-        flat_data['data_volume_size_1'],
-        flat_data['data_volume_type_2'],
-        flat_data['data_volume_size_2']
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["private_ip"],
+        flat_data["public_ip"],
+        flat_data["status"],
+        flat_data["flavor"],
+        flat_data["ssh_key"],
+        flat_data["availability_zone"],
+        flat_data["operating_system"],
+        flat_data["root_volume_type"],
+        flat_data["root_volume_size"],
+        flat_data["data_volume_type_1"],
+        flat_data["data_volume_size_1"],
+        flat_data["data_volume_type_2"],
+        flat_data["data_volume_size_2"],
     )
 
     def setUp(self):
@@ -286,33 +303,26 @@ class TestShowClusterNode(fakes.TestCCE):
         self.client.find_cluster_node = mock.Mock()
 
         self.client.find_cluster = mock.Mock(
-            return_value=cluster.Cluster(id='cluster_uuid'))
+            return_value=cluster.Cluster(id="cluster_uuid")
+        )
 
     def test_show(self):
-        arglist = [
-            'cluster_uuid',
-            'node_id'
-        ]
+        arglist = ["cluster_uuid", "node_id"]
 
-        verifylist = [
-            ('cluster', 'cluster_uuid'),
-            ('node', 'node_id')
-        ]
+        verifylist = [("cluster", "cluster_uuid"), ("node", "node_id")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_cluster_node.side_effect = [
-            self._obj
-        ]
+        self.client.find_cluster_node.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_cluster_node.assert_called_once_with(
-            cluster='cluster_uuid',
-            node='node_id')
+            cluster="cluster_uuid", node="node_id"
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -328,21 +338,15 @@ class TestDeleteClusterNode(fakes.TestCCE):
         self.client.delete_cluster_node = mock.Mock()
 
         self.client.find_cluster = mock.Mock(
-            return_value=cluster.Cluster(id='cluster_uuid'))
+            return_value=cluster.Cluster(id="cluster_uuid")
+        )
 
         self.client.find_cluster_node = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'cluster_uuid',
-            'node1',
-            'node2'
-        ]
+        arglist = ["cluster_uuid", "node1", "node2"]
 
-        verifylist = [
-            ('cluster', 'cluster_uuid'),
-            ('node', ['node1', 'node2'])
-        ]
+        verifylist = [("cluster", "cluster_uuid"), ("node", ["node1", "node2"])]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -352,22 +356,21 @@ class TestDeleteClusterNode(fakes.TestCCE):
 
         # Set the response for find_cluster
         self.client.find_cluster_node.side_effect = [
-            clusterNode.ClusterNode(id='node1'),
-            clusterNode.ClusterNode(id='node2')]
+            clusterNode.ClusterNode(id="node1"),
+            clusterNode.ClusterNode(id="node2"),
+        ]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         delete_calls = [
-            mock.call(cluster='cluster_uuid', node='node1',
-                      ignore_missing=False),
-            mock.call(cluster='cluster_uuid', node='node2',
-                      ignore_missing=False)
+            mock.call(cluster="cluster_uuid", node="node1", ignore_missing=False),
+            mock.call(cluster="cluster_uuid", node="node2", ignore_missing=False),
         ]
 
         find_calls = [
-            mock.call(cluster='cluster_uuid', node='node1'),
-            mock.call(cluster='cluster_uuid', node='node2')
+            mock.call(cluster="cluster_uuid", node="node1"),
+            mock.call(cluster="cluster_uuid", node="node2"),
         ]
 
         self.client.delete_cluster_node.assert_has_calls(delete_calls)

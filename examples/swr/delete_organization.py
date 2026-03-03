@@ -13,11 +13,12 @@
 """
 Delete organization
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-org = conn.swr.delete_organization('org_name')
+org = conn.swr.delete_organization("org_name")

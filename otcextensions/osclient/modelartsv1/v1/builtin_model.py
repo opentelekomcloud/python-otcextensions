@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts training job v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -26,9 +27,7 @@ LOG = logging.getLogger(__name__)
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class ListBuiltInModels(command.Lister):
@@ -114,9 +113,7 @@ class ListBuiltInModels(command.Lister):
         table = (
             self.columns,
             (
-                utils.get_dict_properties(
-                    s, self.columns, formatters=_formatters
-                )
+                utils.get_dict_properties(s, self.columns, formatters=_formatters)
                 for s in data
             ),
         )
@@ -137,9 +134,7 @@ class ShowBuiltInModel(command.ShowOne):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        data = client.find_builtin_model(
-            parsed_args.name, ignore_missing=False
-        )
+        data = client.find_builtin_model(parsed_args.name, ignore_missing=False)
 
         display_columns, columns = _get_columns(data)
 

@@ -25,22 +25,19 @@ class TestVpcChannel(TestApiG):
             "name": "VPC_demo",
             "port": 22,
         }
-        vpc = self.client.create_vpc_channel(
-            gateway=TestVpcChannel.gateway,
-            **attrs)
+        vpc = self.client.create_vpc_channel(gateway=TestVpcChannel.gateway, **attrs)
         self.assertIsNotNone(vpc.id)
         TestVpcChannel.lb_channel = vpc
 
     def tearDown(self):
         super(TestVpcChannel, self).tearDown()
         self.client.delete_vpc_channel(
-            gateway=TestVpcChannel.gateway,
-            vpc_channel=TestVpcChannel.lb_channel.id)
+            gateway=TestVpcChannel.gateway, vpc_channel=TestVpcChannel.lb_channel.id
+        )
 
     def test_01_get_vpc_channel(self):
         found = self.client.get_vpc_channel(
-            gateway=TestVpcChannel.gateway,
-            vpc_channel=TestVpcChannel.lb_channel['id']
+            gateway=TestVpcChannel.gateway, vpc_channel=TestVpcChannel.lb_channel["id"]
         )
         self.assertIsNotNone(found.name)
 
@@ -57,8 +54,9 @@ class TestVpcChannel(TestApiG):
         }
         updated = self.client.update_vpc_channel(
             gateway=TestVpcChannel.gateway,
-            vpc_channel=TestVpcChannel.lb_channel['id'],
-            **attrs)
+            vpc_channel=TestVpcChannel.lb_channel["id"],
+            **attrs
+        )
         self.assertEqual(updated.port, attrs["port"])
 
     def test_04_update_vpc_channel_healthcheck(self):
@@ -72,10 +70,10 @@ class TestVpcChannel(TestApiG):
             "threshold_normal": 2,
             "time_interval": 10,
             "timeout": 5,
-            "enable_client_ssl": False
+            "enable_client_ssl": False,
         }
         self.client.modify_vpc_channel_healthcheck(
             gateway=TestVpcChannel.gateway,
-            vpc_channel=TestVpcChannel.lb_channel['id'],
+            vpc_channel=TestVpcChannel.lb_channel["id"],
             **attrs
         )

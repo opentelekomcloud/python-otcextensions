@@ -13,11 +13,12 @@
 """
 Get single CBR Backup
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-backup = 'backup_id'
+backup = "backup_id"
 backup = conn.cbr.get_backup(backup=backup)
 print(backup)

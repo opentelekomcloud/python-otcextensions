@@ -15,9 +15,9 @@ from otcextensions.sdk.vpcep.v1 import quota
 from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 
 EXAMPLE = {
-    'type': 'endpoint',
-    'quota': 150,
-    'used': 14,
+    "type": "endpoint",
+    "quota": 150,
+    "used": 14,
 }
 
 
@@ -29,7 +29,7 @@ class TestQuota(base.TestCase):
         sot = quota.Quota()
         self.assertEqual(None, sot.resources_key)
         self.assertEqual(None, sot.resource_key)
-        self.assertEqual('/quotas', sot.base_path)
+        self.assertEqual("/quotas", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)
@@ -38,9 +38,9 @@ class TestQuota(base.TestCase):
 
         self.assertDictEqual(
             {
-                'limit': 'limit',
-                'marker': 'marker',
-                'type': 'type',
+                "limit": "limit",
+                "marker": "marker",
+                "type": "type",
             },
             sot._query_mapping._mapping,
         )

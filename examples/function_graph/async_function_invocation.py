@@ -13,15 +13,16 @@
 """
 Function execution asynchronously
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-func_urn = ('urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
-            'function:default:access-mysql-js-1213-1737554083545:latest')
-inv = conn.functiongraph.executing_function_asynchronously(
-    func_urn, attrs={'a': 'b'}
+func_urn = (
+    "urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:"
+    "function:default:access-mysql-js-1213-1737554083545:latest"
 )
+inv = conn.functiongraph.executing_function_asynchronously(func_urn, attrs={"a": "b"})

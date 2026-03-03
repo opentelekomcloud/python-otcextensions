@@ -19,10 +19,7 @@ from otcextensions.tests.unit.osclient.mrs.v1 import fakes
 class TestListDatasource(fakes.TestMrs):
     objects = fakes.FakeCluster.create_multiple(3)
 
-    columns = (
-        'id', 'name', 'type', 'url', 'description',
-        'is_public', 'is_protected'
-    )
+    columns = ("id", "name", "type", "url", "description", "is_public", "is_protected")
 
     data = []
 
@@ -39,26 +36,23 @@ class TestListDatasource(fakes.TestMrs):
 
     def test_default(self):
         arglist = [
-            '--type', 'hdfs',
+            "--type",
+            "hdfs",
         ]
         verifylist = [
-            ('type', 'hdfs'),
+            ("type", "hdfs"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with(
-            type='hdfs'
-        )
+        self.client.api_mock.assert_called_once_with(type="hdfs")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -67,15 +61,7 @@ class TestListDatasource(fakes.TestMrs):
 class TestShowDatasource(fakes.TestMrs):
     object = fakes.FakeDatasource.create_one()
 
-    columns = (
-        'description',
-        'id',
-        'is_protected',
-        'is_public',
-        'name',
-        'type',
-        'url'
-    )
+    columns = ("description", "id", "is_protected", "is_public", "name", "type", "url")
 
     data = fakes.gen_data(object, columns)
 
@@ -87,26 +73,20 @@ class TestShowDatasource(fakes.TestMrs):
         self.client.find_datasource = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'datasource'
-        ]
-        verifylist = [
-        ]
+        arglist = ["datasource"]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_datasource.side_effect = [
-            self.object
-        ]
+        self.client.find_datasource.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_datasource.assert_called_once_with(
-            'datasource',
-            ignore_missing=False
+            "datasource", ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)
@@ -123,9 +103,7 @@ class TestDeleteDatasource(fakes.TestMrs):
         self.client.delete_datasource = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'datasource'
-        ]
+        arglist = ["datasource"]
         verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -137,9 +115,7 @@ class TestDeleteDatasource(fakes.TestMrs):
         self.cmd.take_action(parsed_args)
 
         delete_calls = [
-            mock.call(
-                'datasource',
-                ignore_missing=False),
+            mock.call("datasource", ignore_missing=False),
         ]
 
         self.client.delete_datasource.assert_has_calls(delete_calls)
@@ -149,8 +125,7 @@ class TestDeleteDatasource(fakes.TestMrs):
 class TestCreateDatasource(fakes.TestMrs):
     object = fakes.FakeDatasource.create_one()
 
-    columns = ('description', 'id', 'is_protected', 'is_public', 'name',
-               'type', 'url')
+    columns = ("description", "id", "is_protected", "is_public", "name", "type", "url")
 
     data = fakes.gen_data(object, columns)
 
@@ -164,36 +139,38 @@ class TestCreateDatasource(fakes.TestMrs):
 
     def test_default(self):
         arglist = [
-            '--name', 'test_ds',
-            '--type', 'hdfs',
-            '--url', '/simple/mapreduce/input',
-            '--description', 'test',
+            "--name",
+            "test_ds",
+            "--type",
+            "hdfs",
+            "--url",
+            "/simple/mapreduce/input",
+            "--description",
+            "test",
         ]
         verifylist = [
-            ('name', 'test_ds'),
-            ('type', 'hdfs'),
-            ('url', '/simple/mapreduce/input'),
-            ('description', 'test'),
+            ("name", "test_ds"),
+            ("type", "hdfs"),
+            ("url", "/simple/mapreduce/input"),
+            ("description", "test"),
         ]
 
         # Verify cmd is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_datasource.side_effect = [
-            self.object
-        ]
+        self.client.create_datasource.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_datasource.assert_called_once_with(
-            type='hdfs',
-            name='test_ds',
-            url='/simple/mapreduce/input',
-            description='test',
-            is_public='false',
-            is_protected='false'
+            type="hdfs",
+            name="test_ds",
+            url="/simple/mapreduce/input",
+            description="test",
+            is_public="false",
+            is_protected="false",
         )
 
         self.assertEqual(self.columns, columns)
@@ -203,8 +180,7 @@ class TestCreateDatasource(fakes.TestMrs):
 class TestUpdateDatasource(fakes.TestMrs):
     object = fakes.FakeDatasource.create_one()
 
-    columns = ('description', 'id', 'is_protected', 'is_public', 'name',
-               'type', 'url')
+    columns = ("description", "id", "is_protected", "is_public", "name", "type", "url")
 
     data = fakes.gen_data(object, columns)
 
@@ -218,42 +194,44 @@ class TestUpdateDatasource(fakes.TestMrs):
 
     def test_default(self):
         arglist = [
-            'datasource_id',
-            '--name', 'test_ds',
-            '--type', 'obs',
-            '--url', '/simple/mapreduce/updated',
-            '--description', 'updated',
+            "datasource_id",
+            "--name",
+            "test_ds",
+            "--type",
+            "obs",
+            "--url",
+            "/simple/mapreduce/updated",
+            "--description",
+            "updated",
         ]
         verifylist = [
-            ('datasource', 'datasource_id'),
-            ('name', 'test_ds'),
-            ('type', 'obs'),
-            ('url', '/simple/mapreduce/updated'),
-            ('description', 'updated'),
+            ("datasource", "datasource_id"),
+            ("name", "test_ds"),
+            ("type", "obs"),
+            ("url", "/simple/mapreduce/updated"),
+            ("description", "updated"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_datasource.side_effect = [
-            self.object
-        ]
+        self.client.update_datasource.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_datasource.assert_called_with(
-            'datasource_id',
-            ignore_missing=False)
+            "datasource_id", ignore_missing=False
+        )
 
         self.client.update_datasource.assert_called_once_with(
             datasource=mock.ANY,
-            name='test_ds',
-            type='obs',
-            url='/simple/mapreduce/updated',
-            description='updated',
-            is_public='false'
+            name="test_ds",
+            type="obs",
+            url="/simple/mapreduce/updated",
+            description="updated",
+            is_public="false",
         )
 
         self.assertEqual(self.columns, columns)

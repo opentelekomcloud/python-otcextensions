@@ -11,14 +11,14 @@
 # under the License.
 #
 """Datastore v3 action implementations"""
+
 from osc_lib import utils
 from osc_lib.command import command
 
-from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
-
-DB_TYPE_CHOICES = ['mysql', 'postgresql', 'sqlserver']
+DB_TYPE_CHOICES = ["mysql", "postgresql", "sqlserver"]
 
 
 def _get_columns(item):
@@ -29,32 +29,38 @@ def _get_columns(item):
 class ListDatastoreTypes(command.Lister):
 
     _description = _("List available datastores.")
-    columns = ('Name', )
+    columns = ("Name",)
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
         data = client.datastore_types()
 
-        return (self.columns, (utils.get_item_properties(
-            s,
+        return (
             self.columns,
-        ) for s in data))
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
 
 
 class ListDatastoreVersions(command.Lister):
     _description = _("Lists available versions for a datastore.")
-    columns = ('ID', 'Name')
+    columns = ("ID", "Name")
 
     def get_parser(self, prog_name):
         parser = super(ListDatastoreVersions, self).get_parser(prog_name)
 
         parser.add_argument(
-            'database',
-            metavar='{' + ','.join(DB_TYPE_CHOICES) + '}',
+            "database",
+            metavar="{" + ",".join(DB_TYPE_CHOICES) + "}",
             type=lambda s: s.lower(),
             choices=DB_TYPE_CHOICES,
-            help=_('Name of the datastore Engine.'),
+            help=_("Name of the datastore Engine."),
         )
         return parser
 
@@ -63,7 +69,13 @@ class ListDatastoreVersions(command.Lister):
 
         data = client.datastores(database_name=parsed_args.database)
 
-        return (self.columns, (utils.get_item_properties(
-            s,
+        return (
             self.columns,
-        ) for s in data))
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
+        )

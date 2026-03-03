@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts dataset v2 action implementations"""
+
 import logging
 
 from cliff import columns as cliff_columns
@@ -98,9 +99,7 @@ _formatters = {
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class CreateDataset(command.ShowOne):
@@ -309,8 +308,7 @@ class ListDatasets(command.Lister):
             type=int,
             help=_(
                 "Type of the running tasks (including initialization tasks) "
-                "to be detected. The options are as follows:\n"
-                + RunningTaskType.STR
+                "to be detected. The options are as follows:\n" + RunningTaskType.STR
             ),
         )
         parser.add_argument(
@@ -405,9 +403,7 @@ class ListDatasets(command.Lister):
         return (
             self.columns,
             (
-                utils.get_item_properties(
-                    s, self.columns, formatters=formatters
-                )
+                utils.get_item_properties(s, self.columns, formatters=formatters)
                 for s in data
             ),
         )
@@ -462,9 +458,7 @@ class UpdateDataset(command.ShowOne):
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
 
         data = client.update_dataset(dataset.id, **attrs)
 
@@ -505,7 +499,8 @@ class DeleteDataset(command.Command):
                 )
         if result > 0:
             total = len(parsed_args.dataset)
-            msg = _(
-                "%(result)s of %(total)s Dataset(s) failed " "to delete."
-            ) % {"result": result, "total": total}
+            msg = _("%(result)s of %(total)s Dataset(s) failed " "to delete.") % {
+                "result": result,
+                "total": total,
+            }
             raise exceptions.CommandError(msg)

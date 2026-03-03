@@ -13,10 +13,9 @@
 """
 List domains for SSL certificate
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-result = list(conn.apig.domains_for_certificate(
-    ssl_certificate="cert_id"
-))
+conn = openstack.connect(cloud="otc")
+result = list(conn.apig.domains_for_certificate(ssl_certificate="cert_id"))

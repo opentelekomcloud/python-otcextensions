@@ -28,45 +28,45 @@ class TestCluster(fakes.TestMrs):
         flat_data = cluster._flatten_cluster(obj)
 
         data = (
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['status'],
-            flat_data['region'],
-            flat_data['cluster_type'],
-            flat_data['availability_zone'],
-            flat_data['version'],
-            flat_data['tags'],
-            flat_data['created_at'],
-            flat_data['updated_at'],
-            flat_data['billing_type'],
-            flat_data['vpc'],
-            flat_data['master_node_size'],
-            flat_data['core_node_size'],
-            flat_data['external_ip'],
-            flat_data['internal_ip'],
-            flat_data['master_num'],
-            flat_data['core_num'],
-            flat_data['core_node_size'],
-            flat_data['component_list'],
-            flat_data['deployment_id'],
-            flat_data['instance_id'],
-            flat_data['vnc'],
-            flat_data['project_id'],
-            flat_data['volume_size'],
-            flat_data['volume_type'],
-            flat_data['subnet_id'],
-            flat_data['subnet_name'],
-            flat_data['security_group_id'],
-            flat_data['non_master_security_group_id'],
-            flat_data['safe_mode'],
-            flat_data['key'],
-            flat_data['master_ip'],
-            flat_data['preffered_private_ip'],
-            flat_data['charging_start_time'],
-            flat_data['task_node_groups'],
-            flat_data['node_groups'],
-            flat_data['bootstrap_scripts'],
-            flat_data['scale'],
+            flat_data["id"],
+            flat_data["name"],
+            flat_data["status"],
+            flat_data["region"],
+            flat_data["cluster_type"],
+            flat_data["availability_zone"],
+            flat_data["version"],
+            flat_data["tags"],
+            flat_data["created_at"],
+            flat_data["updated_at"],
+            flat_data["billing_type"],
+            flat_data["vpc"],
+            flat_data["master_node_size"],
+            flat_data["core_node_size"],
+            flat_data["external_ip"],
+            flat_data["internal_ip"],
+            flat_data["master_num"],
+            flat_data["core_num"],
+            flat_data["core_node_size"],
+            flat_data["component_list"],
+            flat_data["deployment_id"],
+            flat_data["instance_id"],
+            flat_data["vnc"],
+            flat_data["project_id"],
+            flat_data["volume_size"],
+            flat_data["volume_type"],
+            flat_data["subnet_id"],
+            flat_data["subnet_name"],
+            flat_data["security_group_id"],
+            flat_data["non_master_security_group_id"],
+            flat_data["safe_mode"],
+            flat_data["key"],
+            flat_data["master_ip"],
+            flat_data["preffered_private_ip"],
+            flat_data["charging_start_time"],
+            flat_data["task_node_groups"],
+            flat_data["node_groups"],
+            flat_data["bootstrap_scripts"],
+            flat_data["scale"],
         )
 
         cmp_data = (
@@ -108,34 +108,30 @@ class TestCluster(fakes.TestMrs):
             obj.task_node_groups,
             obj.node_groups,
             obj.bootstrap_scripts,
-            obj.scale
+            obj.scale,
         )
 
         self.assertEqual(data, cmp_data)
 
     def test_normalize_tags(self):
-        tags = ['k1=v1', 'k2', 'k3=']
+        tags = ["k1=v1", "k2", "k3="]
 
-        verify_result = 'k1*v1,k2,k3'
+        verify_result = "k1*v1,k2,k3"
 
         result = cluster._normalize_tags(tags)
 
         self.assertEqual(result, verify_result)
 
     def test_add_tags_to_cluster_output(self):
-        Obj = namedtuple('obj', 'tags')
-        obj = Obj(['an=,1=2'])
+        Obj = namedtuple("obj", "tags")
+        obj = Obj(["an=,1=2"])
 
         column = ()
         data = ()
-        verify_column = (
-            'tags',
-        )
-        verify_data = ('key=an, value=\nkey=1, value=2\n'),
+        verify_column = ("tags",)
+        verify_data = (("key=an, value=\nkey=1, value=2\n"),)
 
-        data, column = cluster._add_tags_to_cluster_obj(
-            obj, data, column
-        )
+        data, column = cluster._add_tags_to_cluster_obj(obj, data, column)
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
@@ -144,22 +140,31 @@ class TestCluster(fakes.TestMrs):
 class TestListCluster(fakes.TestMrs):
     objects = fakes.FakeCluster.create_multiple(3)
 
-    columns = ('id', 'name', 'status', 'region',
-               'cluster_type', 'availability_zone', 'version')
+    columns = (
+        "id",
+        "name",
+        "status",
+        "region",
+        "cluster_type",
+        "availability_zone",
+        "version",
+    )
 
     data = []
 
     for s in objects:
         flat_data = cluster._flatten_cluster(s)
-        data.append((
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['status'],
-            flat_data['region'],
-            flat_data['cluster_type'],
-            flat_data['availability_zone'],
-            flat_data['version'],
-        ))
+        data.append(
+            (
+                flat_data["id"],
+                flat_data["name"],
+                flat_data["status"],
+                flat_data["region"],
+                flat_data["cluster_type"],
+                flat_data["availability_zone"],
+                flat_data["version"],
+            )
+        )
 
     def setUp(self):
         super(TestListCluster, self).setUp()
@@ -178,9 +183,7 @@ class TestListCluster(fakes.TestMrs):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -195,87 +198,87 @@ class TestShowCluster(fakes.TestMrs):
     object = fakes.FakeCluster.create_one()
 
     columns = (
-        'ID',
-        'name',
-        'status',
-        'region',
-        'cluster_type',
-        'availability_zone',
-        'version',
-        'created_at',
-        'updated_at',
-        'billing_type',
-        'vpc',
-        'core_node_flavor',
-        'external_ip',
-        'internal_ip',
-        'master_num',
-        'core_num',
-        'master_node_size',
-        'core_node_size',
-        'deployment_id',
-        'component_list',
-        'instance_id',
-        'vnc',
-        'project_id',
-        'volume_size',
-        'volume_type',
-        'subnet_id',
-        'subnet_name',
-        'security_group_id',
-        'non_master_security_group_id',
-        'safe_mode',
-        'key',
-        'master_ip',
-        'preffered_private_ip',
-        'charging_start_time',
-        'task_node_groups',
-        'node_groups',
-        'bootstrap_scripts',
-        'scale'
+        "ID",
+        "name",
+        "status",
+        "region",
+        "cluster_type",
+        "availability_zone",
+        "version",
+        "created_at",
+        "updated_at",
+        "billing_type",
+        "vpc",
+        "core_node_flavor",
+        "external_ip",
+        "internal_ip",
+        "master_num",
+        "core_num",
+        "master_node_size",
+        "core_node_size",
+        "deployment_id",
+        "component_list",
+        "instance_id",
+        "vnc",
+        "project_id",
+        "volume_size",
+        "volume_type",
+        "subnet_id",
+        "subnet_name",
+        "security_group_id",
+        "non_master_security_group_id",
+        "safe_mode",
+        "key",
+        "master_ip",
+        "preffered_private_ip",
+        "charging_start_time",
+        "task_node_groups",
+        "node_groups",
+        "bootstrap_scripts",
+        "scale",
     )
 
     flat_data = cluster._flatten_cluster(object)
 
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['status'],
-        flat_data['region'],
-        flat_data['cluster_type'],
-        flat_data['availability_zone'],
-        flat_data['version'],
-        flat_data['created_at'],
-        flat_data['updated_at'],
-        flat_data['billing_type'],
-        flat_data['vpc'],
-        flat_data['core_node_flavor'],
-        flat_data['external_ip'],
-        flat_data['internal_ip'],
-        flat_data['master_num'],
-        flat_data['core_num'],
-        flat_data['master_node_size'],
-        flat_data['core_node_size'],
-        flat_data['deployment_id'],
-        flat_data['component_list'],
-        flat_data['instance_id'],
-        flat_data['vnc'],
-        flat_data['project_id'],
-        flat_data['volume_size'],
-        flat_data['volume_type'],
-        flat_data['subnet_id'],
-        flat_data['subnet_name'],
-        flat_data['security_group_id'],
-        flat_data['non_master_security_group_id'],
-        flat_data['safe_mode'],
-        flat_data['key'],
-        flat_data['master_ip'],
-        flat_data['preffered_private_ip'],
-        flat_data['charging_start_time'],
-        flat_data['task_node_groups'],
-        flat_data['node_groups'],
-        flat_data['bootstrap_scripts'],
-        flat_data['scale'],
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["status"],
+        flat_data["region"],
+        flat_data["cluster_type"],
+        flat_data["availability_zone"],
+        flat_data["version"],
+        flat_data["created_at"],
+        flat_data["updated_at"],
+        flat_data["billing_type"],
+        flat_data["vpc"],
+        flat_data["core_node_flavor"],
+        flat_data["external_ip"],
+        flat_data["internal_ip"],
+        flat_data["master_num"],
+        flat_data["core_num"],
+        flat_data["master_node_size"],
+        flat_data["core_node_size"],
+        flat_data["deployment_id"],
+        flat_data["component_list"],
+        flat_data["instance_id"],
+        flat_data["vnc"],
+        flat_data["project_id"],
+        flat_data["volume_size"],
+        flat_data["volume_type"],
+        flat_data["subnet_id"],
+        flat_data["subnet_name"],
+        flat_data["security_group_id"],
+        flat_data["non_master_security_group_id"],
+        flat_data["safe_mode"],
+        flat_data["key"],
+        flat_data["master_ip"],
+        flat_data["preffered_private_ip"],
+        flat_data["charging_start_time"],
+        flat_data["task_node_groups"],
+        flat_data["node_groups"],
+        flat_data["bootstrap_scripts"],
+        flat_data["scale"],
     )
 
     def setUp(self):
@@ -286,26 +289,22 @@ class TestShowCluster(fakes.TestMrs):
         self.client.find_cluster = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'cluster'
-        ]
-        verifylist = [
-        ]
+        arglist = ["cluster"]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_cluster.side_effect = [
-            self.object
-        ]
+        self.client.find_cluster.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_cluster.assert_called_once_with(
-            name_or_id='cluster',
-            ignore_missing=False, )
+            name_or_id="cluster",
+            ignore_missing=False,
+        )
 
         self.data, self.columns = cluster._add_tags_to_cluster_obj(
             self.object,
@@ -326,9 +325,7 @@ class TestDeleteCluster(fakes.TestMrs):
         self.client.delete_cluster = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'cluster'
-        ]
+        arglist = ["cluster"]
         verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -340,9 +337,7 @@ class TestDeleteCluster(fakes.TestMrs):
         self.cmd.take_action(parsed_args)
 
         delete_calls = [
-            mock.call(
-                cluster='cluster',
-                ignore_missing=False),
+            mock.call(cluster="cluster", ignore_missing=False),
         ]
 
         self.client.delete_cluster.assert_has_calls(delete_calls)
@@ -353,87 +348,87 @@ class TestUpdateCluster(fakes.TestMrs):
     object = fakes.FakeCluster.create_one()
 
     columns = (
-        'ID',
-        'name',
-        'status',
-        'region',
-        'cluster_type',
-        'availability_zone',
-        'version',
-        'created_at',
-        'updated_at',
-        'billing_type',
-        'vpc',
-        'core_node_flavor',
-        'external_ip',
-        'internal_ip',
-        'master_num',
-        'core_num',
-        'master_node_size',
-        'core_node_size',
-        'deployment_id',
-        'component_list',
-        'instance_id',
-        'vnc',
-        'project_id',
-        'volume_size',
-        'volume_type',
-        'subnet_id',
-        'subnet_name',
-        'security_group_id',
-        'non_master_security_group_id',
-        'safe_mode',
-        'key',
-        'master_ip',
-        'preffered_private_ip',
-        'charging_start_time',
-        'task_node_groups',
-        'node_groups',
-        'bootstrap_scripts',
-        'scale'
+        "ID",
+        "name",
+        "status",
+        "region",
+        "cluster_type",
+        "availability_zone",
+        "version",
+        "created_at",
+        "updated_at",
+        "billing_type",
+        "vpc",
+        "core_node_flavor",
+        "external_ip",
+        "internal_ip",
+        "master_num",
+        "core_num",
+        "master_node_size",
+        "core_node_size",
+        "deployment_id",
+        "component_list",
+        "instance_id",
+        "vnc",
+        "project_id",
+        "volume_size",
+        "volume_type",
+        "subnet_id",
+        "subnet_name",
+        "security_group_id",
+        "non_master_security_group_id",
+        "safe_mode",
+        "key",
+        "master_ip",
+        "preffered_private_ip",
+        "charging_start_time",
+        "task_node_groups",
+        "node_groups",
+        "bootstrap_scripts",
+        "scale",
     )
 
     flat_data = cluster._flatten_cluster(object)
 
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['status'],
-        flat_data['region'],
-        flat_data['cluster_type'],
-        flat_data['availability_zone'],
-        flat_data['version'],
-        flat_data['created_at'],
-        flat_data['updated_at'],
-        flat_data['billing_type'],
-        flat_data['vpc'],
-        flat_data['core_node_flavor'],
-        flat_data['external_ip'],
-        flat_data['internal_ip'],
-        flat_data['master_num'],
-        flat_data['core_num'],
-        flat_data['master_node_size'],
-        flat_data['core_node_size'],
-        flat_data['deployment_id'],
-        flat_data['component_list'],
-        flat_data['instance_id'],
-        flat_data['vnc'],
-        flat_data['project_id'],
-        flat_data['volume_size'],
-        flat_data['volume_type'],
-        flat_data['subnet_id'],
-        flat_data['subnet_name'],
-        flat_data['security_group_id'],
-        flat_data['non_master_security_group_id'],
-        flat_data['safe_mode'],
-        flat_data['key'],
-        flat_data['master_ip'],
-        flat_data['preffered_private_ip'],
-        flat_data['charging_start_time'],
-        flat_data['task_node_groups'],
-        flat_data['node_groups'],
-        flat_data['bootstrap_scripts'],
-        flat_data['scale'],
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["status"],
+        flat_data["region"],
+        flat_data["cluster_type"],
+        flat_data["availability_zone"],
+        flat_data["version"],
+        flat_data["created_at"],
+        flat_data["updated_at"],
+        flat_data["billing_type"],
+        flat_data["vpc"],
+        flat_data["core_node_flavor"],
+        flat_data["external_ip"],
+        flat_data["internal_ip"],
+        flat_data["master_num"],
+        flat_data["core_num"],
+        flat_data["master_node_size"],
+        flat_data["core_node_size"],
+        flat_data["deployment_id"],
+        flat_data["component_list"],
+        flat_data["instance_id"],
+        flat_data["vnc"],
+        flat_data["project_id"],
+        flat_data["volume_size"],
+        flat_data["volume_type"],
+        flat_data["subnet_id"],
+        flat_data["subnet_name"],
+        flat_data["security_group_id"],
+        flat_data["non_master_security_group_id"],
+        flat_data["safe_mode"],
+        flat_data["key"],
+        flat_data["master_ip"],
+        flat_data["preffered_private_ip"],
+        flat_data["charging_start_time"],
+        flat_data["task_node_groups"],
+        flat_data["node_groups"],
+        flat_data["bootstrap_scripts"],
+        flat_data["scale"],
     )
 
     def setUp(self):
@@ -446,38 +441,38 @@ class TestUpdateCluster(fakes.TestMrs):
 
     def test_default(self):
         arglist = [
-            'cluster_id',
-            '--scale_type', 'scale_in',
-            '--instances', '3',
+            "cluster_id",
+            "--scale_type",
+            "scale_in",
+            "--instances",
+            "3",
         ]
         verifylist = [
-            ('cluster', 'cluster_id'),
-            ('scale_type', 'scale_in'),
-            ('instances', 3),
+            ("cluster", "cluster_id"),
+            ("scale_type", "scale_in"),
+            ("instances", 3),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_cluster.side_effect = [
-            self.object
-        ]
+        self.client.update_cluster.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_cluster.assert_called_with(
-            name_or_id='cluster_id',
-            ignore_missing=False)
+            name_or_id="cluster_id", ignore_missing=False
+        )
 
         self.client.update_cluster.assert_called_once_with(
             cluster=mock.ANY,
             parameters={
-                'scale_type': 'scale_in',
-                'node_id': 'node_orderadd',
-                'instances': 3
-            }
+                "scale_type": "scale_in",
+                "node_id": "node_orderadd",
+                "instances": 3,
+            },
         )
 
         self.assertEqual(self.columns, columns)

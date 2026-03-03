@@ -10,21 +10,20 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
-from openstack.tests.unit import base
 
+from openstack.tests.unit import base
 from otcextensions.sdk.cbr.v3 import member
 
 EXAMPLE = {
-    'status': 'accepted',
-    'backup_id': 'backup_id',
-    'image_id': 'image_id',
-    'vault_id': 'vault_id',
-    'dest_project_id': 'dest_project_id',
-    'updated_at': '2020-02-24T09:36:00.479031',
-    'created_at': '2020-02-24T09:36:00.479033',
-    'id': 'member_id'
+    "status": "accepted",
+    "backup_id": "backup_id",
+    "image_id": "image_id",
+    "vault_id": "vault_id",
+    "dest_project_id": "dest_project_id",
+    "updated_at": "2020-02-24T09:36:00.479031",
+    "created_at": "2020-02-24T09:36:00.479033",
+    "id": "member_id",
 }
 
 
@@ -43,9 +42,9 @@ class TestMember(base.TestCase):
 
     def test_basic(self):
         sot = member.Member()
-        self.assertEqual('member', sot.resource_key)
-        self.assertEqual('members', sot.resources_key)
-        self.assertEqual('/backups/%(backup_id)s/members', sot.base_path)
+        self.assertEqual("member", sot.resource_key)
+        self.assertEqual("members", sot.resources_key)
+        self.assertEqual("/backups/%(backup_id)s/members", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -54,10 +53,10 @@ class TestMember(base.TestCase):
 
     def test_make_it(self):
         sot = member.Member.existing(**EXAMPLE)
-        self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['backup_id'], sot.backup_id)
-        self.assertEqual(EXAMPLE['image_id'], sot.image_id)
-        self.assertEqual(EXAMPLE['vault_id'], sot.vault_id)
-        self.assertEqual(EXAMPLE['dest_project_id'], sot.dest_project_id)
-        self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
+        self.assertEqual(EXAMPLE["status"], sot.status)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["backup_id"], sot.backup_id)
+        self.assertEqual(EXAMPLE["image_id"], sot.image_id)
+        self.assertEqual(EXAMPLE["vault_id"], sot.vault_id)
+        self.assertEqual(EXAMPLE["dest_project_id"], sot.dest_project_id)
+        self.assertEqual(EXAMPLE["updated_at"], sot.updated_at)

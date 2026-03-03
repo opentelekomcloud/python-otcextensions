@@ -14,34 +14,32 @@ from openstack import resource
 
 class ImageInfoListSpec(resource.Resource):
     #: Image engine type.
-    datastore_type = resource.Body('datastoreType')
+    datastore_type = resource.Body("datastoreType")
     #: Image engine version.
-    datastore_version = resource.Body('datastoreVersion')
+    datastore_version = resource.Body("datastoreVersion")
     #: Name of an image that can be upgraded.
-    display_name = resource.Body('displayName')
+    display_name = resource.Body("displayName")
     #: ID of an image that can be upgraded.
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Image description.
-    image_desc = resource.Body('imageDesc')
+    image_desc = resource.Body("imageDesc")
     #: Priority.
-    priority = resource.Body('priority', type=int)
+    priority = resource.Body("priority", type=int)
 
 
 class ClusterImage(resource.Resource):
-    base_path = '/clusters/%(cluster_id)s/target/%(upgrade_type)s/images'
+    base_path = "/clusters/%(cluster_id)s/target/%(upgrade_type)s/images"
     allow_fetch = True
     #: Cluster ID.
-    cluster_id = resource.URI('cluster_id')
+    cluster_id = resource.URI("cluster_id")
     #: Version type. The value can be:
     #: \nsame: upgrade to the same version.
     #: \ncross: upgrade to a different version.
     #: \ncrossEngine: cross-engine upgrade.
-    upgrade_type = resource.URI('upgrade_type')
+    upgrade_type = resource.URI("upgrade_type")
     #: Indicates whether to upload the plug-in of the target version.
-    need_upload_upgrade_plugin = resource.Body(
-        'needUploadUpgradePlugin', type=bool
-    )
+    need_upload_upgrade_plugin = resource.Body("needUploadUpgradePlugin", type=bool)
     #: Image details.
     image_info_list = resource.Body(
-        'imageInfoList', type=list, list_type=ImageInfoListSpec
+        "imageInfoList", type=list, list_type=ImageInfoListSpec
     )

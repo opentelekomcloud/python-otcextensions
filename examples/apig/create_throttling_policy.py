@@ -13,10 +13,11 @@
 """
 Create throttling policy for gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "api_call_limits": 100,
     "app_call_limits": 60,
@@ -24,15 +25,12 @@ attrs = {
     "ip_call_limits": 60,
     "name": "throttle_demo",
     "remark": "Total: 800 calls/second;"
-              " user: 500 calls/second;"
-              " app: 300 calls/second;"
-              " IP address: 600 calls/second",
+    " user: 500 calls/second;"
+    " app: 300 calls/second;"
+    " IP address: 600 calls/second",
     "time_interval": 1,
     "time_unit": "SECOND",
     "type": 1,
-    "user_call_limits": 60
+    "user_call_limits": 60,
 }
-policy = conn.apig.create_throttling_policy(
-    gateway="gateway_id",
-    **attrs
-)
+policy = conn.apig.create_throttling_policy(gateway="gateway_id", **attrs)

@@ -13,9 +13,12 @@
 """
 Generate the AppCode
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-code = conn.apig.generate_app_code(gateway='gateway_id',
-                                   app='app_id',)
+conn = openstack.connect(cloud="otc")
+code = conn.apig.generate_app_code(
+    gateway="gateway_id",
+    app="app_id",
+)

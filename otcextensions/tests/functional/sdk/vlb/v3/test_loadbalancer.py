@@ -37,18 +37,13 @@ class TestLoadbalancer(TestVlb):
         self.assertIsNotNone(elb)
 
     def test_05_update_loadbalancer(self):
-        new_description = 'changed'
+        new_description = "changed"
         elb = self.client.update_load_balancer(
-            TestVlb.load_balancer,
-            description=new_description
+            TestVlb.load_balancer, description=new_description
         )
-        self.assertEqual(elb['description'], new_description)
+        self.assertEqual(elb["description"], new_description)
 
         # cleanup
-        self.client.delete_load_balancer(
-            TestVlb.load_balancer
-        )
-        self.net_client.delete_ip(
-            elb['floating_ips'][0]['publicip_id']
-        )
+        self.client.delete_load_balancer(TestVlb.load_balancer)
+        self.net_client.delete_ip(elb["floating_ips"][0]["publicip_id"])
         self.addCleanup(self.destroy_network, TestVlb.network)

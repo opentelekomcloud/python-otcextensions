@@ -12,12 +12,10 @@
 # under the License.
 import copy
 
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.cce.v3 import node_pool
 
 EXAMPLE_LIST = {
@@ -29,7 +27,7 @@ EXAMPLE_LIST = {
             "apiVersion": "v3",
             "metadata": {
                 "name": "wyr-17-nodepool-53042",
-                "uid": "feec6013-cd7e-11ea-8c7a-0255ac100be7"
+                "uid": "feec6013-cd7e-11ea-8c7a-0255ac100be7",
             },
             "spec": {
                 "initialNodeCount": 0,
@@ -38,60 +36,32 @@ EXAMPLE_LIST = {
                     "flavor": "s6.large.2",
                     "az": "eu-de-01",
                     "os": "EulerOS 2.5",
-                    "login": {
-                        "sshKey": "KeyPair-nodepool",
-                        "userPassword": {}
-                    },
-                    "rootVolume": {
-                        "volumetype": "SATA",
-                        "size": 40
-                    },
+                    "login": {"sshKey": "KeyPair-nodepool", "userPassword": {}},
+                    "rootVolume": {"volumetype": "SATA", "size": 40},
                     "dataVolumes": [
                         {
                             "volumetype": "SATA",
                             "size": 100,
-                            "extendParam": {
-                                "useType": "docker"
-                            }
+                            "extendParam": {"useType": "docker"},
                         }
                     ],
-                    "publicIP": {
-                        "eip": {
-                            "bandwidth": {}
-                        }
-                    },
+                    "publicIP": {"eip": {"bandwidth": {}}},
                     "nodeNicSpec": {
-                        "primaryNic": {
-                            "subnetId": "31be174a-0c7f-4b71-bb0d"
-                        }
+                        "primaryNic": {"subnetId": "31be174a-0c7f-4b71-bb0d"}
                     },
                     "billingMode": 0,
                     "taints": [
-                        {
-                            "key": "aaa",
-                            "value": "bbb",
-                            "effect": "NoSchedule"
-                        },
-                        {
-                            "key": "ccc",
-                            "value": "ddd",
-                            "effect": "NoSchedule"
-                        }
+                        {"key": "aaa", "value": "bbb", "effect": "NoSchedule"},
+                        {"key": "ccc", "value": "ddd", "effect": "NoSchedule"},
                     ],
                     "k8sTags": {
                         "cce.cloud.com/cce-nodepool": "wyr-17-nodepool",
                         "tag1": "value1",
-                        "tag2": "value2"
+                        "tag2": "value2",
                     },
                     "userTags": [
-                        {
-                            "key": "resource-tag1",
-                            "value": "value1"
-                        },
-                        {
-                            "key": "resource-tag2",
-                            "value": "value2"
-                        }
+                        {"key": "resource-tag1", "value": "value1"},
+                        {"key": "resource-tag2", "value": "value2"},
                     ],
                     "extendParam": {
                         "DockerLVMConfigOverride": "dockerThinpool",
@@ -99,34 +69,27 @@ EXAMPLE_LIST = {
                         "alpha.cce/postInstall": "bHMgLWwK",
                         "alpha.cce/preInstall": "bHMgLWw=",
                         "maxPods": 110,
-                        "publicKey": "ssh-key"
-                    }
+                        "publicKey": "ssh-key",
+                    },
                 },
                 "autoscaling": {
                     "enable": True,
                     "minNodeCount": 1,
                     "maxNodeCount": 3,
                     "scaleDownCooldownTime": 10,
-                    "priority": 1
+                    "priority": 1,
                 },
-                "nodeManagement": {
-                    "serverGroupReference": "grpref"
-                }
+                "nodeManagement": {"serverGroupReference": "grpref"},
             },
-            "status": {
-                "currentNode": 0,
-                "phase": ""
-            }
+            "status": {"currentNode": 0, "phase": ""},
         }
-    ]
+    ],
 }
 
 EXAMPLE_CREATE = {
     "kind": "NodePool",
     "apiVersion": "v3",
-    "metadata": {
-        "name": "wyr-17-nodepool-53042"
-    },
+    "metadata": {"name": "wyr-17-nodepool-53042"},
     "spec": {
         "initialNodeCount": 0,
         "type": "vm",
@@ -135,29 +98,20 @@ EXAMPLE_CREATE = {
             "minNodeCount": 1,
             "maxNodeCount": 3,
             "scaleDownCooldownTime": 10,
-            "priority": 1
+            "priority": 1,
         },
-        "nodeManagement": {
-            "serverGroupReference": "grpref"
-        },
+        "nodeManagement": {"serverGroupReference": "grpref"},
         "nodeTemplate": {
             "flavor": "s6.large.2",
             "az": "eu-de-01",
             "os": "EulerOS 2.5",
-            "login": {
-                "sshKey": "KeyPair-nodepool"
-            },
-            "rootVolume": {
-                "volumetype": "SATA",
-                "size": 40
-            },
+            "login": {"sshKey": "KeyPair-nodepool"},
+            "rootVolume": {"volumetype": "SATA", "size": 40},
             "dataVolumes": [
                 {
                     "volumetype": "SATA",
                     "size": 100,
-                    "extendParam": {
-                        "useType": "docker"
-                    }
+                    "extendParam": {"useType": "docker"},
                 }
             ],
             "billingMode": 0,
@@ -166,41 +120,20 @@ EXAMPLE_CREATE = {
                 "alpha.cce/postInstall": "bHMgLWwK",
                 "alpha.cce/NodeImageID": "85bd7ec5",
                 "maxPods": 110,
-                "DockerLVMConfigOverride": "dockerThinpool"
+                "DockerLVMConfigOverride": "dockerThinpool",
             },
-            "k8sTags": {
-                "tag1": "value1",
-                "tag2": "value2"
-            },
+            "k8sTags": {"tag1": "value1", "tag2": "value2"},
             "taints": [
-                {
-                    "key": "aaa",
-                    "value": "bbb",
-                    "effect": "NoSchedule"
-                },
-                {
-                    "key": "ccc",
-                    "value": "ddd",
-                    "effect": "NoSchedule"
-                }
+                {"key": "aaa", "value": "bbb", "effect": "NoSchedule"},
+                {"key": "ccc", "value": "ddd", "effect": "NoSchedule"},
             ],
             "userTags": [
-                {
-                    "key": "resource-tag1",
-                    "value": "value1"
-                },
-                {
-                    "key": "resource-tag2",
-                    "value": "value2"
-                }
+                {"key": "resource-tag1", "value": "value1"},
+                {"key": "resource-tag2", "value": "value2"},
             ],
-            "nodeNicSpec": {
-                "primaryNic": {
-                    "subnetId": "31be174a-0c7f-4b71-bb0d"
-                }
-            }
-        }
-    }
+            "nodeNicSpec": {"primaryNic": {"subnetId": "31be174a-0c7f-4b71-bb0d"}},
+        },
+    },
 }
 
 
@@ -210,17 +143,16 @@ class TestNodePool(base.TestCase):
         super(TestNodePool, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
-        self.sess.default_microversion = '1'
+        self.sess.default_microversion = "1"
         self.sess._get_connection = mock.Mock(return_value=self.cloud)
 
-        self.sot = node_pool.NodePool(cluster_id='cluster_id')
+        self.sot = node_pool.NodePool(cluster_id="cluster_id")
 
     def test_basic(self):
         sot = node_pool.NodePool()
         self.assertEqual(None, sot.resource_key)
         self.assertEqual(None, sot.resources_key)
-        self.assertEqual('/clusters/%(cluster_id)s/nodepools',
-                         sot.base_path)
+        self.assertEqual("/clusters/%(cluster_id)s/nodepools", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -228,10 +160,10 @@ class TestNodePool(base.TestCase):
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
-        obj = EXAMPLE_LIST['items'][0]
+        obj = EXAMPLE_LIST["items"][0]
         sot = node_pool.NodePool.existing(**obj)
-        self.assertEqual(obj['metadata']['uid'], sot.id)
-        self.assertEqual(obj['kind'], sot.kind)
+        self.assertEqual(obj["metadata"]["uid"], sot.id)
+        self.assertEqual(obj["kind"], sot.kind)
 
     def test_list(self):
         mock_response = mock.Mock()
@@ -243,24 +175,18 @@ class TestNodePool(base.TestCase):
         result = list(
             self.sot.list(
                 self.sess,
-                cluster_id='cluster_id',
+                cluster_id="cluster_id",
             )
         )
 
         self.sess.get.assert_called_once_with(
-            '/clusters/%s/nodepools' % self.sot.cluster_id,
+            "/clusters/%s/nodepools" % self.sot.cluster_id,
             params={},
-            headers={
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            headers={"Accept": "application/json", "Content-Type": "application/json"},
         )
 
         expected_list = [
-            node_pool.NodePool.existing(
-                **EXAMPLE_LIST['items'][0]),
+            node_pool.NodePool.existing(**EXAMPLE_LIST["items"][0]),
         ]
 
-        self.assertEqual(
-            set(i.id for i in expected_list),
-            set(i.id for i in result))
+        self.assertEqual(set(i.id for i in expected_list), set(i.id for i in result))

@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.ddmv3.v1 import _proxy
 
 
 class Ddmv3Service(service_description.ServiceDescription):
     """The Distributed Database Middleware service."""
 
-    supported_versions = {
-        '3': _proxy.Proxy
-    }
+    supported_versions = {"3": _proxy.Proxy}

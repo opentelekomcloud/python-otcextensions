@@ -13,9 +13,12 @@
 """
 Verify an App
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-app = conn.apig.verify_app(gateway='gateway_id',
-                           app='app_id',)
+conn = openstack.connect(cloud="otc")
+app = conn.apig.verify_app(
+    gateway="gateway_id",
+    app="app_id",
+)

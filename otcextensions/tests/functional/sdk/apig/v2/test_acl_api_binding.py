@@ -20,56 +20,51 @@ class TestAclApiBinding(TestApiG):
         super(TestAclApiBinding, self).setUp()
 
     def test_list_apis_for_acl(self):
-        attrs = {
-            'acl_id': '1142260d5e654b9590a1d329926bea52'
-        }
-        found = list(self.client.list_apis_for_acl(
-            gateway=TestAclApiBinding.gateway_id, **attrs))
+        attrs = {"acl_id": "1142260d5e654b9590a1d329926bea52"}
+        found = list(
+            self.client.list_apis_for_acl(gateway=TestAclApiBinding.gateway_id, **attrs)
+        )
         self.assertGreater(len(found), 0)
 
     def test_list_api_not_bound_to_acl(self):
-        attrs = {
-            'acl_id': '1142260d5e654b9590a1d329926bea52'
-        }
-        found = list(self.client.list_api_not_bound_to_acl(
-            gateway=TestAclApiBinding.gateway_id, **attrs))
+        attrs = {"acl_id": "1142260d5e654b9590a1d329926bea52"}
+        found = list(
+            self.client.list_api_not_bound_to_acl(
+                gateway=TestAclApiBinding.gateway_id, **attrs
+            )
+        )
         self.assertGreater(len(found), 0)
 
     def test_list_acl_for_api(self):
-        attrs = {
-            'api_id': '64182cc7e77245ebbae8cf3b8522a540'
-        }
-        found = list(self.client.list_acl_for_api(
-            gateway=TestAclApiBinding.gateway_id, **attrs))
+        attrs = {"api_id": "64182cc7e77245ebbae8cf3b8522a540"}
+        found = list(
+            self.client.list_acl_for_api(gateway=TestAclApiBinding.gateway_id, **attrs)
+        )
         self.assertGreater(len(found), 0)
 
     def test_bind_acl_to_api(self):
         attrs = {
             "acl_id": "d5645ed3c454492f8d6aa68ab034c6d3",
-            "publish_ids": ["293fe0a8e3f04a1ab151bd0d913900a9"]
+            "publish_ids": ["293fe0a8e3f04a1ab151bd0d913900a9"],
         }
-        result = list(self.client.bind_acl_to_api(
-            gateway=TestAclApiBinding.gateway_id,
-            **attrs))
+        result = list(
+            self.client.bind_acl_to_api(gateway=TestAclApiBinding.gateway_id, **attrs)
+        )
         self.assertGreater(len(result), 0)
 
     def test_unbind_acl(self):
         self.client.unbind_acl(
-            gateway=TestAclApiBinding.gateway_id,
-            acl='e37364eb93c44ef093d686383354689b')
-        attrs = {
-            'api_id': '12259302184a4972ac64277537a6aa20'
-        }
-        found = list(self.client.list_acl_for_api(
-            gateway=TestAclApiBinding.gateway_id, **attrs))
+            gateway=TestAclApiBinding.gateway_id, acl="e37364eb93c44ef093d686383354689b"
+        )
+        attrs = {"api_id": "12259302184a4972ac64277537a6aa20"}
+        found = list(
+            self.client.list_acl_for_api(gateway=TestAclApiBinding.gateway_id, **attrs)
+        )
         self.assertEqual(len(found), 0)
 
     def test_unbind_acls(self):
-        attrs = {
-            "acl_bindings": ["332c5db1458a477b89b2ea741fec94a3"]
-        }
-        result = list(self.client.unbind_acls(
-            gateway=TestAclApiBinding.gateway_id,
-            **attrs
-        ))
+        attrs = {"acl_bindings": ["332c5db1458a477b89b2ea741fec94a3"]}
+        result = list(
+            self.client.unbind_acls(gateway=TestAclApiBinding.gateway_id, **attrs)
+        )
         self.assertGreater(len(result), 0)

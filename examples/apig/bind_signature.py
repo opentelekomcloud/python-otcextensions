@@ -13,16 +13,11 @@
 """
 Bind Signature to API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "sign_id": "sign_id",
-    "publish_ids": ["publish_id"]
-}
-bind = conn.apig.bind_signature(
-    gateway="gateway_id",
-    **attrs
-)
+attrs = {"sign_id": "sign_id", "publish_ids": ["publish_id"]}
+bind = conn.apig.bind_signature(gateway="gateway_id", **attrs)

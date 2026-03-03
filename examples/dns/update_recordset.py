@@ -13,20 +13,18 @@
 """
 Update a DNS recordset with new parameters
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 recordset = conn.dns.update_recordset(
-    zone_id='zone_id',
-    recordset='recordset_id',
-    description='This is another description',
+    zone_id="zone_id",
+    recordset="recordset_id",
+    description="This is another description",
     ttl=3600,
-    records=[
-        '192.168.2.4',
-        '192.168.2.5'
-    ]
+    records=["192.168.2.4", "192.168.2.5"],
 )
 print(recordset)

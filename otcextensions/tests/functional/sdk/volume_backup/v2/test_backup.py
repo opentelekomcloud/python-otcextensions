@@ -29,42 +29,41 @@ class TestBackup(TestVbs):
         self.VOLUME_NAME = self.getUniqueString()
         self.VOLUME_ID = None
 
-        volume = self.conn.block_storage.create_volume(
-            name=self.VOLUME_NAME,
-            size=1)
+        volume = self.conn.block_storage.create_volume(name=self.VOLUME_NAME, size=1)
         resource.wait_for_status(
             session=self.conn.block_storage,
             resource=volume,
-            status='available',
-            failures=['error'],
+            status="available",
+            failures=["error"],
             interval=2,
-            wait=120)
+            wait=120,
+        )
         # assert isinstance(volume, _volume.Volume)
         self.assertEqual(self.VOLUME_NAME, volume.name)
         self.VOLUME_ID = volume.id
         snapshot = self.conn.block_storage.create_snapshot(
-            name=self.SNAPSHOT_NAME,
-            volume_id=self.VOLUME_ID)
+            name=self.SNAPSHOT_NAME, volume_id=self.VOLUME_ID
+        )
         resource.wait_for_status(
             session=self.conn.block_storage,
             resource=snapshot,
-            status='available',
-            failures=['error'],
+            status="available",
+            failures=["error"],
             interval=2,
-            wait=120)
+            wait=120,
+        )
         # assert isinstance(snapshot, _snapshot.Snapshot)
         self.assertEqual(self.SNAPSHOT_NAME, snapshot.name)
         self.SNAPSHOT_ID = snapshot.id
 
     def cleanup_volume(self):
         snapshot = self.conn.block_storage.get_snapshot(self.SNAPSHOT_ID)
-        sot = self.conn.block_storage.delete_snapshot(
-            snapshot, ignore_missing=False)
-        self.conn.block_storage.wait_for_delete(
-            snapshot, interval=2, wait=120)
+        sot = self.conn.block_storage.delete_snapshot(snapshot, ignore_missing=False)
+        self.conn.block_storage.wait_for_delete(snapshot, interval=2, wait=120)
         self.assertIsNone(sot)
         sot = self.conn.block_storage.delete_volume(
-            self.VOLUME_ID, ignore_missing=False)
+            self.VOLUME_ID, ignore_missing=False
+        )
         self.assertIsNone(sot)
 
     def test_list_backup(self):
@@ -81,18 +80,16 @@ class TestBackup(TestVbs):
         query = {}
         backups = list(self.client.backups(**query))
         self.assertGreaterEqual(len(backups), 0)
-        query['limit'] = 1
+        query["limit"] = 1
         backups_new = list(self.client.backups(**query))
         self.assertGreaterEqual(len(backups), len(backups_new))
 
     def test_list_backup_filter_status(self):
-        query = {
-            'status': 'available'
-        }
+        query = {"status": "available"}
         backups = list(self.client.backups(details=True, **query))
         if len(backups) > 0:
             for backup in backups:
-                self.assertEqual(backup.status, 'available')
+                self.assertEqual(backup.status, "available")
 
     def test_get_backup_from_detail(self):
         query = {}

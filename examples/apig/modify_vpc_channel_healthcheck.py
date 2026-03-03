@@ -13,10 +13,11 @@
 """
 Modify VPC Channel Healthcheck
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "http_code": "200",
     "path": "/vpc/demo",
@@ -27,10 +28,8 @@ attrs = {
     "threshold_normal": 2,
     "time_interval": 10,
     "timeout": 5,
-    "enable_client_ssl": False
+    "enable_client_ssl": False,
 }
 updated = conn.apig.modify_vpc_channel_healthcheck(
-    gateway="gateway_id",
-    vpc_channel="vpc_channel_id",
-    **attrs
+    gateway="gateway_id", vpc_channel="vpc_channel_id", **attrs
 )

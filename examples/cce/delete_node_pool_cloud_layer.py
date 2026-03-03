@@ -13,14 +13,13 @@
 """
 Delete CCE node pool in cloud layer
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-cluster = 'bca73490-394c-11eb-8fe2-0255ac101123'
-pool = '58d24fde-4042-11eb-8fea-0255ac101123'
-conn.delete_cce_node_pool(
-    cluster=cluster,
-    node_pool=pool)
+cluster = "bca73490-394c-11eb-8fe2-0255ac101123"
+pool = "58d24fde-4042-11eb-8fea-0255ac101123"
+conn.delete_cce_node_pool(cluster=cluster, node_pool=pool)

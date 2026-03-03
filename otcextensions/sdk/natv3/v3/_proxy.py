@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.natv3.v3 import gateway as _gateway
 

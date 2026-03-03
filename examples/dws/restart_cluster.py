@@ -13,10 +13,11 @@
 """
 Restart DWS Cluster by cluster name_or_id or instance of Cluster class.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluter-uuid'
+cluster_id = "cluter-uuid"
 conn.dws.restart_cluster(cluster_id)

@@ -14,8 +14,9 @@
 List all CSS Clusters
 """
 
-import openstack
 import json
+
+import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect()

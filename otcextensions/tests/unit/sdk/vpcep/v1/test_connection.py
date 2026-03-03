@@ -22,12 +22,12 @@ from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 VPCEP_SERVICE_ID = uuid.uuid4().hex
 
 EXAMPLE = {
-    'id': uuid.uuid4().hex,
-    'status': 'accepted',
-    'marker_id': 16777510,
-    'domain_id': '5fc973eea581490997e82ea11a1df31f',
-    'created_at': '2018-09-17T11:10:11Z',
-    'updated_at': '2018-09-17T11:10:12Z',
+    "id": uuid.uuid4().hex,
+    "status": "accepted",
+    "marker_id": 16777510,
+    "domain_id": "5fc973eea581490997e82ea11a1df31f",
+    "created_at": "2018-09-17T11:10:11Z",
+    "updated_at": "2018-09-17T11:10:12Z",
 }
 
 
@@ -39,10 +39,10 @@ class TestConnection(base.TestCase):
 
     def test_basic(self):
         sot = connection.Connection()
-        self.assertEqual('connections', sot.resources_key)
+        self.assertEqual("connections", sot.resources_key)
         self.assertEqual(None, sot.resource_key)
         self.assertEqual(
-            '/vpc-endpoint-services/%(endpoint_service_id)s/connections',
+            "/vpc-endpoint-services/%(endpoint_service_id)s/connections",
             sot.base_path,
         )
 
@@ -54,13 +54,13 @@ class TestConnection(base.TestCase):
 
         self.assertDictEqual(
             {
-                'id': 'id',
-                'limit': 'limit',
-                'marker': 'marker',
-                'marker_id': 'marker_id',
-                'offset': 'offset',
-                'sort_dir': 'sort_dir',
-                'sort_key': 'sort_key',
+                "id": "id",
+                "limit": "limit",
+                "marker": "marker",
+                "marker_id": "marker_id",
+                "offset": "offset",
+                "sort_dir": "sort_dir",
+                "sort_key": "sort_key",
             },
             sot._query_mapping._mapping,
         )
@@ -73,18 +73,18 @@ class TestConnection(base.TestCase):
         sot = connection.Connection.existing(
             id=None, endpoint_service_id=VPCEP_SERVICE_ID
         )
-        action = 'receive'
-        endpoints = ['123', '456']
-        json_body = {'endpoints': endpoints, 'action': action}
+        action = "receive"
+        endpoints = ["123", "456"]
+        json_body = {"endpoints": endpoints, "action": action}
         response = mock.Mock()
         response.status_code = 200
-        response.json.return_value = {'connections': [EXAMPLE]}
+        response.json.return_value = {"connections": [EXAMPLE]}
         response.headers = {}
         self.sess.post.return_value = response
 
         rt = list(sot._action(self.sess, action, endpoints))
         self.sess.post.assert_called_with(
-            'vpc-endpoint-services/%s/connections/action' % VPCEP_SERVICE_ID,
+            "vpc-endpoint-services/%s/connections/action" % VPCEP_SERVICE_ID,
             json=json_body,
         )
         self.assertEqual(rt, [connection.Connection.existing(**EXAMPLE)])
@@ -95,9 +95,9 @@ class TestConnection(base.TestCase):
         )
         sot._action = mock.Mock()
 
-        endpoints = ['123', '456']
+        endpoints = ["123", "456"]
         rt = sot.accept(self.sess, endpoints)
-        sot._action.assert_called_with(self.sess, 'receive', endpoints)
+        sot._action.assert_called_with(self.sess, "receive", endpoints)
         self.assertIsNotNone(rt)
 
     def test_reject(self):
@@ -106,7 +106,7 @@ class TestConnection(base.TestCase):
         )
         sot._action = mock.Mock()
 
-        endpoints = ['123', '456']
+        endpoints = ["123", "456"]
         rt = sot.reject(self.sess, endpoints)
-        sot._action.assert_called_with(self.sess, 'reject', endpoints)
+        sot._action.assert_called_with(self.sess, "reject", endpoints)
         self.assertIsNotNone(rt)

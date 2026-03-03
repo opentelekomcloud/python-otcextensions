@@ -13,12 +13,14 @@
 """
 Delete log stream from log group
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-log_stream = conn.lts.delete_stream(log_group='log-group-uuid',
-                                    log_stream='log-stream-uuid')
+log_stream = conn.lts.delete_stream(
+    log_group="log-group-uuid", log_stream="log-stream-uuid"
+)

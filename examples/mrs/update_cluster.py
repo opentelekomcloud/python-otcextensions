@@ -10,25 +10,26 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Update MRS cluster
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
-    'parameters': {
-        'scale_type': 'scale_out',
-        'node_id': 'node_orderadd',
-        'instances': "1",
-        'node_group': 'task_node_default_group'
+    "parameters": {
+        "scale_type": "scale_out",
+        "node_id": "node_orderadd",
+        "instances": "1",
+        "node_group": "task_node_default_group",
     }
 }
 
-cluster = 'clstr1'
+cluster = "clstr1"
 cluster = conn.mrs.find_cluster(name_or_id=cluster)
 cluster = conn.mrs.update_cluster(cluster=cluster, **attrs)
 print(cluster)

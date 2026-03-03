@@ -9,8 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import time
 import calendar
+import time
+
 from openstack import format
 
 
@@ -26,8 +27,7 @@ class YNBool(format.Formatter):
         elif "n" == expr:
             return False
         else:
-            raise ValueError("Unable to deserialize boolean string: %s"
-                             % value)
+            raise ValueError("Unable to deserialize boolean string: %s" % value)
 
     @classmethod
     def serialize(cls, value):
@@ -40,8 +40,7 @@ class YNBool(format.Formatter):
             else:
                 return "N"
         else:
-            raise ValueError("Unable to serialize boolean string: %s"
-                             % value)
+            raise ValueError("Unable to serialize boolean string: %s" % value)
 
 
 class Bool_10(format.Formatter):
@@ -56,8 +55,7 @@ class Bool_10(format.Formatter):
         elif "0" == expr:
             return False
         else:
-            raise ValueError("Unable to deserialize boolean string: %s"
-                             % value)
+            raise ValueError("Unable to deserialize boolean string: %s" % value)
 
     @classmethod
     def serialize(cls, value):
@@ -70,13 +68,11 @@ class Bool_10(format.Formatter):
             else:
                 return "0"
         else:
-            raise ValueError("Unable to serialize boolean string: %s"
-                             % value)
+            raise ValueError("Unable to serialize boolean string: %s" % value)
 
 
 class BoolStr_1(format.BoolStr):
-    """Deserialize bool, which can be either bool or string
-    """
+    """Deserialize bool, which can be either bool or string"""
 
     @classmethod
     def deserialize(cls, value):
@@ -89,8 +85,7 @@ class BoolStr_1(format.BoolStr):
         elif "false" == expr:
             return False
         else:
-            raise ValueError("Unable to deserialize boolean string: %s"
-                             % value)
+            raise ValueError("Unable to deserialize boolean string: %s" % value)
 
 
 class ListRef(format.Formatter):
@@ -105,8 +100,7 @@ class ListRef(format.Formatter):
         if isinstance(value, list):
             return [item["id"] for item in value]
         else:
-            raise ValueError("Unable to deserialize list reference: %s"
-                             % value)
+            raise ValueError("Unable to deserialize list reference: %s" % value)
 
     @classmethod
     def serialize(cls, value):
@@ -114,8 +108,7 @@ class ListRef(format.Formatter):
         if isinstance(value, list):
             return [{"id": item} for item in value]
         else:
-            raise ValueError("Unable to serialize list reference: %s"
-                             % value)
+            raise ValueError("Unable to serialize list reference: %s" % value)
 
 
 class TimeTMsStr(format.Formatter):
@@ -125,9 +118,8 @@ class TimeTMsStr(format.Formatter):
         """Convert a time_t with msec precision to ISO8601"""
         _time = time.gmtime(value / 1000)
         # Embed MS placeholder into the format string directly
-        _format = '%Y-%m-%dT%H:%M:%S.{ms}+00:00'
-        return time.strftime(_format, _time).format(
-            ms=int(value % 1000))
+        _format = "%Y-%m-%dT%H:%M:%S.{ms}+00:00"
+        return time.strftime(_format, _time).format(ms=int(value % 1000))
 
     @classmethod
     def serialize(cls, value):
@@ -135,16 +127,14 @@ class TimeTMsStr(format.Formatter):
         if isinstance(value, str):
             _time_t = None
             try:
-                _time_t = time.strptime(value, '%Y-%m-%dT%H:%M:%S+00:00')
+                _time_t = time.strptime(value, "%Y-%m-%dT%H:%M:%S+00:00")
             except ValueError:
-                _time_t = time.strptime(value, '%Y-%m-%dT%H:%M:%S')
+                _time_t = time.strptime(value, "%Y-%m-%dT%H:%M:%S")
             if _time_t:
                 return calendar.timegm(_time_t) * 1000
             else:
-                raise ValueError("Unable to parse time reference: %s"
-                                 % value)
+                raise ValueError("Unable to parse time reference: %s" % value)
         elif isinstance(value, int):
             raise value
         else:
-            raise ValueError("Unable to serialize list reference: %s"
-                             % value)
+            raise ValueError("Unable to serialize list reference: %s" % value)

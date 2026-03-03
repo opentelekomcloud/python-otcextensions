@@ -13,16 +13,11 @@
 """
 Binding a Throttling Policy
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "throttle_id": "throttle_id",
-    "publish_ids": ["publish_id"]
-}
-bind = conn.apig.bind_throttling_policy(
-    gateway="gateway_id",
-    **attrs
-)
+attrs = {"throttle_id": "throttle_id", "publish_ids": ["publish_id"]}
+bind = conn.apig.bind_throttling_policy(gateway="gateway_id", **attrs)

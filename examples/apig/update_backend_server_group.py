@@ -13,14 +13,12 @@
 """
 Updates the backend server group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "member_group_name": "vpc_member_group",
-    "member_group_weight": 50
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"member_group_name": "vpc_member_group", "member_group_weight": 50}
 updated = conn.apig.update_backend_server_group(
     gateway="gateway_id",
     vpc_channel="vpc_channel_id",

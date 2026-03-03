@@ -9,25 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dms.v1 import quota
 
 EXAMPLE_LIST = {
-    'quotas': {
-        'resources': [
-            {
-                'type': 'queue',
-                'used': 2,
-                'quota': 25,
-                'min': 1,
-                'max': 50
-            }
-        ]
+    "quotas": {
+        "resources": [{"type": "queue", "used": 2, "quota": 25, "min": 1, "max": 50}]
     }
 }
 
@@ -45,8 +35,8 @@ class TestQuota(base.TestCase):
         pass
         sot = quota.Quota()
         self.assertEqual(None, sot.resource_key)
-        self.assertEqual('quotas.resources', sot.resources_key)
-        self.assertEqual('/quotas/dms', sot.base_path)
+        self.assertEqual("quotas.resources", sot.resources_key)
+        self.assertEqual("/quotas/dms", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)
@@ -54,16 +44,18 @@ class TestQuota(base.TestCase):
         self.assertFalse(sot.allow_delete)
 
     def test_make_it(self):
-        obj = EXAMPLE_LIST['quotas']['resources'][0]
+        obj = EXAMPLE_LIST["quotas"]["resources"][0]
         sot = quota.Quota.existing(**obj)
-        self.assertEqual(obj['type'], sot.type)
-        self.assertEqual(obj['used'], sot.used)
-        self.assertEqual(obj['quota'], sot.quota)
-        self.assertEqual(obj['min'], sot.min)
-        self.assertEqual(obj['max'], sot.max)
+        self.assertEqual(obj["type"], sot.type)
+        self.assertEqual(obj["used"], sot.used)
+        self.assertEqual(obj["quota"], sot.quota)
+        self.assertEqual(obj["min"], sot.min)
+        self.assertEqual(obj["max"], sot.max)
 
     def test_list(self):
         pass
+
+
 #        sot = quota.Quota()
 #        mock_response = mock.Mock()
 #        mock_response.status_code = 200

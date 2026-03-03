@@ -14,17 +14,17 @@ from openstack import resource
 
 class Datastore(resource.Resource):
 
-    base_path = '/datastores/%(database_name)s'
-    resources_key = 'dataStores'
+    base_path = "/datastores/%(database_name)s"
+    resources_key = "dataStores"
 
     # capabilities
     allow_list = True
 
-    database_name = resource.URI('database_name')
+    database_name = resource.URI("database_name")
 
     # Indicates the database version ID. Its value is unique.
     # :*Type:string*
-    id = resource.Body('id')
+    id = resource.Body("id")
     # Indicates the database version.
     # :*Type:string*
-    name = resource.Body('name')
+    name = resource.Body("name")

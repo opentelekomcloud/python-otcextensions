@@ -20,9 +20,7 @@ class TestListRS(fakes.TestDNS):
     objects = fakes.FakeRecordset.create_multiple(3)
     _zone = fakes.FakeZone.create_one()
 
-    columns = (
-        'id', 'name', 'type', 'status', 'description', 'records'
-    )
+    columns = ("id", "name", "type", "status", "description", "records")
 
     data = []
 
@@ -39,72 +37,50 @@ class TestListRS(fakes.TestDNS):
         self.client.api_mock = self.client.recordsets
 
     def test_default_zone(self):
-        arglist = [
-            'zn'
-        ]
+        arglist = ["zn"]
 
-        verifylist = [
-            ('zone', 'zn')
-        ]
+        verifylist = [("zone", "zn")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
-        self.client.find_zone.side_effect = [
-            self._zone
-        ]
+        self.client.api_mock.side_effect = [self.objects]
+        self.client.find_zone.side_effect = [self._zone]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_zone.assert_called_once_with(
-            'zn',
+            "zn",
             ignore_missing=False,
         )
-        self.client.api_mock.assert_called_once_with(
-            zone=self._zone
-        )
+        self.client.api_mock.assert_called_once_with(zone=self._zone)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
 
     def test_private_zone(self):
-        arglist = [
-            'zn',
-            '--zone-type', 'private'
-        ]
+        arglist = ["zn", "--zone-type", "private"]
 
-        verifylist = [
-            ('zone', 'zn'),
-            ('zone_type', 'private')
-        ]
+        verifylist = [("zone", "zn"), ("zone_type", "private")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
-        self.client.find_zone.side_effect = [
-            self._zone
-        ]
+        self.client.api_mock.side_effect = [self.objects]
+        self.client.find_zone.side_effect = [self._zone]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_zone.assert_called_once_with(
-            'zn',
-            zone_type='private',
+            "zn",
+            zone_type="private",
             ignore_missing=False,
         )
-        self.client.api_mock.assert_called_once_with(
-            zone=self._zone
-        )
+        self.client.api_mock.assert_called_once_with(zone=self._zone)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -115,9 +91,7 @@ class TestShowRS(fakes.TestDNS):
     _data = fakes.FakeRecordset.create_one()
     _zone = fakes.FakeZone.create_one()
 
-    columns = (
-        'description', 'name', 'records', 'status', 'ttl', 'type'
-    )
+    columns = ("description", "name", "records", "status", "ttl", "type")
 
     data = fakes.gen_data(_data, columns)
 
@@ -131,81 +105,49 @@ class TestShowRS(fakes.TestDNS):
         self.client.api_mock = self.client.find_recordset
 
     def test_default(self):
-        arglist = [
-            'zone',
-            'rs'
-        ]
+        arglist = ["zone", "rs"]
 
-        verifylist = [
-            ('zone', 'zone'),
-            ('recordset', 'rs')
-        ]
+        verifylist = [("zone", "zone"), ("recordset", "rs")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_zone.side_effect = [
-            self._zone
-        ]
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.find_zone.side_effect = [self._zone]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_zone.assert_called_once_with(
-            'zone',
-            ignore_missing=False,
-            zone_type=None
+            "zone", ignore_missing=False, zone_type=None
         )
 
-        self.client.api_mock.assert_called_once_with(
-            zone=self._zone,
-            name_or_id='rs'
-        )
+        self.client.api_mock.assert_called_once_with(zone=self._zone, name_or_id="rs")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
     def test_private(self):
-        arglist = [
-            'zone',
-            'rs',
-            '--zone-type', 'private'
-        ]
+        arglist = ["zone", "rs", "--zone-type", "private"]
 
-        verifylist = [
-            ('zone', 'zone'),
-            ('recordset', 'rs'),
-            ('zone_type', 'private')
-        ]
+        verifylist = [("zone", "zone"), ("recordset", "rs"), ("zone_type", "private")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_zone.side_effect = [
-            self._zone
-        ]
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.find_zone.side_effect = [self._zone]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_zone.assert_called_once_with(
-            'zone',
-            ignore_missing=False,
-            zone_type='private'
+            "zone", ignore_missing=False, zone_type="private"
         )
 
-        self.client.api_mock.assert_called_once_with(
-            zone=self._zone,
-            name_or_id='rs'
-        )
+        self.client.api_mock.assert_called_once_with(zone=self._zone, name_or_id="rs")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -216,9 +158,7 @@ class TestCreateRS(fakes.TestDNS):
     _data = fakes.FakeRecordset.create_one()
     _zone = fakes.FakeZone.create_one()
 
-    columns = (
-        'description', 'name', 'records', 'status', 'ttl', 'type'
-    )
+    columns = ("description", "name", "records", "status", "ttl", "type")
 
     data = fakes.gen_data(_data, columns)
 
@@ -233,45 +173,47 @@ class TestCreateRS(fakes.TestDNS):
 
     def test_create(self):
         arglist = [
-            'zn',
-            '--name', 'rs',
-            '--description', 'descr',
-            '--type', 'A',
-            '--ttl', '500',
-            '--record', 'a=b',
-            '--record', 'c=d',
+            "zn",
+            "--name",
+            "rs",
+            "--description",
+            "descr",
+            "--type",
+            "A",
+            "--ttl",
+            "500",
+            "--record",
+            "a=b",
+            "--record",
+            "c=d",
         ]
 
         verifylist = [
-            ('zone', 'zn'),
-            ('name', 'rs'),
-            ('description', 'descr'),
-            ('type', 'A'),
-            ('ttl', 500),
-            ('record', ['a=b', 'c=d']),
+            ("zone", "zn"),
+            ("name", "rs"),
+            ("description", "descr"),
+            ("type", "A"),
+            ("ttl", 500),
+            ("record", ["a=b", "c=d"]),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_zone.side_effect = [
-            self._zone
-        ]
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.find_zone.side_effect = [self._zone]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
             zone=self._zone,
-            description='descr',
-            name='rs',
-            type='A',
+            description="descr",
+            name="rs",
+            type="A",
             ttl=500,
-            records=['a=b', 'c=d']
+            records=["a=b", "c=d"],
         )
 
         self.assertEqual(self.columns, columns)
@@ -279,53 +221,54 @@ class TestCreateRS(fakes.TestDNS):
 
     def test_create_private(self):
         arglist = [
-            'zn',
-            '--name', 'rs',
-            '--description', 'descr',
-            '--type', 'A',
-            '--ttl', '500',
-            '--record', 'a=b',
-            '--record', 'c=d',
-            '--zone-type', 'private'
+            "zn",
+            "--name",
+            "rs",
+            "--description",
+            "descr",
+            "--type",
+            "A",
+            "--ttl",
+            "500",
+            "--record",
+            "a=b",
+            "--record",
+            "c=d",
+            "--zone-type",
+            "private",
         ]
 
         verifylist = [
-            ('zone', 'zn'),
-            ('name', 'rs'),
-            ('description', 'descr'),
-            ('type', 'A'),
-            ('ttl', 500),
-            ('record', ['a=b', 'c=d']),
-            ('zone_type', 'private')
+            ("zone", "zn"),
+            ("name", "rs"),
+            ("description", "descr"),
+            ("type", "A"),
+            ("ttl", 500),
+            ("record", ["a=b", "c=d"]),
+            ("zone_type", "private"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_zone.side_effect = [
-            self._zone
-        ]
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.find_zone.side_effect = [self._zone]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_zone.assert_called_once_with(
-            'zn',
-            ignore_missing=False,
-            zone_type='private'
+            "zn", ignore_missing=False, zone_type="private"
         )
 
         self.client.api_mock.assert_called_once_with(
             zone=self._zone,
-            description='descr',
-            name='rs',
-            type='A',
+            description="descr",
+            name="rs",
+            type="A",
             ttl=500,
-            records=['a=b', 'c=d']
+            records=["a=b", "c=d"],
         )
 
         self.assertEqual(self.columns, columns)
@@ -337,9 +280,7 @@ class TestSetRS(fakes.TestDNS):
     _data = fakes.FakeRecordset.create_one()
     _zone = fakes.FakeZone.create_one()
 
-    columns = (
-        'description', 'name', 'records', 'status', 'ttl', 'type'
-    )
+    columns = ("description", "name", "records", "status", "ttl", "type")
 
     data = fakes.gen_data(_data, columns)
 
@@ -355,48 +296,45 @@ class TestSetRS(fakes.TestDNS):
 
     def test_set(self):
         arglist = [
-            'zn',
-            'rs',
-            '--description', 'descr',
-            '--ttl', '500',
-            '--record', 'a=b',
-            '--record', 'c=d',
+            "zn",
+            "rs",
+            "--description",
+            "descr",
+            "--ttl",
+            "500",
+            "--record",
+            "a=b",
+            "--record",
+            "c=d",
         ]
 
         verifylist = [
-            ('zone', 'zn'),
-            ('recordset', 'rs'),
-            ('description', 'descr'),
-            ('ttl', 500),
-            ('record', ['a=b', 'c=d']),
+            ("zone", "zn"),
+            ("recordset", "rs"),
+            ("description", "descr"),
+            ("ttl", 500),
+            ("record", ["a=b", "c=d"]),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_zone.side_effect = [
-            self._zone
-        ]
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
-        self.client.find_recordset.side_effect = [
-            self._data
-        ]
+        self.client.find_zone.side_effect = [self._zone]
+        self.client.api_mock.side_effect = [self._data]
+        self.client.find_recordset.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_recordset.assert_called_with(zone=self._zone,
-                                                      name_or_id='rs')
+        self.client.find_recordset.assert_called_with(zone=self._zone, name_or_id="rs")
 
         self.client.api_mock.assert_called_once_with(
             recordset=self._data,
-            description='descr',
-            records=['a=b', 'c=d'],
+            description="descr",
+            records=["a=b", "c=d"],
             ttl=500,
-            zone_id=self._zone.id
+            zone_id=self._zone.id,
         )
 
         self.assertEqual(self.columns, columns)
@@ -419,21 +357,16 @@ class TestDeleteRS(fakes.TestDNS):
 
     def test_delete_multiple(self):
         arglist = [
-            'zn',
-            't1',
-            't2',
+            "zn",
+            "t1",
+            "t2",
         ]
-        verifylist = [
-            ('zone', 'zn'),
-            ('recordset', ['t1', 't2'])
-        ]
+        verifylist = [("zone", "zn"), ("recordset", ["t1", "t2"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_zone.side_effect = [
-            self._zone
-        ]
+        self.client.find_zone.side_effect = [self._zone]
 
         self.client.find_recordset.side_effect = [self._rs, self._rs]
         self.client.api_mock.side_effect = [{}, {}]
@@ -442,40 +375,28 @@ class TestDeleteRS(fakes.TestDNS):
         self.cmd.take_action(parsed_args)
 
         find_calls = [
-            mock.call(zone=self._zone, name_or_id='t1', ignore_missing=False),
-            mock.call(zone=self._zone, name_or_id='t2', ignore_missing=False)
+            mock.call(zone=self._zone, name_or_id="t1", ignore_missing=False),
+            mock.call(zone=self._zone, name_or_id="t2", ignore_missing=False),
         ]
 
         self.client.find_recordset.assert_has_calls(find_calls)
 
         calls = [
-            mock.call(zone=self._zone, recordset=self._rs,
-                      ignore_missing=False),
-            mock.call(zone=self._zone, recordset=self._rs,
-                      ignore_missing=False)
+            mock.call(zone=self._zone, recordset=self._rs, ignore_missing=False),
+            mock.call(zone=self._zone, recordset=self._rs, ignore_missing=False),
         ]
 
         self.client.api_mock.assert_has_calls(calls)
         self.assertEqual(2, self.client.api_mock.call_count)
 
     def test_private(self):
-        arglist = [
-            'zn',
-            't1',
-            '--zone-type', 'private'
-        ]
-        verifylist = [
-            ('zone', 'zn'),
-            ('recordset', ['t1']),
-            ('zone_type', 'private')
-        ]
+        arglist = ["zn", "t1", "--zone-type", "private"]
+        verifylist = [("zone", "zn"), ("recordset", ["t1"]), ("zone_type", "private")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_zone.side_effect = [
-            self._zone
-        ]
+        self.client.find_zone.side_effect = [self._zone]
 
         self.client.find_recordset.side_effect = [self._rs, self._rs]
         self.client.api_mock.side_effect = [{}, {}]
@@ -484,20 +405,17 @@ class TestDeleteRS(fakes.TestDNS):
         self.cmd.take_action(parsed_args)
 
         self.client.find_zone.assert_called_once_with(
-            'zn',
-            ignore_missing=False,
-            zone_type='private'
+            "zn", ignore_missing=False, zone_type="private"
         )
 
         find_calls = [
-            mock.call(zone=self._zone, name_or_id='t1', ignore_missing=False),
+            mock.call(zone=self._zone, name_or_id="t1", ignore_missing=False),
         ]
 
         self.client.find_recordset.assert_has_calls(find_calls)
 
         calls = [
-            mock.call(zone=self._zone, recordset=self._rs,
-                      ignore_missing=False),
+            mock.call(zone=self._zone, recordset=self._rs, ignore_missing=False),
         ]
 
         self.client.api_mock.assert_has_calls(calls)

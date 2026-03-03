@@ -10,11 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.cts.v1 import _proxy
 from otcextensions.sdk.cts.v1 import trace as _trace
 from otcextensions.sdk.cts.v1 import tracker as _tracker
-
-from openstack.tests.unit import test_proxy_base
 
 
 class TestCTSProxy(test_proxy_base.TestProxyBase):
@@ -25,68 +24,67 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
 
     def test_traces(self):
         self.verify_list(
-            self.proxy.traces, _trace.Trace,
-            expected_kwargs={
-                'tracker_name': 'system'
-            }
+            self.proxy.traces, _trace.Trace, expected_kwargs={"tracker_name": "system"}
         )
 
     def test_traces_query(self):
         self.verify_list(
-            self.proxy.traces, _trace.Trace,
+            self.proxy.traces,
+            _trace.Trace,
             method_kwargs={
-                'next': '1',
-                'limit': '2',
-                'service_type': '3',
-                'res_type': '4',
-                'res_id': '5',
-                'res_name': '6',
-                'trace_name': '7',
-                'from': '8',
-                'to': '9',
-                'trace_id': '10',
-                'level': '11',
-                'user': '12'
+                "next": "1",
+                "limit": "2",
+                "service_type": "3",
+                "res_type": "4",
+                "res_id": "5",
+                "res_name": "6",
+                "trace_name": "7",
+                "from": "8",
+                "to": "9",
+                "trace_id": "10",
+                "level": "11",
+                "user": "12",
             },
             expected_kwargs={
-                'next': '1',
-                'limit': '2',
-                'service_type': '3',
-                'res_type': '4',
-                'res_id': '5',
-                'res_name': '6',
-                'trace_name': '7',
-                'from': '8',
-                'to': '9',
-                'trace_id': '10',
-                'level': '11',
-                'user': '12',
-                'tracker_name': 'system',
-            }
+                "next": "1",
+                "limit": "2",
+                "service_type": "3",
+                "res_type": "4",
+                "res_id": "5",
+                "res_name": "6",
+                "trace_name": "7",
+                "from": "8",
+                "to": "9",
+                "trace_id": "10",
+                "level": "11",
+                "user": "12",
+                "tracker_name": "system",
+            },
         )
 
     def test_get_tracker(self):
         self.verify_get(
-            self.proxy.get_tracker, _tracker.Tracker,
-            expected_args=['resource_id'],
-            expected_kwargs={
-                'requires_id': False
-            },
+            self.proxy.get_tracker,
+            _tracker.Tracker,
+            expected_args=["resource_id"],
+            expected_kwargs={"requires_id": False},
         )
 
     def test_create_tracker(self):
         self.verify_create(
-            self.proxy.create_tracker, _tracker.Tracker,
+            self.proxy.create_tracker,
+            _tracker.Tracker,
         )
 
     def test_update_tracker(self):
         self.verify_update(
-            self.proxy.update_tracker, _tracker.Tracker,
+            self.proxy.update_tracker,
+            _tracker.Tracker,
         )
 
-    '''
+    """
     def test_delete_tracker(self):
         self.verify_delete(
             self.proxy.delete_tracker, _tracker.Tracker, True,
         )
-    '''
+    """

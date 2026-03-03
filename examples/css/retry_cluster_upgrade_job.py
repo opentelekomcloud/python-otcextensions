@@ -19,9 +19,9 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = '3b300b4e-2aa9-45c0-b898-a9e6fa319922'
-job_id = '0249620d-1c4a-4211-943a-ced7b9a3cda5'
-retry_mode = 'abort'
+cluster_name_or_id = "3b300b4e-2aa9-45c0-b898-a9e6fa319922"
+job_id = "0249620d-1c4a-4211-943a-ced7b9a3cda5"
+retry_mode = "abort"
 
 cluster = conn.css.find_cluster(cluster_name_or_id)
 

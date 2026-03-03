@@ -20,34 +20,34 @@ class TestWhitelist(TestVpcep):
         super(TestWhitelist, self).setUp()
         self.network_data = self.create_network()
         self.addCleanup(self.destroy_network, self.network_data)
-        self.port = self.create_port(self.network_data['network_id'])
+        self.port = self.create_port(self.network_data["network_id"])
         self.addCleanup(self.destroy_port, self.port.id)
         self.service = self.create_service_helper(approval=True)
         self.target_domain = self.conn.current_project_id
-        if not self.target_domain and hasattr(self.conn, 'session'):
+        if not self.target_domain and hasattr(self.conn, "session"):
             self.target_domain = self.conn.session.get_project_id()
 
     def _add_whitelist(self, domains):
-        return list(self.client.manage_service_whitelist(self.service.id,
-                                                         action='add',
-                                                         domains=domains))
+        return list(
+            self.client.manage_service_whitelist(
+                self.service.id, action="add", domains=domains
+            )
+        )
 
     def test_add_service_whitelist(self):
         """Test adding a domain to the whitelist."""
         if not self.target_domain:
-            self.skipTest("Cannot determine current project"
-                          " ID for whitelist test")
+            self.skipTest("Cannot determine current project" " ID for whitelist test")
 
         domains = [self.target_domain]
         added = self._add_whitelist(domains)
-        found = any([domains[0] in (w.permission or '') for w in added])
+        found = any([domains[0] in (w.permission or "") for w in added])
         self.assertTrue(found, "Domain not found in added whitelist")
 
     def test_add_service_whitelist_duplicate(self):
         """Test adding a duplicate domain to the whitelist."""
         if not self.target_domain:
-            self.skipTest("Cannot determine current"
-                          " project ID for whitelist test")
+            self.skipTest("Cannot determine current" " project ID for whitelist test")
 
         domains = [self.target_domain]
         self._add_whitelist(domains)
@@ -55,40 +55,38 @@ class TestWhitelist(TestVpcep):
         self._add_whitelist(domains)
 
         listed = list(self.client.service_whitelist(self.service.id))
-        found = any([domains[0] in (w.permission or '') for w in listed])
-        self.assertTrue(found, "Domain not found "
-                               "in whitelist after duplicate add")
+        found = any([domains[0] in (w.permission or "") for w in listed])
+        self.assertTrue(found, "Domain not found " "in whitelist after duplicate add")
 
     def test_list_service_whitelist(self):
         """Test listing the whitelist."""
         if not self.target_domain:
-            self.skipTest("Cannot determine current project ID"
-                          " for whitelist test")
+            self.skipTest("Cannot determine current project ID" " for whitelist test")
 
         domains = [self.target_domain]
         self._add_whitelist(domains)
 
         listed = list(self.client.service_whitelist(self.service.id))
         self.assertGreater(len(listed), 0)
-        found = any([domains[0] in (w.permission or '') for w in listed])
+        found = any([domains[0] in (w.permission or "") for w in listed])
         self.assertTrue(found, "Domain not found in listed whitelist")
 
     def test_remove_service_whitelist(self):
         """Test removing a domain from the whitelist."""
         if not self.target_domain:
-            self.skipTest("Cannot determine current project ID"
-                          " for whitelist test")
+            self.skipTest("Cannot determine current project ID" " for whitelist test")
 
         domains = [self.target_domain]
         self._add_whitelist(domains)
 
-        list(self.client.manage_service_whitelist(self.service.id,
-                                                  action='remove',
-                                                  domains=domains))
+        list(
+            self.client.manage_service_whitelist(
+                self.service.id, action="remove", domains=domains
+            )
+        )
 
         time.sleep(5)
 
         listed_after = list(self.client.service_whitelist(self.service.id))
-        found = any([domains[0] in (w.permission or '') for w in listed_after])
-        self.assertFalse(found,
-                         "Domain still found in whitelist after removal")
+        found = any([domains[0] in (w.permission or "") for w in listed_after])
+        self.assertFalse(found, "Domain still found in whitelist after removal")

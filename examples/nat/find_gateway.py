@@ -13,12 +13,12 @@
 """
 Find a NAT Gateway by name or id
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'gateway_name_or_id'
+name_or_id = "gateway_name_or_id"
 gateway = conn.nat.find_gateway(name_or_id, ignore_missing=False)
 print(gateway)

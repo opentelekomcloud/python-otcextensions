@@ -11,17 +11,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Remove eip from bandwidth
+Remove eip from bandwidth
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='test-dmd')
+conn = openstack.connect(cloud="test-dmd")
 
-attrs = {'charge_mode': "traffic", 'size': 22, 'publicip_info': [
-    {"publicip_id": "publicip-id"}
-]}
+attrs = {
+    "charge_mode": "traffic",
+    "size": 22,
+    "publicip_info": [{"publicip_id": "publicip-id"}],
+}
 
-conn.vpc.remove_eip_from_bandwidth(
-    bandwidth="bandwidth-id", **attrs)
+conn.vpc.remove_eip_from_bandwidth(bandwidth="bandwidth-id", **attrs)

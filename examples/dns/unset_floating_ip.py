@@ -13,11 +13,11 @@
 """
 Unset a DNS Floating IP PTR record
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-floating_ip = 'floating_ip_id'
+floating_ip = "floating_ip_id"
 conn.dns.unset_floating_ip(floating_ip=floating_ip)

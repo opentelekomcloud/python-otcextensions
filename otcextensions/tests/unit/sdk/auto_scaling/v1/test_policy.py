@@ -11,53 +11,41 @@
 # under the License.
 import copy
 
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.auto_scaling.v1 import policy
 
 EXAMPLE = {
-    'scaling_policy_id': 'fd7d63ce-8f5c-443e-b9a0-bef9386b23b3',
-    'scaling_group_id': 'e5d27f5c-dd76-4a61-b4bc-a67c5686719a',
-    'scaling_policy_name': 'schedule1',
-    'scaling_policy_type': 'SCHEDULED',
-    'scheduled_policy': {
-        'launch_time': '2015-07-24T01:21Z'
-    },
-    'cool_down_time': 300,
-    'scaling_policy_action': {
-        'operation': 'REMOVE',
-        'instance_number': 1
-    },
-    'policy_status': 'INSERVICE',
-    'create_time': '2015-07-24T01:09:30Z'
+    "scaling_policy_id": "fd7d63ce-8f5c-443e-b9a0-bef9386b23b3",
+    "scaling_group_id": "e5d27f5c-dd76-4a61-b4bc-a67c5686719a",
+    "scaling_policy_name": "schedule1",
+    "scaling_policy_type": "SCHEDULED",
+    "scheduled_policy": {"launch_time": "2015-07-24T01:21Z"},
+    "cool_down_time": 300,
+    "scaling_policy_action": {"operation": "REMOVE", "instance_number": 1},
+    "policy_status": "INSERVICE",
+    "create_time": "2015-07-24T01:09:30Z",
 }
 
 EXAMPLE_LIST = {
-    'limit': 20,
-    'total_number': 1,
-    'start_number': 0,
-    'scaling_policies': [
+    "limit": 20,
+    "total_number": 1,
+    "start_number": 0,
+    "scaling_policies": [
         {
-            'scaling_policy_id': 'fd7d63ce-8f5c-443e-b9a0-bef9386b23b3',
-            'scaling_group_id': 'e5d27f5c-dd76-4a61-b4bc-a67c5686719a',
-            'scaling_policy_name': 'schedule1',
-            'scaling_policy_type': 'SCHEDULED',
-            'scheduled_policy': {
-                'launch_time': '2015-07-24T01:21Z'
-            },
-            'cool_down_time': 300,
-            'scaling_policy_action': {
-                'operation': 'REMOVE',
-                'instance_number': 1
-            },
-            'policy_status': 'INSERVICE',
-            'create_time': '2015-07-24T01:09:30Z'
+            "scaling_policy_id": "fd7d63ce-8f5c-443e-b9a0-bef9386b23b3",
+            "scaling_group_id": "e5d27f5c-dd76-4a61-b4bc-a67c5686719a",
+            "scaling_policy_name": "schedule1",
+            "scaling_policy_type": "SCHEDULED",
+            "scheduled_policy": {"launch_time": "2015-07-24T01:21Z"},
+            "cool_down_time": 300,
+            "scaling_policy_action": {"operation": "REMOVE", "instance_number": 1},
+            "policy_status": "INSERVICE",
+            "create_time": "2015-07-24T01:09:30Z",
         }
-    ]
+    ],
 }
 
 
@@ -77,9 +65,9 @@ class TestPolicy(base.TestCase):
 
     def test_basic(self):
         sot = policy.Policy()
-        self.assertEqual('scaling_policy', sot.resource_key)
-        self.assertEqual('scaling_policies', sot.resources_key)
-        self.assertEqual('/scaling_policy', sot.base_path)
+        self.assertEqual("scaling_policy", sot.resource_key)
+        self.assertEqual("scaling_policies", sot.resources_key)
+        self.assertEqual("/scaling_policy", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -88,47 +76,43 @@ class TestPolicy(base.TestCase):
 
     def test_make_it(self):
         sot = policy.Policy.existing(**EXAMPLE)
-        self.assertEqual(EXAMPLE['scaling_policy_id'], sot.id)
-        self.assertEqual(EXAMPLE['scaling_policy_name'], sot.name)
-        self.assertEqual(EXAMPLE['scaling_policy_type'], sot.type)
-        self.assertEqual(EXAMPLE['scaling_group_id'], sot.scaling_group_id)
-        self.assertEqual(EXAMPLE['cool_down_time'], sot.cool_down_time)
-        self.assertEqual(EXAMPLE['policy_status'], sot.status)
-        self.assertEqual(EXAMPLE['create_time'], sot.create_time)
+        self.assertEqual(EXAMPLE["scaling_policy_id"], sot.id)
+        self.assertEqual(EXAMPLE["scaling_policy_name"], sot.name)
+        self.assertEqual(EXAMPLE["scaling_policy_type"], sot.type)
+        self.assertEqual(EXAMPLE["scaling_group_id"], sot.scaling_group_id)
+        self.assertEqual(EXAMPLE["cool_down_time"], sot.cool_down_time)
+        self.assertEqual(EXAMPLE["policy_status"], sot.status)
+        self.assertEqual(EXAMPLE["create_time"], sot.create_time)
 
     def test_get(self):
-        sot = policy.Policy.existing(
-            id=EXAMPLE['scaling_policy_id'])
+        sot = policy.Policy.existing(id=EXAMPLE["scaling_policy_id"])
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
-        mock_response.json.return_value = {
-            'scaling_policy': EXAMPLE.copy()}
+        mock_response.json.return_value = {"scaling_policy": EXAMPLE.copy()}
 
         self.sess.get.return_value = mock_response
 
         result = sot.fetch(self.sess)
 
         self.sess.get.assert_called_once_with(
-            'scaling_policy/%s' %
-            EXAMPLE['scaling_policy_id'],
+            "scaling_policy/%s" % EXAMPLE["scaling_policy_id"],
             microversion=None,
             params={},
-            skip_cache=False
+            skip_cache=False,
         )
 
         self.assertEqual(sot, result)
-        self.assertEqual(EXAMPLE['scaling_policy_id'], result.id)
-        self.assertEqual(EXAMPLE['scaling_policy_name'], result.name)
+        self.assertEqual(EXAMPLE["scaling_policy_id"], result.id)
+        self.assertEqual(EXAMPLE["scaling_policy_name"], result.name)
 
     def test_create(self):
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
         mock_response.json.return_value = {
-            'scaling_policy': {
-                'scaling_policy_id': EXAMPLE['scaling_policy_id']
-            }}
+            "scaling_policy": {"scaling_policy_id": EXAMPLE["scaling_policy_id"]}
+        }
 
         self.sess.post.return_value = mock_response
 
@@ -139,14 +123,14 @@ class TestPolicy(base.TestCase):
 
         expected_json = copy.deepcopy(EXAMPLE)
 
-        self.assertEqual('/scaling_policy', call_args[0][0])
-        self.assertDictEqual(expected_json, call_args[1]['json'])
+        self.assertEqual("/scaling_policy", call_args[0][0])
+        self.assertDictEqual(expected_json, call_args[1]["json"])
 
         self.sess.post.assert_called_once()
 
         self.assertEqual(sot, result)
-        self.assertEqual(EXAMPLE['scaling_policy_id'], result.id)
-        self.assertEqual(EXAMPLE['scaling_policy_name'], result.name)
+        self.assertEqual(EXAMPLE["scaling_policy_id"], result.id)
+        self.assertEqual(EXAMPLE["scaling_policy_name"], result.name)
 
     def test_delete(self):
         mock_response = mock.Mock()
@@ -156,7 +140,7 @@ class TestPolicy(base.TestCase):
 
         self.sess.delete.return_value = mock_response
 
-        sot = policy.Policy.existing(id=EXAMPLE['scaling_policy_id'])
+        sot = policy.Policy.existing(id=EXAMPLE["scaling_policy_id"])
 
         sot.delete(self.sess)
 
@@ -167,14 +151,12 @@ class TestPolicy(base.TestCase):
         mock_response.status_code = 200
         mock_response.headers = {}
         mock_response.json.return_value = {
-            'scaling_policy': {
-                'scaling_policy_id': EXAMPLE['scaling_policy_id']
-            }
+            "scaling_policy": {"scaling_policy_id": EXAMPLE["scaling_policy_id"]}
         }
 
         self.sess.put.return_value = mock_response
 
-        sot = policy.Policy.existing(id=EXAMPLE['scaling_policy_id'])
+        sot = policy.Policy.existing(id=EXAMPLE["scaling_policy_id"])
 
         sot._update(**EXAMPLE)
 
@@ -183,18 +165,18 @@ class TestPolicy(base.TestCase):
         call_args = self.sess.put.call_args_list[0]
 
         expected_json = copy.deepcopy(EXAMPLE)
-        expected_json.pop('scaling_policy_id')
+        expected_json.pop("scaling_policy_id")
 
         self.assertEqual(
-            'scaling_policy/%s' % EXAMPLE['scaling_policy_id'],
-            call_args[0][0])
-        self.assertDictEqual(expected_json, call_args[1]['json'])
+            "scaling_policy/%s" % EXAMPLE["scaling_policy_id"], call_args[0][0]
+        )
+        self.assertDictEqual(expected_json, call_args[1]["json"])
 
         self.sess.put.assert_called_once()
 
         self.assertEqual(sot, result)
-        self.assertEqual(EXAMPLE['scaling_policy_id'], result.id)
-        self.assertEqual(EXAMPLE['scaling_policy_name'], result.name)
+        self.assertEqual(EXAMPLE["scaling_policy_id"], result.id)
+        self.assertEqual(EXAMPLE["scaling_policy_name"], result.name)
 
     def test_execute(self):
         mock_response = mock.Mock()
@@ -204,13 +186,13 @@ class TestPolicy(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = policy.Policy.existing(id=EXAMPLE['scaling_policy_id'])
+        sot = policy.Policy.existing(id=EXAMPLE["scaling_policy_id"])
 
         sot.execute(self.sess)
 
         self.sess.post.assert_called_once_with(
-            'scaling_policy/%s/action' % EXAMPLE['scaling_policy_id'],
-            json={'action': 'execute'}
+            "scaling_policy/%s/action" % EXAMPLE["scaling_policy_id"],
+            json={"action": "execute"},
         )
 
     def test_pause(self):
@@ -221,13 +203,13 @@ class TestPolicy(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = policy.Policy.existing(id=EXAMPLE['scaling_policy_id'])
+        sot = policy.Policy.existing(id=EXAMPLE["scaling_policy_id"])
 
         sot.pause(self.sess)
 
         self.sess.post.assert_called_once_with(
-            'scaling_policy/%s/action' % EXAMPLE['scaling_policy_id'],
-            json={'action': 'pause'}
+            "scaling_policy/%s/action" % EXAMPLE["scaling_policy_id"],
+            json={"action": "pause"},
         )
 
     def test_resume(self):
@@ -238,11 +220,11 @@ class TestPolicy(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = policy.Policy.existing(id=EXAMPLE['scaling_policy_id'])
+        sot = policy.Policy.existing(id=EXAMPLE["scaling_policy_id"])
 
         sot.resume(self.sess)
 
         self.sess.post.assert_called_once_with(
-            'scaling_policy/%s/action' % EXAMPLE['scaling_policy_id'],
-            json={'action': 'resume'}
+            "scaling_policy/%s/action" % EXAMPLE["scaling_policy_id"],
+            json={"action": "resume"},
         )

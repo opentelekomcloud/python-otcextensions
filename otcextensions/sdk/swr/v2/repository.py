@@ -11,13 +11,12 @@
 # under the License.
 
 from openstack import resource
-
-from otcextensions.sdk.swr.v2.organization import Auth
 from otcextensions.sdk.swr.v2 import _base
+from otcextensions.sdk.swr.v2.organization import Auth
 
 
 class Repository(resource.Resource):
-    base_path = '/manage/namespaces/%(namespace)s/repos'
+    base_path = "/manage/namespaces/%(namespace)s/repos"
 
     # capabilities
     allow_create = True
@@ -29,90 +28,96 @@ class Repository(resource.Resource):
     commit_method = "PATCH"
 
     _query_mapping = resource.QueryParameters(
-        'center', 'namespace', 'name', 'category', 'offset',
-        'limit', 'order_column', 'order_type'
+        "center",
+        "namespace",
+        "name",
+        "category",
+        "offset",
+        "limit",
+        "order_column",
+        "order_type",
     )
 
     #: Organization namespace
     #: *Type:str*
-    namespace = resource.URI('namespace')
+    namespace = resource.URI("namespace")
     #: Image repository name
     #: *Type:str*
-    repository = resource.Body('repository', type=str)
+    repository = resource.Body("repository", type=str)
     #: Repository type
     #: The value can be app_server, linux, framework_app,
     #: database, lang, other, windows or arm.
     #: *Type:str*
-    category = resource.Body('category', type=str)
+    category = resource.Body("category", type=str)
     #: Brief description of the image repository
     #: *Type:str*
-    description = resource.Body('description', type=str)
+    description = resource.Body("description", type=str)
     #: Whether the repository is a public repository
     #: When the value is true, it indicates the repository is public.
     #: When the value is false, it indicates the repository is private.
     #: *Type:bool*
-    is_public = resource.Body('is_public', type=bool)
+    is_public = resource.Body("is_public", type=bool)
     #: Image repository ID
     #: *Type:int*
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Organization ID
     #: *Type:int*
-    ns_id = resource.Body('ns_id')
+    ns_id = resource.Body("ns_id")
     #: Image repository name
     #: *Type:str*
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Image repository creator ID
     #: *Type:str*
-    creator_id = resource.Body('creator_id')
+    creator_id = resource.Body("creator_id")
     #: Image repository creator
     #: *Type:str*
-    creator_name = resource.Body('creator_name')
+    creator_name = resource.Body("creator_name")
     #: Image repository size
     #: *Type:str*
-    size = resource.Body('size')
+    size = resource.Body("size")
     #: Number of images in an image repository
     #: *Type:int*
-    num_images = resource.Body('num_images')
+    num_images = resource.Body("num_images")
     #: Download times of an image repository
     #: *Type:int*
-    num_download = resource.Body('num_download')
+    num_download = resource.Body("num_download")
     #: URL of the image repository logo image
     #: This field has been discarded and is left empty by default
     #: *Type:str*
-    url = resource.Body('url')
+    url = resource.Body("url")
     #: External image pull address.
     #: The format is {Repository address}/{Namespace name}/{Repository name}.
     #: *Type:str*
-    path = resource.Body('path')
+    path = resource.Body("path")
     #: Internal image pull address.
     #: The format is {Repository address}/{Namespace name}/{Repository name}.
     #: *Type:str*
-    internal_path = resource.Body('internal_path')
+    internal_path = resource.Body("internal_path")
     #: Time when an image repository is created. It is the UTC standard time
     #: *Type:str*
-    created = resource.Body('created')
+    created = resource.Body("created")
     #: Time when an image repository is updated. It is the UTC standard time
     #: *Type:str*
-    updated = resource.Body('updated')
+    updated = resource.Body("updated")
     #: Account ID
     #: *Type:str*
-    domain_id = resource.Body('domain_id')
+    domain_id = resource.Body("domain_id")
     #: Image sorting priority
     #: *Type:int*
-    priority = resource.Body('priority')
+    priority = resource.Body("priority")
     #: Image tag list
     #: *Type:list*
-    tags = resource.Body('tags', type=list)
+    tags = resource.Body("tags", type=list)
     #: Status
     #: *Type:bool*
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Total number of records
     #: *Type:int*
-    total_range = resource.Body('total_range')
+    total_range = resource.Body("total_range")
 
 
 class Permission(_base.Resource):
-    base_path = '/manage/namespaces/%(namespace)s/repos/%(repository)s/access'
+    base_path = "/manage/namespaces/%(namespace)s/repos/%(repository)s/access"
 
     # capabilities
     allow_create = True
@@ -126,22 +131,22 @@ class Permission(_base.Resource):
 
     #: Organization namespace
     #: *Type:str*
-    namespace = resource.URI('namespace')
+    namespace = resource.URI("namespace")
     #: Image repository name
     #: *Type:str*
-    repository = resource.URI('repository')
+    repository = resource.URI("repository")
     #: Information required for creating image permissions.
     #: *Type:list*
-    permissions = resource.Body('permissions', type=list, list_type=Auth)
+    permissions = resource.Body("permissions", type=list, list_type=Auth)
     #: Permission ID
     #: *Type:int*
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Image name
     #: *Type:str*
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Permissions of the current user
     #: *Type:dict*
-    self_auth = resource.Body('self_auth', type=dict)
+    self_auth = resource.Body("self_auth", type=dict)
     #: Permissions of other users
     #: *Type:dict*
-    others_auths = resource.Body('others_auths', type=list)
+    others_auths = resource.Body("others_auths", type=list)

@@ -13,10 +13,11 @@
 """
 List all SMN message templates
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 for item in conn.smn.templates():

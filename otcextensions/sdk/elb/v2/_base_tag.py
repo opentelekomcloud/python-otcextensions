@@ -16,26 +16,31 @@ from openstack import utils
 
 class Resource(resource.Resource):
 
-    resources_key = 'tags'
-    resource_key = 'tag'
+    resources_key = "tags"
+    resource_key = "tag"
 
     # capabilities
     allow_create = True
     allow_delete = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters(
-        'key'
-    )
+    _query_mapping = resource.QueryParameters("key")
 
     # Properties
     #: Specifies the tag key
-    key = resource.Body('key')
+    key = resource.Body("key")
     #: Specifies the tag value
-    value = resource.Body('value')
+    value = resource.Body("value")
 
-    def _prepare_request(self, requires_id=None, prepend_key=False,
-                         patch=False, base_path=None, params=None, **kwargs):
+    def _prepare_request(
+        self,
+        requires_id=None,
+        prepend_key=False,
+        patch=False,
+        base_path=None,
+        params=None,
+        **kwargs
+    ):
         """Prepare a request to be sent to the server
 
         Create operations don't require an ID, but all others do,
@@ -62,10 +67,11 @@ class Resource(resource.Resource):
         if requires_id:
             if self.id is None:
                 raise exceptions.InvalidRequest(
-                    "Request requires an ID but none was found")
+                    "Request requires an ID but none was found"
+                )
 
             uri = utils.urljoin(uri, self.id)
 
-        uri = utils.urljoin(self.location.project['id'], uri)
+        uri = utils.urljoin(self.location.project["id"], uri)
 
         return resource._Request(uri, body, headers)

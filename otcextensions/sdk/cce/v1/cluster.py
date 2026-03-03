@@ -12,7 +12,6 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
 from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.cce.v1 import _base
 from otcextensions.sdk.cce.v1 import cluster_node
@@ -20,14 +19,13 @@ from otcextensions.sdk.cce.v1 import cluster_node
 
 class NodeListSpec(sdk_resource.Resource):
     # Properties
-    host_list = resource.Body('hostList', type=list,
-                              list_type=cluster_node.ClusterNode)
+    host_list = resource.Body("hostList", type=list, list_type=cluster_node.ClusterNode)
 
 
 class ClusterNodeList(_base.Resource):
     # Properties
     #: Spec
-    spec = resource.Body('spec', type=NodeListSpec)
+    spec = resource.Body("spec", type=NodeListSpec)
 
 
 class ClusterSpec(sdk_resource.Resource):
@@ -35,58 +33,58 @@ class ClusterSpec(sdk_resource.Resource):
     # Properties
     #: Description
     #: *Type:str
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Availability zone
     #: *Type:str*
-    availability_zone = resource.Body('az')
+    availability_zone = resource.Body("az")
     #: CPU size
     #: *Type:int*
-    cpu = resource.Body('cpu', type=int)
+    cpu = resource.Body("cpu", type=int)
     #: Memory size
     #: *Type:int*
-    memory = resource.Body('memory', type=int)
+    memory = resource.Body("memory", type=int)
     #: VPC
     #: *Type:str*
-    vpc = resource.Body('vpc')
+    vpc = resource.Body("vpc")
     #: VPC_ID
     #: *Type:str*
-    vpc_id = resource.Body('vpcid')
+    vpc_id = resource.Body("vpcid")
     #: Subnet name
     #: *Type:str*
-    subnet = resource.Body('subnet')
+    subnet = resource.Body("subnet")
     #: CIDR
     #: *Type:str*
-    cidr = resource.Body('cidr')
+    cidr = resource.Body("cidr")
     #: Cluster type
     #: possible values: (HA, Single)
     #: *Type:str*
-    cluster_type = resource.Body('clustertype')
+    cluster_type = resource.Body("clustertype")
     #: Security group id
     #: when left empty on creation CCE will create one
     #: *Type:str*
-    security_group_id = resource.Body('security_group_id')
+    security_group_id = resource.Body("security_group_id")
     #: Endpoint
     #: *Type:str*
-    endpoint = resource.Body('endpoint')
+    endpoint = resource.Body("endpoint")
     #: External endpoint
     #: *Type:str*
-    external_endpoint = resource.Body('external_endpoint')
+    external_endpoint = resource.Body("external_endpoint")
     #: Cluster type
     #: *Type:str*
-    type = resource.Body('clustertype')
+    type = resource.Body("clustertype")
     #: host list
-    host_list = resource.Body('hostList', type=ClusterNodeList)
+    host_list = resource.Body("hostList", type=ClusterNodeList)
     #: Region (used for create cluster)
-    region = resource.Body('region')
+    region = resource.Body("region")
     #: Public IP ID or EIP ID (used for create cluster)
-    publicip_id = resource.Body('publicip_id')
+    publicip_id = resource.Body("publicip_id")
 
 
 class Cluster(_base.Resource):
-    base_path = '/clusters'
+    base_path = "/clusters"
 
-    resources_key = ''
-    resource_key = ''
+    resources_key = ""
+    resource_key = ""
 
     allow_list = True
     allow_get = True
@@ -96,22 +94,20 @@ class Cluster(_base.Resource):
 
     # Properties
     #: specification
-    spec = resource.Body('spec', type=ClusterSpec)
+    spec = resource.Body("spec", type=ClusterSpec)
     #: Cluster status
-    status = resource.Body('clusterStatus', type=dict)
+    status = resource.Body("clusterStatus", type=dict)
 
     @classmethod
     def new(cls, **kwargs):
-        if 'kind' not in kwargs:
-            kwargs['kind'] = 'cluster'
-        if 'apiVersion' not in kwargs:
-            kwargs['apiVersion'] = 'v1'
-        metadata = kwargs.get('metadata', '')
-        if 'name' in kwargs and not metadata:
-            name = kwargs.pop('name', '')
-            kwargs['metadata'] = {
-                'name': name
-            }
+        if "kind" not in kwargs:
+            kwargs["kind"] = "cluster"
+        if "apiVersion" not in kwargs:
+            kwargs["apiVersion"] = "v1"
+        metadata = kwargs.get("metadata", "")
+        if "name" in kwargs and not metadata:
+            name = kwargs.pop("name", "")
+            kwargs["metadata"] = {"name": name}
         return cls(_synchronized=False, **kwargs)
 
     @classmethod
@@ -129,7 +125,7 @@ class Cluster(_base.Resource):
                     the_result = maybe_result
                 else:
                     msg = "More than one %s exists with the name '%s'."
-                    msg = (msg % (cls.__name__, name_or_id))
+                    msg = msg % (cls.__name__, name_or_id)
                     raise exceptions.DuplicateResource(msg)
 
         return the_result
@@ -155,20 +151,20 @@ class Cluster(_base.Resource):
         the 'id' name, as this can exist under a different name via the
         `alternate_id` argument to resource.Body.
         """
-        if name == 'id' or name == 'name':
+        if name == "id" or name == "name":
             if name in self._body:
                 return self._body[name]
             else:
                 try:
-                    metadata = self._body['metadata']
-                    if name == 'id':
+                    metadata = self._body["metadata"]
+                    if name == "id":
                         if isinstance(metadata, dict):
-                            return metadata['uuid']
+                            return metadata["uuid"]
                         elif isinstance(metadata, _base.Metadata):
                             return metadata._body[metadata._alternate_id()]
                     else:
                         if isinstance(metadata, dict):
-                            return metadata['name']
+                            return metadata["name"]
                         elif isinstance(metadata, _base.Metadata):
                             return metadata.name
                 except KeyError:
@@ -177,24 +173,19 @@ class Cluster(_base.Resource):
             return object.__getattribute__(self, name)
 
     def delete_nodes(self, session, node_names, headers=None):
-        """Delete nodes from the cluster by their name
-        """
+        """Delete nodes from the cluster by their name"""
         nodes = []
         if isinstance(node_names, list):
             # Is given a list
             for node in node_names:
-                nodes.append({'name': node})
+                nodes.append({"name": node})
         elif isinstance(node_names, str):
             # a single string, consider as a name of single host
-            nodes.append({'name': node_names})
-        message = {
-            'hosts': nodes
-        }
+            nodes.append({"name": node_names})
+        message = {"hosts": nodes}
 
         # Build additional arguments to the DELETE call
-        args = self._prepare_override_args(
-            additional_headers=headers
-        )
+        args = self._prepare_override_args(additional_headers=headers)
 
-        url = utils.urljoin(self.base_path, self.id, 'hosts')
+        url = utils.urljoin(self.base_path, self.id, "hosts")
         session.delete(url, json=message, **args)

@@ -18,10 +18,11 @@ For a full guide see TODO(etoews):link to docs on developer.openstack.org
 
 import argparse
 import os
+import sys
+
+from openstack.config import loader
 
 import openstack
-from openstack.config import loader
-import sys
 
 openstack.enable_logging(True, stream=sys.stdout)
 
@@ -29,35 +30,37 @@ openstack.enable_logging(True, stream=sys.stdout)
 #: typically in $HOME/.config/openstack/clouds.yaml. That configuration
 #: will determine where the examples will be run and what resource defaults
 #: will be used to run the examples.
-TEST_CLOUD = os.getenv('OS_TEST_CLOUD', 'devstack-admin')
+TEST_CLOUD = os.getenv("OS_TEST_CLOUD", "devstack-admin")
 config = loader.OpenStackConfig()
 cloud = openstack.connect(cloud=TEST_CLOUD)
 
 
 class Opts(object):
-    def __init__(self, cloud_name='devstack-admin', debug=True):
+    def __init__(self, cloud_name="devstack-admin", debug=True):
         self.cloud = cloud_name
         self.debug = debug
         # Use identity v3 API for examples.
-        self.identity_api_version = '3'
+        self.identity_api_version = "3"
 
 
 def _get_resource_value(resource_key, default):
-    return config.get_extra_config('example').get(resource_key, default)
+    return config.get_extra_config("example").get(resource_key, default)
 
 
-SERVER_NAME = 'openstacksdk-example'
-IMAGE_NAME = _get_resource_value('image_name', 'cirros-0.3.5-x86_64-disk')
-FLAVOR_NAME = _get_resource_value('flavor_name', 'm1.small')
-NETWORK_NAME = _get_resource_value('network_name', 'private')
-KEYPAIR_NAME = _get_resource_value('keypair_name', 'openstacksdk-example')
+SERVER_NAME = "openstacksdk-example"
+IMAGE_NAME = _get_resource_value("image_name", "cirros-0.3.5-x86_64-disk")
+FLAVOR_NAME = _get_resource_value("flavor_name", "m1.small")
+NETWORK_NAME = _get_resource_value("network_name", "private")
+KEYPAIR_NAME = _get_resource_value("keypair_name", "openstacksdk-example")
 SSH_DIR = _get_resource_value(
-    'ssh_dir', '{home}/.ssh'.format(home=os.path.expanduser("~")))
+    "ssh_dir", "{home}/.ssh".format(home=os.path.expanduser("~"))
+)
 PRIVATE_KEYPAIR_FILE = _get_resource_value(
-    'private_keypair_file', '{ssh_dir}/id_rsa.{key}'.format(
-        ssh_dir=SSH_DIR, key=KEYPAIR_NAME))
+    "private_keypair_file",
+    "{ssh_dir}/id_rsa.{key}".format(ssh_dir=SSH_DIR, key=KEYPAIR_NAME),
+)
 
-EXAMPLE_IMAGE_NAME = 'openstacksdk-example-public-image'
+EXAMPLE_IMAGE_NAME = "openstacksdk-example-public-image"
 
 
 def create_connection_from_config():
@@ -80,6 +83,6 @@ def create_connection(auth_url, region, project_name, username, password):
         username=username,
         password=password,
         region_name=region,
-        app_name='examples',
-        app_version='1.0',
+        app_name="examples",
+        app_version="1.0",
     )

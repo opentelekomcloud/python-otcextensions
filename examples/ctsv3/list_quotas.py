@@ -13,10 +13,11 @@
 """
 List Cloud Trace Service Quotas
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 quotas = list(conn.ctsv3.quotas())
 print(quotas)

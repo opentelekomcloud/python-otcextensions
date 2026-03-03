@@ -11,13 +11,12 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.vlb.v3 import member
 
 EXAMPLE = {
-    'protocol_port': 80,
-    'name': 'name',
-    'address': '192.168.1.3',
+    "protocol_port": 80,
+    "name": "name",
+    "address": "192.168.1.3",
 }
 
 
@@ -25,7 +24,7 @@ class TestLoadBalancer(base.TestCase):
 
     def test_basic(self):
         sot = member.Member()
-        path = '/elb/pools/%(pool_id)s/members'
+        path = "/elb/pools/%(pool_id)s/members"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -35,6 +34,6 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = member.Member(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['address'], sot.address)
-        self.assertEqual(EXAMPLE['protocol_port'], sot.protocol_port)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["address"], sot.address)
+        self.assertEqual(EXAMPLE["protocol_port"], sot.protocol_port)

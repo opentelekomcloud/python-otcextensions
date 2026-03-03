@@ -19,12 +19,10 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '2'
-API_VERSION_OPTION = 'os_smn_api_version'
-API_NAME = 'smn'
-API_VERSIONS = {
-    '2': 'openstack.connection.Connection'
-}
+DEFAULT_API_VERSION = "2"
+API_VERSION_OPTION = "os_smn_api_version"
+API_NAME = "smn"
+API_VERSIONS = {"2": "openstack.connection.Connection"}
 
 
 def make_client(instance):
@@ -32,22 +30,21 @@ def make_client(instance):
 
     conn = instance.sdk_connection
 
-    if getattr(conn, 'smn', None) is None:
-        LOG.debug('OTC extensions are not registered. Do that now')
+    if getattr(conn, "smn", None) is None:
+        LOG.debug("OTC extensions are not registered. Do that now")
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('SMN client initialized using OpenStack OTC SDK: %s',
-              conn.smn)
+    LOG.debug("SMN client initialized using OpenStack OTC SDK: %s", conn.smn)
     return conn.smn
 
 
 def build_option_parser(parser):
     """Hook to add global options"""
     parser.add_argument(
-        '--os-smn-api-version',
-        metavar='<smn-api-version>',
-        default=utils.env('OS_SMN_API_VERSION'),
-        help=_("SMN API version, default=%s "
-               "(Env: OS_SMN_API_VERSION)") % DEFAULT_API_VERSION
+        "--os-smn-api-version",
+        metavar="<smn-api-version>",
+        default=utils.env("OS_SMN_API_VERSION"),
+        help=_("SMN API version, default=%s " "(Env: OS_SMN_API_VERSION)")
+        % DEFAULT_API_VERSION,
     )
     return parser

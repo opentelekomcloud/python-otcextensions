@@ -11,12 +11,11 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.vlb.v3 import availability_zone
 
 EXAMPLE = {
-    'code': 'az1',
-    'state': 'ACTIVE',
+    "code": "az1",
+    "state": "ACTIVE",
 }
 
 
@@ -24,7 +23,7 @@ class TestLoadBalancer(base.TestCase):
 
     def test_basic(self):
         sot = availability_zone.AvailabilityZone()
-        path = '/elb/availability-zones'
+        path = "/elb/availability-zones"
         self.assertEqual(path, sot.base_path)
         self.assertFalse(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -34,5 +33,5 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = availability_zone.AvailabilityZone(**EXAMPLE)
-        self.assertEqual(EXAMPLE['code'], sot.code)
-        self.assertEqual(EXAMPLE['state'], sot.state)
+        self.assertEqual(EXAMPLE["code"], sot.code)
+        self.assertEqual(EXAMPLE["state"], sot.state)

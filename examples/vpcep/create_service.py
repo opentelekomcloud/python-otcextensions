@@ -11,19 +11,20 @@
 # under the License.
 #
 """Create VPC Endpoint Service."""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'port_id': 'port-id',
-    'vpc_id': 'router-id',
-    'service_name': 'test-service',
-    'approval_enabled': False,
-    'service_type': 'interface',
-    'server_type': 'VM',
-    'ports': [{'client_port': 8080, 'server_port': 90, 'protocol': 'TCP'}],
+    "port_id": "port-id",
+    "vpc_id": "router-id",
+    "service_name": "test-service",
+    "approval_enabled": False,
+    "service_type": "interface",
+    "server_type": "VM",
+    "ports": [{"client_port": 8080, "server_port": 90, "protocol": "TCP"}],
 }
 
 endpoint_service = conn.vpcep.create_service(**attrs)

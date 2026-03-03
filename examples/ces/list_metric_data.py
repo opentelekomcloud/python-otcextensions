@@ -13,21 +13,21 @@
 """
 List all CloudEye metric data
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 query = {
-    'namespace': 'SYS.ECS',
-    'metric_name': 'cpu_util',
-    'from': '1556625600000',  # unix timestamp in ms
-    'to': '1556632800000',  # unix timestamp in ms
-    'period': 1,
-    'filter': 'average',
-    'dim.0': 'instance_id,6e83e6e7-3bf4-4b5b-b390-e80447ef5733',  # key, value
+    "namespace": "SYS.ECS",
+    "metric_name": "cpu_util",
+    "from": "1556625600000",  # unix timestamp in ms
+    "to": "1556632800000",  # unix timestamp in ms
+    "period": 1,
+    "filter": "average",
+    "dim.0": "instance_id,6e83e6e7-3bf4-4b5b-b390-e80447ef5733",  # key, value
 }
 
 for data in conn.ces.metric_data(**query):

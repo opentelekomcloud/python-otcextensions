@@ -13,10 +13,11 @@
 """
 Obtaining Data Cursor.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 stream_name = "test-stream"
 partition_id = "0"

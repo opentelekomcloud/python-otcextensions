@@ -26,7 +26,7 @@ def list_actions(conn):
     for actions in conn.clustering.actions():
         print(actions.to_dict())
 
-    for actions in conn.clustering.actions(sort='name:asc'):
+    for actions in conn.clustering.actions(sort="name:asc"):
         print(actions.to_dict())
 
 

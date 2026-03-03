@@ -16,32 +16,31 @@ class DimensionsSpec(resource.Resource):
 
     # Properties
     #: dimension.name: object type e.g. ECS (instance_id)
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: dimension.value: object id e.g. ECS ID
-    value = resource.Body('value')
+    value = resource.Body("value")
 
 
 class Metric(resource.Resource):
-    resource_key = 'metric'
-    resources_key = 'metrics'
-    base_path = '/metrics'
+    resource_key = "metric"
+    resources_key = "metrics"
+    base_path = "/metrics"
 
     # capabilities
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'dim', 'limit', 'metric_name', 'namespace', 'order', 'start'
+        "dim", "limit", "metric_name", "namespace", "order", "start"
     )
 
     # Properties
     #: List of metric dimensions
     #: dimension.name: object type e.g. ECS (instance_id)
     #: dimension.value: object id e.g. ECS ID
-    dimensions = resource.Body('dimensions', type=list,
-                               list_type=DimensionsSpec)
+    dimensions = resource.Body("dimensions", type=list, list_type=DimensionsSpec)
     #: Shows the metric name
-    metric_name = resource.Body('metric_name')
+    metric_name = resource.Body("metric_name")
     #: Indicates the metric namespaces
-    namespace = resource.Body('namespace')
+    namespace = resource.Body("namespace")
     #: Indicates the metric unit
-    unit = resource.Body('unit')
+    unit = resource.Body("unit")

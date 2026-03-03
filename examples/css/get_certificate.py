@@ -16,8 +16,7 @@ List all CSS Clusters
 
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 print(conn.css.get_certificate())

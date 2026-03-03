@@ -13,17 +13,15 @@
 """
 Apply a RDS configuration to a several RDS instances
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-configuration = '43f3a58705aa43bf9cfa4f06df80552epr01'
-instance_list = [
-    'instance_id1',
-    'instance_id2'
-]
-response = conn.rds.apply_configuration(configuration=configuration,
-                                        instances=instance_list)
+configuration = "43f3a58705aa43bf9cfa4f06df80552epr01"
+instance_list = ["instance_id1", "instance_id2"]
+response = conn.rds.apply_configuration(
+    configuration=configuration, instances=instance_list
+)
 print(response)

@@ -11,15 +11,13 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import log
 
-
 EXAMPLE = {
-    'group_name': 'group-xxx',
-    'group_id': 'xxx',
-    'stream_id': 'id-xxx',
-    'stream_name': 'xxx'
+    "group_name": "group-xxx",
+    "group_id": "xxx",
+    "stream_id": "id-xxx",
+    "stream_name": "xxx",
 }
 
 
@@ -27,14 +25,14 @@ class TestFunctionInvocation(base.TestCase):
 
     def test_basic(self):
         sot = log.Log()
-        path = '/fgs/functions/%(function_urn)s/lts-log-detail'
+        path = "/fgs/functions/%(function_urn)s/lts-log-detail"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
 
     def test_make_it(self):
         sot = log.Log(**EXAMPLE)
-        self.assertEqual(EXAMPLE['group_name'], sot.group_name)
-        self.assertEqual(EXAMPLE['group_id'], sot.group_id)
-        self.assertEqual(EXAMPLE['stream_id'], sot.stream_id)
-        self.assertEqual(EXAMPLE['stream_name'], sot.stream_name)
+        self.assertEqual(EXAMPLE["group_name"], sot.group_name)
+        self.assertEqual(EXAMPLE["group_id"], sot.group_id)
+        self.assertEqual(EXAMPLE["stream_id"], sot.stream_id)
+        self.assertEqual(EXAMPLE["stream_name"], sot.stream_name)

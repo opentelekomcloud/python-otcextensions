@@ -11,15 +11,14 @@
 # under the License.
 from urllib.parse import urlparse
 
-from openstack.utils import urljoin
-
 from openstack.identity.v3 import _proxy
+from openstack.utils import urljoin
 
 from otcextensions.sdk.identity.v3 import agency as _agency
 from otcextensions.sdk.identity.v3 import agency_role as _agency_role
 from otcextensions.sdk.identity.v3 import credential as _credential
-from otcextensions.sdk.identity.v3 import security_token as _security_token
 from otcextensions.sdk.identity.v3 import custom_role as _custom
+from otcextensions.sdk.identity.v3 import security_token as _security_token
 
 
 class Proxy(_proxy.Proxy):
@@ -32,8 +31,10 @@ class Proxy(_proxy.Proxy):
         if not self._credentials_base:
             identity_url = self.get_endpoint_data().url
             parsed_domain = urlparse(identity_url)
-            self._credentials_base = '%s://%s' % (parsed_domain.scheme,
-                                                  parsed_domain.netloc)
+            self._credentials_base = "%s://%s" % (
+                parsed_domain.scheme,
+                parsed_domain.netloc,
+            )
         return self._credentials_base
 
     # ========== Credentials ==========
@@ -51,8 +52,7 @@ class Proxy(_proxy.Proxy):
         # for list we need to pass corrected endpoint
         base = self._get_alternate_endpoint()
         base_path = urljoin(base, _credential.Credential.base_path)
-        return self._list(_credential.Credential, base_path=base_path,
-                          **attrs)
+        return self._list(_credential.Credential, base_path=base_path, **attrs)
 
     def create_credential(self, **attrs):
         """Create a new credential from attributes
@@ -63,8 +63,7 @@ class Proxy(_proxy.Proxy):
         :returns: The results of credential creation
         :rtype: :class:`~otcextensions.sdk.identity.v3.credential.Credential`
         """
-        return self._create(_credential.Credential, prepend_key=True,
-                            **attrs)
+        return self._create(_credential.Credential, prepend_key=True, **attrs)
 
     def get_credential(self, credential):
         """Get a credential
@@ -91,10 +90,13 @@ class Proxy(_proxy.Proxy):
         """
         base = self._get_alternate_endpoint()
         base_path = urljoin(base, _credential.Credential.base_path)
-        return self._find(_credential.Credential, name_or_id,
-                          ignore_missing=ignore_missing,
-                          base_path=base_path,
-                          **attrs)
+        return self._find(
+            _credential.Credential,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            base_path=base_path,
+            **attrs
+        )
 
     def delete_credential(self, credential, ignore_missing=True):
         """Delete a credential
@@ -111,9 +113,9 @@ class Proxy(_proxy.Proxy):
         :returns: Credential been deleted
         :rtype: :class:`~otcextensions.sdk.identity.v3.credential.Credential`
         """
-        return self._delete(_credential.Credential,
-                            credential,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _credential.Credential, credential, ignore_missing=ignore_missing
+        )
 
     def update_credential(self, credential, **attrs):
         """Update credential attributes
@@ -129,21 +131,21 @@ class Proxy(_proxy.Proxy):
 
     # ========== Agencies ==========
     def _agency_normalize_domain_id(self, **attrs):
-        if 'domain_id' not in attrs:
+        if "domain_id" not in attrs:
             # User missed passing domain_id. Let's assume he wants to list own
             # agencies.
             # Otherwise he should have passed domain_id=None
             access = self.session.auth.get_auth_ref(self)
             if access.domain_id:
-                attrs['domain_id'] = access.domain_id
+                attrs["domain_id"] = access.domain_id
             elif access.project_domain_id:
-                attrs['domain_id'] = access.project_domain_id
+                attrs["domain_id"] = access.project_domain_id
             elif access.user_domain_id:
-                attrs['domain_id'] = access.user_domain_id
-        elif attrs['domain_id'] is None:
+                attrs["domain_id"] = access.user_domain_id
+        elif attrs["domain_id"] is None:
             # even though requests will eject this prop, do not rely on this
             # functionality
-            attrs.pop('domain_id')
+            attrs.pop("domain_id")
         return attrs
 
     def agencies(self, **attrs):
@@ -167,8 +169,7 @@ class Proxy(_proxy.Proxy):
         base_path = urljoin(base, _agency.Agency.base_path)
         attrs = self._agency_normalize_domain_id(**attrs)
 
-        return self._list(_agency.Agency, base_path=base_path,
-                          **attrs)
+        return self._list(_agency.Agency, base_path=base_path, **attrs)
 
     def create_agency(self, **attrs):
         """Create a new agency from attributes
@@ -180,8 +181,7 @@ class Proxy(_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.identity.v3.agency.Agency`
         """
         attrs = self._agency_normalize_domain_id(**attrs)
-        return self._create(_agency.Agency, prepend_key=True,
-                            **attrs)
+        return self._create(_agency.Agency, prepend_key=True, **attrs)
 
     def get_agency(self, agency):
         """Get a agency
@@ -209,10 +209,13 @@ class Proxy(_proxy.Proxy):
         base = self._get_alternate_endpoint()
         base_path = urljoin(base, _agency.Agency.base_path)
         attrs = self._agency_normalize_domain_id(**attrs)
-        return self._find(_agency.Agency, name_or_id,
-                          ignore_missing=ignore_missing,
-                          base_path=base_path,
-                          **attrs)
+        return self._find(
+            _agency.Agency,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            base_path=base_path,
+            **attrs
+        )
 
     def delete_agency(self, agency, ignore_missing=True):
         """Delete a agency
@@ -229,9 +232,7 @@ class Proxy(_proxy.Proxy):
         :returns: Agency been deleted
         :rtype: :class:`~otcextensions.sdk.identity.v3.agency.Agency`
         """
-        return self._delete(_agency.Agency,
-                            agency,
-                            ignore_missing=ignore_missing)
+        return self._delete(_agency.Agency, agency, ignore_missing=ignore_missing)
 
     def update_agency(self, agency, **attrs):
         """Update agency attributes
@@ -263,11 +264,13 @@ class Proxy(_proxy.Proxy):
         base_path = urljoin(base, _agency_role.AgencyRole.base_path)
         agency = self._get_resource(_agency.Agency, agency)
 
-        return self._list(_agency_role.AgencyRole,
-                          base_path=base_path,
-                          role_ref_type='project',
-                          role_ref_id=project_id,
-                          agency_id=agency.id)
+        return self._list(
+            _agency_role.AgencyRole,
+            base_path=base_path,
+            role_ref_type="project",
+            role_ref_id=project_id,
+            agency_id=agency.id,
+        )
 
     def check_agency_project_role(self, agency, project_id, role_id):
         """Check whether role is granted on the project through agency
@@ -279,19 +282,18 @@ class Proxy(_proxy.Proxy):
 
         :returns:
             :class:`~otcextensions.sdk.identity.v3.agency_role.AgencyRole`
-         """
+        """
         agency = self._get_resource(_agency.Agency, agency)
         agency_role = self._get_resource(
             _agency_role.AgencyRole,
             {
-                'agency_id': agency.id,
-                'role_ref_type': 'project',
-                'role_ref_id': project_id,
-                'id': role_id
-            }
+                "agency_id": agency.id,
+                "role_ref_type": "project",
+                "role_ref_id": project_id,
+                "id": role_id,
+            },
         )
-        return self._head(_agency_role.AgencyRole,
-                          agency_role)
+        return self._head(_agency_role.AgencyRole, agency_role)
 
     def grant_agency_project_role(self, agency, project_id, role_id):
         """Grant permission of agency on a project
@@ -302,16 +304,16 @@ class Proxy(_proxy.Proxy):
         :param role_id: ID of a role to revoke
 
         :returns:
-         """
+        """
         agency = self._get_resource(_agency.Agency, agency)
         agency_role = self._get_resource(
             _agency_role.AgencyRole,
             {
-                'agency_id': agency.id,
-                'role_ref_type': 'project',
-                'role_ref_id': project_id,
-                'id': role_id
-            }
+                "agency_id": agency.id,
+                "role_ref_type": "project",
+                "role_ref_id": project_id,
+                "id": role_id,
+            },
         )
         req = agency_role._prepare_request()
         self.put(req.url)
@@ -325,16 +327,16 @@ class Proxy(_proxy.Proxy):
         :param role_id: ID of a role to revoke
 
         :returns:
-         """
+        """
         agency = self._get_resource(_agency.Agency, agency)
         agency_role = self._get_resource(
             _agency_role.AgencyRole,
             {
-                'agency_id': agency.id,
-                'role_ref_type': 'project',
-                'role_ref_id': project_id,
-                'id': role_id
-            }
+                "agency_id": agency.id,
+                "role_ref_type": "project",
+                "role_ref_id": project_id,
+                "id": role_id,
+            },
         )
         return self._delete(_agency_role.AgencyRole, agency_role)
 
@@ -354,11 +356,13 @@ class Proxy(_proxy.Proxy):
         base_path = urljoin(base, _agency_role.AgencyRole.base_path)
         agency = self._get_resource(_agency.Agency, agency)
 
-        return self._list(_agency_role.AgencyRole,
-                          base_path=base_path,
-                          role_ref_type='domain',
-                          role_ref_id=domain_id,
-                          agency_id=agency.id)
+        return self._list(
+            _agency_role.AgencyRole,
+            base_path=base_path,
+            role_ref_type="domain",
+            role_ref_id=domain_id,
+            agency_id=agency.id,
+        )
 
     def check_agency_domain_role(self, agency, domain_id, role_id):
         """Check whether role is granted on the domain through agency
@@ -370,19 +374,18 @@ class Proxy(_proxy.Proxy):
 
         :returns:
             :class:`~otcextensions.sdk.identity.v3.agency_role.AgencyRole`
-         """
+        """
         agency = self._get_resource(_agency.Agency, agency)
         agency_role = self._get_resource(
             _agency_role.AgencyRole,
             {
-                'agency_id': agency.id,
-                'role_ref_type': 'domain',
-                'role_ref_id': domain_id,
-                'id': role_id
-            }
+                "agency_id": agency.id,
+                "role_ref_type": "domain",
+                "role_ref_id": domain_id,
+                "id": role_id,
+            },
         )
-        return self._head(_agency_role.AgencyRole,
-                          agency_role)
+        return self._head(_agency_role.AgencyRole, agency_role)
 
     def grant_agency_domain_role(self, agency, domain_id, role_id):
         """Grant permission of agency on a domain
@@ -393,16 +396,16 @@ class Proxy(_proxy.Proxy):
         :param role_id: ID of a role to revoke
 
         :returns:
-         """
+        """
         agency = self._get_resource(_agency.Agency, agency)
         agency_role = self._get_resource(
             _agency_role.AgencyRole,
             {
-                'agency_id': agency.id,
-                'role_ref_type': 'domain',
-                'role_ref_id': domain_id,
-                'id': role_id
-            }
+                "agency_id": agency.id,
+                "role_ref_type": "domain",
+                "role_ref_id": domain_id,
+                "id": role_id,
+            },
         )
         req = agency_role._prepare_request()
         self.put(req.url)
@@ -416,22 +419,22 @@ class Proxy(_proxy.Proxy):
         :param role_id: ID of a role to revoke
 
         :returns:
-         """
+        """
         agency = self._get_resource(_agency.Agency, agency)
         agency_role = self._get_resource(
             _agency_role.AgencyRole,
             {
-                'agency_id': agency.id,
-                'role_ref_type': 'domain',
-                'role_ref_id': domain_id,
-                'id': role_id
-            }
+                "agency_id": agency.id,
+                "role_ref_type": "domain",
+                "role_ref_id": domain_id,
+                "id": role_id,
+            },
         )
         return self._delete(_agency_role.AgencyRole, agency_role)
 
     # ========== Security Token (temp AK/SK) ==========
 
-    def create_security_token(self, duration, method='token', **attrs):
+    def create_security_token(self, duration, method="token", **attrs):
         """Create a new temporary AK/SK
 
         :param int duration: Duration in seconds for the token validity.
@@ -446,17 +449,12 @@ class Proxy(_proxy.Proxy):
         # This method is so unique (similar to getting initial auth), that we
         # need to do this totally differently
         body = {
-            'auth': {
-                'identity': {
-                    'methods': [method],
-                    method: {**attrs}
-                },
+            "auth": {
+                "identity": {"methods": [method], method: {**attrs}},
             }
         }
-        body['auth']['identity'][method]['duration-secods'] = duration
-        uri = '%s/v3.0/OS-CREDENTIAL/securitytokens' % (
-            self._get_alternate_endpoint()
-        )
+        body["auth"]["identity"][method]["duration-secods"] = duration
+        uri = "%s/v3.0/OS-CREDENTIAL/securitytokens" % (self._get_alternate_endpoint())
         response = self.post(uri, json=body)
         token = _security_token.SecurityToken()
         token._translate_response(response)
@@ -478,5 +476,4 @@ class Proxy(_proxy.Proxy):
         base = self._get_alternate_endpoint()
         base_path = urljoin(base, _custom.CustomRole.base_path)
 
-        return self._list(_custom.CustomRole, base_path=base_path,
-                          **attrs)
+        return self._list(_custom.CustomRole, base_path=base_path, **attrs)

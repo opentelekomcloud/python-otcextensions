@@ -10,12 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import uuid
-import openstack
 
+import openstack
 from otcextensions.tests.functional.sdk.apig import TestApiG
 from otcextensions.tests.ssl import SelfSignedCertificateGenerator
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestDomain(TestApiG):
@@ -24,33 +24,26 @@ class TestDomain(TestApiG):
         super(TestDomain, self).setUp()
         self.network_client = self.conn.dns
         self.suffix = uuid.uuid4().hex[:4]
-        self.zone_name = self.suffix + 'dns.sdk-apig-zone-public.com.'
+        self.zone_name = self.suffix + "dns.sdk-apig-zone-public.com."
         self.create_gateway()
         self.gateway_id = TestDomain.gateway.id
         # self.gateway_id = "be76ca6de5fe4aa7af503c03b3b44dea"
 
         group_attrs = {
             "name": f"api_group_{self.suffix}",
-            "remark": f"API group {self.suffix}"
+            "remark": f"API group {self.suffix}",
         }
         self.group = self.client.create_api_group(
-            gateway=self.gateway_id,
-            **group_attrs
+            gateway=self.gateway_id, **group_attrs
         )
         self.assertIsNotNone(self.group.id)
 
-        self.zone = self.network_client.create_zone(
-            name=self.zone_name
-        )
+        self.zone = self.network_client.create_zone(name=self.zone_name)
         self.network_client.wait_for_zone(self.zone)
 
-        attrs = {
-            "url_domain": self.zone.name
-        }
+        attrs = {"url_domain": self.zone.name}
         self.domain = self.client.bind_domain_name(
-            gateway=self.gateway_id,
-            group=self.group.id,
-            **attrs
+            gateway=self.gateway_id, group=self.group.id, **attrs
         )
         self.assertIsNotNone(self.group.id)
 
@@ -60,13 +53,10 @@ class TestDomain(TestApiG):
         attrs = {
             "name": f"cert_demo_{self.suffix}",
             "private_key": generator.get_private_key(),
-            "cert_content": generator.get_certificate()
+            "cert_content": generator.get_certificate(),
         }
         self.bind = self.client.create_certificate_for_domain_name(
-            gateway=self.gateway_id,
-            group=self.group.id,
-            domain=self.domain.id,
-            **attrs
+            gateway=self.gateway_id, group=self.group.id, domain=self.domain.id, **attrs
         )
         self.assertEqual(self.bind.name, attrs["name"])
 
@@ -93,19 +83,15 @@ class TestDomain(TestApiG):
                 self.network_client.delete_zone(self.zone)
                 self.network_client.wait_for_delete_zone(self.zone)
             except openstack.exceptions.SDKException as e:
-                _logger.warning('Got exception during clearing resources %s'
-                                % e.message)
+                _logger.warning(
+                    "Got exception during clearing resources %s" % e.message
+                )
         super(TestDomain, self).tearDown()
 
     def test_update_domain_name_bound(self):
-        attrs = {
-            "min_ssl_version": "TLSv1.2"
-        }
+        attrs = {"min_ssl_version": "TLSv1.2"}
         updated = self.client.update_domain_name_bound(
-            gateway=self.gateway_id,
-            group=self.group.id,
-            domain=self.domain.id,
-            **attrs
+            gateway=self.gateway_id, group=self.group.id, domain=self.domain.id, **attrs
         )
         self.assertEqual(updated.min_ssl_version, attrs["min_ssl_version"])
 
@@ -125,10 +111,7 @@ class TestDomain(TestApiG):
             domain=self.domain.id,
             enable=False,
         )
-        self.assertEqual(
-            debug.sl_domain_access_enabled,
-            False
-        )
+        self.assertEqual(debug.sl_domain_access_enabled, False)
 
     def test_get_bound_certificate(self):
         cert = self.client.get_bound_certificate(
@@ -137,7 +120,4 @@ class TestDomain(TestApiG):
             domain=self.domain.id,
             certificate=self.bind.ssl_id,
         )
-        self.assertEqual(
-            cert.id,
-            self.bind.ssl_id
-        )
+        self.assertEqual(cert.id, self.bind.ssl_id)

@@ -11,13 +11,12 @@
 # under the License.
 
 import uuid
-from otcextensions.sdk.function_graph.v2 import function
 
 from openstack import _log
-
+from otcextensions.sdk.function_graph.v2 import function
 from otcextensions.tests.functional.sdk.function_graph import TestFg
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestFunctionInstances(TestFg):
@@ -29,10 +28,7 @@ class TestFunctionInstances(TestFg):
         self.function = self.client.create_function(**TestFg.function_attrs)
         assert isinstance(self.function, function.Function)
 
-        self.addCleanup(
-            self.client.delete_function,
-            self.function
-        )
+        self.addCleanup(self.client.delete_function, self.function)
 
     def test_export(self):
         inst = self.client.export_function(self.function, type="code")
@@ -41,19 +37,19 @@ class TestFunctionInstances(TestFg):
 
     def test_import(self):
         attrs = {
-            'func_name': 'test',
-            'file_type': 'zip',
-            'file_name': 'test.zip',
-            'file_code': 'UEsDBBQAAAAIAPBbPFpOs3AMAgEAAEwCAAAGAAAAZGVwLnB5jVHB'
-                         'asMwDL37K4R3iSGMMtglsNNW2HH0B4oXq9SjtY2shJbSf5/tpl5y'
-                         'GFQX23qS3nuWPQZPDD/ROyGEwR3stTMHpAZHdNxC7x3jiVUnIAXT'
-                         '+XbJ8QRfmiIC7xGsCwND6YHGaNaqlhVom3PwVoieD16beCNQYj6O'
-                         'bGrP4wL50Ro0kNtqRch4IzfYox0nsJPtjGExboM8kAMNhDF4F7Fi'
-                         '90QSdKnJHDKy5iG+e4Oyg5fVql3C396cE7CTH9kOTUI6uPxJuMra'
-                         'cp0RFinFvRmOITZ3CZNiPPUYGNblsD6pjoDzr/4sawEk8hRrvjy3'
-                         'D9p5/d/OOs9JNiKnxasHLSzJlfgFUEsBAhQDFAAAAAgA8Fs8Wk6z'
-                         'cAwCAQAATAIAAAYAAAAAAAAAAAAAAKSBAAAAAGRlcC5weVBLBQYA'
-                         'AAAAAQABADQAAAAmAQAAAAA='
+            "func_name": "test",
+            "file_type": "zip",
+            "file_name": "test.zip",
+            "file_code": "UEsDBBQAAAAIAPBbPFpOs3AMAgEAAEwCAAAGAAAAZGVwLnB5jVHB"
+            "asMwDL37K4R3iSGMMtglsNNW2HH0B4oXq9SjtY2shJbSf5/tpl5y"
+            "GFQX23qS3nuWPQZPDD/ROyGEwR3stTMHpAZHdNxC7x3jiVUnIAXT"
+            "+XbJ8QRfmiIC7xGsCwND6YHGaNaqlhVom3PwVoieD16beCNQYj6O"
+            "bGrP4wL50Ro0kNtqRch4IzfYox0nsJPtjGExboM8kAMNhDF4F7Fi"
+            "90QSdKnJHDKy5iG+e4Oyg5fVql3C396cE7CTH9kOTUI6uPxJuMra"
+            "cp0RFinFvRmOITZ3CZNiPPUYGNblsD6pjoDzr/4sawEk8hRrvjy3"
+            "D9p5/d/OOs9JNiKnxasHLSzJlfgFUEsBAhQDFAAAAAgA8Fs8Wk6z"
+            "cAwCAQAATAIAAAYAAAAAAAAAAAAAAKSBAAAAAGRlcC5weVBLBQYA"
+            "AAAAAQABADQAAAAmAQAAAAA=",
         }
         inst = self.client.import_function(**attrs)
         self.assertIsNotNone(inst.file_name)

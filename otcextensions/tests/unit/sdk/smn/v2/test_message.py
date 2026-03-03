@@ -11,13 +11,11 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.smn.v2 import message
-
 
 EXAMPLE = {
     "message_id": "bf94b63a5dfb475994d3ac34664e24f2",
-    "request_id": "9974c07f6d554a6d827956acbeb4be5f"
+    "request_id": "9974c07f6d554a6d827956acbeb4be5f",
 }
 
 
@@ -25,7 +23,7 @@ class TestMessage(base.TestCase):
 
     def test_basic(self):
         sot = message.Message()
-        path = '/notifications/topics/%(topic_urn)s/publish'
+        path = "/notifications/topics/%(topic_urn)s/publish"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_list)
@@ -35,5 +33,5 @@ class TestMessage(base.TestCase):
 
     def test_make_it(self):
         sot = message.Message(**EXAMPLE)
-        self.assertEqual(EXAMPLE['message_id'], sot.message_id)
-        self.assertEqual(EXAMPLE['request_id'], sot.request_id)
+        self.assertEqual(EXAMPLE["message_id"], sot.message_id)
+        self.assertEqual(EXAMPLE["request_id"], sot.request_id)

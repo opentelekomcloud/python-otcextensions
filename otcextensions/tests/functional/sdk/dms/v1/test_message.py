@@ -9,18 +9,19 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import openstack
-# from openstack import exceptions
-# from openstack import utils
-
-from otcextensions.tests.functional import base
 import time
 
-_logger = openstack._log.setup_logging('openstack')
+import openstack
+
+# from openstack import exceptions
+# from openstack import utils
+from otcextensions.tests.functional import base
+
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestMessage(base.BaseFunctionalTest):
-    QUEUE_ALIAS = 'sdk_test_queue'
+    QUEUE_ALIAS = "sdk_test_queue"
     queues = []
     groups = []
     messages = []
@@ -29,9 +30,7 @@ class TestMessage(base.BaseFunctionalTest):
     def setUp(self):
         super(TestMessage, self).setUp()
         try:
-            self.queue = self.conn.dms.create_queue(
-                name=TestMessage.QUEUE_ALIAS
-            )
+            self.queue = self.conn.dms.create_queue(name=TestMessage.QUEUE_ALIAS)
 
         except openstack.exceptions.BadRequestException:
             self.queue = self.conn.dms.find_queue(TestMessage.QUEUE_ALIAS)
@@ -39,9 +38,7 @@ class TestMessage(base.BaseFunctionalTest):
         self.queues.append(self.queue)
 
         try:
-            self.group = self.conn.dms.create_group(
-                self.queue, "test_group"
-            )
+            self.group = self.conn.dms.create_group(self.queue, "test_group")
 
         except openstack.exceptions.DuplicateResource:
             self.queue = self.conn.dms.groups(self.queue)
@@ -54,8 +51,7 @@ class TestMessage(base.BaseFunctionalTest):
                 if queue.id:
                     self.conn.dms.delete_queue(queue)
         except openstack.exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
         super(TestMessage, self).tearDown()
 
     def test_list(self):
@@ -74,9 +70,7 @@ class TestMessage(base.BaseFunctionalTest):
             # q = self.conn.dms.get_queue(queue=queue.id)
             # self.assertIsNotNone(q)
             try:
-                self.group = self.conn.dms.create_group(
-                    self.queue, "test_group2"
-                )
+                self.group = self.conn.dms.create_group(self.queue, "test_group2")
 
             except openstack.exceptions.BadRequestException:
                 self.queue = self.conn.dms.groups(self.queue)
@@ -96,12 +90,11 @@ class TestMessage(base.BaseFunctionalTest):
             self.message = self.conn.dms.send_messages(
                 self.queue,
                 messages=[
-                    {"body": "TEST11",
-                        "attributes":
-                            {
-                                "attribute1": "value1",
-                                "attribute2": "value2"}}
-                ]
+                    {
+                        "body": "TEST11",
+                        "attributes": {"attribute1": "value1", "attribute2": "value2"},
+                    }
+                ],
             )
             #        ,{ "body" : { "foo" : "test02" },
             #        "attributes" : {
@@ -110,9 +103,7 @@ class TestMessage(base.BaseFunctionalTest):
 
             self.messages.append(self.message)
             try:
-                self.group = self.conn.dms.create_group(
-                    self.queue, "test_group3"
-                )
+                self.group = self.conn.dms.create_group(self.queue, "test_group3")
 
             except openstack.exceptions.BadRequestException:
                 self.queue = self.conn.dms.groups(self.queue)
@@ -120,7 +111,6 @@ class TestMessage(base.BaseFunctionalTest):
             self.groups.append(self.group)
 
             self.received_messages = self.conn.dms.consume_message(
-                self.queue,
-                self.group
+                self.queue, self.group
             )
             self.assertGreaterEqual(len(list(self.received_messages)), 0)

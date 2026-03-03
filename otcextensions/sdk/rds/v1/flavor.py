@@ -10,38 +10,36 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import _log
+
 # from openstack import exceptions
 from openstack import resource
-
 from otcextensions.sdk import sdk_resource
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class Flavor(sdk_resource.Resource):
 
-    base_path = '/flavors'
+    base_path = "/flavors"
     # In difference to regular OS services RDS
     # does not return single item with a proper element tag
-    resource_key = 'flavor'
-    resources_key = 'flavors'
+    resource_key = "flavor"
+    resources_key = "flavors"
 
     # capabilities
     allow_get = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters(
-        'dbId', 'region'
-    )
+    _query_mapping = resource.QueryParameters("dbId", "region")
 
     # Properties
     #: Flavor id
     id = None
     #: Flavor name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Ram size in MB.
     #: *Type:int*
-    ram = resource.Body('ram', type=int)
+    ram = resource.Body("ram", type=int)
     #: Specification code
     #: *Type: str*
-    spec_code = resource.Body('specCode')
+    spec_code = resource.Body("specCode")

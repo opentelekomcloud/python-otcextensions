@@ -19,13 +19,13 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'a4915eea-7a70-4058-bbf5-c391989c10e3'
+cluster_name_or_id = "a4915eea-7a70-4058-bbf5-c391989c10e3"
 
 attrs = {
-    'node_type': 'ess-master',
-    'flavor': 'ced8d1a7-eff8-4e30-a3de-cd9578fd518f',
-    'node_size': 3,
-    'volume_type': 'COMMON',
+    "node_type": "ess-master",
+    "flavor": "ced8d1a7-eff8-4e30-a3de-cd9578fd518f",
+    "node_size": 3,
+    "volume_type": "COMMON",
 }
 
 cluster = conn.css.find_cluster(cluster_name_or_id, ignore_missing=False)

@@ -65,7 +65,7 @@ share (scalable file system).
 :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`.
 
 .. literalinclude:: ../examples/sfsturbo/share_extend_capacity.py
-   :lines: 16-27
+   :lines: 16-26
 
 Shares
 ^^^^^^

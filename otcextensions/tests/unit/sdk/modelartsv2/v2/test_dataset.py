@@ -89,9 +89,7 @@ class TestDataset(base.TestCase):
                 for ix, data in enumerate(value):
                     self.assertEqual(sot.labels[ix].name, data["name"])
                     self.assertEqual(sot.labels[ix].type, data["type"])
-                    self.assertEqual(
-                        sot.labels[ix].attributes, data["attributes"]
-                    )
+                    self.assertEqual(sot.labels[ix].attributes, data["attributes"])
                     self.assertEqual(
                         sot.labels[ix].property.color,
                         data["property"]["@modelarts:color"],

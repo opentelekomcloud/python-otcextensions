@@ -13,13 +13,14 @@
 """
 Get one swr organization
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-org_name = 'swr_org'
+org_name = "swr_org"
 org = conn.swr.get_organization(org_name)
 print(org)

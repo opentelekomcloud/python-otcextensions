@@ -13,21 +13,21 @@ from openstack import resource
 
 
 class Config(resource.Resource):
-    base_path = '/apigw/instance/configs'
-    resources_key = 'configs'
+    base_path = "/apigw/instance/configs"
+    resources_key = "configs"
     allow_list = True
 
     # Properties
 
     #: The ID of the configuration item.
-    config_id = resource.Body('config_id')
+    config_id = resource.Body("config_id")
     #: The name of the configuration item.
-    config_name = resource.Body('config_name')
+    config_name = resource.Body("config_name")
     #: The value of the configuration item.
-    config_value = resource.Body('config_value')
+    config_value = resource.Body("config_value")
     #: The time when the configuration item was created.
-    config_time = resource.Body('config_time')
+    config_time = resource.Body("config_time")
     #: The time when the configuration item was last updated.
-    remark = resource.Body('remark')
+    remark = resource.Body("remark")
     #: Used quota of the gateway.
-    used = resource.Body('used')
+    used = resource.Body("used")

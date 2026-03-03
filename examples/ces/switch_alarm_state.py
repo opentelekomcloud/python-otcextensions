@@ -13,13 +13,14 @@
 """
 Disable / Enable CloudEye alarm state
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-alarm = 'alarm_name_or_id'
+alarm = "alarm_name_or_id"
 alarm = conn.ces.find_alarm(alarm)
 alarm = conn.ces.switch_alarm_state(alarm)
 print(alarm)

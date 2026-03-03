@@ -11,10 +11,11 @@
 # under the License.
 #
 """List vpcep resource quota."""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 quota = conn.vpcep.resource_quota()
 print(list(quota))

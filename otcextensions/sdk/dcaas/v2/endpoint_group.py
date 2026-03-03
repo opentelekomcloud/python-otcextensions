@@ -14,9 +14,9 @@ from openstack import resource
 
 class DirectConnectEndpointGroup(resource.Resource):
 
-    base_path = '/dcaas/dc-endpoint-groups'
-    resource_key = 'dc_endpoint_group'
-    resources_key = 'dc_endpoint_groups'
+    base_path = "/dcaas/dc-endpoint-groups"
+    resource_key = "dc_endpoint_group"
+    resources_key = "dc_endpoint_groups"
 
     # capabilities
     allow_list = True
@@ -26,21 +26,26 @@ class DirectConnectEndpointGroup(resource.Resource):
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'project_id', 'name', 'description', 'endpoints', 'type',
-        projrct_id='tenant_id'
+        "id",
+        "project_id",
+        "name",
+        "description",
+        "endpoints",
+        "type",
+        projrct_id="tenant_id",
     )
 
     # Properties
     #: The ID of the Direct Connect Endpoint Group.
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: The name of the Direct Connect Endpoint Group.
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Provides supplementary information about the Direct Connect Endpoint
     # Group.
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: The list of the endpoints in a Direct Connect Endpoint Group
-    endpoints = resource.Body('endpoints', type=list)
+    endpoints = resource.Body("endpoints", type=list)
     #: The type of the Direct Connect Endpoints. The value can only be cidr.
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: The project ID.
-    project_id = resource.Body('tenant_id')
+    project_id = resource.Body("tenant_id")

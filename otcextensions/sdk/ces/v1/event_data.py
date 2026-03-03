@@ -16,26 +16,25 @@ class DatapointsSpec(resource.Resource):
 
     # Properties
     # time of the metric collection
-    timestamp = resource.Body('timestamp')
+    timestamp = resource.Body("timestamp")
     # Indicates the event type e.g. instance_host_info
-    typespec = resource.Body('type')
+    typespec = resource.Body("type")
     # host configuration information
-    value = resource.Body('value')
+    value = resource.Body("value")
 
 
 class EventData(resource.Resource):
 
-    base_path = '/event-data'
+    base_path = "/event-data"
 
     # capabilities
     allow_list = True
     # allow_create = True
 
     _query_mapping = resource.QueryParameters(
-        'dim.0', 'from', 'to', 'namespace', 'type'
+        "dim.0", "from", "to", "namespace", "type"
     )
 
     # Properties
     # Datapoints retrieve the metrics data list
-    datapoints = resource.Body('datapoints', type=list,
-                               list_type=DatapointsSpec)
+    datapoints = resource.Body("datapoints", type=list, list_type=DatapointsSpec)

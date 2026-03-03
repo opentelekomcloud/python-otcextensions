@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts devenv v1 action implementations"""
+
 import logging
 
 from osc_lib import exceptions
@@ -66,9 +67,7 @@ AUTO_STOP_CHOICES = (
 def _get_columns(item):
     column_map = {}
     hidden = ["location", "workspace", "ai_project"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 def translate_response(func):
@@ -148,8 +147,7 @@ class ListDevenvInstances(command.Lister):
             "--workspace-id",
             metavar="<workspace_id>",
             help=_(
-                "Workspace ID. If no workspace is created, "
-                "the default value is 0."
+                "Workspace ID. If no workspace is created, " "the default value is 0."
             ),
         )
         parser.add_argument(
@@ -200,9 +198,7 @@ class ListDevenvInstances(command.Lister):
         return (
             self.columns,
             (
-                utils.get_item_properties(
-                    s, self.columns, formatters=formatters
-                )
+                utils.get_item_properties(s, self.columns, formatters=formatters)
                 for s in data
             ),
         )
@@ -224,9 +220,7 @@ class ShowDevenvInstance(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        return client.find_devenv_instance(
-            parsed_args.instance, ignore_missing=False
-        )
+        return client.find_devenv_instance(parsed_args.instance, ignore_missing=False)
 
 
 class CreateDevenvInstance(command.ShowOne):
@@ -251,10 +245,7 @@ class CreateDevenvInstance(command.ShowOne):
             help=_(
                 "Configuration ID. The options are as follows:\n"
                 + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in DEVENV_PROFILE_ID_MAP.items()
-                    ]
+                    [f"{key}: {value}" for key, value in DEVENV_PROFILE_ID_MAP.items()]
                 )
             ),
         )
@@ -498,8 +489,7 @@ class UpdateDevenvInstance(command.ShowOne):
             "--description",
             metavar="<description>",
             help=_(
-                "Additional service attribute, which facilitates service "
-                "management."
+                "Additional service attribute, which facilitates service " "management."
             ),
         )
         parser.add_argument(
@@ -584,9 +574,7 @@ class DeleteDevenvInstance(command.Command):
         result = 0
         for name_or_id in parsed_args.instance:
             try:
-                instance = client.find_devenv_instance(
-                    name_or_id, ignore_missing=False
-                )
+                instance = client.find_devenv_instance(name_or_id, ignore_missing=False)
                 client.delete_devenv_instance(instance.id)
             except Exception as e:
                 result += 1
@@ -600,7 +588,6 @@ class DeleteDevenvInstance(command.Command):
         if result > 0:
             total = len(parsed_args.instance)
             msg = _(
-                "%(result)s of %(total)s Devenv Instance(s) failed "
-                "to delete."
+                "%(result)s of %(total)s Devenv Instance(s) failed " "to delete."
             ) % {"result": result, "total": total}
             raise exceptions.CommandError(msg)

@@ -26,19 +26,19 @@ class TestTask(fakes.TestCBR):
         flat_data = task._flatten_task(obj)
 
         data = (
-            flat_data['id'],
-            flat_data['checkpoint_id'],
-            flat_data['policy_id'],
-            flat_data['provider_id'],
-            flat_data['vault_id'],
-            flat_data['vault_name'],
-            flat_data['operation_type'],
-            flat_data['error_mesage'],
-            flat_data['error_code'],
-            flat_data['created_at'],
-            flat_data['ended_at'],
-            flat_data['started_at'],
-            flat_data['updated_at']
+            flat_data["id"],
+            flat_data["checkpoint_id"],
+            flat_data["policy_id"],
+            flat_data["provider_id"],
+            flat_data["vault_id"],
+            flat_data["vault_name"],
+            flat_data["operation_type"],
+            flat_data["error_mesage"],
+            flat_data["error_code"],
+            flat_data["created_at"],
+            flat_data["ended_at"],
+            flat_data["started_at"],
+            flat_data["updated_at"],
         )
 
         cmp_data = (
@@ -64,21 +64,29 @@ class TestListTask(fakes.TestCBR):
 
     objects = fakes.FakeTask.create_multiple(3)
 
-    columns = ('id', 'checkpoint_id', 'provider_id',
-               'operation_type', 'created_at', 'ended_at')
+    columns = (
+        "id",
+        "checkpoint_id",
+        "provider_id",
+        "operation_type",
+        "created_at",
+        "ended_at",
+    )
 
     data = []
 
     for s in objects:
         flat_data = task._flatten_task(s)
-        data.append((
-            flat_data['id'],
-            flat_data['checkpoint_id'],
-            flat_data['provider_id'],
-            flat_data['operation_type'],
-            flat_data['created_at'],
-            flat_data['ended_at']
-        ))
+        data.append(
+            (
+                flat_data["id"],
+                flat_data["checkpoint_id"],
+                flat_data["provider_id"],
+                flat_data["operation_type"],
+                flat_data["created_at"],
+                flat_data["ended_at"],
+            )
+        )
 
     def setUp(self):
         super(TestListTask, self).setUp()
@@ -97,9 +105,7 @@ class TestListTask(fakes.TestCBR):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -115,37 +121,37 @@ class TestShowTask(fakes.TestCBR):
     object = fakes.FakeTask.create_one()
 
     columns = (
-        'id',
-        'checkpoint_id',
-        'policy_id',
-        'provider_id',
-        'vault_id',
-        'vault_name',
-        'operation_type',
-        'error_mesage',
-        'error_code',
-        'created_at',
-        'ended_at',
-        'started_at',
-        'updated_at'
+        "id",
+        "checkpoint_id",
+        "policy_id",
+        "provider_id",
+        "vault_id",
+        "vault_name",
+        "operation_type",
+        "error_mesage",
+        "error_code",
+        "created_at",
+        "ended_at",
+        "started_at",
+        "updated_at",
     )
 
     flat_data = task._flatten_task(object)
 
     data = (
-        flat_data['id'],
-        flat_data['checkpoint_id'],
-        flat_data['policy_id'],
-        flat_data['provider_id'],
-        flat_data['vault_id'],
-        flat_data['vault_name'],
-        flat_data['operation_type'],
-        flat_data['error_mesage'],
-        flat_data['error_code'],
-        flat_data['created_at'],
-        flat_data['ended_at'],
-        flat_data['started_at'],
-        flat_data['updated_at']
+        flat_data["id"],
+        flat_data["checkpoint_id"],
+        flat_data["policy_id"],
+        flat_data["provider_id"],
+        flat_data["vault_id"],
+        flat_data["vault_name"],
+        flat_data["operation_type"],
+        flat_data["error_mesage"],
+        flat_data["error_code"],
+        flat_data["created_at"],
+        flat_data["ended_at"],
+        flat_data["started_at"],
+        flat_data["updated_at"],
     )
 
     def setUp(self):
@@ -156,24 +162,19 @@ class TestShowTask(fakes.TestCBR):
         self.client.get_task = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'task'
-        ]
-        verifylist = [
-        ]
+        arglist = ["task"]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.get_task.side_effect = [
-            self.object
-        ]
+        self.client.get_task.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.get_task.assert_called_once_with('task')
+        self.client.get_task.assert_called_once_with("task")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

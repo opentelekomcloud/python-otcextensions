@@ -13,11 +13,12 @@
 """
 Get an Instance
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-instance = 'instance_id'
+instance = "instance_id"
 raw = conn.dms.get_instance(instance)
 print(raw)

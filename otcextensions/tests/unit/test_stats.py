@@ -24,14 +24,14 @@ import time
 from unittest import mock
 
 import fixtures
-from keystoneauth1 import exceptions
 import prometheus_client
-from requests import exceptions as rexceptions
 import testtools.content
+from keystoneauth1 import exceptions
+from keystoneauth1.access import AccessInfoV3
+from requests import exceptions as rexceptions
 
 from openstack.tests.unit import base
 from otcextensions import sdk
-from keystoneauth1.access import AccessInfoV3
 
 
 class StatsdFixture(fixtures.Fixture):
@@ -40,7 +40,7 @@ class StatsdFixture(fixtures.Fixture):
         self.thread = threading.Thread(target=self.run)
         self.thread.daemon = True
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind(('127.0.0.1', 0))
+        self.sock.bind(("127.0.0.1", 0))
         self.port = self.sock.getsockname()[1]
         self.wake_read, self.wake_write = os.pipe()
         self.stats = []
@@ -58,7 +58,7 @@ class StatsdFixture(fixtures.Fixture):
                     data = self.sock.recvfrom(1024)
                     if not data:
                         return
-                    stat_key = data[0].decode('utf-8')
+                    stat_key = data[0].decode("utf-8")
                     if stat_key.startswith("("):
                         key_value_pair = stat_key.split(":", 1)
                         key = key_value_pair[0].strip("()").strip("','")
@@ -69,7 +69,7 @@ class StatsdFixture(fixtures.Fixture):
 
     def _cleanup(self):
         self.running = False
-        os.write(self.wake_write, b'1\n')
+        os.write(self.wake_write, b"1\n")
         self.thread.join()
 
 
@@ -77,14 +77,12 @@ class TestStats(base.TestCase):
     def setUp(self):
         self.statsd = StatsdFixture()
         self.useFixture(self.statsd)
+        self.useFixture(fixtures.EnvironmentVariable("STATSD_HOST", "127.0.0.1"))
         self.useFixture(
-            fixtures.EnvironmentVariable('STATSD_HOST', '127.0.0.1')
-        )
-        self.useFixture(
-            fixtures.EnvironmentVariable('STATSD_PORT', str(self.statsd.port))
+            fixtures.EnvironmentVariable("STATSD_PORT", str(self.statsd.port))
         )
 
-        self.add_info_on_exception('statsd_content', self.statsd.stats)
+        self.add_info_on_exception("statsd_content", self.statsd.stats)
         # Set up the above things before the super setup so that we have the
         # environment variables set when the Connection is created.
         super().setUp()
@@ -99,7 +97,7 @@ class TestStats(base.TestCase):
             for s in metric.samples:
                 samples.append(s)
         self.addDetail(
-            'prometheus_samples',
+            "prometheus_samples",
             testtools.content.text_content(pprint.pformat(samples)),
         )
 
@@ -138,16 +136,16 @@ class TestStats(base.TestCase):
             # newlines; thus we first flatten the stats out into
             # single entries.
             stats = itertools.chain.from_iterable(
-                [s.split('\n') for s in self.statsd.stats]
+                [s.split("\n") for s in self.statsd.stats]
             )
             for stat in stats:
-                k, v = stat.split(':')
+                k, v = stat.split(":")
                 if key == k:
                     if kind is None:
                         # key with no qualifiers is found
                         return True
 
-                    s_value, s_kind = v.split('|')
+                    s_value, s_kind = v.split("|")
 
                     # if no kind match, look for other keys
                     if kind != s_kind:
@@ -157,7 +155,7 @@ class TestStats(base.TestCase):
                         # special-case value|ms because statsd can turn
                         # timing results into float of indeterminate
                         # length, hence foiling string matching.
-                        if kind == 'ms':
+                        if kind == "ms":
                             if float(value) >= float(s_value):
                                 return True
                         elif value == s_value:
@@ -177,16 +175,16 @@ class TestStats(base.TestCase):
 
     def test_list_projects(self):
         mock_uri = self.get_mock_url(
-            service_type='identity', resource='projects', base_url_append='v3'
+            service_type="identity", resource="projects", base_url_append="v3"
         )
 
         self.register_uris(
             [
                 dict(
-                    method='GET',
+                    method="GET",
                     uri=mock_uri,
                     status_code=200,
-                    json={'projects': []},
+                    json={"projects": []},
                 )
             ]
         )
@@ -195,31 +193,31 @@ class TestStats(base.TestCase):
         self.assert_calls()
 
         self.assert_reported_stat(
-            'openstack.api.identity.GET.projects.200', value='1', kind='c'
+            "openstack.api.identity.GET.projects.200", value="1", kind="c"
         )
         self.assert_prometheus_stat(
-            'openstack_http_requests_total',
+            "openstack_http_requests_total",
             1,
             dict(
-                service_type='identity',
+                service_type="identity",
                 endpoint=mock_uri,
-                method='GET',
-                status_code='200',
+                method="GET",
+                status_code="200",
             ),
         )
 
     def test_projects(self):
         mock_uri = self.get_mock_url(
-            service_type='identity', resource='projects', base_url_append='v3'
+            service_type="identity", resource="projects", base_url_append="v3"
         )
 
         self.register_uris(
             [
                 dict(
-                    method='GET',
+                    method="GET",
                     uri=mock_uri,
                     status_code=200,
-                    json={'projects': []},
+                    json={"projects": []},
                 )
             ]
         )
@@ -228,16 +226,16 @@ class TestStats(base.TestCase):
         self.assert_calls()
 
         self.assert_reported_stat(
-            'openstack.api.identity.GET.projects.200', value='1', kind='c'
+            "openstack.api.identity.GET.projects.200", value="1", kind="c"
         )
         self.assert_prometheus_stat(
-            'openstack_http_requests_total',
+            "openstack_http_requests_total",
             1,
             dict(
-                service_type='identity',
+                service_type="identity",
                 endpoint=mock_uri,
-                method='GET',
-                status_code='200',
+                method="GET",
+                status_code="200",
             ),
         )
 
@@ -266,27 +264,22 @@ class TestStats(base.TestCase):
 
         # Create an AccessInfoV3 object to mimic Keystone's get_access response
         mock_access_info = AccessInfoV3(
-            auth_token="fake-token",
-            body={"token": mock_service_catalog}
+            auth_token="fake-token", body={"token": mock_service_catalog}
         )
         sdk.register_otc_extensions(self.cloud)
         # Mock the get_access method to return the mock AccessInfoV3 object
         with mock.patch.object(
-                self.cloud.session.auth,
-                'get_access',
-                return_value=mock_access_info
+            self.cloud.session.auth, "get_access", return_value=mock_access_info
         ):
             # Mock the URI registration for the requests
-            mock_uri = 'https://sfs.example.com/v1/sfs-turbo/shares/detail'
+            mock_uri = "https://sfs.example.com/v1/sfs-turbo/shares/detail"
             self.register_uris(
                 [
                     dict(
-                        method='GET',
+                        method="GET",
                         uri=mock_uri,
                         status_code=200,
-                        json={
-                            "shares": []
-                        },
+                        json={"shares": []},
                     ),
                 ]
             )
@@ -296,116 +289,114 @@ class TestStats(base.TestCase):
             self.assert_calls()
 
             self.assert_reported_stat(
-                'openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.200',
-                value='0.000000',
-                kind='ms',
+                "openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.200",
+                value="0.000000",
+                kind="ms",
             )
             self.assert_reported_stat(
-                'openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.200',
-                value='1',
-                kind='c'
+                "openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.200",
+                value="1",
+                kind="c",
             )
             self.assert_reported_stat(
-                'openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.attempted',
-                value='1',
-                kind='c'
+                "openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.attempted",
+                value="1",
+                kind="c",
             )
 
             self.assert_prometheus_stat(
-                'openstack_http_requests_total',
+                "openstack_http_requests_total",
                 1.0,
                 dict(
-                    service_type='sfsturbo',
+                    service_type="sfsturbo",
                     endpoint=mock_uri,
-                    method='GET',
-                    status_code='200',
+                    method="GET",
+                    status_code="200",
                 ),
             )
 
     def test_servers_no_detail(self):
-        mock_uri = 'https://compute.example.com/v2.1/servers'
+        mock_uri = "https://compute.example.com/v2.1/servers"
 
         self.register_uris(
             [
                 dict(
-                    method='GET',
+                    method="GET",
                     uri=mock_uri,
                     status_code=200,
-                    json={'servers': []},
+                    json={"servers": []},
                 )
             ]
         )
 
-        self.cloud.compute.get('/servers')
+        self.cloud.compute.get("/servers")
         self.assert_calls()
 
         self.assert_reported_stat(
-            'openstack.api.compute.GET.servers.200', value='1', kind='c'
+            "openstack.api.compute.GET.servers.200", value="1", kind="c"
         )
         self.assert_reported_stat(
-            'openstack.api.compute.GET.servers.200', value='5', kind='ms'
+            "openstack.api.compute.GET.servers.200", value="5", kind="ms"
         )
         self.assert_reported_stat(
-            'openstack.api.compute.GET.servers.attempted', value='1', kind='c'
+            "openstack.api.compute.GET.servers.attempted", value="1", kind="c"
         )
         self.assert_prometheus_stat(
-            'openstack_http_requests_total',
+            "openstack_http_requests_total",
             1,
             dict(
-                service_type='compute',
+                service_type="compute",
                 endpoint=mock_uri,
-                method='GET',
-                status_code='200',
+                method="GET",
+                status_code="200",
             ),
         )
 
     def test_servers_error(self):
-        mock_uri = 'https://compute.example.com/v2.1/servers'
+        mock_uri = "https://compute.example.com/v2.1/servers"
 
-        self.register_uris(
-            [dict(method='GET', uri=mock_uri, status_code=500, json={})]
-        )
+        self.register_uris([dict(method="GET", uri=mock_uri, status_code=500, json={})])
 
-        self.cloud.compute.get('/servers')
+        self.cloud.compute.get("/servers")
         self.assert_calls()
 
         self.assert_reported_stat(
-            'openstack.api.compute.GET.servers.500', value='1', kind='c'
+            "openstack.api.compute.GET.servers.500", value="1", kind="c"
         )
         self.assert_reported_stat(
-            'openstack.api.compute.GET.servers.500', value='5', kind='ms'
+            "openstack.api.compute.GET.servers.500", value="5", kind="ms"
         )
         self.assert_reported_stat(
-            'openstack.api.compute.GET.servers.attempted', value='1', kind='c'
+            "openstack.api.compute.GET.servers.attempted", value="1", kind="c"
         )
         self.assert_prometheus_stat(
-            'openstack_http_requests_total',
+            "openstack_http_requests_total",
             1,
             dict(
-                service_type='compute',
+                service_type="compute",
                 endpoint=mock_uri,
-                method='GET',
-                status_code='500',
+                method="GET",
+                status_code="500",
             ),
         )
 
     def test_timeout(self):
-        mock_uri = 'https://compute.example.com/v2.1/servers'
+        mock_uri = "https://compute.example.com/v2.1/servers"
 
         self.register_uris(
-            [dict(method='GET', uri=mock_uri, exc=rexceptions.ConnectTimeout)]
+            [dict(method="GET", uri=mock_uri, exc=rexceptions.ConnectTimeout)]
         )
 
         try:
-            self.cloud.compute.get('/servers')
+            self.cloud.compute.get("/servers")
         except exceptions.ConnectTimeout:
             pass
 
         self.assert_reported_stat(
-            'openstack.api.compute.GET.servers.failed', value='1', kind='c'
+            "openstack.api.compute.GET.servers.failed", value="1", kind="c"
         )
         self.assert_reported_stat(
-            'openstack.api.compute.GET.servers.attempted', value='1', kind='c'
+            "openstack.api.compute.GET.servers.attempted", value="1", kind="c"
         )
 
 
@@ -417,16 +408,16 @@ class TestNoStats(base.TestCase):
 
     def test_no_stats(self):
         mock_uri = self.get_mock_url(
-            service_type='identity', resource='projects', base_url_append='v3'
+            service_type="identity", resource="projects", base_url_append="v3"
         )
 
         self.register_uris(
             [
                 dict(
-                    method='GET',
+                    method="GET",
                     uri=mock_uri,
                     status_code=200,
-                    json={'projects': []},
+                    json={"projects": []},
                 )
             ]
         )

@@ -17,7 +17,6 @@ import uuid
 import mock
 
 from otcextensions.sdk.volume_backup.v2 import backup_policy
-
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -36,16 +35,16 @@ class FakePolicy(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'policy_resource_count': random.randint(0, 20),
-            'tags': [{'key': 't1', 'value': uuid.uuid4().hex}],
-            'scheduled_policy': {
-                'remain_first_backup_of_curMonth': 'Y',
-                'rentention_num': random.randint(0, 100),
-                'frequency': random.randint(0, 100),
-                'start_time': 'st-' + uuid.uuid4().hex,
-                'status': 'ON'
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "policy_resource_count": random.randint(0, 20),
+            "tags": [{"key": "t1", "value": uuid.uuid4().hex}],
+            "scheduled_policy": {
+                "remain_first_backup_of_curMonth": "Y",
+                "rentention_num": random.randint(0, 100),
+                "frequency": random.randint(0, 100),
+                "start_time": "st-" + uuid.uuid4().hex,
+                "status": "ON",
             },
         }
         obj = backup_policy.BackupPolicy.existing(**object_info)

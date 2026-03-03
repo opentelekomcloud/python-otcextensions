@@ -13,12 +13,13 @@
 """
 Adding OBS Dump Task.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-stream_name = 'test-stream'
+stream_name = "test-stream"
 attrs = {
     "destination_type": "OBS",
     "obs_destination_descriptor": {
@@ -30,8 +31,8 @@ attrs = {
         "file_prefix": "",
         "partition_format": "yyyy/MM/dd/HH/mm",
         "record_delimiter": "|",
-        "deliver_time_interval": 30
-    }
+        "deliver_time_interval": 30,
+    },
 }
 result = conn.dis.create_dump_task(stream_name, **attrs)
 print(result)

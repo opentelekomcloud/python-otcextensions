@@ -48,7 +48,7 @@ This interface is used to find a devenv instance by id or name.
 :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`.
 
 .. literalinclude:: ../examples/modelartsv1/find_devenv_instance.py
-   :lines: 15-24
+   :lines: 15-23
 
 Start Devenv Instance
 ^^^^^^^^^^^^^^^^^^^^^

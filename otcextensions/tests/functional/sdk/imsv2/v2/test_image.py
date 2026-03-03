@@ -11,10 +11,9 @@
 # under the License.
 
 from openstack import _log
-
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestImage(base.BaseFunctionalTest):
@@ -27,36 +26,28 @@ class TestImage(base.BaseFunctionalTest):
         attrs = {
             "name": "CentOS-7-x86_64-GenericCloud.qcow2",
             "description": "Create an image from a file in an OBS bucket",
-            "image_url":
-                "ims-test-images:rancheros-openstack.img",
+            "image_url": "ims-test-images:rancheros-openstack.img",
             "os_version": "CentOS 7.0 64bit",
             "os_type": "Linux",
             "min_disk": 40,
-            "image_tags": [{"key": "key2", "value": "value2"},
-                           {"key": "key1", "value": "value1"}]
+            "image_tags": [
+                {"key": "key2", "value": "value2"},
+                {"key": "key1", "value": "value1"},
+            ],
         }
         result = self.ims.create_image(**attrs)
         self.assertNotEqual(result, None)
 
     def test_update_and_query_image(self):
-        attrs = {
-            "name": "CentOS-7-x86_64-GenericCloud.qcow2"
-        }
+        attrs = {"name": "CentOS-7-x86_64-GenericCloud.qcow2"}
         result_query = self.ims.images(**attrs)
         self.assertNotEqual(result_query, None)
 
         image_id = ""
         for image in result_query:
-            image_id = image['id']
-        command_list = [
-            {
-                "op": "replace",
-                "path": "/name",
-                "value": "NewImageTestName"
-            }
-        ]
+            image_id = image["id"]
+        command_list = [{"op": "replace", "path": "/name", "value": "NewImageTestName"}]
         result_update = self.ims.update_image(
-            image_id=image_id,
-            command_list=command_list
+            image_id=image_id, command_list=command_list
         )
         self.assertNotEqual(result_update, None)

@@ -12,6 +12,7 @@
 # under the License.
 #
 """Delete a dataset version."""
+
 import openstack
 
 openstack.enable_logging(True)

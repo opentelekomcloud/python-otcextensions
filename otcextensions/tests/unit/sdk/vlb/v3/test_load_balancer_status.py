@@ -11,11 +11,10 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.vlb.v3 import load_balancer_status
 
 EXAMPLE = {
-    'loadbalancer_id': 'id',
+    "loadbalancer_id": "id",
 }
 
 
@@ -23,7 +22,7 @@ class TestLoadBalancer(base.TestCase):
 
     def test_basic(self):
         sot = load_balancer_status.LoadBalancerStatus()
-        path = '/elb/loadbalancers/%(loadbalancer_id)s/statuses'
+        path = "/elb/loadbalancers/%(loadbalancer_id)s/statuses"
         self.assertEqual(path, sot.base_path)
         self.assertFalse(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -33,4 +32,4 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = load_balancer_status.LoadBalancerStatus(**EXAMPLE)
-        self.assertEqual(EXAMPLE['loadbalancer_id'], sot.loadbalancer_id)
+        self.assertEqual(EXAMPLE["loadbalancer_id"], sot.loadbalancer_id)

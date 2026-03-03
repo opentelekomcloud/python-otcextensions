@@ -11,66 +11,58 @@
 # under the License.
 import copy
 
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.cce.v3 import cluster as _cluster
 
 OS_HEADERS = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
 }
 
 EXAMPLE_LIST = {
-    'kind': 'Cluster',
-    'apiVersion': 'v3',
-    'items': [
+    "kind": "Cluster",
+    "apiVersion": "v3",
+    "items": [
         {
-            'kind': 'Cluster',
-            'apiVersion': 'v3',
-            'metadata': {
-                'name': 'mycluster-turbo-demo',
-                'uid': '40c54866-38c5-11e9-b246-0255ac101413',
-                'creationTimestamp': '2019-02-25 06:19:05.789462 +0000 UTC',
-                'updateTimestamp': '2019-02-25 06:26:14.457426 +0000 UTC'
+            "kind": "Cluster",
+            "apiVersion": "v3",
+            "metadata": {
+                "name": "mycluster-turbo-demo",
+                "uid": "40c54866-38c5-11e9-b246-0255ac101413",
+                "creationTimestamp": "2019-02-25 06:19:05.789462 +0000 UTC",
+                "updateTimestamp": "2019-02-25 06:26:14.457426 +0000 UTC",
             },
-            'spec': {
-                'type': 'VirtualMachine',
-                'flavor': 'cce.s1.small',
-                'version': 'v1.13.10-r0',
-                'az': 'eu-de-01',
-                'supportIstio': True,
-                'description': 'thisisademocluster',
-                'hostNetwork': {
-                    'vpc': 'a8cc62dc-acc2-47d0-9bfb-3b1d776c520b',
-                    'subnet': '6d9e5355-85af-4a89-af28-243edb700db6'
+            "spec": {
+                "type": "VirtualMachine",
+                "flavor": "cce.s1.small",
+                "version": "v1.13.10-r0",
+                "az": "eu-de-01",
+                "supportIstio": True,
+                "description": "thisisademocluster",
+                "hostNetwork": {
+                    "vpc": "a8cc62dc-acc2-47d0-9bfb-3b1d776c520b",
+                    "subnet": "6d9e5355-85af-4a89-af28-243edb700db6",
                 },
-                'containerNetwork': {
-                    'mode': 'eni',
-                    'cidr': '172.16.0.0/16'
+                "containerNetwork": {"mode": "eni", "cidr": "172.16.0.0/16"},
+                "eniNetwork": {
+                    "eniSubnetId": "eni-0e5f8f8c",
+                    "eniSubnetCIDR": "172.16.0.0/16",
                 },
-                'eniNetwork': {
-                    'eniSubnetId': 'eni-0e5f8f8c',
-                    'eniSubnetCIDR': '172.16.0.0/16',
-                },
-                'authentication': {
-                    'mode': 'rbac',
-                    'authenticatingProxy': {}
-                },
-                'billingMode': 0,
+                "authentication": {"mode": "rbac", "authenticatingProxy": {}},
+                "billingMode": 0,
                 "kubeProxyMode": "ipvs",
             },
-            'status': {
-                'phase': 'Available',
-                'endpoints': {
-                    'internal': 'https://192.168.0.129:5443',
-                    'external_otc': 'https://40c54866-38c5-'
-                }
-            }
+            "status": {
+                "phase": "Available",
+                "endpoints": {
+                    "internal": "https://192.168.0.129:5443",
+                    "external_otc": "https://40c54866-38c5-",
+                },
+            },
         }
-    ]
+    ],
 }
 
 
@@ -83,19 +75,18 @@ class TestCluster(base.TestCase):
         self.sess.delete = mock.Mock()
         self.sess.post = mock.Mock()
         self.sess.put = mock.Mock()
-        self.sess.default_microversion = '1'
+        self.sess.default_microversion = "1"
         self.sess._get_connection = mock.Mock(return_value=self.cloud)
 
         self.sot = _cluster.Cluster()
 
-        self.sot_expected = _cluster.Cluster(**EXAMPLE_LIST['items'][0])
+        self.sot_expected = _cluster.Cluster(**EXAMPLE_LIST["items"][0])
 
     def test_basic(self):
         sot = _cluster.Cluster()
-        self.assertEqual('', sot.resource_key)
-        self.assertEqual('', sot.resources_key)
-        self.assertEqual('/clusters',
-                         sot.base_path)
+        self.assertEqual("", sot.resource_key)
+        self.assertEqual("", sot.resources_key)
+        self.assertEqual("/clusters", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -103,10 +94,10 @@ class TestCluster(base.TestCase):
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
-        obj = EXAMPLE_LIST['items'][0]
+        obj = EXAMPLE_LIST["items"][0]
         sot = _cluster.Cluster.existing(**obj)
-        self.assertEqual(obj['metadata']['uid'], sot.id)
-        self.assertEqual(obj['kind'], sot.kind)
+        self.assertEqual(obj["metadata"]["uid"], sot.id)
+        self.assertEqual(obj["kind"], sot.kind)
         # self.assertEqual(obj['spec'], sot.spec)
         # self.assertEqual(obj['status'], sot.status)
 
@@ -124,25 +115,19 @@ class TestCluster(base.TestCase):
         )
 
         self.sess.get.assert_called_once_with(
-            '/clusters',
+            "/clusters",
             params={},
-            headers={
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            headers={"Accept": "application/json", "Content-Type": "application/json"},
         )
 
         expected_list = [
             self.sot_expected,
         ]
 
-        self.assertEqual(
-            set(i.id for i in expected_list),
-            set(i.id for i in result))
+        self.assertEqual(set(i.id for i in expected_list), set(i.id for i in result))
 
     def test_get_status(self):
-        data = EXAMPLE_LIST['items'][0]
+        data = EXAMPLE_LIST["items"][0]
         cluster = _cluster.Cluster(**data)
 
-        self.assertEqual(data['status']['phase'], getattr(cluster,
-                                                          'status.status'))
+        self.assertEqual(data["status"]["phase"], getattr(cluster, "status.status"))

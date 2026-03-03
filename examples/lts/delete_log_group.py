@@ -13,11 +13,12 @@
 """
 Delete log group
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-log_group = conn.lts.delete_group(group='log-group-uuid')
+log_group = conn.lts.delete_group(group="log-group-uuid")

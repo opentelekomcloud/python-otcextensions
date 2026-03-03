@@ -29,7 +29,7 @@ This interface is used to create an Auto-Scaling Configuration instance with
 parameters.
 
 .. literalinclude:: ../examples/auto_scaling/create_config.py
-   :lines: 16-36
+   :lines: 16-33
 
 Get Configuration
 ^^^^^^^^^^^^^^^^^
@@ -95,7 +95,7 @@ Create Group
 This interface is used to create an Auto-Scaling Group with parameters.
 
 .. literalinclude:: ../examples/auto_scaling/create_group.py
-   :lines: 16-37
+   :lines: 16-34
 
 Get Group
 ^^^^^^^^^
@@ -173,7 +173,7 @@ Create Policy
 This interface is used to create an Auto-Scaling Policy with parameters.
 
 .. literalinclude:: ../examples/auto_scaling/create_policy.py
-   :lines: 16-35
+   :lines: 16-33
 
 
 Get Policy
@@ -214,7 +214,7 @@ using policy's id or an instance of class
 attributes.
 
 .. literalinclude:: ../examples/auto_scaling/update_policy.py
-   :lines: 16-39
+   :lines: 16-37
 
 Pause Policy
 ^^^^^^^^^^^^
@@ -274,7 +274,7 @@ This interface is used to run actions on an Auto-Scaling group by adding
 or deleting instance.
 
 .. literalinclude:: ../examples/auto_scaling/batch_instance_action.py
-   :lines: 16-37
+   :lines: 16-32
 
 Auto-Scaling Actions and Quotas
 -------------------------------

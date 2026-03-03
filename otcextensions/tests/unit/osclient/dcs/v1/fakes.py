@@ -14,16 +14,15 @@ import random
 import uuid
 
 import mock
-
 from openstackclient.tests.unit import utils
-from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.dcs.v1 import backup
 from otcextensions.sdk.dcs.v1 import config
 from otcextensions.sdk.dcs.v1 import instance
+from otcextensions.sdk.dcs.v1 import quota
 from otcextensions.sdk.dcs.v1 import restore_record
 from otcextensions.sdk.dcs.v1 import statistic
-from otcextensions.sdk.dcs.v1 import quota
+from otcextensions.tests.unit.osclient import test_base
 
 
 class TestDCS(utils.TestCommand):
@@ -49,44 +48,50 @@ class FakeInstance(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'name': 'group-' + uuid.uuid4().hex,
-            'id': 'id-' + uuid.uuid4().hex,
-            'description': 'SOME description',
-            'status': random.choice(['CREATING', 'CREATEFILED',
-                                     'RUNNING', 'ERROR', 'STARTING',
-                                     'RESTARTING', 'CLOSING', 'CLOSED',
-                                     'EXTENDING']),
-            'engine': uuid.uuid4().hex,
-            'capacity': random.randint(1, 100),
-            'ip': uuid.uuid4().hex,
-            'port': random.randint(1, 65535),
-            'resource_spec_code': random.choice(['dcs.single_node',
-                                                 'dcs.master_standby',
-                                                 'dcs.cluster'
-                                                 ]),
-            'engine_version': uuid.uuid4().hex,
-            'internal_version': uuid.uuid4().hex,
-            'charging_mode': random.randint(0, 10),
-            'vpc_id': uuid.uuid4().hex,
-            'vpc_name': uuid.uuid4().hex,
-            'subnet_id': uuid.uuid4().hex,
-            'subnet_name': uuid.uuid4().hex,
-            'subnet_cidr': uuid.uuid4().hex,
-            'security_group_id': uuid.uuid4().hex,
-            'security_group_name': uuid.uuid4().hex,
-            'created_at': uuid.uuid4().hex,
-            'error_code': uuid.uuid4().hex,
-            'product_id': random.choice(['OTC_DCS_SINGLE',
-                                         'OTC_DCS_MS',
-                                         'OTC_DCS_CL']),
-            'available_zones': uuid.uuid4().hex,
-            'max_memory': random.randint(0, 10),
-            'used_memory': random.randint(0, 10),
-            'user_id': uuid.uuid4().hex,
-            'user_name': uuid.uuid4().hex,
-            'order_id': uuid.uuid4().hex,
-            'maintain_begin': uuid.uuid4().hex,
-            'maintain_end': uuid.uuid4().hex,
+            "name": "group-" + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "description": "SOME description",
+            "status": random.choice(
+                [
+                    "CREATING",
+                    "CREATEFILED",
+                    "RUNNING",
+                    "ERROR",
+                    "STARTING",
+                    "RESTARTING",
+                    "CLOSING",
+                    "CLOSED",
+                    "EXTENDING",
+                ]
+            ),
+            "engine": uuid.uuid4().hex,
+            "capacity": random.randint(1, 100),
+            "ip": uuid.uuid4().hex,
+            "port": random.randint(1, 65535),
+            "resource_spec_code": random.choice(
+                ["dcs.single_node", "dcs.master_standby", "dcs.cluster"]
+            ),
+            "engine_version": uuid.uuid4().hex,
+            "internal_version": uuid.uuid4().hex,
+            "charging_mode": random.randint(0, 10),
+            "vpc_id": uuid.uuid4().hex,
+            "vpc_name": uuid.uuid4().hex,
+            "subnet_id": uuid.uuid4().hex,
+            "subnet_name": uuid.uuid4().hex,
+            "subnet_cidr": uuid.uuid4().hex,
+            "security_group_id": uuid.uuid4().hex,
+            "security_group_name": uuid.uuid4().hex,
+            "created_at": uuid.uuid4().hex,
+            "error_code": uuid.uuid4().hex,
+            "product_id": random.choice(["OTC_DCS_SINGLE", "OTC_DCS_MS", "OTC_DCS_CL"]),
+            "available_zones": uuid.uuid4().hex,
+            "max_memory": random.randint(0, 10),
+            "used_memory": random.randint(0, 10),
+            "user_id": uuid.uuid4().hex,
+            "user_name": uuid.uuid4().hex,
+            "order_id": uuid.uuid4().hex,
+            "maintain_begin": uuid.uuid4().hex,
+            "maintain_end": uuid.uuid4().hex,
         }
         obj = instance.Instance.existing(**object_info)
         return obj
@@ -98,15 +103,14 @@ class FakeStatistic(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'instance_id': 'instance_id-' + uuid.uuid4().hex,
-            'max_memory': random.randint(1, 65535),
-            'used_memory': random.randint(1, 65535),
-            'cmd_get_count': random.randint(1, 65535),
-            'cmd_set_count': random.randint(1, 65535),
-            'used_cpu': 'cpu-' + uuid.uuid4().hex,
-            'input_kbps': 'input-' + uuid.uuid4().hex,
-            'output_kbps': 'output-' + uuid.uuid4().hex,
-
+            "instance_id": "instance_id-" + uuid.uuid4().hex,
+            "max_memory": random.randint(1, 65535),
+            "used_memory": random.randint(1, 65535),
+            "cmd_get_count": random.randint(1, 65535),
+            "cmd_set_count": random.randint(1, 65535),
+            "used_cpu": "cpu-" + uuid.uuid4().hex,
+            "input_kbps": "input-" + uuid.uuid4().hex,
+            "output_kbps": "output-" + uuid.uuid4().hex,
         }
         obj = statistic.Statistic.existing(**object_info)
         return obj
@@ -118,19 +122,18 @@ class FakeBackup(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'instance_id': 'instance_id-' + uuid.uuid4().hex,
-            'id': 'id-' + uuid.uuid4().hex,
-            'size': random.randint(1, 65535),
-            'period': uuid.uuid4().hex,
-            'description': uuid.uuid4().hex,
-            'progress': uuid.uuid4().hex,
-            'created_at': uuid.uuid4().hex,
-            'updated_at': uuid.uuid4().hex,
-            'type': uuid.uuid4().hex,
-            'name': uuid.uuid4().hex,
-            'error_code': uuid.uuid4().hex,
-            'is_restorable': True,
-
+            "instance_id": "instance_id-" + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "size": random.randint(1, 65535),
+            "period": uuid.uuid4().hex,
+            "description": uuid.uuid4().hex,
+            "progress": uuid.uuid4().hex,
+            "created_at": uuid.uuid4().hex,
+            "updated_at": uuid.uuid4().hex,
+            "type": uuid.uuid4().hex,
+            "name": uuid.uuid4().hex,
+            "error_code": uuid.uuid4().hex,
+            "is_restorable": True,
         }
         obj = backup.Backup.existing(**object_info)
         return obj
@@ -142,14 +145,14 @@ class FakeRestoreRecord(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'instance_id': 'instance_id-' + uuid.uuid4().hex,
-            'max_memory': random.randint(1, 65535),
-            'used_memory': random.randint(1, 65535),
-            'cmd_get_count': random.randint(1, 65535),
-            'cmd_set_count': random.randint(1, 65535),
-            'used_cpu': 'cpu-' + uuid.uuid4().hex,
-            'input_kbps': 'input-' + uuid.uuid4().hex,
-            'output_kbps': 'output-' + uuid.uuid4().hex
+            "instance_id": "instance_id-" + uuid.uuid4().hex,
+            "max_memory": random.randint(1, 65535),
+            "used_memory": random.randint(1, 65535),
+            "cmd_get_count": random.randint(1, 65535),
+            "cmd_set_count": random.randint(1, 65535),
+            "used_cpu": "cpu-" + uuid.uuid4().hex,
+            "input_kbps": "input-" + uuid.uuid4().hex,
+            "output_kbps": "output-" + uuid.uuid4().hex,
         }
         obj = restore_record.RestoreRecord.existing(**object_info)
         return obj
@@ -161,14 +164,14 @@ class FakeConfig(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'instance_id': 'instance_id-' + uuid.uuid4().hex,
-            'id': uuid.uuid4().hex,
-            'name': uuid.uuid4().hex,
-            'value': uuid.uuid4().hex,
-            'value_type': uuid.uuid4().hex,
-            'value_range': uuid.uuid4().hex,
-            'default_value': uuid.uuid4().hex,
-            'description': uuid.uuid4().hex
+            "instance_id": "instance_id-" + uuid.uuid4().hex,
+            "id": uuid.uuid4().hex,
+            "name": uuid.uuid4().hex,
+            "value": uuid.uuid4().hex,
+            "value_type": uuid.uuid4().hex,
+            "value_range": uuid.uuid4().hex,
+            "default_value": uuid.uuid4().hex,
+            "description": uuid.uuid4().hex,
         }
         obj = config.Config.existing(**object_info)
         return obj
@@ -180,18 +183,18 @@ class FakeQuota(test_base.Fake):
     @classmethod
     def generate(cls):
 
-        qtype = random.choice(['instances', 'ram'])
+        qtype = random.choice(["instances", "ram"])
 
         def _generate_unit_by_type(qtype):
-            return 'null' if qtype == 'instances' else 'GB'
+            return "null" if qtype == "instances" else "GB"
 
         object_info = {
-            'quota': random.randint(1, 65535),
-            'used': random.randint(1, 65535),
-            'type': qtype,
-            'unit': _generate_unit_by_type(qtype),
-            'max': random.randint(1, 65535),
-            'min': random.randint(1, 10)
+            "quota": random.randint(1, 65535),
+            "used": random.randint(1, 65535),
+            "type": qtype,
+            "unit": _generate_unit_by_type(qtype),
+            "max": random.randint(1, 65535),
+            "min": random.randint(1, 10),
         }
         obj = quota.Quota.existing(**object_info)
         return obj

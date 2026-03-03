@@ -11,20 +11,16 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.tms.v1 import predefined_tag
 
-EXAMPLE = {
-    'tags': [{'key': 'env1', 'value': 'env2'}],
-    'action': 'create'
-}
+EXAMPLE = {"tags": [{"key": "env1", "value": "env2"}], "action": "create"}
 
 
 class TestPredefinedTag(base.TestCase):
 
     def test_basic(self):
         sot = predefined_tag.PredefinedTag()
-        path = '/predefine_tags'
+        path = "/predefine_tags"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -33,5 +29,5 @@ class TestPredefinedTag(base.TestCase):
 
     def test_make_it(self):
         sot = predefined_tag.PredefinedTag(**EXAMPLE)
-        self.assertEqual(EXAMPLE['tags'], sot.tags)
-        self.assertEqual(EXAMPLE['action'], sot.action)
+        self.assertEqual(EXAMPLE["tags"], sot.tags)
+        self.assertEqual(EXAMPLE["action"], sot.action)

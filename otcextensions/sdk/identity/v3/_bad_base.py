@@ -11,18 +11,18 @@
 # under the License.
 from urllib.parse import urlparse
 
-from openstack import resource
 from openstack.utils import urljoin
+
+from openstack import resource
 
 
 class BadBaseResource(resource.Resource):
-    """A base class for all terribly exposed non Keystone native extensions
-    """
+    """A base class for all terribly exposed non Keystone native extensions"""
 
     def __init__(self, _synchronized=False, connection=None, **attrs):
         super(BadBaseResource, self).__init__(
-            _synchronized=_synchronized,
-            connection=connection, **attrs)
+            _synchronized=_synchronized, connection=connection, **attrs
+        )
         if connection:
             # Hopefully we land here when creating/fetching resource. If this
             # is the case - try to modify base_url of the resource to be
@@ -32,8 +32,5 @@ class BadBaseResource(resource.Resource):
             # base_path from proxy layer
             identity_url = connection.identity.get_endpoint_data().url
             parsed_domain = urlparse(identity_url)
-            self.__base = '%s://%s' % (
-                parsed_domain.scheme, parsed_domain.netloc)
-            self.base_path = urljoin(
-                self.__base,
-                self.base_path)
+            self.__base = "%s://%s" % (parsed_domain.scheme, parsed_domain.netloc)
+            self.base_path = urljoin(self.__base, self.base_path)

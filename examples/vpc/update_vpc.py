@@ -11,19 +11,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Update VPC information
+Update VPC information
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "name": "test_vpc",
-    "cidr": "192.168.0.0/24"
-}
-vpc_id = 'vpc_id'
+attrs = {"name": "test_vpc", "cidr": "192.168.0.0/24"}
+vpc_id = "vpc_id"
 
 vpc = conn.vpc.update_vpc(vpc_id, **attrs)
 print(vpc)

@@ -13,6 +13,6 @@ from openstack import resource
 
 
 class Certificate(resource.Resource):
-    base_path = '/apigw/certificates'
+    base_path = "/apigw/certificates"
 
     allow_delete = True

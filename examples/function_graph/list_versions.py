@@ -13,12 +13,13 @@
 """
 Get all versions
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-for v in conn.functiongraph.versions(func_urn='urn'):
+for v in conn.functiongraph.versions(func_urn="urn"):
     print(v)

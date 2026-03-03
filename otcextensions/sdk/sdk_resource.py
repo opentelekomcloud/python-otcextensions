@@ -12,11 +12,10 @@
 from openstack import _log
 from openstack import exceptions
 from openstack import resource
-
 from otcextensions.common import exc
 from otcextensions.common import utils
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class Resource(resource.Resource):
@@ -30,11 +29,13 @@ class Resource(resource.Resource):
     allow_delete = False
 
     @classmethod
-    def _prepare_override_args(cls,
-                               endpoint_override=None,
-                               request_headers=None,
-                               additional_headers=None,
-                               requests_auth=None):
+    def _prepare_override_args(
+        cls,
+        endpoint_override=None,
+        request_headers=None,
+        additional_headers=None,
+        requests_auth=None,
+    ):
         """Prepare additional (override) arguments for the REST call
 
         :param endpoint_override: optional endpoint_override argument
@@ -48,29 +49,29 @@ class Resource(resource.Resource):
         if cls.service_expectes_json_type:
             # Some services are stupid and expect
             # 'Content-Type': 'application/json' even for empty requests
-            req_args['headers'] = {'Content-Type': 'application/json'}
+            req_args["headers"] = {"Content-Type": "application/json"}
 
         if additional_headers and request_headers:
-            req_args['headers'] = utils.merge_two_dicts(
-                additional_headers,
-                request_headers)
+            req_args["headers"] = utils.merge_two_dicts(
+                additional_headers, request_headers
+            )
         else:
             if additional_headers:
-                req_args['headers'] = additional_headers
+                req_args["headers"] = additional_headers
             if request_headers:
-                req_args['headers'] = request_headers
+                req_args["headers"] = request_headers
 
         if endpoint_override:
-            req_args['endpoint_override'] = endpoint_override
+            req_args["endpoint_override"] = endpoint_override
 
         if requests_auth:
-            req_args['requests_auth'] = requests_auth
+            req_args["requests_auth"] = requests_auth
 
         return req_args
 
     def _translate_response(
-            self, response, has_body=None, error_message=None,
-            resource_response_key=None):
+        self, response, has_body=None, error_message=None, resource_response_key=None
+    ):
         """Given a KSA response, inflate this instance with its data
 
         'DELETE' operations don't return a body, so only try to work
@@ -85,7 +86,7 @@ class Resource(resource.Resource):
         if has_body:
             if response.status_code == 204:
                 # Some bad APIs (i.e. DCS.Backup.List) return emptiness
-                _logger.warn('API returned no content, while it was expected')
+                _logger.warn("API returned no content, while it was expected")
                 return
             body = response.json()
             if self.resource_key and self.resource_key in body:
@@ -99,8 +100,14 @@ class Resource(resource.Resource):
         self._header.attributes.update(headers)
         self._header.clean()
 
-    def create(self, session, prepend_key=True,
-               endpoint_override=None, headers=None, requests_auth=None):
+    def create(
+        self,
+        session,
+        prepend_key=True,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+    ):
         """Create a remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -118,36 +125,42 @@ class Resource(resource.Resource):
 
         session = self._get_session(session)
 
-        if self.create_method == 'PUT':
-            request = self._prepare_request(requires_id=True,
-                                            prepend_key=prepend_key)
+        if self.create_method == "PUT":
+            request = self._prepare_request(requires_id=True, prepend_key=prepend_key)
             req_args = self._prepare_override_args(
                 endpoint_override=endpoint_override,
                 request_headers=request.headers,
                 additional_headers=headers,
-                requests_auth=requests_auth)
-            response = session.put(request.url,
-                                   json=request.body, **req_args)
-        elif self.create_method == 'POST':
-            request = self._prepare_request(requires_id=False,
-                                            prepend_key=prepend_key)
+                requests_auth=requests_auth,
+            )
+            response = session.put(request.url, json=request.body, **req_args)
+        elif self.create_method == "POST":
+            request = self._prepare_request(requires_id=False, prepend_key=prepend_key)
             req_args = self._prepare_override_args(
                 endpoint_override=endpoint_override,
                 request_headers=request.headers,
                 additional_headers=headers,
-                requests_auth=requests_auth)
-            response = session.post(request.url,
-                                    json=request.body, **req_args)
+                requests_auth=requests_auth,
+            )
+            response = session.post(request.url, json=request.body, **req_args)
         else:
             raise exceptions.ResourceFailure(
-                msg="Invalid create method: %s" % self.create_method)
+                msg="Invalid create method: %s" % self.create_method
+            )
 
         self._translate_response(response)
 
         return self
 
-    def get(self, session, error_message=None, requires_id=True,
-            endpoint_override=None, headers=None, requests_auth=None):
+    def get(
+        self,
+        session,
+        error_message=None,
+        requires_id=True,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+    ):
         """Get a remote resource based on this instance.
 
         This function overrides default Resource.get to enable GET headers
@@ -171,19 +184,19 @@ class Resource(resource.Resource):
             endpoint_override=endpoint_override,
             request_headers=request.headers,
             additional_headers=headers,
-            requests_auth=requests_auth)
+            requests_auth=requests_auth,
+        )
 
         response = session.get(request.url, **get_args)
         kwargs = {}
         if error_message:
-            kwargs['error_message'] = error_message
+            kwargs["error_message"] = error_message
 
         self._translate_response(response, **kwargs)
 
         return self
 
-    def head(self, session,
-             endpoint_override=None, headers=None, requests_auth=None):
+    def head(self, session, endpoint_override=None, headers=None, requests_auth=None):
         """Get headers from a remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -204,16 +217,23 @@ class Resource(resource.Resource):
             endpoint_override=endpoint_override,
             request_headers={"Accept": ""},
             additional_headers=headers,
-            requests_auth=requests_auth)
+            requests_auth=requests_auth,
+        )
 
-        response = session.head(request.url,
-                                **args)
+        response = session.head(request.url, **args)
 
         self._translate_response(response, has_body=False)
         return self
 
-    def update(self, session, prepend_key=True, has_body=True,
-               endpoint_override=None, headers=None, requests_auth=None):
+    def update(
+        self,
+        session,
+        prepend_key=True,
+        has_body=True,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+    ):
         """Update the remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -243,27 +263,32 @@ class Resource(resource.Resource):
             endpoint_override=endpoint_override,
             request_headers=request.headers,
             additional_headers=headers,
-            requests_auth=requests_auth)
+            requests_auth=requests_auth,
+        )
 
-        if self.commit_method == 'PATCH':
-            response = session.patch(
-                request.url, json=request.body, **args)
-        elif self.commit_method == 'POST':
-            response = session.post(
-                request.url, json=request.body, **args)
-        elif self.commit_method == 'PUT':
-            response = session.put(
-                request.url, json=request.body, **args)
+        if self.commit_method == "PATCH":
+            response = session.patch(request.url, json=request.body, **args)
+        elif self.commit_method == "POST":
+            response = session.post(request.url, json=request.body, **args)
+        elif self.commit_method == "PUT":
+            response = session.put(request.url, json=request.body, **args)
         else:
             raise exceptions.ResourceFailure(
-                msg="Invalid update method: %s" % self.commit_method)
+                msg="Invalid update method: %s" % self.commit_method
+            )
 
         self._translate_response(response, has_body=has_body)
         return self
 
-    def delete(self, session, error_message=None,
-               endpoint_override=None, headers=None,
-               requests_auth=None, params=None):
+    def delete(
+        self,
+        session,
+        error_message=None,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        params=None,
+    ):
         """Delete the remote resource based on this instance.
 
         This function overrides default Resource.delete to enable headers
@@ -286,23 +311,29 @@ class Resource(resource.Resource):
             endpoint_override=endpoint_override,
             request_headers=request.headers,
             additional_headers=headers,
-            requests_auth=requests_auth)
+            requests_auth=requests_auth,
+        )
         if params:
-            delete_args['params'] = params
+            delete_args["params"] = params
 
-        response = session.delete(request.url,
-                                  **delete_args)
+        response = session.delete(request.url, **delete_args)
         kwargs = {}
         if error_message:
-            kwargs['error_message'] = error_message
+            kwargs["error_message"] = error_message
 
         self._translate_response(response, has_body=False, **kwargs)
         return self
 
     @classmethod
-    def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, requests_auth=None,
-             **params):
+    def list(
+        cls,
+        session,
+        paginated=False,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **params
+    ):
         """Override default list to incorporate endpoint overriding
         and custom headers
 
@@ -347,31 +378,29 @@ class Resource(resource.Resource):
         query_params = cls._query_mapping._transpose(params, cls)
         uri = cls.base_path % params
 
-        limit = query_params.get('limit')
+        limit = query_params.get("limit")
 
         # Build additional arguments to the GET call
         get_args = cls._prepare_override_args(
             endpoint_override=endpoint_override,
             # request_headers=request.headers,
-            additional_headers=headers)
+            additional_headers=headers,
+        )
 
         total_yielded = 0
         while uri:
-            response = session.get(
-                uri,
-                params=query_params.copy(),
-                **get_args
-            )
+            response = session.get(uri, params=query_params.copy(), **get_args)
             exceptions.raise_from_response(response)
-            if response.status_code == 204 or \
-                    (response.status_code == 200 and not response.json()):
+            if response.status_code == 204 or (
+                response.status_code == 200 and not response.json()
+            ):
                 # Some bad APIs (i.e. DCS.Backup.List) return emptiness
                 return
             data = response.json()
 
             # Discard any existing pagination keys
-            query_params.pop('marker', None)
-            query_params.pop('limit', None)
+            query_params.pop("marker", None)
+            query_params.pop("limit", None)
 
             if cls.resources_key:
                 resources = data[cls.resources_key]
@@ -401,7 +430,8 @@ class Resource(resource.Resource):
 
             if resources and paginated:
                 uri, next_params = cls._get_next_link(
-                    uri, response, data, marker, limit, total_yielded)
+                    uri, response, data, marker, limit, total_yielded
+                )
                 query_params.update(next_params)
             else:
                 return
@@ -410,7 +440,7 @@ class Resource(resource.Resource):
     def find_value_by_accessor(input_dict, accessor):
         """Gets value from a dictionary using a dotted accessor"""
         current_data = input_dict
-        for chunk in accessor.split('.'):
+        for chunk in accessor.split("."):
             if isinstance(current_data, dict):
                 current_data = current_data.get(chunk, {})
             else:
@@ -418,8 +448,9 @@ class Resource(resource.Resource):
         return current_data
 
     @classmethod
-    def list_ext(cls, session, paginated=False,
-                 endpoint_override=None, headers=None, **params):
+    def list_ext(
+        cls, session, paginated=False, endpoint_override=None, headers=None, **params
+    ):
         """Override default list to incorporate endpoint overriding
         and custom headers
 
@@ -460,43 +491,40 @@ class Resource(resource.Resource):
         session = cls._get_session(session)
 
         # pop scaling_group_id, as it should not be also present in the query
-        scaling_group_id = params.pop('scaling_group_id', None)
+        scaling_group_id = params.pop("scaling_group_id", None)
         uri_params = {}
 
         if scaling_group_id:
-            uri_params = {'scaling_group_id': scaling_group_id}
+            uri_params = {"scaling_group_id": scaling_group_id}
 
-        print('got params %s' % params)
+        print("got params %s" % params)
 
         cls._query_mapping._validate(params, base_path=cls.base_path)
         query_params = cls._query_mapping._transpose(params, cls)
         uri = None
-        if not hasattr(cls, 'list_path'):
+        if not hasattr(cls, "list_path"):
             uri = cls.base_path % uri_params
         else:
             uri = cls.list_path % uri_params
 
-        limit = query_params.get('limit')
+        limit = query_params.get("limit")
 
         # Build additional arguments to the GET call
         get_args = cls._prepare_override_args(
             endpoint_override=endpoint_override,
             # request_headers=request.headers,
-            additional_headers=headers)
+            additional_headers=headers,
+        )
 
         total_yielded = 0
         while uri:
-            response = session.get(
-                uri,
-                params=query_params.copy(),
-                **get_args
-            )
+            response = session.get(uri, params=query_params.copy(), **get_args)
             exceptions.raise_from_response(response)
             data = response.json()
 
             # Discard any existing pagination keys
-            query_params.pop('marker', None)
-            query_params.pop('limit', None)
+            query_params.pop("marker", None)
+            query_params.pop("limit", None)
 
             if cls.resources_key:
                 resources = cls.find_value_by_accessor(data, cls.resources_key)
@@ -526,14 +554,22 @@ class Resource(resource.Resource):
 
             if resources and paginated:
                 uri, next_params = cls._get_next_link(
-                    uri, response, data, marker, limit, total_yielded)
+                    uri, response, data, marker, limit, total_yielded
+                )
                 query_params.update(next_params)
             else:
                 return
 
     @classmethod
-    def find(cls, session, name_or_id, ignore_missing=True,
-             endpoint_override=None, headers=None, **params):
+    def find(
+        cls,
+        session,
+        name_or_id,
+        ignore_missing=True,
+        endpoint_override=None,
+        headers=None,
+        **params
+    ):
         """Find a resource by its name or id.
 
         :param session: The session to use for making this request.
@@ -559,21 +595,20 @@ class Resource(resource.Resource):
         """
         # Try to short-circuit by looking directly for a matching ID.
         try:
-            match = cls.existing(
-                id=name_or_id,
-                **params)
+            match = cls.existing(id=name_or_id, **params)
             return match.get(
-                session,
-                endpoint_override=endpoint_override,
-                headers=headers)
-        except (exceptions.NotFoundException, exceptions.HttpException,
-                exceptions.MethodNotSupported):
+                session, endpoint_override=endpoint_override, headers=headers
+            )
+        except (
+            exceptions.NotFoundException,
+            exceptions.HttpException,
+            exceptions.MethodNotSupported,
+        ):
             pass
 
-        data = cls.list(session,
-                        endpoint_override=endpoint_override,
-                        headers=headers,
-                        **params)
+        data = cls.list(
+            session, endpoint_override=endpoint_override, headers=headers, **params
+        )
 
         result = cls._get_one_match(name_or_id, data)
         # Update result with URL parameters
@@ -584,10 +619,17 @@ class Resource(resource.Resource):
         if ignore_missing:
             return None
         raise exceptions.ResourceNotFound(
-            "No %s found for %s" % (cls.__name__, name_or_id))
+            "No %s found for %s" % (cls.__name__, name_or_id)
+        )
 
-    def update_no_id(self, session, prepend_key=True, has_body=True,
-                     endpoint_override=None, headers=None):
+    def update_no_id(
+        self,
+        session,
+        prepend_key=True,
+        has_body=True,
+        endpoint_override=None,
+        headers=None,
+    ):
         """Update the remote resource based on this instance.
 
         Method is required for resources without ID
@@ -610,28 +652,25 @@ class Resource(resource.Resource):
         if not self.allow_update:
             raise exceptions.MethodNotSupported(self, "update")
 
-        request = self._prepare_request(
-            requires_id=False,
-            prepend_key=prepend_key)
+        request = self._prepare_request(requires_id=False, prepend_key=prepend_key)
         session = self._get_session(session)
 
         update_args = self._prepare_override_args(
             endpoint_override=endpoint_override,
             request_headers=request.headers,
-            additional_headers=headers)
+            additional_headers=headers,
+        )
 
-        if self.commit_method == 'PATCH':
-            response = session.patch(
-                request.url, json=request.body, **update_args)
-        elif self.commit_method == 'POST':
-            response = session.post(
-                request.url, json=request.body, **update_args)
-        elif self.commit_method == 'PUT':
-            response = session.put(
-                request.url, json=request.body, **update_args)
+        if self.commit_method == "PATCH":
+            response = session.patch(request.url, json=request.body, **update_args)
+        elif self.commit_method == "POST":
+            response = session.post(request.url, json=request.body, **update_args)
+        elif self.commit_method == "PUT":
+            response = session.put(request.url, json=request.body, **update_args)
         else:
             raise exceptions.ResourceFailure(
-                msg="Invalid update method: %s" % self.commit_method)
+                msg="Invalid update method: %s" % self.commit_method
+            )
 
         self._translate_response(response, has_body=has_body)
         return self

@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.ecs.v1 import _proxy
 
 
 class EcsService(service_description.ServiceDescription):
     """The ECS service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {"1": _proxy.Proxy}

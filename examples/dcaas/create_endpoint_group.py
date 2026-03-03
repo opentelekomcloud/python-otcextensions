@@ -11,13 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Create Direct Connect Endpoint Group.
+Create Direct Connect Endpoint Group.
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
@@ -25,7 +26,7 @@ attrs = {
     "description": "test description",
     "endpoints": ["10.2.0.0/24", "10.3.0.0/24"],
     "tenant_id": "tenant_uuid",
-    "type": "cidr"
+    "type": "cidr",
 }
 
 c = conn.dcaas.create_endpoint_group(**attrs)

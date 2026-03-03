@@ -15,9 +15,10 @@ from openstack import utils
 
 class FailedTask(resource.Resource):
     """SDRS Failed task Resource"""
-    resource_key = ''
-    resources_key = 'failure_jobs'
-    base_path = '/task-center/failure-jobs'
+
+    resource_key = ""
+    resources_key = "failure_jobs"
+    base_path = "/task-center/failure-jobs"
 
     # capabilities
     allow_create = False
@@ -26,32 +27,38 @@ class FailedTask(resource.Resource):
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
-        'failure_status', 'limit', 'marker', 'offset',
-        'resource_name', 'resource_type', 'server_group_id')
+        "failure_status",
+        "limit",
+        "marker",
+        "offset",
+        "resource_name",
+        "resource_type",
+        "server_group_id",
+    )
 
     #: Properties
     #: Task operation time
-    begin_time = resource.Body('begin_time')
+    begin_time = resource.Body("begin_time")
     #: Failed task error code
-    error_code = resource.Body('error_code')
+    error_code = resource.Body("error_code")
     #: Failed task cause
-    fail_reason = resource.Body('fail_reason')
+    fail_reason = resource.Body("fail_reason")
     #: Failed task status
-    failure_status = resource.Body('failure_status')
+    failure_status = resource.Body("failure_status")
     #: Task ID
-    job_id = resource.Body('job_id')
+    job_id = resource.Body("job_id")
     #: Task name
-    job_type = resource.Body('job_type')
+    job_type = resource.Body("job_type")
     #: Task status
     #: Only 'fail' status available in current
     #: version
-    job_status = resource.Body('job_status')
+    job_status = resource.Body("job_status")
     #: Resource ID
-    resource_id = resource.Body('resource_id')
+    resource_id = resource.Body("resource_id")
     #: Resource name
-    resource_name = resource.Body('resource_name')
+    resource_name = resource.Body("resource_name")
     #: Resource type
-    resource_type = resource.Body('resource_type')
+    resource_type = resource.Body("resource_type")
 
     @classmethod
     def delete_all_tasks(cls, session, endpoint):
@@ -61,13 +68,11 @@ class FailedTask(resource.Resource):
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param endpoint: SDRS service endpoint
         """
-        url = utils.urljoin(endpoint, cls.base_path,
-                            '/batch')
+        url = utils.urljoin(endpoint, cls.base_path, "/batch")
         return session.delete(url)
 
     @classmethod
-    def delete_protection_tasks(cls, session,
-                                endpoint, protection_group):
+    def delete_protection_tasks(cls, session, endpoint, protection_group):
         """Method to delete all tasks of a signle protection group
 
         :param session: The session to use for making this request.
@@ -75,6 +80,7 @@ class FailedTask(resource.Resource):
         :param endpoint: SDRS service endpoint
         :param protection_group: Protection group ID
         """
-        url = utils.urljoin(endpoint, '/task-center', protection_group,
-                            '/failure-jobs/batch')
+        url = utils.urljoin(
+            endpoint, "/task-center", protection_group, "/failure-jobs/batch"
+        )
         return session.delete(url)

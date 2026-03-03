@@ -13,10 +13,10 @@
 """
 Cancel Authorization
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.delete_auth_from_api(gateway='id',
-                               auth_id='id')
+conn.apig.delete_auth_from_api(gateway="id", auth_id="id")

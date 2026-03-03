@@ -13,6 +13,7 @@
 import logging
 
 from osc_lib import utils
+
 from otcextensions import sdk
 from otcextensions.i18n import _
 
@@ -49,8 +50,7 @@ def build_option_parser(parser):
         metavar="<modelartsv2-api-version>",
         default=utils.env("OS_MODELARTSV2_API_VERSION"),
         help=_(
-            "MODELARTSV2 API version, default=%s "
-            "(Env: OS_MODELARTSV2_API_VERSION)"
+            "MODELARTSV2 API version, default=%s " "(Env: OS_MODELARTSV2_API_VERSION)"
         )
         % DEFAULT_API_VERSION,
     )

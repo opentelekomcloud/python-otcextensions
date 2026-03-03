@@ -11,22 +11,18 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dns.v2 import floating_ip as fip
 
-
-IDENTIFIER = 'RegionOne:id'
+IDENTIFIER = "RegionOne:id"
 EXAMPLE = {
-    'status': 'PENDING',
-    'ptrdname': 'smtp.example.com.',
-    'description': 'This is a floating ip for 127.0.0.1',
-    'links': {
-        'self': 'dummylink/reverse/floatingips/RegionOne:id'
-    },
-    'ttl': 600,
-    'address': '172.24.4.10',
-    'action': 'CREATE',
-    'id': IDENTIFIER
+    "status": "PENDING",
+    "ptrdname": "smtp.example.com.",
+    "description": "This is a floating ip for 127.0.0.1",
+    "links": {"self": "dummylink/reverse/floatingips/RegionOne:id"},
+    "ttl": 600,
+    "address": "172.24.4.10",
+    "action": "CREATE",
+    "id": IDENTIFIER,
 }
 
 
@@ -34,22 +30,22 @@ class TestFloatingIP(base.TestCase):
 
     def test_basic(self):
         sot = fip.FloatingIP()
-        self.assertEqual('floatingips', sot.resources_key)
-        self.assertEqual('/reverse/floatingips', sot.base_path)
+        self.assertEqual("floatingips", sot.resources_key)
+        self.assertEqual("/reverse/floatingips", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_commit)
         self.assertFalse(sot.allow_delete)
 
-        self.assertEqual('PATCH', sot.commit_method)
+        self.assertEqual("PATCH", sot.commit_method)
 
     def test_make_it(self):
         sot = fip.FloatingIP(**EXAMPLE)
         self.assertEqual(IDENTIFIER, sot.id)
-        self.assertEqual(EXAMPLE['ptrdname'], sot.ptrdname)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['ttl'], sot.ttl)
-        self.assertEqual(EXAMPLE['address'], sot.address)
-        self.assertEqual(EXAMPLE['action'], sot.action)
-        self.assertEqual(EXAMPLE['status'], sot.status)
+        self.assertEqual(EXAMPLE["ptrdname"], sot.ptrdname)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["ttl"], sot.ttl)
+        self.assertEqual(EXAMPLE["address"], sot.address)
+        self.assertEqual(EXAMPLE["action"], sot.action)
+        self.assertEqual(EXAMPLE["status"], sot.status)

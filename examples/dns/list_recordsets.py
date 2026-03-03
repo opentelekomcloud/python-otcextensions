@@ -13,11 +13,12 @@
 """
 List all Recordsets of a DNS Zone
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-zone = 'zone_id'
+zone = "zone_id"
 for recordset in conn.dns.recordsets(zone=zone):
     print(recordset)

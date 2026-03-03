@@ -28,6 +28,6 @@ def list_policy_types(conn):
 def get_policy_type(conn):
     print("Get Policy Type:")
 
-    pt = conn.clustering.get_policy_type('senlin.policy.deletion-1.0')
+    pt = conn.clustering.get_policy_type("senlin.policy.deletion-1.0")
 
     print(pt.to_dict())

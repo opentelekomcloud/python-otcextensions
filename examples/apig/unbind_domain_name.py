@@ -13,10 +13,11 @@
 """
 Unbind Domain name from group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 conn.apig.conn.apig.unbind_domain_name(
     gateway="gateway_id",

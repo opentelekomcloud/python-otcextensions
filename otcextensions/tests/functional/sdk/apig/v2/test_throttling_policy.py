@@ -28,35 +28,33 @@ class TestThrottlingPolicy(TestApiG):
             "ip_call_limits": 60,
             "name": "throttle_demo",
             "remark": "Total: 800 calls/second;"
-                      " user: 500 calls/second;"
-                      " app: 300 calls/second;"
-                      " IP address: 600 calls/second",
+            " user: 500 calls/second;"
+            " app: 300 calls/second;"
+            " IP address: 600 calls/second",
             "time_interval": 1,
             "time_unit": "SECOND",
             "type": 1,
-            "user_call_limits": 60
+            "user_call_limits": 60,
         }
         self.policy = self.client.create_throttling_policy(
-            gateway=self.gateway_id,
-            **self.attrs
+            gateway=self.gateway_id, **self.attrs
         )
 
         self.addCleanup(
             self.client.delete_throttling_policy,
             gateway=self.gateway_id,
-            policy=self.policy
+            policy=self.policy,
         )
         self.addCleanup(self.delete_gateway())
 
     def test_list_throttling_policies(self):
-        pol = list(self.client.throttling_policies(
-            gateway=self.gateway_id))
+        pol = list(self.client.throttling_policies(gateway=self.gateway_id))
         self.assertEqual(len(pol), 1)
 
     def test_get_throttling_policy(self):
         pol = self.client.get_throttling_policy(
-            gateway=self.gateway_id,
-            policy=self.policy.id)
+            gateway=self.gateway_id, policy=self.policy.id
+        )
         self.assertEqual(pol.id, self.policy.id)
 
     def test_update_throttling_policy(self):
@@ -66,13 +64,11 @@ class TestThrottlingPolicy(TestApiG):
             "api_call_limits": 100,
             "time_interval": 1,
             "remark": "Total: 800 calls/second;"
-                      " user: 500 calls/second;"
-                      " app: 300 calls/second;"
-                      " IP address: 600 calls/second",
+            " user: 500 calls/second;"
+            " app: 300 calls/second;"
+            " IP address: 600 calls/second",
         }
         updated = self.client.update_throttling_policy(
-            gateway=self.gateway_id,
-            policy=self.policy.id,
-            **attrs
+            gateway=self.gateway_id, policy=self.policy.id, **attrs
         )
         self.assertEqual(updated.remark, attrs["remark"])

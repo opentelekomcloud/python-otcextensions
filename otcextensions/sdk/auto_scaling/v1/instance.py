@@ -12,54 +12,55 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
 from otcextensions.i18n import _
 from otcextensions.sdk.auto_scaling.v1 import _base
 
 
 class Instance(_base.Resource):
-    ACTION_TYPES = ['ADD', 'REMOVE', 'PROTECT', 'UNPROTECT']
+    ACTION_TYPES = ["ADD", "REMOVE", "PROTECT", "UNPROTECT"]
 
-    resource_key = 'scaling_group_instance'
-    resources_key = 'scaling_group_instances'
+    resource_key = "scaling_group_instance"
+    resources_key = "scaling_group_instances"
     # ok, we just fix the base path to list because there are no common rules
     # for the operations for instance
-    base_path = '/scaling_group_instance'
-    query_marker_key = 'start_number'
+    base_path = "/scaling_group_instance"
+    query_marker_key = "start_number"
 
     # capabilities
     allow_list = True
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'name',
-        'health_status', 'limit',
-        scaling_group_id='group_id',
-        lifecycle_status='life_cycle_state',
-        marker=query_marker_key
+        "id",
+        "name",
+        "health_status",
+        "limit",
+        scaling_group_id="group_id",
+        lifecycle_status="life_cycle_state",
+        marker=query_marker_key,
     )
 
     #: Properties
     #: AutoScaling instance id
-    id = resource.Body('instance_id', alternate_id=True)
+    id = resource.Body("instance_id", alternate_id=True)
     #: AutoScaling instance name
-    name = resource.Body('instance_name')
+    name = resource.Body("instance_name")
     #: Id of AutoScaling group the instance belongs to
-    scaling_group_id = resource.URI('scaling_group_id')
+    scaling_group_id = resource.URI("scaling_group_id")
     #: Name of AutoScaling group the instance belongs to
-    scaling_group_name = resource.Body('scaling_group_name')
+    scaling_group_name = resource.Body("scaling_group_name")
     #: Id of AutoScaling config the instance create with
-    scaling_configuration_id = resource.Body('scaling_configuration_id')
+    scaling_configuration_id = resource.Body("scaling_configuration_id")
     #: Name of AutoScaling config the instance create with
-    scaling_configuration_name = resource.Body('scaling_configuration_name')
+    scaling_configuration_name = resource.Body("scaling_configuration_name")
     #: AutoScaling instance lifecycle state, valid values include:
     #: ``INSERVICE``, ``PENDING``, ``REMOVING``
-    lifecycle_state = resource.Body('life_cycle_state')
+    lifecycle_state = resource.Body("life_cycle_state")
     #: AutoScaling instance health state, valid values include:
     #: ``INITIALIZING``, ``NORMAL``, ``ERROR``
-    health_status = resource.Body('health_status')
+    health_status = resource.Body("health_status")
     #: AutoScaling instance create time
-    create_time = resource.Body('create_time')
+    create_time = resource.Body("create_time")
 
     @classmethod
     def find(cls, session, name_or_id, ignore_missing=True, **params):
@@ -91,9 +92,9 @@ class Instance(_base.Resource):
                  is found and ignore_missing is ``False``.
         """
         session = cls._get_session(session)
-        group_id = params.pop('group_id', None)
+        group_id = params.pop("group_id", None)
 
-        base_path = '/scaling_group_instance/{id}/list'.format(id=group_id)
+        base_path = "/scaling_group_instance/{id}/list".format(id=group_id)
         data = cls.list(session, base_path=base_path, **params)
         result = cls._get_one_match(name_or_id, data)
         if result is not None:
@@ -102,7 +103,8 @@ class Instance(_base.Resource):
         if ignore_missing:
             return None
         raise exceptions.ResourceNotFound(
-            "No %s found for %s" % (cls.__name__, name_or_id))
+            "No %s found for %s" % (cls.__name__, name_or_id)
+        )
 
     def remove(self, session, delete_instance=False, ignore_missing=True):
         """Remove an instance of auto scaling group
@@ -123,21 +125,19 @@ class Instance(_base.Resource):
             delete a nonexistent config.
 
         :returns: None
-       """
-        uri = utils.urljoin('/scaling_group_instance', self.id)
-        delete_instance = 'yes' if delete_instance else 'no'
-        return session.delete(uri,
-                              params={'instance_delete': delete_instance})
+        """
+        uri = utils.urljoin("/scaling_group_instance", self.id)
+        delete_instance = "yes" if delete_instance else "no"
+        return session.delete(uri, params={"instance_delete": delete_instance})
 
     def _action(self, session, body):
-        """Preform alarm actions given the message body.
-
-        """
-        url = utils.urljoin(self.base_path, self.scaling_group_id, 'action')
+        """Preform alarm actions given the message body."""
+        url = utils.urljoin(self.base_path, self.scaling_group_id, "action")
         return session.post(
             url,
             # endpoint_override=endpoint_override,
-            json=body)
+            json=body,
+        )
 
     def batch_action(self, session, instances, action, delete_instance=False):
         """batch action on auto-scaling instances
@@ -157,19 +157,19 @@ class Instance(_base.Resource):
         """
         act = action.upper()
         if act not in self.ACTION_TYPES:
-            msg = (_('Action type %(action)s is not supported %(types)s') %
-                   {'action': action, 'types': self.ACTION_TYPES})
+            msg = _("Action type %(action)s is not supported %(types)s") % {
+                "action": action,
+                "types": self.ACTION_TYPES,
+            }
             raise exceptions.SDKException(msg)
-        if delete_instance and act != 'REMOVE':
-            msg = (_('Action type %s does not support delete_instance arg') %
-                   (action))
+        if delete_instance and act != "REMOVE":
+            msg = _("Action type %s does not support delete_instance arg") % (action)
             raise exceptions.SDKException(msg)
-        ids = [instance.id if isinstance(instance, Instance) else instance
-               for instance in instances]
-        json_body = {
-            'action': act,
-            'instances_id': ids
-        }
+        ids = [
+            instance.id if isinstance(instance, Instance) else instance
+            for instance in instances
+        ]
+        json_body = {"action": act, "instances_id": ids}
         if delete_instance:
-            json_body['instance_delete'] = 'yes'
+            json_body["instance_delete"] = "yes"
         return self._action(session, json_body)

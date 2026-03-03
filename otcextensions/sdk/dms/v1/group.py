@@ -12,15 +12,14 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
 from otcextensions.sdk.dms.v1 import _base
 
 
 class Group(_base.Resource):
 
     # NOTE: we are not interested in the also returned short queue info
-    resources_key = 'groups'
-    base_path = 'queues/%(queue_id)s/groups'
+    resources_key = "groups"
+    base_path = "queues/%(queue_id)s/groups"
 
     # capabilities
     allow_create = True
@@ -28,44 +27,42 @@ class Group(_base.Resource):
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
-        'include_deadletter', 'page_size', 'current_page'
+        "include_deadletter",
+        "page_size",
+        "current_page",
         # 'include_messages_num'
     )
 
     # Properties
-    queue_id = resource.URI('queue_id')
+    queue_id = resource.URI("queue_id")
 
     #: Consume group Id
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Total message number, not including deleted message
     #: *Type: int*
-    produced_messages = resource.Body('produced_messages', type=int)
+    produced_messages = resource.Body("produced_messages", type=int)
     #: Consumed message number
     #: *Type: int*
-    consumed_messages = resource.Body('consumed_messages', type=int)
+    consumed_messages = resource.Body("consumed_messages", type=int)
     #: Available message number
     #: *Type: int*
-    available_messages = resource.Body('available_messages', type=int)
+    available_messages = resource.Body("available_messages", type=int)
     #: Total deadletters number
     #: *Type: int*
-    produced_deadletters = resource.Body('produced_deadletters', type=int)
+    produced_deadletters = resource.Body("produced_deadletters", type=int)
     #: Available deadletters number
     #: *Type: int*
-    available_deadletters = resource.Body('available_deadletters', type=int)
+    available_deadletters = resource.Body("available_deadletters", type=int)
 
     def create(self, session, *args, **kwargs):
         """create group"""
-        body = {"groups": [{'name': self.name}]}
+        body = {"groups": [{"name": self.name}]}
 
-        request = self._prepare_request(requires_id=False,
-                                        prepend_key=False)
+        request = self._prepare_request(requires_id=False, prepend_key=False)
 
-        response = session.post(
-            request.url,
-            json=body
-        )
+        response = session.post(request.url, json=body)
 
         # Squize groups into single response entity
         resp = response.json()
@@ -78,22 +75,17 @@ class Group(_base.Resource):
 
         return self
 
-    def ack(self, session, queue_obj, ids, status='success'):
-        uri = utils.urljoin(self.base_path, self.id, 'ack')
+    def ack(self, session, queue_obj, ids, status="success"):
+        uri = utils.urljoin(self.base_path, self.id, "ack")
         self.queue_id = queue_obj.id
 
         uri = uri % self._uri.attributes
 
         ack_list = list()
         for msg in ids:
-            ack_list.append(
-                {"handler": msg,
-                 "status": status}
-            )
+            ack_list.append({"handler": msg, "status": status})
 
-        response = session.post(
-            uri, json={'message': ack_list}
-        )
+        response = session.post(uri, json={"message": ack_list})
 
         exceptions.raise_from_response(response)
         return

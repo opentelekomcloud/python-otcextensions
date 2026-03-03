@@ -20,20 +20,17 @@ from otcextensions.sdk.modelartsv1.v1 import job_engine as _job_engine
 from otcextensions.sdk.modelartsv1.v1 import job_flavor as _job_flavor
 from otcextensions.sdk.modelartsv1.v1 import model as _model
 from otcextensions.sdk.modelartsv1.v1 import service as _service
-from otcextensions.sdk.modelartsv1.v1 import \
-    service_cluster as _service_cluster
+from otcextensions.sdk.modelartsv1.v1 import service_cluster as _service_cluster
 from otcextensions.sdk.modelartsv1.v1 import service_event as _service_event
 from otcextensions.sdk.modelartsv1.v1 import service_flavor as _service_flavor
 from otcextensions.sdk.modelartsv1.v1 import service_log as _service_log
-from otcextensions.sdk.modelartsv1.v1 import \
-    service_monitor as _service_monitor
+from otcextensions.sdk.modelartsv1.v1 import service_monitor as _service_monitor
 from otcextensions.sdk.modelartsv1.v1 import training_job as _training_job
-from otcextensions.sdk.modelartsv1.v1 import \
-    training_job_config as _training_job_config
-from otcextensions.sdk.modelartsv1.v1 import \
-    training_job_version as _training_job_version
-from otcextensions.sdk.modelartsv1.v1 import \
-    visualization_job as _visualization_job
+from otcextensions.sdk.modelartsv1.v1 import training_job_config as _training_job_config
+from otcextensions.sdk.modelartsv1.v1 import (
+    training_job_version as _training_job_version,  # noqa: H301
+)
+from otcextensions.sdk.modelartsv1.v1 import visualization_job as _visualization_job
 
 
 class Proxy(proxy.Proxy):
@@ -128,9 +125,7 @@ class Proxy(proxy.Proxy):
             One :class:`~otcextensions.sdk.modelartsv1.v1.model.Model`
             or ``None``.
         """
-        return self._find(
-            _model.Model, name_or_id, ignore_missing=ignore_missing
-        )
+        return self._find(_model.Model, name_or_id, ignore_missing=ignore_missing)
 
     def delete_model(self, model, ignore_missing=False):
         """Delete a model.
@@ -258,9 +253,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(
-            _devenv.Devenv, instance, ignore_missing=ignore_missing
-        )
+        return self._delete(_devenv.Devenv, instance, ignore_missing=ignore_missing)
 
     # Service Management
 
@@ -302,9 +295,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(
-            _service.Service, service, ignore_missing=ignore_missing
-        )
+        return self._delete(_service.Service, service, ignore_missing=ignore_missing)
 
     def get_service(self, service):
         """Get details of a modelarts service.
@@ -330,9 +321,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
         """
-        return self._find(
-            _service.Service, name_or_id, ignore_missing=ignore_missing
-        )
+        return self._find(_service.Service, name_or_id, ignore_missing=ignore_missing)
 
     def update_service(self, service, **attrs):
         """Update a Service Configurations.
@@ -382,9 +371,7 @@ class Proxy(proxy.Proxy):
                 raise exceptions.SDKException(obj.error_msg)
             timeout = timeout - wait
             time.sleep(wait)
-        raise exceptions.SDKException(
-            f"Wait Timed Out. service status is: {status}"
-        )
+        raise exceptions.SDKException(f"Wait Timed Out. service status is: {status}")
 
     def service_logs(self, service, **params):
         """List update logs of a real-time service.
@@ -399,9 +386,7 @@ class Proxy(proxy.Proxy):
             instances
         """
         service = self._get_resource(_service.Service, service)
-        return self._list(
-            _service_log.ServiceLog, service_id=service.id, **params
-        )
+        return self._list(_service_log.ServiceLog, service_id=service.id, **params)
 
     def service_events(self, service, **params):
         """List events logs of a service.
@@ -581,9 +566,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.
             training_job.TrainingJobVersion` instances.
         """
-        training_job = self._get_resource(
-            _training_job.TrainingJob, training_job
-        )
+        training_job = self._get_resource(_training_job.TrainingJob, training_job)
         return self._list(
             _training_job_version.TrainingJobVersion,
             job_id=training_job.id,
@@ -603,9 +586,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.
             training_job.TrainingJobVersion`
         """
-        training_job = self._get_resource(
-            _training_job.TrainingJob, training_job
-        )
+        training_job = self._get_resource(_training_job.TrainingJob, training_job)
         return self._get(
             _training_job_version.TrainingJobVersion,
             version,
@@ -625,18 +606,14 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.modelartsv1.v1.
             training_job.TrainingJobVersion`
         """
-        training_job = self._get_resource(
-            _training_job.TrainingJob, training_job
-        )
+        training_job = self._get_resource(_training_job.TrainingJob, training_job)
         return self._create(
             _training_job_version.TrainingJobVersion,
             job_id=training_job.id,
             **attrs,
         )
 
-    def delete_training_job_version(
-        self, training_job, version, ignore_missing=False
-    ):
+    def delete_training_job_version(self, training_job, version, ignore_missing=False):
         """Delete a training job version.
 
         :param training_job: training job id or an instance of
@@ -652,9 +629,7 @@ class Proxy(proxy.Proxy):
 
         returns: ``None``
         """
-        training_job = self._get_resource(
-            _training_job.TrainingJob, training_job
-        )
+        training_job = self._get_resource(_training_job.TrainingJob, training_job)
         return self._delete(
             _training_job_version.TrainingJobVersion,
             version,
@@ -674,9 +649,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.modelartsv1.v1.
             training_job.TrainingJobVersion`
         """
-        training_job = self._get_resource(
-            _training_job.TrainingJob, training_job
-        )
+        training_job = self._get_resource(_training_job.TrainingJob, training_job)
         training_job_version = self._get_resource(
             _training_job_version.TrainingJobVersion,
             version,
@@ -734,9 +707,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of :class:`~otcextensions.sdk.modelartsv1.v1.
             training_job_config.TrainingJobConfig`.
         """
-        return self._update(
-            _training_job_config.TrainingJobConfig, name, **attrs
-        )
+        return self._update(_training_job_config.TrainingJobConfig, name, **attrs)
 
     def delete_training_job_config(self, name, ignore_missing=False):
         """Delete Training Job Configuration.
@@ -796,9 +767,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.
             visualization_job.VisualizationJob`.
         """
-        return self._get(
-            _visualization_job.VisualizationJob, visualization_job
-        )
+        return self._get(_visualization_job.VisualizationJob, visualization_job)
 
     def update_visualization_job(self, visualization_job, description):
         """Update visualization job description.
@@ -817,9 +786,7 @@ class Proxy(proxy.Proxy):
             job_desc=description,
         )
 
-    def delete_visualization_job(
-        self, visualization_job, ignore_missing=False
-    ):
+    def delete_visualization_job(self, visualization_job, ignore_missing=False):
         """Delete a Visualization Job
 
         :param visualization_job: visualization job id or an instance of

@@ -10,12 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.tests.functional.sdk.apig import TestApiG
 import json
+
+from otcextensions.tests.functional.sdk.apig import TestApiG
 
 
 class TestExportApi(TestApiG):
-    gateway = '560de602c9f74969a05ff01d401a53ed'
+    gateway = "560de602c9f74969a05ff01d401a53ed"
 
     def setUp(self):
         super(TestExportApi, self).setUp()
@@ -24,26 +25,23 @@ class TestExportApi(TestApiG):
         attrs = {
             "env_id": "DEFAULT_ENVIRONMENT_RELEASE_ID",
             "group_id": "ce973ff83ce54ef192c80bde884aa0ac",
-            "define": "all"
+            "define": "all",
         }
         self.client.export_api(
-            gateway=TestExportApi.gateway,
-            full_path='/mnt/c/Users/sand1/api',
-            **attrs
+            gateway=TestExportApi.gateway, full_path="/mnt/c/Users/sand1/api", **attrs
         )
 
     def test_import_api(self):
-        with (open('/mnt/c/Users/sand1/PycharmProjects/python-otcextensions/'
-                   'otcextensions/tests/functional/sdk/apig/v2/test.json',
-                   'r') as f):
+        with open(
+            "/mnt/c/Users/sand1/PycharmProjects/python-otcextensions/"
+            "otcextensions/tests/functional/sdk/apig/v2/test.json",
+            "r",
+        ) as f:
             openapi_content = json.load(f)
         attrs = {
             "is_create_group": False,
             "group_id": "ce973ff83ce54ef192c80bde884aa0ac",
             "file_name": "test.json",
-            "swagger": openapi_content
+            "swagger": openapi_content,
         }
-        self.client.import_api(
-            gateway=TestExportApi.gateway,
-            **attrs
-        )
+        self.client.import_api(gateway=TestExportApi.gateway, **attrs)

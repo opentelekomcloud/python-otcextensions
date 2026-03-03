@@ -13,18 +13,18 @@
 """
 Create a NAT Gateway
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "name": "nat_001",
     "description": "my nat gateway 01",
     "router_id": "d84f345c-80a1-4fa2-a39c-d0d397c3f09a",
     "internal_network_id": "89d66639-aacb-4929-969d-07080b0f9fd9",
-    "spec": "1"
+    "spec": "1",
 }
 
 gateway = conn.nat.create_gateway(**attrs)

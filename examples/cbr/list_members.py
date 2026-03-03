@@ -13,13 +13,14 @@
 """
 List all CBR share members of a CBR backup
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-backup = 'backup_name_or_id'
+backup = "backup_name_or_id"
 backup = conn.cbr.find_backup(name_or_id=backup)
 for member in conn.cbr.members(backup=backup.id):
     print(member)

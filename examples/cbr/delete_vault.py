@@ -13,11 +13,12 @@
 """
 Delete CBR vault
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'name_or_id'
+name_or_id = "name_or_id"
 vault = conn.cbr.find_vault(name_or_id)
 conn.cbr.delete_vault(vault=vault)

@@ -13,16 +13,12 @@
 """
 Update an Excluded Request Throttling Configuration
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "call_limits": 30
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"call_limits": 30}
 updated = conn.apig.update_throttling_excluded_policy(
-    gateway="gateway_id",
-    policy="policy_id",
-    exclude="excluded_id",
-    **attrs
+    gateway="gateway_id", policy="policy_id", exclude="excluded_id", **attrs
 )

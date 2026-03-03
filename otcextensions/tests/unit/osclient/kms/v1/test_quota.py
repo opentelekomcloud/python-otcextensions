@@ -25,16 +25,12 @@ class TestKMSQuota(fakes.TestKMS):
 
 class TestListKMSQuota(TestKMSQuota):
     quotas = fakes.FakeQuota.create_multiple(2)
-    columns = ('quota', 'used', 'type')
+    columns = ("quota", "used", "type")
 
     data = []
 
     for s in quotas:
-        data.append((
-            s.quota,
-            s.used,
-            s.type
-        ))
+        data.append((s.quota, s.used, s.type))
 
     def setUp(self):
         super(TestListKMSQuota, self).setUp()
@@ -42,19 +38,15 @@ class TestListKMSQuota(TestKMSQuota):
         self.client.quotas = mock.Mock()
 
     def test_list_quota(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.quotas.side_effect = [
-            self.quotas
-        ]
+        self.client.quotas.side_effect = [self.quotas]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)

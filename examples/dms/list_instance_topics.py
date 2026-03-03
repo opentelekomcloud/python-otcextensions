@@ -13,12 +13,13 @@
 """
 List all Instance Topics
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-instance = 'name_or_id'
+instance = "name_or_id"
 instance = conn.dms.find_instance(name_or_id=instance)
 
 for raw in conn.dms.topics(instance):

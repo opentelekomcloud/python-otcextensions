@@ -17,8 +17,8 @@ Get details of CSS Cluster by cluster_id or instance of Cluster class
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluster-uuid'
+cluster_id = "cluster-uuid"
 resp = conn.css.get_cluster(cluster_id)
 print(resp)

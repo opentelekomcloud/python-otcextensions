@@ -44,9 +44,8 @@ class Resource(resource.Resource):
         # Try to short-circuit by looking directly for a matching ID.
         try:
             match = cls.existing(
-                id=name_or_id,
-                connection=session._get_connection(),
-                **params)
+                id=name_or_id, connection=session._get_connection(), **params
+            )
             return match.fetch(session, **params)
         except exceptions.SDKException:
             pass
@@ -60,7 +59,8 @@ class Resource(resource.Resource):
         if ignore_missing:
             return None
         raise exceptions.ResourceNotFound(
-            "No %s found for %s" % (cls.__name__, name_or_id))
+            "No %s found for %s" % (cls.__name__, name_or_id)
+        )
 
     @classmethod
     def list_override(cls, session, **params):
@@ -70,11 +70,11 @@ class Resource(resource.Resource):
         session = cls._get_session(session)
 
         base_path = cls.base_path
-        params.pop('paginated', None)
-        params.pop('base_path', None)
+        params.pop("paginated", None)
+        params.pop("base_path", None)
         params = cls._query_mapping._validate(
-            params, base_path=base_path,
-            allow_unknown_params=False)
+            params, base_path=base_path, allow_unknown_params=False
+        )
         query_params = cls._query_mapping._transpose(params, cls)
         uri = base_path % params
         region_id = None
@@ -82,14 +82,14 @@ class Resource(resource.Resource):
         # Copy query_params due to weird mock unittest interactions
         response = session.get(
             uri,
-            endpoint_override=session.endpoint_override.replace(
-                '%(project_id)s', ''),
+            endpoint_override=session.endpoint_override.replace("%(project_id)s", ""),
             headers={"Accept": "application/json"},
-            params=query_params.copy())
+            params=query_params.copy(),
+        )
         exceptions.raise_from_response(response)
         data = response.json()
-        if 'regionId' in data:
-            region_id = data['regionId']
+        if "regionId" in data:
+            region_id = data["regionId"]
 
         if cls.resources_key:
             resources = data[cls.resources_key]
@@ -101,8 +101,6 @@ class Resource(resource.Resource):
 
         for raw_resource in resources:
             if region_id:
-                raw_resource['region_id'] = region_id
-            value = cls.existing(
-                connection=session._get_connection(),
-                **raw_resource)
+                raw_resource["region_id"] = region_id
+            value = cls.existing(connection=session._get_connection(), **raw_resource)
             yield value

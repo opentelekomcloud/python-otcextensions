@@ -13,11 +13,12 @@
 """
 Get single MRS Datasource
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-datasource = 'ds_id'
+datasource = "ds_id"
 datasource = conn.mrs.get_cluster(datasource=datasource)
 print(datasource)

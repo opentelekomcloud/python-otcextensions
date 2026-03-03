@@ -13,12 +13,12 @@
 """
 Update VPC Peering attributes
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 peering = conn.vpc.get_peering("peering_id")
-peering = conn.vpc.update_peering(peering=peering, name='new-name')
+peering = conn.vpc.update_peering(peering=peering, name="new-name")
 print(peering)

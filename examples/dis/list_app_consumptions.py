@@ -13,13 +13,13 @@
 """
 List partition consuming state list.
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-stream_name = 'test-stream'
-app_name = 'test-app'
+stream_name = "test-stream"
+app_name = "test-app"
 
 print(list(conn.dis.app_consumptions(stream_name, app_name)))

@@ -13,12 +13,12 @@
 """
 Get a SNAT Rule Details by SNAT-Rule-ID
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-snat_rule_id = 'snat_rule_id'
+snat_rule_id = "snat_rule_id"
 snat_rule = conn.nat.get_snat_rule(snat_rule_id)
 print(snat_rule)

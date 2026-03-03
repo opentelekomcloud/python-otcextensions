@@ -13,12 +13,11 @@
 """
 Switch the version of an API.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 switch = conn.apig.switch_version(
-    gateway="gateway_id",
-    api="api_id",
-    version_id="version_id"
+    gateway="gateway_id", api="api_id", version_id="version_id"
 )

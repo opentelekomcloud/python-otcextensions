@@ -24,37 +24,23 @@ class TestLoadBalancerListenerTags(TestElb):
 
     def test_01_list_tags(self):
         query = {}
-        tags = list(self.client.listener_tags(
-            listener=TestElb.listener.id,
-            **query))
+        tags = list(self.client.listener_tags(listener=TestElb.listener.id, **query))
         self.assertGreaterEqual(len(tags), 0)
 
     def test_02_create_tag(self):
-        kv = {
-            'key': 'key1',
-            'value': 'value1'
-        }
-        tag = self.client.create_listener_tag(
-            listener=TestElb.listener.id,
-            **kv)
+        kv = {"key": "key1", "value": "value1"}
+        tag = self.client.create_listener_tag(listener=TestElb.listener.id, **kv)
         self.assertIsNotNone(tag)
-        self.assertEqual(kv['key'], tag.key)
-        self.assertEqual(kv['value'], tag.value)
+        self.assertEqual(kv["key"], tag.key)
+        self.assertEqual(kv["value"], tag.value)
 
     def test_03_delete_tag(self):
-        key = 'key1'
-        tag = self.client.delete_listener_tag(
-            listener=TestElb.listener.id,
-            key=key
-        )
+        key = "key1"
+        tag = self.client.delete_listener_tag(listener=TestElb.listener.id, key=key)
         self.assertIsNotNone(tag)
 
-        self.client.delete_listener(
-            TestElb.listener
-        )
+        self.client.delete_listener(TestElb.listener)
         TestElb.listener = None
-        self.client.delete_load_balancer(
-            TestElb.load_balancer
-        )
+        self.client.delete_load_balancer(TestElb.load_balancer)
         TestElb.load_balancer = None
         self.addCleanup(self.destroy_network, TestElb.network)

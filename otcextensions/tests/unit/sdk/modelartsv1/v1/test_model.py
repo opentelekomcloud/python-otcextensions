@@ -45,7 +45,6 @@ class TestModel(base.TestCase):
                 "name": "model_name",
                 "not_model_type": "not_model_type",
                 "offset": "offset",
-                "model_version": "model_version",
                 "order": "order",
                 "sort_by": "sort_by",
                 "status": "model_status",
@@ -72,8 +71,6 @@ class TestModel(base.TestCase):
 
         for key, value in EXAMPLE.items():
             if key in updated_sot_attrs.keys():
-                self.assertEqual(
-                    getattr(sot, updated_sot_attrs[key]), EXAMPLE[key]
-                )
+                self.assertEqual(getattr(sot, updated_sot_attrs[key]), EXAMPLE[key])
             else:
                 assert_attributes_equal(self, getattr(sot, key), value)

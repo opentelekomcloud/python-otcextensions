@@ -11,17 +11,16 @@
 # under the License.
 from openstack import exceptions
 from openstack import resource
-
 from otcextensions.sdk.kms.v1 import _base
 
 
 class Key(_base.Resource):
-    list_path = '/kms/list-keys'
-    get_path = '/kms/describe-key'
-    create_path = '/kms/create-key'
+    list_path = "/kms/list-keys"
+    get_path = "/kms/describe-key"
+    create_path = "/kms/create-key"
 
-    resources_key = 'key_details'
-    resource_key = 'key_info'
+    resources_key = "key_details"
+    resource_key = "key_info"
 
     allow_list = True
     allow_create = True
@@ -30,46 +29,48 @@ class Key(_base.Resource):
 
     # Properties
     #: Secret key ID
-    key_id = resource.Body('key_id', alternate_id=True)
+    key_id = resource.Body("key_id", alternate_id=True)
     #: User domain name
-    domain_name = resource.Body('domain_name')
+    domain_name = resource.Body("domain_name")
     #: User domain id
-    domain_id = resource.Body('domain_id')
+    domain_id = resource.Body("domain_id")
     #: Secret key alias
-    key_alias = resource.Body('key_alias')
+    key_alias = resource.Body("key_alias")
     #: Secret area
-    realm = resource.Body('realm')
+    realm = resource.Body("realm")
     #: Secret key description
-    key_description = resource.Body('key_description')
+    key_description = resource.Body("key_description")
     #: Secret key creation date
-    creation_date = resource.Body('creation_date')
+    creation_date = resource.Body("creation_date")
     #: Scheduled deletion time
-    scheduled_deletion_date = resource.Body('scheduled_deletion_date')
+    scheduled_deletion_date = resource.Body("scheduled_deletion_date")
     #: Key state. (2, enabled; 3, disabled; 4: sheduled deleted)
-    key_state = resource.Body('key_state')
+    key_state = resource.Body("key_state")
     #: Default key flag. (default 1 else 0)
-    default_key_flag = resource.Body('default_key_flag')
+    default_key_flag = resource.Body("default_key_flag")
     #: Secret key type.
-    key_type = resource.Body('key_type')
+    key_type = resource.Body("key_type")
     #: Error code when create a secret key
-    error_code = resource.Body('error_code')
+    error_code = resource.Body("error_code")
     #: Error message when create a secret key
-    error_msg = resource.Body('error_msg')
+    error_msg = resource.Body("error_msg")
 
-    def fetch(self, session, requires_id=None,
-              base_path=None, error_message=None,
-              skip_cache=False,
-              *,
-              resource_response_key=None,
-              microversion=None,
-              **params,
-              ):
+    def fetch(
+        self,
+        session,
+        requires_id=None,
+        base_path=None,
+        error_message=None,
+        skip_cache=False,
+        *,
+        resource_response_key=None,
+        microversion=None,
+        **params,
+    ):
         if not self.allow_fetch:
             raise exceptions.MethodNotSupported(self, "fetch")
         url = self.get_path
-        body = {
-            'key_id': self.id
-        }
+        body = {"key_id": self.id}
         session = self._get_session(session)
         response = session.post(url, json=body)
         self._translate_response(response, has_body=True)
@@ -78,26 +79,20 @@ class Key(_base.Resource):
 
     def enable(self, session):
         session = self._get_session(session)
-        return self._action(session, 'enable-key', {'key_id': self.id})
+        return self._action(session, "enable-key", {"key_id": self.id})
 
     def disable(self, session):
         session = self._get_session(session)
-        return self._action(session, 'disable-key', {'key_id': self.id})
+        return self._action(session, "disable-key", {"key_id": self.id})
 
     def schedule_deletion(self, session, pending_days=7):
         session = self._get_session(session)
-        body = {
-            'key_id': self.id,
-            'pending_days': pending_days
-        }
-        return self._action(session, 'schedule-key-deletion', body)
+        body = {"key_id": self.id, "pending_days": pending_days}
+        return self._action(session, "schedule-key-deletion", body)
 
     def cancel_deletion(self, session):
         session = self._get_session(session)
-        return self._action(
-            session, 'cancel-key-deletion',
-            {'key_id': self.id}
-        )
+        return self._action(session, "cancel-key-deletion", {"key_id": self.id})
 
     @classmethod
     def list(cls, session, paginated=True, base_path=None, **kwargs):
@@ -106,22 +101,22 @@ class Key(_base.Resource):
             raise exceptions.MethodNotSupported(cls, "list")
 
         uri = None
-        if not hasattr(cls, 'list_path'):
+        if not hasattr(cls, "list_path"):
             uri = cls.base_path
         else:
             uri = cls.list_path
 
         body = {}
         limit = None
-        if 'limit' in kwargs:
-            limit = kwargs.pop('limit')
-            body['limit'] = limit
-        if 'marker' in kwargs:
-            body['marker'] = kwargs.pop('marker')
-        if 'key_state' in kwargs:
-            body['key_state'] = kwargs.pop('key_state')
-        if 'sequence' in kwargs:
-            body['sequence'] = kwargs.pop('sequence')
+        if "limit" in kwargs:
+            limit = kwargs.pop("limit")
+            body["limit"] = limit
+        if "marker" in kwargs:
+            body["marker"] = kwargs.pop("marker")
+        if "key_state" in kwargs:
+            body["key_state"] = kwargs.pop("key_state")
+        if "sequence" in kwargs:
+            body["sequence"] = kwargs.pop("sequence")
 
         total_yielded = 0
         while uri:
@@ -155,7 +150,8 @@ class Key(_base.Resource):
 
             if resources and paginated:
                 uri, next_params = cls._get_next_link(
-                    uri, response, data, marker, limit, total_yielded)
+                    uri, response, data, marker, limit, total_yielded
+                )
                 body.update(next_params)
             else:
                 return
@@ -165,12 +161,12 @@ class Key(_base.Resource):
         # service pagination. Returns query for the next page
         next_link = None
         params = {}
-        truncated = data.get('truncated', None)
+        truncated = data.get("truncated", None)
         if truncated:
-            next_marker = data.get('next_marker', None)
+            next_marker = data.get("next_marker", None)
             if next_marker:
                 next_link = uri
-                params['marker'] = next_marker
+                params["marker"] = next_marker
         else:
             next_link = None
         return next_link, params
@@ -184,15 +180,18 @@ class Key(_base.Resource):
             name_value = maybe_result.name
             alias_value = maybe_result.key_alias
 
-            if (id_value == search_filter) or (name_value == search_filter) \
-                    or (alias_value == search_filter):
+            if (
+                (id_value == search_filter)
+                or (name_value == search_filter)
+                or (alias_value == search_filter)
+            ):
                 # Only allow one resource to be found. If we already
                 # found a match, raise an exception to show it.
                 if the_result is None:
                     the_result = maybe_result
                 else:
                     msg = "More than one %s exists with the name '%s'."
-                    msg = (msg % (cls.__name__, search_filter))
+                    msg = msg % (cls.__name__, search_filter)
                     raise exceptions.DuplicateResource(msg)
 
         return the_result

@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts dataset v2 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -34,9 +35,7 @@ _formatters = {
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class DatasetStatistics(command.ShowOne):
@@ -54,9 +53,7 @@ class DatasetStatistics(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
         data = client.get_dataset_statistics(dataset)
 
         display_columns, columns = _get_columns(data)

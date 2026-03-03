@@ -20,10 +20,9 @@ class TestBackendServerGroup(TestApiG):
     def setUp(self):
         super(TestBackendServerGroup, self).setUp()
         attrs = {
-            "member_groups": [{
-                "member_group_name": "vpc_member_group",
-                "member_group_weight": 10
-            }]
+            "member_groups": [
+                {"member_group_name": "vpc_member_group", "member_group_weight": 10}
+            ]
         }
         result = self.client.add_or_update_backend_server_group(
             gateway=TestBackendServerGroup.gateway,
@@ -31,41 +30,43 @@ class TestBackendServerGroup(TestApiG):
             **attrs
         )
         TestBackendServerGroup.group = result[0]
-        self.assertEqual(TestBackendServerGroup.group.member_group_name,
-                         "vpc_member_group")
+        self.assertEqual(
+            TestBackendServerGroup.group.member_group_name, "vpc_member_group"
+        )
 
     def tearDown(self):
         super(TestBackendServerGroup, self).tearDown()
         self.client.delete_backend_server_group(
             gateway=TestBackendServerGroup.gateway,
             vpc_channel=TestBackendServerGroup.vpc,
-            backend_group=TestBackendServerGroup.group
+            backend_group=TestBackendServerGroup.group,
         )
 
     def test_01_list_backend_server_groups(self):
-        found = list(self.client.backend_server_groups(
-            gateway=TestBackendServerGroup.gateway,
-            vpc_channel=TestBackendServerGroup.vpc))
+        found = list(
+            self.client.backend_server_groups(
+                gateway=TestBackendServerGroup.gateway,
+                vpc_channel=TestBackendServerGroup.vpc,
+            )
+        )
         self.assertEqual(len(found), 1)
 
     def test_02_update_backend_server_group(self):
-        attrs = {
-            "member_group_name": "vpc_member_group",
-            "member_group_weight": 50
-        }
+        attrs = {"member_group_name": "vpc_member_group", "member_group_weight": 50}
         updated = self.client.update_backend_server_group(
             gateway=TestBackendServerGroup.gateway,
             vpc_channel=TestBackendServerGroup.vpc,
             backend_group=TestBackendServerGroup.group,
             **attrs
         )
-        self.assertEqual(updated.member_group_weight,
-                         attrs.get("member_group_weight"))
+        self.assertEqual(updated.member_group_weight, attrs.get("member_group_weight"))
 
     def test_03_get_backend_server_group(self):
         found = self.client.get_backend_server_group(
             gateway=TestBackendServerGroup.gateway,
             vpc_channel=TestBackendServerGroup.vpc,
-            backend_group=TestBackendServerGroup.group)
-        self.assertEqual(found.member_group_id,
-                         TestBackendServerGroup.group.member_group_id)
+            backend_group=TestBackendServerGroup.group,
+        )
+        self.assertEqual(
+            found.member_group_id, TestBackendServerGroup.group.member_group_id
+        )

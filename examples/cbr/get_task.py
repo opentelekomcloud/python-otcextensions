@@ -13,12 +13,13 @@
 """
 Get CBR task by id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-task = 'task_id'
+task = "task_id"
 task = conn.cbr.get_task(task)
 print(task)

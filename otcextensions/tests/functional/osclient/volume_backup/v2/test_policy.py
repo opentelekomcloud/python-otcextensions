@@ -14,77 +14,61 @@ import json
 import uuid
 
 import fixtures
-
 from openstackclient.tests.functional import base
 
+CREATE_COMMAND = (
+    'vbs policy create -f json %(name)s --start_time "10:00" '
+    "--frequency 14 --rentention_num 2 --enable"
+)
 
-CREATE_COMMAND = 'vbs policy create -f json %(name)s --start_time "10:00" ' \
-    '--frequency 14 --rentention_num 2 --enable'
-
-DELETE_COMMAND = 'vbs policy delete %(id)s'
+DELETE_COMMAND = "vbs policy delete %(id)s"
 
 
 class VolumeBackupPolicyTests(base.TestCase):
-    """Functional tests for vbs. """
+    """Functional tests for vbs."""
 
     NAME = uuid.uuid4().hex
     OTHER_NAME = uuid.uuid4().hex
 
     def tearDown(self):
         try:
-            self.openstack(
-                DELETE_COMMAND % {'id': self.policy_id}
-            )
+            self.openstack(DELETE_COMMAND % {"id": self.policy_id})
         finally:
             super(VolumeBackupPolicyTests, self).tearDown()
 
     def setUp(self):
         super(VolumeBackupPolicyTests, self).setUp()
-        json_output = json.loads(self.openstack(
-            CREATE_COMMAND % {'name': self.NAME}
-        ))
+        json_output = json.loads(self.openstack(CREATE_COMMAND % {"name": self.NAME}))
         self.policy_id = json_output["id"]
-        self.assertOutput(self.NAME, json_output['name'])
-        ver_fixture = fixtures.EnvironmentVariable(
-            'OS_VBS_API_VERSION', '2'
-        )
+        self.assertOutput(self.NAME, json_output["name"])
+        ver_fixture = fixtures.EnvironmentVariable("OS_VBS_API_VERSION", "2")
         self.useFixture(ver_fixture)
 
     def test_policy_list(self):
-        json_output = json.loads(self.openstack(
-            'vbs policy list -f json '
-        ))
-        self.assertIn(
-            self.NAME,
-            [img['name'] for img in json_output]
-        )
+        json_output = json.loads(self.openstack("vbs policy list -f json "))
+        self.assertIn(self.NAME, [img["name"] for img in json_output])
 
     def test_policy_set_rename(self):
         name = uuid.uuid4().hex
-        json_output = json.loads(self.openstack(
-            CREATE_COMMAND % {'name': name}
-        ))
+        json_output = json.loads(self.openstack(CREATE_COMMAND % {"name": name}))
         policy_id = json_output["id"]
         self.assertEqual(
             name,
             json_output["name"],
         )
         self.openstack(
-            'vbs policy update --name {name}xx {policy}'.format(
-                name=name, policy=policy_id)
+            "vbs policy update --name {name}xx {policy}".format(
+                name=name, policy=policy_id
+            )
         )
-        json_output = json.loads(self.openstack(
-            'vbs policy show {name}xx -f json'.format(name=name)
-        ))
+        json_output = json.loads(
+            self.openstack("vbs policy show {name}xx -f json".format(name=name))
+        )
         self.assertEqual(
-            name + 'xx',
+            name + "xx",
             json_output["name"],
         )
-        self.openstack(
-            DELETE_COMMAND % {'id': json_output['id']}
-        )
+        self.openstack(DELETE_COMMAND % {"id": json_output["id"]})
 
     def test_policy_execute(self):
-        self.openstack(
-            'vbs policy execute ' + self.policy_id
-        )
+        self.openstack("vbs policy execute " + self.policy_id)

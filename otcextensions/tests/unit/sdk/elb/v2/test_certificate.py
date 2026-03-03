@@ -11,8 +11,8 @@
 # under the License.
 import mock
 from keystoneauth1 import adapter
-from openstack.tests.unit import base
 
+from openstack.tests.unit import base
 from otcextensions.sdk.elb.v2 import elb_certificate
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
@@ -22,7 +22,7 @@ EXAMPLE = {
     "private_key": "fake",
     "certificate": "fake",
     "update_time": 1499817600,
-    "create_time": 1499817600
+    "create_time": 1499817600,
 }
 
 
@@ -36,8 +36,8 @@ class TestElbCertificate(base.TestCase):
     def test_basic(self):
         sot = elb_certificate.Certificate()
 
-        self.assertEqual('/lbaas/certificates', sot.base_path)
-        self.assertEqual('certificates', sot.resources_key)
+        self.assertEqual("/lbaas/certificates", sot.base_path)
+        self.assertEqual("certificates", sot.resources_key)
         self.assertIsNone(sot.resource_key)
 
         self.assertTrue(sot.allow_list)
@@ -48,13 +48,11 @@ class TestElbCertificate(base.TestCase):
 
     def test_make(self):
         sot = elb_certificate.Certificate(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['update_time'], sot.update_time)
-        self.assertEqual(EXAMPLE['create_time'], sot.create_time)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["update_time"], sot.update_time)
+        self.assertEqual(EXAMPLE["create_time"], sot.create_time)
 
-        self.assertDictEqual({
-            'limit': 'limit',
-            'marker': 'marker'},
-            sot._query_mapping._mapping
+        self.assertDictEqual(
+            {"limit": "limit", "marker": "marker"}, sot._query_mapping._mapping
         )

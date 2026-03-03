@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts service v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -123,9 +124,7 @@ class ListServiceClusters(command.Lister):
         return (
             self.columns,
             (
-                utils.get_item_properties(
-                    s, self.columns, formatters=formatters
-                )
+                utils.get_item_properties(s, self.columns, formatters=formatters)
                 for s in data
             ),
         )

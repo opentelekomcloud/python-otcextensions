@@ -16,9 +16,7 @@ from openstack import exceptions
 from openstack import proxy
 from otcextensions.sdk.css.v1 import cluster as _cluster
 from otcextensions.sdk.css.v1 import cluster_image as _cluster_image
-from otcextensions.sdk.css.v1 import (
-    cluster_upgrade_status as _cluster_upgrade_status
-)
+from otcextensions.sdk.css.v1 import cluster_upgrade_status as _cluster_upgrade_status
 from otcextensions.sdk.css.v1 import flavor as _flavor
 from otcextensions.sdk.css.v1 import snapshot as _snapshot
 
@@ -29,8 +27,8 @@ class Proxy(proxy.Proxy):
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
         self.additional_headers = {
-            'Accept': 'application/json',
-            'Content-type': 'application/json',
+            "Accept": "application/json",
+            "Content-type": "application/json",
         }
 
     # ======== Cluster ========
@@ -40,7 +38,7 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             (:class:`~otcextensions.sdk.css.v1.cluster.Cluster`) instances
         """
-        if query.get('limit'):
+        if query.get("limit"):
             query.update(paginated=False)
         return self._list(_cluster.Cluster, **query)
 
@@ -68,9 +66,7 @@ class Proxy(proxy.Proxy):
         :returns:
             One :class:`~otcextensions.sdk.css.v1.cluster.Cluster` or ``None``
         """
-        return self._find(
-            _cluster.Cluster, name_or_id, ignore_missing=ignore_missing
-        )
+        return self._find(_cluster.Cluster, name_or_id, ignore_missing=ignore_missing)
 
     def create_cluster(self, **attrs):
         """Create a cluster from attributes
@@ -113,9 +109,7 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return self._create(
-            _cluster.ExtendClusterNodes, cluster_id=cluster.id, **attrs
-        )
+        return self._create(_cluster.ExtendClusterNodes, cluster_id=cluster.id, **attrs)
 
     def delete_cluster(self, cluster, ignore_missing=True):
         """Delete a cluster
@@ -130,9 +124,7 @@ class Proxy(proxy.Proxy):
             delete a nonexistent cluster.
         :returns: ``None``
         """
-        return self._delete(
-            _cluster.Cluster, cluster, ignore_missing=ignore_missing
-        )
+        return self._delete(_cluster.Cluster, cluster, ignore_missing=ignore_missing)
 
     def update_cluster_name(self, cluster, new_name):
         """Update cluster name
@@ -169,9 +161,7 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return cluster.update_flavor(
-            self, new_flavor, node_type, check_replica
-        )
+        return cluster.update_flavor(self, new_flavor, node_type, check_replica)
 
     def update_cluster_security_mode(
         self,
@@ -288,9 +278,7 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.replace_node(self, node_id)
 
-    def add_cluster_nodes(
-        self, cluster, node_type, flavor, node_size, volume_type
-    ):
+    def add_cluster_nodes(self, cluster, node_type, flavor, node_size, volume_type):
         """Add master and client nodes to a cluster
 
         :param cluster: key id or an instance of
@@ -302,9 +290,7 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return cluster.add_nodes(
-            self, node_type, flavor, node_size, volume_type
-        )
+        return cluster.add_nodes(self, node_type, flavor, node_size, volume_type)
 
     def get_cluster_upgrade_status(self, cluster, **params):
         """Obtain the cluster updgrade details
@@ -352,7 +338,7 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.css.v1.snapshot.Snapshot`) instances
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        base_path = f'/clusters/{cluster.id}/index_snapshots'
+        base_path = f"/clusters/{cluster.id}/index_snapshots"
         return self._list(_snapshot.Snapshot, base_path=base_path)
 
     def create_snapshot(self, cluster, **attrs):
@@ -367,9 +353,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.css.v1.snapshot.Snapshot`
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return self._create(
-            _snapshot.Snapshot, uri_cluster_id=cluster.id, **attrs
-        )
+        return self._create(_snapshot.Snapshot, uri_cluster_id=cluster.id, **attrs)
 
     def find_snapshot(self, cluster, name_or_id, ignore_missing=True):
         """Find a single snapshot
@@ -391,7 +375,7 @@ class Proxy(proxy.Proxy):
         return self._find(
             _snapshot.Snapshot,
             name_or_id,
-            base_path=f'/clusters/{cluster.id}/index_snapshots',
+            base_path=f"/clusters/{cluster.id}/index_snapshots",
             ignore_missing=ignore_missing,
         )
 
@@ -417,9 +401,7 @@ class Proxy(proxy.Proxy):
             ignore_missing=ignore_missing,
         )
 
-    def set_snapshot_configuration(
-        self, cluster, auto_configure=False, **attrs
-    ):
+    def set_snapshot_configuration(self, cluster, auto_configure=False, **attrs):
         """Setting Basic Configurations of a Cluster Snapshot
 
         :param cluster: key id or an instance of
@@ -433,10 +415,10 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        setting = 'setting'
+        setting = "setting"
         if auto_configure and isinstance(auto_configure, bool):
-            setting = 'auto_setting'
-            attrs = {'has_body': False}
+            setting = "auto_setting"
+            attrs = {"has_body": False}
         return self._create(
             _snapshot.SnapshotConfiguration,
             cluster_id=cluster.id,
@@ -453,7 +435,7 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         snapshot_config = self._get_resource(
-            _snapshot.SnapshotConfiguration, '', cluster_id=cluster.id
+            _snapshot.SnapshotConfiguration, "", cluster_id=cluster.id
         )
         snapshot_config.disable(self)
 
@@ -468,9 +450,7 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return self._create(
-            _snapshot.SnapshotPolicy, cluster_id=cluster.id, **attrs
-        )
+        return self._create(_snapshot.SnapshotPolicy, cluster_id=cluster.id, **attrs)
 
     def get_snapshot_policy(self, cluster):
         """Query the automatic snapshot creation policy for a cluster.
@@ -512,60 +492,58 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        headers = {'Accept': '*/*'}
-        response = self.get('/cer/download', headers=headers, stream=True)
+        headers = {"Accept": "*/*"}
+        response = self.get("/cer/download", headers=headers, stream=True)
         exceptions.raise_from_response(response)
 
         # Extract the filename from Content-Disposition header if available
-        content_disposition = response.headers.get('Content-Disposition', '')
+        content_disposition = response.headers.get("Content-Disposition", "")
 
         override_filename = filename
-        filename = override_filename or 'CloudSearchService.cer'
-        if not override_filename and 'filename=' in content_disposition:
-            filename = content_disposition.split('filename=')[1].strip('"')
+        filename = override_filename or "CloudSearchService.cer"
+        if not override_filename and "filename=" in content_disposition:
+            filename = content_disposition.split("filename=")[1].strip('"')
 
         if os.path.exists(filename):
             raise FileExistsError(
                 f"The file '{filename}' already exists. Aborting download."
             )
 
-        with open(filename, 'wb') as f:
+        with open(filename, "wb") as f:
             for chunk in response.iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
 
-    def wait_for_cluster(
-        self, cluster, timeout=1200, wait=5, print_status=False
-    ):
+    def wait_for_cluster(self, cluster, timeout=1200, wait=5, print_status=False):
         org_timeout = timeout
         while timeout > 0:
             obj = self.get_cluster(cluster)
-            if getattr(obj, 'error'):
+            if getattr(obj, "error"):
                 raise exceptions.SDKException(obj.error)
             if obj.status_code == 100:
                 pass
             elif obj.actions == [] and obj.action_progress == {}:
                 return True
             self.log.debug(
-                'Still waiting for resource %s to reach state %s, '
-                'current state is %s'
-                '\nWait Time Out remaining: %s seconds.',
+                "Still waiting for resource %s to reach state %s, "
+                "current state is %s"
+                "\nWait Time Out remaining: %s seconds.",
                 obj.name,
-                'AVAILABLE',
+                "AVAILABLE",
                 str(obj.action_progress or obj.status),
                 str(timeout),
             )
             if print_status:
-                dots = '.' * round(100 - ((timeout / org_timeout) * 100))
+                dots = "." * round(100 - ((timeout / org_timeout) * 100))
                 print(
-                    'CSS Cluster progress: '
+                    "CSS Cluster progress: "
                     + str(obj.action_progress or obj.status)
-                    + ' '
+                    + " "
                     + dots,
-                    end='\r',
+                    end="\r",
                 )
             time.sleep(wait)
             timeout = timeout - wait
         raise exceptions.SDKException(
-            'Wait Timed Out. Cluster action still in progress.'
+            "Wait Timed Out. Cluster action still in progress."
         )

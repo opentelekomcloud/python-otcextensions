@@ -10,13 +10,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Update MRS Datasource
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
@@ -25,10 +26,10 @@ attrs = {
     "is_protected": False,
     "is_public": False,
     "type": "hdfs",
-    "description": "this is the data source template"
+    "description": "this is the data source template",
 }
 
-datasource = 'ds1'
+datasource = "ds1"
 datasource = conn.mrs.find_datasource(name_or_id=datasource)
 datasource = conn.mrs.update_datasource(datasource=datasource, **attrs)
 print(datasource)

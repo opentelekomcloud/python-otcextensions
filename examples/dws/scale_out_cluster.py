@@ -14,11 +14,12 @@
 Scale Out nodes of DWS Cluster by cluster name_or_id or
  instance of Cluster class.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluster-uuid'
+cluster_id = "cluster-uuid"
 add_nodes = 3
 conn.dws.scale_out_cluster(cluster_id, add_nodes)

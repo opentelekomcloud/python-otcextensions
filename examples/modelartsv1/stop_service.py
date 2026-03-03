@@ -12,6 +12,7 @@
 # under the License.
 #
 """Stop a service."""
+
 import openstack
 
 openstack.enable_logging(True)

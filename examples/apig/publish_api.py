@@ -13,13 +13,11 @@
 """
 Publish API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 publish = conn.apig.publish_api(
-    gateway="gateway_id",
-    api="api_id",
-    env="environment_id",
-    remark="publish"
+    gateway="gateway_id", api="api_id", env="environment_id", remark="publish"
 )

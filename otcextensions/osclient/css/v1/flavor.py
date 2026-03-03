@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''CSS ELK cluster v1 action implementations'''
+"""CSS ELK cluster v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -20,50 +21,50 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-CSS_ENGINE_VERSIONS = ('7.6.2', '7.9.3', '7.10.2')
+CSS_ENGINE_VERSIONS = ("7.6.2", "7.9.3", "7.10.2")
 
 CSS_NODE_TYPES = (
-    'ess',
-    'ess-master',
-    'ess-client',
-    'ess-cold',
+    "ess",
+    "ess-master",
+    "ess-client",
+    "ess-cold",
 )
 
 
 class ListFlavors(command.Lister):
-    _description = _('List Supported Flavors for a Cluster Version.')
+    _description = _("List Supported Flavors for a Cluster Version.")
     columns = (
-        'Id',
-        'Name',
-        'Version',
-        'Type',
-        'Availability Zones',
-        'Disk Range',
-        'vCPUs',
-        'RAM',
+        "Id",
+        "Name",
+        "Version",
+        "Type",
+        "Availability Zones",
+        "Disk Range",
+        "vCPUs",
+        "RAM",
     )
 
     def get_parser(self, prog_name):
         parser = super(ListFlavors, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--datastore-version',
-            metavar='<datastore_version>',
+            "--datastore-version",
+            metavar="<datastore_version>",
             type=lambda s: s.lower(),
             choices=CSS_ENGINE_VERSIONS,
             help=_(
-                'CSS Cluster Engine Versions. Supported Versions: '
-                '{' + ', '.join(CSS_ENGINE_VERSIONS) + '}'
+                "CSS Cluster Engine Versions. Supported Versions: "
+                "{" + ", ".join(CSS_ENGINE_VERSIONS) + "}"
             ),
         )
         parser.add_argument(
-            '--node-type',
-            metavar='<node_type>',
+            "--node-type",
+            metavar="<node_type>",
             type=lambda s: s.lower(),
             choices=CSS_NODE_TYPES,
             help=_(
-                'Specify Cluster Node Type. Supported Types: '
-                '{' + ', '.join(CSS_NODE_TYPES) + '}'
+                "Specify Cluster Node Type. Supported Types: "
+                "{" + ", ".join(CSS_NODE_TYPES) + "}"
             ),
         )
 

@@ -13,17 +13,17 @@
 """
 Create a DNAT Rule
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-nat_gateway_id = 'nat_gateway_id'
-port_id = 'network_id'
-private_ip = '192.168.199.3'
-floating_ip_id = 'floating_ip_id'
-protocol = 'TCP'
+nat_gateway_id = "nat_gateway_id"
+port_id = "network_id"
+private_ip = "192.168.199.3"
+floating_ip_id = "floating_ip_id"
+protocol = "TCP"
 internal_service_port = 80
 external_service_port = 80
 
@@ -35,7 +35,7 @@ attrs = {
     "protocol": protocol,
     "internal_service_port": internal_service_port,
     "external_service_port": external_service_port,
-    "floating_ip_id": floating_ip_id
+    "floating_ip_id": floating_ip_id,
 }
 
 dnat_rule = conn.nat.create_dnat_rule(**attrs)

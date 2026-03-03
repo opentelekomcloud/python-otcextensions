@@ -167,13 +167,9 @@ class TestCreateTrainingJobVersion(fakes.TestModelartsv1):
     def setUp(self):
         super(TestCreateTrainingJobVersion, self).setUp()
 
-        self.cmd = training_job_version.CreateTrainingJobVersion(
-            self.app, None
-        )
+        self.cmd = training_job_version.CreateTrainingJobVersion(self.app, None)
 
-        self.client.create_training_job_version = mock.Mock(
-            return_value=self._data
-        )
+        self.client.create_training_job_version = mock.Mock(return_value=self._data)
 
     def test_create(self):
         arglist = [
@@ -259,9 +255,7 @@ class TestCreateTrainingJobVersion(fakes.TestModelartsv1):
                 "log_url": "6",
             },
         }
-        self.client.create_training_job_version.assert_called_with(
-            self.job_id, **attrs
-        )
+        self.client.create_training_job_version.assert_called_with(self.job_id, **attrs)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
@@ -279,9 +273,7 @@ class TestShowTrainingJobVersion(fakes.TestModelartsv1):
 
         self.cmd = training_job_version.ShowTrainingJobVersion(self.app, None)
 
-        self.client.get_training_job_version = mock.Mock(
-            return_value=self._data
-        )
+        self.client.get_training_job_version = mock.Mock(return_value=self._data)
 
     def test_show_no_options(self):
         arglist = []
@@ -356,9 +348,7 @@ class TestStopTrainingJobVersion(fakes.TestModelartsv1):
 
         self.cmd = training_job_version.StopTrainingJobVersion(self.app, None)
 
-        self.client.stop_training_job_version = mock.Mock(
-            return_value=self._data
-        )
+        self.client.stop_training_job_version = mock.Mock(return_value=self._data)
 
     def test_start(self):
         arglist = [
@@ -392,9 +382,7 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
         self.client.delete_training_job_version = mock.Mock(return_value=None)
 
         # Get the command object to test
-        self.cmd = training_job_version.DeleteTrainingJobVersion(
-            self.app, None
-        )
+        self.cmd = training_job_version.DeleteTrainingJobVersion(self.app, None)
 
     def test_delete(self):
         arglist = [self.job_id, self.version_id]

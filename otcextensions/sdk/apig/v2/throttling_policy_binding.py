@@ -9,86 +9,85 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
 from openstack import exceptions
+from openstack import resource
 
 
 class ThrottlingPolicyRecords(resource.Resource):
     # API publication record ID.
-    publish_id = resource.Body('publish_id', type=str)
+    publish_id = resource.Body("publish_id", type=str)
     # Scope of the policy.
     # 1: the API
     # 2: a user
     # 3: an app
-    scope = resource.Body('scope', type=int)
+    scope = resource.Body("scope", type=int)
     # Request throttling policy ID.
-    throttle_id = resource.Body('strategy_id')
+    throttle_id = resource.Body("strategy_id")
     # Binding time.
-    applied_at = resource.Body('apply_time', type=str)
+    applied_at = resource.Body("apply_time", type=str)
 
 
 class ThrottleBindingBatchFailure(resource.Resource):
     # ID of a request throttling policy binding record
     # that fails to be canceled.
-    bind_id = resource.Body('bind_id', type=str)
+    bind_id = resource.Body("bind_id", type=str)
     # Error code.
-    error_code = resource.Body('error_code', type=int)
+    error_code = resource.Body("error_code", type=int)
     # Error message.
-    error_msg = resource.Body('error_msg')
+    error_msg = resource.Body("error_msg")
     # ID of an API from which unbinding fails.
-    api_id = resource.Body('api_id', type=str)
+    api_id = resource.Body("api_id", type=str)
     # Name of the API from which unbinding fails.
-    api_name = resource.Body('api_name', type=str)
+    api_name = resource.Body("api_name", type=str)
 
 
 class ThrottlingPolicyBind(resource.Resource):
-    base_path = f'/apigw/instances/%(gateway_id)s/throttle-bindings'
+    base_path = "/apigw/instances/%(gateway_id)s/throttle-bindings"
 
     allow_list = True
     allow_create = True
     allow_delete = True
 
-    resources_key = 'apis'
+    resources_key = "apis"
 
     _query_mapping = resource.QueryParameters(
-        'limit', 'offset', 'throttle_id',
-        'env_id', 'group_id', 'api_id', 'api_name'
+        "limit", "offset", "throttle_id", "env_id", "group_id", "api_id", "api_name"
     )
 
     # Properties
-    gateway_id = resource.URI('gateway_id')
+    gateway_id = resource.URI("gateway_id")
     # Request throttling policy ID.
-    throttle_id = resource.Body('strategy_id')
+    throttle_id = resource.Body("strategy_id")
     # API publication record ID.
-    publish_ids = resource.Body('publish_ids', type=list)
+    publish_ids = resource.Body("publish_ids", type=list)
 
     # Attributes
     # API publication record ID.
-    publish_id = resource.Body('publish_id', type=str)
+    publish_id = resource.Body("publish_id", type=str)
     # API authentication mode.
-    auth_type = resource.Body('auth_type', type=str)
+    auth_type = resource.Body("auth_type", type=str)
     # Name of the API group to which the API belongs.
-    group_name = resource.Body('group_name', type=str)
+    group_name = resource.Body("group_name", type=str)
     # ID of a request throttling policy binding record.
-    throttle_apply_id = resource.Body('throttle_apply_id', type=str)
+    throttle_apply_id = resource.Body("throttle_apply_id", type=str)
     # Binding time.
-    applied_at = resource.Body('apply_time', type=str)
+    applied_at = resource.Body("apply_time", type=str)
     # API description.
-    remark = resource.Body('remark', type=str)
+    remark = resource.Body("remark", type=str)
     # ID of the environment in which the API has been published.
-    run_env_id = resource.Body('run_env_id', type=str)
+    run_env_id = resource.Body("run_env_id", type=str)
     # API type.
-    type = resource.Body('type', type=int)
+    type = resource.Body("type", type=int)
     # Name of the request throttling policy bound to the API.
-    throttle_name = resource.Body('throttle_name', type=str)
+    throttle_name = resource.Body("throttle_name", type=str)
     # Access address of the API.
-    req_uri = resource.Body('req_uri', type=str)
+    req_uri = resource.Body("req_uri", type=str)
     # Name of the environment in which the API has been published.
-    run_env_name = resource.Body('run_env_name', type=str)
+    run_env_name = resource.Body("run_env_name", type=str)
     # ID of the API group to which the API belongs.
-    group_id = resource.Body('group_id', type=str)
+    group_id = resource.Body("group_id", type=str)
     # API name.
-    name = resource.Body('name', type=str)
+    name = resource.Body("name", type=str)
     # Request method.
     # Enumeration values:
     # GET
@@ -99,40 +98,34 @@ class ThrottlingPolicyBind(resource.Resource):
     # HEAD
     # OPTIONS
     # ANY
-    req_method = resource.Body('req_method', type=str)
+    req_method = resource.Body("req_method", type=str)
 
-    policies = resource.Body(
-        'policies', type=list, list_type=ThrottlingPolicyRecords
-    )
-    failure = resource.Body(
-        'failure', type=list, list_type=ThrottleBindingBatchFailure
-    )
+    policies = resource.Body("policies", type=list, list_type=ThrottlingPolicyRecords)
+    failure = resource.Body("failure", type=list, list_type=ThrottleBindingBatchFailure)
 
     def _action(self, session, body):
-        """Preform actions given the message body.
-        """
-        url = self.base_path % {'gateway_id': body['gateway_id']}
-        url += '?action=delete'
+        """Preform actions given the message body."""
+        url = self.base_path % {"gateway_id": body["gateway_id"]}
+        url += "?action=delete"
         response = session.put(url, json=body)
         exceptions.raise_from_response(response)
         self._translate_response(response)
         return self
 
     def unbind_policies(self, session, **attrs):
-        """Unbind request throttling policies from APIs.
-        """
+        """Unbind request throttling policies from APIs."""
         return self._action(session, attrs)
 
     def create(
-            self,
-            session,
-            prepend_key=True,
-            base_path=None,
-            *,
-            resource_request_key=None,
-            resource_response_key=None,
-            microversion=None,
-            **params,
+        self,
+        session,
+        prepend_key=True,
+        base_path=None,
+        *,
+        resource_request_key=None,
+        resource_response_key=None,
+        microversion=None,
+        **params,
     ):
         """Create a remote resource based on this instance.
 
@@ -156,7 +149,7 @@ class ThrottlingPolicyBind(resource.Resource):
             :data:`Resource.allow_create` is not set to ``True``.
         """
         if not self.allow_create:
-            raise exceptions.MethodNotSupported(self, 'create')
+            raise exceptions.MethodNotSupported(self, "create")
 
         session = self._get_session(session)
         if microversion is None:
@@ -164,7 +157,7 @@ class ThrottlingPolicyBind(resource.Resource):
         requires_id = (
             self.create_requires_id
             if self.create_requires_id is not None
-            else self.create_method == 'PUT'
+            else self.create_method == "PUT"
         )
 
         # Construct request arguments.
@@ -174,12 +167,12 @@ class ThrottlingPolicyBind(resource.Resource):
             "base_path": base_path,
         }
         if resource_request_key is not None:
-            request_kwargs['resource_request_key'] = resource_request_key
+            request_kwargs["resource_request_key"] = resource_request_key
 
         if self.create_exclude_id_from_body:
             self._body._dirty.discard("id")
 
-        if self.create_method == 'PUT':
+        if self.create_method == "PUT":
             request = self._prepare_request(**request_kwargs)
             response = session.put(
                 request.url,
@@ -188,7 +181,7 @@ class ThrottlingPolicyBind(resource.Resource):
                 microversion=microversion,
                 params=params,
             )
-        elif self.create_method == 'POST':
+        elif self.create_method == "POST":
             request = self._prepare_request(**request_kwargs)
             response = session.post(
                 request.url,
@@ -213,7 +206,7 @@ class ThrottlingPolicyBind(resource.Resource):
             "has_body": has_body,
         }
         if resource_response_key is not None:
-            response_kwargs['resource_response_key'] = resource_response_key
+            response_kwargs["resource_response_key"] = resource_response_key
 
         if has_body is None:
             has_body = self.has_body
@@ -223,7 +216,7 @@ class ThrottlingPolicyBind(resource.Resource):
             body = response.json()
             policies = [
                 ThrottlingPolicyRecords.existing(**data)
-                for data in body['throttle_applys']
+                for data in body["throttle_applys"]
             ]
         self.policies = policies
         # direct comparision to False since we need to rule out None
@@ -231,54 +224,52 @@ class ThrottlingPolicyBind(resource.Resource):
             # fetch the body if it's required but not returned by create
             fetch_kwargs = {}
             if resource_response_key is not None:
-                fetch_kwargs = {'resource_response_key': resource_response_key}
+                fetch_kwargs = {"resource_response_key": resource_response_key}
             return self.fetch(session, **fetch_kwargs)
         return self
 
 
 class NotBoundApi(resource.Resource):
-    base_path = (f'/apigw/instances/%(gateway_id)s/'
-                 f'throttle-bindings/unbinded-apis')
+    base_path = "/apigw/instances/%(gateway_id)s/" "throttle-bindings/unbinded-apis"
 
     allow_list = True
 
-    resources_key = 'apis'
+    resources_key = "apis"
 
     _query_mapping = resource.QueryParameters(
-        'limit', 'offset', 'throttle_id',
-        'env_id', 'api_id', 'api_name', 'group_id'
+        "limit", "offset", "throttle_id", "env_id", "api_id", "api_name", "group_id"
     )
 
     # Properties
-    gateway_id = resource.URI('gateway_id')
+    gateway_id = resource.URI("gateway_id")
 
     # Attributes
     # API authentication mode.
-    auth_type = resource.Body('auth_type', type=str)
+    auth_type = resource.Body("auth_type", type=str)
     # Name of the environment in which the API has been published.
-    run_env_name = resource.Body('run_env_name', type=str)
+    run_env_name = resource.Body("run_env_name", type=str)
     # ID of a request throttling policy binding record.
-    throttle_apply_id = resource.Body('throttle_apply_id', type=str)
+    throttle_apply_id = resource.Body("throttle_apply_id", type=str)
     # Binding time.
-    applied_at = resource.Body('apply_time', type=str)
+    applied_at = resource.Body("apply_time", type=str)
     # Name of the API group to which the API belongs.
-    group_name = resource.Body('group_name', type=str)
+    group_name = resource.Body("group_name", type=str)
     # Publication record ID.
-    publish_id = resource.Body('publish_id', type=str)
+    publish_id = resource.Body("publish_id", type=str)
     # ID of the API group to which the API belongs.
-    group_id = resource.Body('group_id', type=str)
+    group_id = resource.Body("group_id", type=str)
     # API name.
-    name = resource.Body('name', type=str)
+    name = resource.Body("name", type=str)
     # API description.
-    remark = resource.Body('remark', type=str)
+    remark = resource.Body("remark", type=str)
     # ID of the environment in which the API has been published.
-    run_env_id = resource.Body('run_env_id', type=str)
+    run_env_id = resource.Body("run_env_id", type=str)
     # API request address.
-    req_uri = resource.Body('req_uri', type=str)
+    req_uri = resource.Body("req_uri", type=str)
     # API type.
-    type = resource.Body('type', type=int)
+    type = resource.Body("type", type=int)
     # Name of the request throttling policy bound to the API.
-    throttle_name = resource.Body('throttle_name', type=str)
+    throttle_name = resource.Body("throttle_name", type=str)
     # Request method.
     # Enumeration values:
     # GET
@@ -289,75 +280,69 @@ class NotBoundApi(resource.Resource):
     # HEAD
     # OPTIONS
     # ANY
-    req_method = resource.Body('req_method', type=str)
+    req_method = resource.Body("req_method", type=str)
 
 
 class BoundThrottles(resource.Resource):
-    base_path = (f'/apigw/instances/%(gateway_id)s/'
-                 f'throttle-bindings/binded-throttles')
+    base_path = "/apigw/instances/%(gateway_id)s/" "throttle-bindings/binded-throttles"
 
     allow_list = True
 
-    resources_key = 'throttles'
+    resources_key = "throttles"
 
     _query_mapping = resource.QueryParameters(
-        'limit', 'offset', 'api_id',
-        'throttle_id', 'throttle_name', 'env_id'
+        "limit", "offset", "api_id", "throttle_id", "throttle_name", "env_id"
     )
 
     # Properties
-    gateway_id = resource.URI('gateway_id')
+    gateway_id = resource.URI("gateway_id")
 
     # Attributes
     # Maximum number of times the API can be accessed by an
     # app within the same period.
-    app_call_limits = resource.Body('app_call_limits', type=int)
+    app_call_limits = resource.Body("app_call_limits", type=int)
     # Request throttling policy name.
-    name = resource.Body('name', type=str)
+    name = resource.Body("name", type=str)
     # Time unit for limiting the number of API calls.
     # Enumeration values:
     # SECOND
     # MINUTE
     # HOUR
     # DAY
-    time_unit = resource.Body('time_unit', type=str)
+    time_unit = resource.Body("time_unit", type=str)
     # Description of the request throttling policy,
     # which can contain a maximum of 255 characters.
-    remark = resource.Body('remark', type=str)
+    remark = resource.Body("remark", type=str)
     # Maximum number of times an API can be accessed within a specified period.
-    api_call_limits = resource.Body('api_call_limits', type=int)
+    api_call_limits = resource.Body("api_call_limits", type=int)
     # Type of the request throttling policy.
     # 1: API-based, limiting the maximum number of times a single
     # API bound to the policy can be called within the specified period.
     # 2: API-shared, limiting the maximum number of times all
     # APIs bound to the policy can be called within the specified period.
-    type = resource.Body('type', type=int)
+    type = resource.Body("type", type=int)
     # Indicates whether to enable dynamic request throttling.
-    enable_adaptive_control = resource.Body(
-        'enable_adaptive_control', type=str
-    )
+    enable_adaptive_control = resource.Body("enable_adaptive_control", type=str)
     # Maximum number of times the API can be accessed
     # by a user within the same period.
-    user_call_limits = resource.Body('user_call_limits', type=int)
+    user_call_limits = resource.Body("user_call_limits", type=int)
     # Period of time for limiting the number of API calls.
-    time_interval = resource.Body('time_interval', type=int)
+    time_interval = resource.Body("time_interval", type=int)
     # Maximum number of times the API can be accessed
     # by an IP address within the same period.
-    ip_call_limits = resource.Body('ip_call_limits', type=int)
+    ip_call_limits = resource.Body("ip_call_limits", type=int)
     # Number of APIs to which the request throttling policy has been bound.
-    bind_num = resource.Body('bind_num', type=int)
+    bind_num = resource.Body("bind_num", type=int)
     # Indicates whether an excluded request throttling
     # configuration has been created.
     # 1: yes
     # 2: no
-    is_inclu_special_throttle = resource.Body(
-        'is_inclu_special_throttle', type=int
-    )
+    is_inclu_special_throttle = resource.Body("is_inclu_special_throttle", type=int)
     # Creation time.
-    created_at = resource.Body('create_time', type=str)
+    created_at = resource.Body("create_time", type=str)
     # Environment in which the request throttling policy takes effect.
-    env_name = resource.Body('env_name', type=str)
+    env_name = resource.Body("env_name", type=str)
     # Policy binding record ID.
-    bind_id = resource.Body('bind_id', type=str)
+    bind_id = resource.Body("bind_id", type=str)
     # Time when the policy is bound to the API.
-    bound_at = resource.Body('bind_time', type=str)
+    bound_at = resource.Body("bind_time", type=str)

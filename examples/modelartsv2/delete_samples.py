@@ -12,6 +12,7 @@
 # under the License.
 #
 """Delete Samples in Batches."""
+
 import openstack
 
 openstack.enable_logging(True)

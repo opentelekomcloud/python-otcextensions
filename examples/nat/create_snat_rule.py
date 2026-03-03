@@ -13,20 +13,20 @@
 """
 Create a SNAT Rule
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-nat_gateway_id = 'nat_gateway_id'
-network_id = 'network_id'
-floating_ip_id = 'floating_ip_id'
+nat_gateway_id = "nat_gateway_id"
+network_id = "network_id"
+floating_ip_id = "floating_ip_id"
 
 attrs = {
     "nat_gateway_id": nat_gateway_id,
     "network_id": network_id,
-    "floating_ip_id": floating_ip_id
+    "floating_ip_id": floating_ip_id,
 }
 
 snat_rule = conn.nat.create_snat_rule(**attrs)

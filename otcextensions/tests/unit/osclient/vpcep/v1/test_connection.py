@@ -21,19 +21,19 @@ class TestListWhitelist(fakes.TestVpcep):
     _service = fakes.FakeService.create_one()
     objects = fakes.FakeConnection.create_multiple(3)
     column_list_headers = (
-        'Id',
-        'Domain Id',
-        'Status',
-        'Created At',
-        'Updated At',
+        "Id",
+        "Domain Id",
+        "Status",
+        "Created At",
+        "Updated At",
     )
 
     columns = (
-        'id',
-        'domain_id',
-        'status',
-        'created_at',
-        'updated_at',
+        "id",
+        "domain_id",
+        "status",
+        "created_at",
+        "updated_at",
     )
 
     data = []
@@ -62,7 +62,7 @@ class TestListWhitelist(fakes.TestVpcep):
         arglist = [self._service.name]
 
         verifylist = [
-            ('service', self._service.name),
+            ("service", self._service.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -82,22 +82,22 @@ class TestListWhitelist(fakes.TestVpcep):
     def test_list_args(self):
         arglist = [
             self._service.name,
-            '--sort-key',
-            'created_at',
-            '--sort-dir',
-            'asc',
-            '--limit',
-            '2',
-            '--offset',
-            '3',
+            "--sort-key",
+            "created_at",
+            "--sort-dir",
+            "asc",
+            "--limit",
+            "2",
+            "--offset",
+            "3",
         ]
 
         verifylist = [
-            ('service', self._service.name),
-            ('sort_key', 'created_at'),
-            ('sort_dir', 'asc'),
-            ('limit', 2),
-            ('offset', 3),
+            ("service", self._service.name),
+            ("sort_key", "created_at"),
+            ("sort_dir", "asc"),
+            ("limit", 2),
+            ("offset", 3),
         ]
 
         # Verify cm is triggered with default parameters
@@ -111,8 +111,8 @@ class TestListWhitelist(fakes.TestVpcep):
 
         self.client.api_mock.assert_called_with(
             self._service,
-            sort_key='created_at',
-            sort_dir='asc',
+            sort_key="created_at",
+            sort_dir="asc",
             limit=2,
             offset=3,
         )
@@ -123,19 +123,19 @@ class TestManageConnections(fakes.TestVpcep):
     _service = fakes.FakeService.create_one()
     objects = fakes.FakeConnection.create_multiple(3)
     column_list_headers = (
-        'Id',
-        'Domain Id',
-        'Status',
-        'Created At',
-        'Updated At',
+        "Id",
+        "Domain Id",
+        "Status",
+        "Created At",
+        "Updated At",
     )
 
     columns = (
-        'id',
-        'domain_id',
-        'status',
-        'created_at',
-        'updated_at',
+        "id",
+        "domain_id",
+        "status",
+        "created_at",
+        "updated_at",
     )
 
     data = []
@@ -161,12 +161,12 @@ class TestManageConnections(fakes.TestVpcep):
         self.client.api_mock = self.client.manage_service_connections
 
     def test_accept_connection(self):
-        arglist = [self._service.name, '123', 'xyz', '--accept']
+        arglist = [self._service.name, "123", "xyz", "--accept"]
 
         verifylist = [
-            ('service', self._service.name),
-            ('endpoint', ['123', 'xyz']),
-            ('receive', True),
+            ("service", self._service.name),
+            ("endpoint", ["123", "xyz"]),
+            ("receive", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -179,8 +179,8 @@ class TestManageConnections(fakes.TestVpcep):
 
         self.client.api_mock.assert_called_with(
             self._service,
-            action='receive',
-            endpoints=['123', 'xyz'],
+            action="receive",
+            endpoints=["123", "xyz"],
         )
 
         self.assertEqual(self.column_list_headers, columns)

@@ -13,11 +13,11 @@
 """
 List all CloudEye metrics
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for metric in conn.ces.metrics():
     print(metric)

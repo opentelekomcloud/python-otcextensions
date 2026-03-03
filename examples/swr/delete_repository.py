@@ -13,11 +13,12 @@
 """
 Delete repository
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-repo = conn.swr.delete_repository('org_name', 'repo_name')
+repo = conn.swr.delete_repository("org_name", "repo_name")

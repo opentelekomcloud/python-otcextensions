@@ -16,10 +16,8 @@ from openstackclient.tests.functional import base
 
 
 class TestCustomRole(base.TestCase):
-    """Functional tests for IAM Custom Roles. """
+    """Functional tests for IAM Custom Roles."""
 
     def test_list(self):
-        json_output = json.loads(self.openstack(
-            'iam custom role list -f json '
-        ))
+        json_output = json.loads(self.openstack("iam custom role list -f json "))
         self.assertIsNotNone(json_output)

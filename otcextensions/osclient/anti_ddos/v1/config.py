@@ -10,30 +10,29 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''Anti DDoS Config v1 action implementations'''
+"""Anti DDoS Config v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
 from osc_lib.command import command
 
-from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
 
 _formatters = {
-    'traffic_limited_list': sdk_utils.ListOfDictColumn,
-    'http_limited_list': sdk_utils.ListOfDictColumn,
-    'connection_limited_list': sdk_utils.ListOfDictColumn,
+    "traffic_limited_list": sdk_utils.ListOfDictColumn,
+    "http_limited_list": sdk_utils.ListOfDictColumn,
+    "connection_limited_list": sdk_utils.ListOfDictColumn,
 }
 
 
 class ListConfig(command.Lister):
-    _description = _('List Anti DDoS Defence policies')
-    columns = (
-        'traffic_limited_list', 'http_limited_list', 'connection_limited_list'
-    )
+    _description = _("List Anti DDoS Defence policies")
+    columns = ("traffic_limited_list", "http_limited_list", "connection_limited_list")
 
     def get_parser(self, prog_name):
         parser = super(ListConfig, self).get_parser(prog_name)
@@ -45,8 +44,11 @@ class ListConfig(command.Lister):
 
         data = client.configs()
 
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns, formatters=_formatters
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_item_properties(s, self.columns, formatters=_formatters)
+                for s in data
+            ),
+        )
         return table

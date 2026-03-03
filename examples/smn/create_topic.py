@@ -13,15 +13,13 @@
 """
 Create one SMN topic
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-attrs = {
-    'name': 'myname',
-    'display_name': 'the_display_name'
-}
+attrs = {"name": "myname", "display_name": "the_display_name"}
 topic = conn.smn.create_topic(**attrs)
 print(topic)

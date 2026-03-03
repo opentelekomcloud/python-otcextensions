@@ -9,10 +9,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from urllib.parse import urlparse
+
 from openstack import proxy
 from otcextensions.sdk.tms.v1 import predefined_tag as _predefined_tag
 from otcextensions.sdk.tms.v1 import resource_tag as _resource_tag
-from urllib.parse import urlparse
 
 
 class Proxy(proxy.Proxy):
@@ -20,10 +21,8 @@ class Proxy(proxy.Proxy):
 
     def _get_endpoint_with_api_version(self, api_version):
         url_parts = urlparse(self.get_endpoint())
-        alternate_endpoint = '{scheme}://{netloc}/{api_version}'.format(
-            scheme=url_parts.scheme,
-            netloc=url_parts.netloc,
-            api_version=api_version
+        alternate_endpoint = "{scheme}://{netloc}/{api_version}".format(
+            scheme=url_parts.scheme, netloc=url_parts.netloc, api_version=api_version
         )
         return alternate_endpoint
 
@@ -74,8 +73,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
         """
-        return self._update(_predefined_tag.PredefinedTag,
-                            **attrs)
+        return self._update(_predefined_tag.PredefinedTag, **attrs)
 
     # ======== Resource Tag ========
     def resource_tags(self, resource_id, resource_type, project_id=None):
@@ -90,9 +88,11 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.tms.v1.resource_tag.ResourceTag`
             instances
         """
-        base = self._get_endpoint_with_api_version('v2.0')
-        base_path = (f"{base}/resources/{resource_id}/tags?project_id="
-                     f"{project_id}&resource_type={resource_type}")
+        base = self._get_endpoint_with_api_version("v2.0")
+        base_path = (
+            f"{base}/resources/{resource_id}/tags?project_id="
+            f"{project_id}&resource_type={resource_type}"
+        )
         return self._list(_resource_tag.ResourceTag, base_path=base_path)
 
     def create_resource_tag(self, **attrs):

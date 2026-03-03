@@ -13,9 +13,11 @@
 """
 Create group response for api group
 """
+
 import openstack
+
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "name": "test_group_response",
@@ -23,15 +25,15 @@ attrs = {
         "NOT_FOUND": {
             "status": 404,
             "body": "Bad Request",
-            "headers": [{
-                "key": "Content-Type",
-                "value": "application/json",
-            }]
+            "headers": [
+                {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                }
+            ],
         }
-    }
+    },
 }
 group_response = conn.apig.create_group_response(
-    gateway="gateway_id",
-    group="group_id",
-    **attrs
+    gateway="gateway_id", group="group_id", **attrs
 )

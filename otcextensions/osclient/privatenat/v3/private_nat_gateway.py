@@ -19,7 +19,6 @@ from osc_lib.command import command
 
 from otcextensions.i18n import _
 
-
 LOG = logging.getLogger(__name__)
 
 
@@ -27,90 +26,92 @@ class ListPrivateNatGateways(command.Lister):
 
     _description = _("List Private NAT Gateways.")
     columns = (
-        'Id',
-        'Name',
-        'Spec',
-        'Status',
-        'Project Id',
-        'Enterprise Project Id',
+        "Id",
+        "Name",
+        "Spec",
+        "Status",
+        "Project Id",
+        "Enterprise Project Id",
     )
 
     def get_parser(self, prog_name):
         parser = super(ListPrivateNatGateways, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
             help=_("Specifies the number of records displayed on each page."),
         )
         parser.add_argument(
-            '--marker',
-            metavar='<marker>',
+            "--marker",
+            metavar="<marker>",
             help=_("Specifies the start resource ID of pagination query."),
         )
         parser.add_argument(
-            '--page-reverse',
-            action='store_true',
+            "--page-reverse",
+            action="store_true",
             default=False,
-            help=_("Specifies whether to query resources"
-                   " on the previous page."),
+            help=_("Specifies whether to query resources" " on the previous page."),
         )
         parser.add_argument(
-            '--id',
-            metavar='<id>',
-            nargs='+',
+            "--id",
+            metavar="<id>",
+            nargs="+",
             help=_("Specifies the private NAT gateway IDs."),
         )
         parser.add_argument(
-            '--name',
-            metavar='<name>',
-            nargs='+',
+            "--name",
+            metavar="<name>",
+            nargs="+",
             help=_("Specifies the private NAT gateway names."),
         )
         parser.add_argument(
-            '--description',
-            metavar='<description>',
-            nargs='+',
-            help=_("Provides supplementary information"
-                   " about the private NAT gateway."),
+            "--description",
+            metavar="<description>",
+            nargs="+",
+            help=_(
+                "Provides supplementary information" " about the private NAT gateway."
+            ),
         )
         parser.add_argument(
-            '--spec',
-            metavar='<spec>',
-            nargs='+',
+            "--spec",
+            metavar="<spec>",
+            nargs="+",
             help=_("Specifies the private NAT gateway specifications. "),
         )
         parser.add_argument(
-            '--project-id',
-            metavar='<project_id>',
-            nargs='+',
+            "--project-id",
+            metavar="<project_id>",
+            nargs="+",
             help=_("Specifies the project ID. Repeat for multiple values."),
         )
         parser.add_argument(
-            '--status',
-            metavar='<status>',
-            nargs='+',
+            "--status",
+            metavar="<status>",
+            nargs="+",
             help=_("Specifies the private NAT gateway status."),
         )
         parser.add_argument(
-            '--vpc-id',
-            metavar='<vpc_id>',
-            nargs='+',
+            "--vpc-id",
+            metavar="<vpc_id>",
+            nargs="+",
             help=_("Specifies the ID of the VPC."),
         )
         parser.add_argument(
-            '--virsubnet-id',
-            metavar='<virsubnet_id>',
-            nargs='+',
+            "--virsubnet-id",
+            metavar="<virsubnet_id>",
+            nargs="+",
             help=_("Specifies the ID of the subnet."),
         )
         parser.add_argument(
-            '--enterprise-project-id',
-            metavar='<enterprise_project_id>',
-            nargs='+',
-            help=_("Specifies the enterprise project ID "
-                   "associated with the private NAT gateway."),
+            "--enterprise-project-id",
+            metavar="<enterprise_project_id>",
+            nargs="+",
+            help=_(
+                "Specifies the enterprise project ID "
+                "associated with the private NAT gateway."
+            ),
         )
 
         return parser
@@ -120,34 +121,31 @@ class ListPrivateNatGateways(command.Lister):
 
         attrs = {}
         args_list = [
-            'limit',
-            'marker',
-            'page_reverse',
-            'id',
-            'name',
-            'description',
-            'spec',
-            'project_id',
-            'status',
-            'vpc_id',
-            'virsubnet_id',
-            'enterprise_project_id',
+            "limit",
+            "marker",
+            "page_reverse",
+            "id",
+            "name",
+            "description",
+            "spec",
+            "project_id",
+            "status",
+            "vpc_id",
+            "virsubnet_id",
+            "enterprise_project_id",
         ]
         for arg in args_list:
             val = getattr(parsed_args, arg)
-            if arg == 'page_reverse':
+            if arg == "page_reverse":
                 # Only send flag if explicitly requested
                 if val:
                     attrs[arg] = val
-            elif val is not None and val != [] and val != '':
+            elif val is not None and val != [] and val != "":
                 attrs[arg] = val
 
         data = client.private_nat_gateways(**attrs)
 
         return (
             self.columns,
-            (
-                utils.get_item_properties(s, self.columns)
-                for s in data
-            )
+            (utils.get_item_properties(s, self.columns) for s in data),
         )

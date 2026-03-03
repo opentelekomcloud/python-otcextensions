@@ -14,29 +14,29 @@ from openstack import resource
 
 
 class Flavor(resource.Resource):
-    base_path = '/flavors'
+    base_path = "/flavors"
 
-    resources_key = 'flavors'
+    resources_key = "flavors"
 
     allow_list = True
 
     # Properties
     #: Availability Zones. *Type: str*
-    availability_zones = resource.Body('availableAZ')
+    availability_zones = resource.Body("availableAZ")
     #: Disk capacity range (min,max). *Type: str*
-    disk_range = resource.Body('diskrange', type=str)
+    disk_range = resource.Body("diskrange", type=str)
     #: ID of a flavor. *Type: ID*
-    flavor_id = resource.Body('flavor_id', alternate_id=True)
+    flavor_id = resource.Body("flavor_id", alternate_id=True)
     #: ram. *Type: int*
-    ram = resource.Body('ram', type=int)
+    ram = resource.Body("ram", type=int)
     #: region. *Type: str*
-    region = resource.Body('region')
+    region = resource.Body("region")
     #: Instance Type.
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: cpu count. *Type: int*
-    vcpus = resource.Body('cpu', type=int)
+    vcpus = resource.Body("cpu", type=int)
     #: Version. *Type: str*
-    version = resource.Body('version')
+    version = resource.Body("version")
 
     @classmethod
     def list(cls, session, paginated=True, base_path=None, **params):
@@ -90,10 +90,10 @@ class Flavor(resource.Resource):
         exceptions.raise_from_response(response)
         data = response.json()
 
-        if 'versions' in data:
-            for ver in data['versions']:
-                version = ver['version']
-                type = ver['type']
+        if "versions" in data:
+            for ver in data["versions"]:
+                version = ver["version"]
+                type = ver["type"]
                 resources = ver[cls.resources_key]
 
                 if not isinstance(resources, list):

@@ -26,21 +26,30 @@ class TestListDMSQueue(TestDMSQueue):
 
     queues = fakes.FakeQueue.create_multiple(3)
 
-    columns = ('ID', 'name', 'queue_mode', 'description', 'redrive_policy',
-               'max_consume_count', 'retention_hours')
+    columns = (
+        "ID",
+        "name",
+        "queue_mode",
+        "description",
+        "redrive_policy",
+        "max_consume_count",
+        "retention_hours",
+    )
 
     data = []
 
     for s in queues:
-        data.append((
-            s.id,
-            s.name,
-            s.queue_mode,
-            s.description,
-            s.redrive_policy,
-            s.max_consume_count,
-            s.retention_hours
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.queue_mode,
+                s.description,
+                s.redrive_policy,
+                s.max_consume_count,
+                s.retention_hours,
+            )
+        )
 
     def setUp(self):
         super(TestListDMSQueue, self).setUp()
@@ -50,8 +59,7 @@ class TestListDMSQueue(TestDMSQueue):
         self.client.queues = mock.Mock()
 
     def test_list_queue(self):
-        arglist = [
-        ]
+        arglist = []
 
         verifylist = [
             # ('group', None),
@@ -61,9 +69,7 @@ class TestListDMSQueue(TestDMSQueue):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.queues.side_effect = [
-            self.queues
-        ]
+        self.client.queues.side_effect = [self.queues]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -78,8 +84,15 @@ class TestShowDMSQueue(TestDMSQueue):
 
     _data = fakes.FakeQueue.create_one()
 
-    columns = ('ID', 'name', 'queue_mode', 'description', 'redrive_policy',
-               'max_consume_count', 'retention_hours')
+    columns = (
+        "ID",
+        "name",
+        "queue_mode",
+        "description",
+        "redrive_policy",
+        "max_consume_count",
+        "retention_hours",
+    )
 
     data = (
         _data.id,
@@ -88,7 +101,7 @@ class TestShowDMSQueue(TestDMSQueue):
         _data.description,
         _data.redrive_policy,
         _data.max_consume_count,
-        _data.retention_hours
+        _data.retention_hours,
     )
 
     def setUp(self):
@@ -99,19 +112,13 @@ class TestShowDMSQueue(TestDMSQueue):
         self.client.show_queue = mock.Mock()
 
     def test_show_default(self):
-        arglist = [
-            'test_queue'
-        ]
-        verifylist = [
-            ('queue', 'test_queue')
-        ]
+        arglist = ["test_queue"]
+        verifylist = [("queue", "test_queue")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.get_queue.side_effect = [
-            self._data
-        ]
+        self.client.get_queue.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -132,10 +139,8 @@ class TestDeleteDMSQueue(TestDMSQueue):
         self.client.delete_queue = mock.Mock()
 
     def test_delete(self):
-        arglist = ['t1']
-        verifylist = [
-            ('queue', ['t1'])
-        ]
+        arglist = ["t1"]
+        verifylist = [("queue", ["t1"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -145,19 +150,17 @@ class TestDeleteDMSQueue(TestDMSQueue):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [mock.call('t1')]
+        calls = [mock.call("t1")]
 
         self.client.delete_queue.assert_has_calls(calls)
         self.assertEqual(1, self.client.delete_queue.call_count)
 
     def test_delete_multiple(self):
         arglist = [
-            't1',
-            't2',
+            "t1",
+            "t2",
         ]
-        verifylist = [
-            ('queue', ['t1', 't2'])
-        ]
+        verifylist = [("queue", ["t1", "t2"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -167,7 +170,7 @@ class TestDeleteDMSQueue(TestDMSQueue):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [mock.call('t1'), mock.call('t2')]
+        calls = [mock.call("t1"), mock.call("t2")]
 
         self.client.delete_queue.assert_has_calls(calls)
         self.assertEqual(2, self.client.delete_queue.call_count)
@@ -177,8 +180,15 @@ class TestCreateDMSQueue(TestDMSQueue):
 
     _data = fakes.FakeQueue.create_one()
 
-    columns = ('ID', 'name', 'queue_mode', 'description', 'redrive_policy',
-               'max_consume_count', 'retention_hours')
+    columns = (
+        "ID",
+        "name",
+        "queue_mode",
+        "description",
+        "redrive_policy",
+        "max_consume_count",
+        "retention_hours",
+    )
 
     data = (
         _data.id,
@@ -187,7 +197,7 @@ class TestCreateDMSQueue(TestDMSQueue):
         _data.description,
         _data.redrive_policy,
         _data.max_consume_count,
-        _data.retention_hours
+        _data.retention_hours,
     )
 
     def setUp(self):
@@ -199,39 +209,41 @@ class TestCreateDMSQueue(TestDMSQueue):
 
     def test_show_default(self):
         arglist = [
-            'name',
-            'NORMAL',
-            '--description', 'descr',
-            '--redrive_policy', 'enable',
-            '--max_consume_count', '1',
-            '--retention_hours', '2'
+            "name",
+            "NORMAL",
+            "--description",
+            "descr",
+            "--redrive_policy",
+            "enable",
+            "--max_consume_count",
+            "1",
+            "--retention_hours",
+            "2",
         ]
         verifylist = [
-            ('name', 'name'),
-            ('queue_mode', 'NORMAL'),
-            ('description', 'descr'),
-            ('redrive_policy', 'enable'),
-            ('max_consume_count', 1),
-            ('retention_hours', 2)
+            ("name", "name"),
+            ("queue_mode", "NORMAL"),
+            ("description", "descr"),
+            ("redrive_policy", "enable"),
+            ("max_consume_count", 1),
+            ("retention_hours", 2),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_queue.side_effect = [
-            self._data
-        ]
+        self.client.create_queue.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_queue.assert_called_with(
-            description='descr',
+            description="descr",
             max_consume_count=1,
-            name='name',
-            queue_mode='NORMAL',
-            redrive_policy='enable',
-            retention_hours=2
+            name="name",
+            queue_mode="NORMAL",
+            redrive_policy="enable",
+            retention_hours=2,
         )
 
         self.assertEqual(self.columns, columns)

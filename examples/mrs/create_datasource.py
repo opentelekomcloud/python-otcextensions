@@ -10,21 +10,22 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Create MRS Datasource with attributes
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'name': 'my-data-source',
-    'url': '/simple/mapreduce/input',
-    'is_protected': False,
-    'is_public': False,
-    'type': 'hdfs',
-    'description': 'this is the data source template'
+    "name": "my-data-source",
+    "url": "/simple/mapreduce/input",
+    "is_protected": False,
+    "is_public": False,
+    "type": "hdfs",
+    "description": "this is the data source template",
 }
 
 datasource = conn.mrs.create_datasource(**attrs)

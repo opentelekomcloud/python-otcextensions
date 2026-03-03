@@ -13,17 +13,16 @@
 """
 Restore a Distributed Cache Service instance.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-instance = 'instance_id'
-backup_id = 'backup_id'
+instance = "instance_id"
+backup_id = "backup_id"
 restore = conn.dcs.restore_instance(
-    instance=instance,
-    backup_id=backup_id,
-    description='Test restore of DCS instance'
+    instance=instance, backup_id=backup_id, description="Test restore of DCS instance"
 )
 print(restore)

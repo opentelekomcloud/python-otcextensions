@@ -10,81 +10,80 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-
 from otcextensions.common import format
 
 
 class TaskStatus(resource.Resource):
 
-    base_path = '/query_task_status'
+    base_path = "/query_task_status"
 
     # capabilities
     allow_fetch = True
 
-    _query_mapping = resource.QueryParameters('task_id')
+    _query_mapping = resource.QueryParameters("task_id")
 
     # Properties
     #: Status of task
     #: validate status are `success`, `failed`, `waiting`, `running`
-    task_status = resource.Body('task_status')
+    task_status = resource.Body("task_status")
     #: Additional task status message
-    task_msg = resource.Body('task_msg')
+    task_msg = resource.Body("task_msg")
 
 
 class FloatingIPStatus(resource.Resource):
 
-    base_path = '/antiddos/%(floating_ip_id)s/status'
+    base_path = "/antiddos/%(floating_ip_id)s/status"
 
     # capabilities
     allow_fetch = True
 
     # Properties
-    floating_ip_id = resource.URI('floating_ip_id')
+    floating_ip_id = resource.URI("floating_ip_id")
     #: Status of Anti-DDos
     #: validate status are `normal`, `configging`, `notConfig`,
     #: `packetcleaning`, `packetdropping`
-    status = resource.Body('status')
+    status = resource.Body("status")
 
 
 class FloatingIPEvent(resource.Resource):
 
-    resources_key = 'logs'
-    base_path = '/antiddos/%(floating_ip_id)s/logs'
+    resources_key = "logs"
+    base_path = "/antiddos/%(floating_ip_id)s/logs"
 
-    _query_mapping = resource.QueryParameters('limit', 'offset', 'sort_dir')
+    _query_mapping = resource.QueryParameters("limit", "offset", "sort_dir")
 
     # capabilities
     allow_list = True
 
     # Properties
-    floating_ip_id = resource.URI('floating_ip_id')
+    floating_ip_id = resource.URI("floating_ip_id")
     #: start time
     #: *Type: int*
-    start_time = resource.Body('start_time', type=format.TimeTMsStr)
+    start_time = resource.Body("start_time", type=format.TimeTMsStr)
     #: end time
     #: *Type: int*
-    end_time = resource.Body('end_time', type=format.TimeTMsStr)
+    end_time = resource.Body("end_time", type=format.TimeTMsStr)
     #: Anti-ddos status
     #: Defense status, the possible value of which is one of the following:
     #: * 1: indicates that traffic cleaning is underway.
     #: * 2: indicates that traffic is discarded.
     #: *Type: int*
-    status = resource.Body('status', type=int)
+    status = resource.Body("status", type=int)
     #: Trigger bps (bit/s)
     #: *Type: int*
-    trigger_bps = resource.Body('trigger_bps', type=int)
+    trigger_bps = resource.Body("trigger_bps", type=int)
     #: Trigger package per second
     #: *Type: int*
-    trigger_pps = resource.Body('trigger_pps', type=int)
+    trigger_pps = resource.Body("trigger_pps", type=int)
     #: Trigger http requests
     #: *Type: int*
-    trigger_http_pps = resource.Body('trigger_http_pps', type=int)
+    trigger_http_pps = resource.Body("trigger_http_pps", type=int)
 
 
 class FloatingIPDayStat(resource.Resource):
 
-    resources_key = 'data'
-    base_path = '/antiddos/%(floating_ip_id)s/daily'
+    resources_key = "data"
+    base_path = "/antiddos/%(floating_ip_id)s/daily"
 
     # capabilities
     allow_list = True
@@ -92,61 +91,59 @@ class FloatingIPDayStat(resource.Resource):
     # Properties
     #: Data start time
     #: *Type: int*
-    period_start = resource.Body('period_start', type=format.TimeTMsStr)
+    period_start = resource.Body("period_start", type=format.TimeTMsStr)
     #: In (bit/s)
     #: *Type: int*
-    bps_in = resource.Body('bps_in', type=int)
+    bps_in = resource.Body("bps_in", type=int)
     #: Attack (bit/s)
     #: *Type: int*
-    bps_attack = resource.Body('bps_attack', type=int)
+    bps_attack = resource.Body("bps_attack", type=int)
     #: Total data (bit/s)
     #: *Type: int*
-    total_bps = resource.Body('total_bps', type=int)
+    total_bps = resource.Body("total_bps", type=int)
     #: Package in speed (/s)
     #: *Type: int*
-    pps_in = resource.Body('pps_in', type=int)
+    pps_in = resource.Body("pps_in", type=int)
     #: Package attack speed (/s)
     #: *Type: int*
-    pps_attack = resource.Body('pps_attack', type=int)
+    pps_attack = resource.Body("pps_attack", type=int)
     #: Total package speed (/s)
     #: *Type: int*
-    total_pps = resource.Body('total_pps', type=int)
+    total_pps = resource.Body("total_pps", type=int)
 
 
 class FloatingIPWeekStatData(resource.Resource):
     # Properties
     #: Intercept time in one week
     #: *Type: int*
-    ddos_intercept_times = resource.Body('ddos_intercept_times', type=int)
+    ddos_intercept_times = resource.Body("ddos_intercept_times", type=int)
     #: *Type: int*
-    ddos_blackhole_times = resource.Body('ddos_blackhole_times', type=int)
+    ddos_blackhole_times = resource.Body("ddos_blackhole_times", type=int)
     #: *Type: int*
-    max_attack_bps = resource.Body('max_attack_bps', type=int)
+    max_attack_bps = resource.Body("max_attack_bps", type=int)
     #: *Type: int*
-    max_attack_conns = resource.Body('max_attack_conns ', type=int)
+    max_attack_conns = resource.Body("max_attack_conns ", type=int)
     #: Data start time
     #: *Type: int*
-    period_start_date = resource.Body('period_start_date',
-                                      type=format.TimeTMsStr)
+    period_start_date = resource.Body("period_start_date", type=format.TimeTMsStr)
 
 
 class FloatingIPWeekStat(resource.Resource):
 
-    base_path = '/antiddos/weekly'
+    base_path = "/antiddos/weekly"
 
     # capabilities
     allow_fetch = True
 
-    _query_mapping = resource.QueryParameters('period_start_date')
+    _query_mapping = resource.QueryParameters("period_start_date")
 
     # Properties
     #: Intercept time in one week
     #: *Type: int*
-    ddos_intercept_times = resource.Body('ddos_intercept_times', type=int)
+    ddos_intercept_times = resource.Body("ddos_intercept_times", type=int)
     #: A list of data in one week
     #: *Type: list*
-    weekdata = resource.Body('weekdata', type=list,
-                             list_type=FloatingIPWeekStatData)
+    weekdata = resource.Body("weekdata", type=list, list_type=FloatingIPWeekStatData)
     #: Top 10 ip address in one week
     #: *Type: list*
-    top10 = resource.Body('top10', type=list)
+    top10 = resource.Body("top10", type=list)

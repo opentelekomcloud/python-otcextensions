@@ -25,19 +25,12 @@ class TestDCSQuota(fakes.TestDCS):
 
 class TestListDCSQuota(TestDCSQuota):
     quotas = fakes.FakeQuota.create_multiple(2)
-    columns = ('quota', 'used', 'type', 'min', 'max', 'unit')
+    columns = ("quota", "used", "type", "min", "max", "unit")
 
     data = []
 
     for s in quotas:
-        data.append((
-            s.quota,
-            s.used,
-            s.type,
-            s.min,
-            s.max,
-            s.unit
-        ))
+        data.append((s.quota, s.used, s.type, s.min, s.max, s.unit))
 
     def setUp(self):
         super(TestListDCSQuota, self).setUp()
@@ -45,19 +38,15 @@ class TestListDCSQuota(TestDCSQuota):
         self.client.quotas = mock.Mock()
 
     def test_list_quota(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.quotas.side_effect = [
-            self.quotas
-        ]
+        self.client.quotas.side_effect = [self.quotas]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)

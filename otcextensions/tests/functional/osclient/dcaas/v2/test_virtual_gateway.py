@@ -31,63 +31,66 @@ class TestVirtualGateway(common.DcaasTestCase):
             super(TestVirtualGateway, self).tearDown()
 
     def _create_virtual_gateway(self):
-        json_output = json.loads(self.openstack(
-            'dcaas gateway create '
-            '{vpc_id} '
-            '{local_ep_group_id} '
-            '--name {name} -f json '.format(
-                name=self.VG_NAME,
-                vpc_id=self.VPC_ID,
-                local_ep_group_id=self.EP_GROUP_ID
+        json_output = json.loads(
+            self.openstack(
+                "dcaas gateway create "
+                "{vpc_id} "
+                "{local_ep_group_id} "
+                "--name {name} -f json ".format(
+                    name=self.VG_NAME,
+                    vpc_id=self.VPC_ID,
+                    local_ep_group_id=self.EP_GROUP_ID,
+                )
             )
-        ))
-        self.VG_ID = json_output['id']
+        )
+        self.VG_ID = json_output["id"]
         return json_output
 
     def _delete_virtual_gateway(self):
-        self.openstack('dcaas gateway delete ' + self.VG_ID)
+        self.openstack("dcaas gateway delete " + self.VG_ID)
 
     def test_create_virtual_gateway(self):
         json_output = self._create_virtual_gateway()
         self.assertIsNotNone(json_output)
-        self.assertEqual(json_output['id'], self.VG_ID)
+        self.assertEqual(json_output["id"], self.VG_ID)
 
     def test_list_virtual_gateway(self):
         self._create_virtual_gateway()
-        json_output = json.loads(self.openstack(
-            'dcaas gateway list -f json'
-        ))
+        json_output = json.loads(self.openstack("dcaas gateway list -f json"))
         self.assertIsNotNone(json_output)
 
     def test_list_filter_virtual_gateway(self):
         self._create_virtual_gateway()
-        json_output = json.loads(self.openstack(
-            'dcaas gateway list '
-            '--name {name} '
-            '--vpc_id {vpc_id} '
-            '--local_ep_group_id {local_ep_group_id} -f json'.format(
-                name=self.VG_NAME,
-                vpc_id=self.VPC_ID,
-                local_ep_group_id=self.EP_GROUP_ID
+        json_output = json.loads(
+            self.openstack(
+                "dcaas gateway list "
+                "--name {name} "
+                "--vpc_id {vpc_id} "
+                "--local_ep_group_id {local_ep_group_id} -f json".format(
+                    name=self.VG_NAME,
+                    vpc_id=self.VPC_ID,
+                    local_ep_group_id=self.EP_GROUP_ID,
+                )
             )
-        ))
+        )
         self.assertIsNotNone(json_output)
 
     def test_find_virtual_gateway(self):
         self._create_virtual_gateway()
-        json_output = json.loads(self.openstack(
-            'dcaas gateway show {id} -f json'.format(id=self.VG_ID)
-        ))
+        json_output = json.loads(
+            self.openstack("dcaas gateway show {id} -f json".format(id=self.VG_ID))
+        )
         self.assertIsNotNone(json_output)
 
     def test_update_virtual_gateway(self):
         self._create_virtual_gateway()
-        gateway_name = self.VG_NAME + '-updated'
-        json_output = json.loads(self.openstack(
-            'dcaas gateway update {id} --name {name} -f json'.format(
-                id=self.VG_ID,
-                name=gateway_name
+        gateway_name = self.VG_NAME + "-updated"
+        json_output = json.loads(
+            self.openstack(
+                "dcaas gateway update {id} --name {name} -f json".format(
+                    id=self.VG_ID, name=gateway_name
+                )
             )
-        ))
-        self.assertEqual(json_output['id'], self.VG_ID)
-        self.assertEqual(json_output['name'], gateway_name)
+        )
+        self.assertEqual(json_output["id"], self.VG_ID)
+        self.assertEqual(json_output["name"], gateway_name)

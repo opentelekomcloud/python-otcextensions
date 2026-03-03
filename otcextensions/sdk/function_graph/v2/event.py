@@ -14,14 +14,14 @@ from openstack import resource
 
 
 class ListEvents(resource.Resource):
-    id = resource.Body('id', type=str)
-    last_modified = resource.Body('last_modified', type=int)
-    name = resource.Body('name', type=str)
+    id = resource.Body("id", type=str)
+    last_modified = resource.Body("last_modified", type=int)
+    name = resource.Body("name", type=str)
 
 
 class Event(resource.Resource):
-    base_path = '/fgs/functions/%(function_urn)s/events'
-    resources_key = 'events'
+    base_path = "/fgs/functions/%(function_urn)s/events"
+    resources_key = "events"
     # Capabilities
     allow_create = True
     allow_fetch = True
@@ -30,20 +30,20 @@ class Event(resource.Resource):
     allow_commit = True
 
     # Properties
-    function_urn = resource.URI('function_urn', type=str)
+    function_urn = resource.URI("function_urn", type=str)
     #: Test event name. Max. 25 of letters, digits, hyphens (-),
     #: and underscores (_). Start with a letter,
     #: and end with a letter or digit.
-    name = resource.Body('name', type=str)
+    name = resource.Body("name", type=str)
     #: Test event content, which is a Base64-encoded JSON character string.
-    content = resource.Body('content', type=str)
+    content = resource.Body("content", type=str)
 
     # Attributes
     #: Test event ID.
-    id = resource.Body('id', type=str)
+    id = resource.Body("id", type=str)
     #: Total number of test events.
-    count = resource.Body('count', type=int)
+    count = resource.Body("count", type=int)
     #: Next read location.
-    next_marker = resource.Body('next_marker', type=int)
+    next_marker = resource.Body("next_marker", type=int)
     #: Last update time.
-    updated_at = resource.Body('last_modified', type=int)
+    updated_at = resource.Body("last_modified", type=int)

@@ -13,13 +13,14 @@
 """
 Get DNS Floating IP PTR record by id or class Zone
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-fip = '<region>:<floating_ip_id>'
+fip = "<region>:<floating_ip_id>"
 # example: fip = 'eu-de:b700387d-5209-45b3-ac45-313ded1077cc'
 fip = conn.dns.get_floating_ip(fip)
 print(fip)

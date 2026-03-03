@@ -12,6 +12,7 @@
 # under the License.
 #
 """Querying a Built-in Algorithm."""
+
 import openstack
 
 openstack.enable_logging(True)

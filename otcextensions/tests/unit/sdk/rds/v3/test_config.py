@@ -9,19 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import copy
+
+import mock
 from keystoneauth1 import adapter
 
-import copy
-import mock
-
 from openstack import resource
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.rds.v3 import configuration
 
-
-IDENTIFIER = 'ID'
+IDENTIFIER = "ID"
 EXAMPLE = {
     "id": IDENTIFIER,
     "name": "paramsGroup-b6d2",
@@ -36,10 +33,7 @@ EXAMPLE = {
     "ram": 2,
     "spec_code": "rds.mysql.c2.medium.ha",
     "instance_mode": "ha",
-    "values": {
-        "max_connections": "10",
-        "autocommit": "OFF"
-    }
+    "values": {"max_connections": "10", "autocommit": "OFF"},
 }
 
 
@@ -53,9 +47,9 @@ class TestConfiguration(base.TestCase):
     def test_basic(self):
         sot = configuration.Configuration()
 
-        self.assertEqual('/configurations', sot.base_path)
-        self.assertEqual('configurations', sot.resources_key)
-        self.assertEqual('configuration', sot.resource_key)
+        self.assertEqual("/configurations", sot.base_path)
+        self.assertEqual("configurations", sot.resources_key)
+        self.assertEqual("configuration", sot.resource_key)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
@@ -65,37 +59,39 @@ class TestConfiguration(base.TestCase):
     def test_make_it(self):
         sot = configuration.Configuration(**EXAMPLE)
         self.assertEqual(IDENTIFIER, sot.id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['datastore'], sot.datastore)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['datastore_name'], sot.datastore_name)
-        self.assertEqual(EXAMPLE['datastore_version_name'],
-                         sot.datastore_version_name)
-        self.assertEqual(EXAMPLE['created'], sot.created_at)
-        self.assertEqual(EXAMPLE['updated'], sot.updated_at)
-        self.assertEqual(EXAMPLE['user_defined'], sot.is_user_defined)
-        self.assertEqual(EXAMPLE['values'], sot.values)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["datastore"], sot.datastore)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["datastore_name"], sot.datastore_name)
+        self.assertEqual(EXAMPLE["datastore_version_name"], sot.datastore_version_name)
+        self.assertEqual(EXAMPLE["created"], sot.created_at)
+        self.assertEqual(EXAMPLE["updated"], sot.updated_at)
+        self.assertEqual(EXAMPLE["user_defined"], sot.is_user_defined)
+        self.assertEqual(EXAMPLE["values"], sot.values)
 
     def test_apply(self):
         sot = configuration.Configuration(id=IDENTIFIER)
-        instances = ['id1', 'id2']
+        instances = ["id1", "id2"]
 
         resp = mock.Mock()
         resp.body = {
             "configuration_id": IDENTIFIER,
             "configuration_name": "paramsGroup-bcf9",
-            "apply_results": [{
-                "instance_id": "fe5f5a07539c431181fc78220713aebein01",
-                "instance_name": "zyy1",
-                "restart_required": False,
-                "success": False
-            }, {
-                "instance_id": "73ea2bf70c73497f89ee0ad4ee008aa2in01",
-                "instance_name": "zyy2",
-                "restart_required": False,
-                "success": False
-            }],
-            "success": False
+            "apply_results": [
+                {
+                    "instance_id": "fe5f5a07539c431181fc78220713aebein01",
+                    "instance_name": "zyy1",
+                    "restart_required": False,
+                    "success": False,
+                },
+                {
+                    "instance_id": "73ea2bf70c73497f89ee0ad4ee008aa2in01",
+                    "instance_name": "zyy2",
+                    "restart_required": False,
+                    "success": False,
+                },
+            ],
+            "success": False,
         }
         resp.json = mock.Mock(return_value=copy.deepcopy(resp.body))
         resp.headers = {}
@@ -104,28 +100,23 @@ class TestConfiguration(base.TestCase):
 
         updated = sot.apply(self.sess, instances)
         self.sess.put.assert_called_with(
-            'configurations/ID/apply',
-            json={'instance_ids': ['id1', 'id2']}
+            "configurations/ID/apply", json={"instance_ids": ["id1", "id2"]}
         )
 
-        self.assertEqual(resp.body['configuration_id'], updated.id)
-        self.assertEqual(resp.body['configuration_name'], updated.name)
-        self.assertEqual(resp.body['apply_results'],
-                         sot.apply_results)
+        self.assertEqual(resp.body["configuration_id"], updated.id)
+        self.assertEqual(resp.body["configuration_name"], updated.name)
+        self.assertEqual(resp.body["apply_results"], sot.apply_results)
 
     def test_create(self):
         sot = configuration.Configuration(id=IDENTIFIER)
 
-        with mock.patch.object(resource.Resource, 'create') as res_mock:
+        with mock.patch.object(resource.Resource, "create") as res_mock:
             sot.create(self.sess)
-            res_mock.assert_called_with(self.sess,
-                                        prepend_key=False,
-                                        base_path=None)
+            res_mock.assert_called_with(self.sess, prepend_key=False, base_path=None)
 
     def test_commit(self):
         sot = configuration.Configuration(id=IDENTIFIER)
 
-        with mock.patch.object(resource.Resource, 'commit') as res_mock:
+        with mock.patch.object(resource.Resource, "commit") as res_mock:
             sot.commit(self.sess)
-            res_mock.assert_called_with(self.sess,
-                                        prepend_key=False)
+            res_mock.assert_called_with(self.sess, prepend_key=False)

@@ -13,17 +13,15 @@
 """
 Update one SMN topic
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-attrs = {
-    'name': 'myname',
-    'display_name': 'the_display_name3'
-}
-urn = 'urn:smn:eu-de:123:myname'
+attrs = {"name": "myname", "display_name": "the_display_name3"}
+urn = "urn:smn:eu-de:123:myname"
 topic = conn.smn.get_topic(topic=urn)
 topic = conn.smn.update_topic(topic, **attrs)
 print(topic)

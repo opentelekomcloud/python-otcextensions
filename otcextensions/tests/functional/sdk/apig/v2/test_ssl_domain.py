@@ -25,11 +25,13 @@ class TestSSLDomain(TestApiG):
         attrs = {
             "name": "cert_demo",
             "cert_content": Path("/mnt/c/Users/sand1/fullchain.pem")
-            .read_text().replace('\r\n', '\n'),
+            .read_text()
+            .replace("\r\n", "\n"),
             "private_key": Path("/mnt/c/Users/sand1/privkey.pem")
-            .read_text().replace('\r\n', '\n'),
+            .read_text()
+            .replace("\r\n", "\n"),
             "type": "instance",
-            "instance_id": TestSSLDomain.gateway_id
+            "instance_id": TestSSLDomain.gateway_id,
         }
         certificate = self.client.create_ssl_certificate(**attrs)
         self.assertIsNotNone(certificate.id)
@@ -38,13 +40,9 @@ class TestSSLDomain(TestApiG):
             self.client.delete_ssl_certificate,
             ssl_certificate=certificate.id,
         )
-        attrs = {
-            "url_domain": "test-domain-ssl-cert.com"
-        }
+        attrs = {"url_domain": "test-domain-ssl-cert.com"}
         domain = self.client.bind_domain_name(
-            gateway=TestSSLDomain.gateway_id,
-            group=TestSSLDomain.group_id,
-            **attrs
+            gateway=TestSSLDomain.gateway_id, group=TestSSLDomain.group_id, **attrs
         )
         TestSSLDomain.domain = domain
         self.addCleanup(
@@ -55,31 +53,33 @@ class TestSSLDomain(TestApiG):
         )
 
     def test_list_domain_for_cert(self):
-        result = list(self.client.domains_for_certificate(
-            ssl_certificate=TestSSLDomain.cert_id
-        ))
+        result = list(
+            self.client.domains_for_certificate(ssl_certificate=TestSSLDomain.cert_id)
+        )
         self.assertEqual(len(result), 0)
 
     def test_bind_certificates_for_domain(self):
         attrs = {
-            "domains": [{
-                "domain": "test-domain-ssl-cert.com",
-                "instance_ids": [TestSSLDomain.gateway_id]
-            }]
+            "domains": [
+                {
+                    "domain": "test-domain-ssl-cert.com",
+                    "instance_ids": [TestSSLDomain.gateway_id],
+                }
+            ]
         }
         self.client.bind_ssl_certificates_for_domain(
-            ssl_certificate=TestSSLDomain.cert_id,
-            **attrs
+            ssl_certificate=TestSSLDomain.cert_id, **attrs
         )
 
     def test_unbind_certificates_for_domain(self):
         attrs = {
-            "domains": [{
-                "domain": "test-domain-ssl-cert.com",
-                "instance_ids": [TestSSLDomain.gateway_id]
-            }]
+            "domains": [
+                {
+                    "domain": "test-domain-ssl-cert.com",
+                    "instance_ids": [TestSSLDomain.gateway_id],
+                }
+            ]
         }
         self.client.unbind_ssl_certificates_for_domain(
-            ssl_certificate=TestSSLDomain.cert_id,
-            **attrs
+            ssl_certificate=TestSSLDomain.cert_id, **attrs
         )

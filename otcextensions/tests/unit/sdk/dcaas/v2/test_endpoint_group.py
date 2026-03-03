@@ -10,20 +10,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dcaas.v2 import endpoint_group
-
 
 EXAMPLE = {
     "name": "endpoint group1",
     "description": "test description",
     "endpoints": ["10.2.0.0/24", "10.3.0.0/24"],
     "tenant_id": "6fbe9263116a4b68818cf1edce16bc4f",
-    "type": "cidr"
+    "type": "cidr",
 }
 
 
@@ -36,9 +33,9 @@ class TestDirectConnectEndpointGroup(base.TestCase):
 
     def test_basic(self):
         sot = endpoint_group.DirectConnectEndpointGroup()
-        self.assertEqual('/dcaas/dc-endpoint-groups', sot.base_path)
-        self.assertEqual('dc_endpoint_group', sot.resource_key)
-        self.assertEqual('dc_endpoint_groups', sot.resources_key)
+        self.assertEqual("/dcaas/dc-endpoint-groups", sot.base_path)
+        self.assertEqual("dc_endpoint_group", sot.resource_key)
+        self.assertEqual("dc_endpoint_groups", sot.resources_key)
 
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -48,8 +45,8 @@ class TestDirectConnectEndpointGroup(base.TestCase):
 
     def test_make_it(self):
         sot = endpoint_group.DirectConnectEndpointGroup(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['endpoints'], sot.endpoints)
-        self.assertEqual(EXAMPLE['tenant_id'], sot.project_id)
-        self.assertEqual(EXAMPLE['type'], sot.type)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["endpoints"], sot.endpoints)
+        self.assertEqual(EXAMPLE["tenant_id"], sot.project_id)
+        self.assertEqual(EXAMPLE["type"], sot.type)

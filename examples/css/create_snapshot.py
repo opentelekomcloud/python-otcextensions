@@ -17,13 +17,13 @@ Create CSS Cluster Snapshot
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluster-uuid'
+cluster_id = "cluster-uuid"
 attrs = {
-    'name': 'snapshot_001',
-    'indices': 'myindex1,myindex2',
-    'description': '',
+    "name": "snapshot_001",
+    "indices": "myindex1,myindex2",
+    "description": "",
 }
 
 result = conn.css.create_snapshot(cluster_id, **attrs)

@@ -13,10 +13,11 @@
 """
 Create Auto-Scaling Group.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "scaling_group_name": "TestGroup",
@@ -26,11 +27,7 @@ attrs = {
     "max_instance_number": 10,
     "vpc_id": "26ca2783-dc40-4e3a-95b1-5a0756441e12",
     "available_zones": ["eu-de-01", "eu-de-03"],
-    "networks": [
-        {
-            "id": "25d24fc8-d019-4a34-9fff-0a09fde6a9cb"
-        }
-    ]
+    "networks": [{"id": "25d24fc8-d019-4a34-9fff-0a09fde6a9cb"}],
 }
 
 group = conn.auto_scaling.create_group(**attrs)

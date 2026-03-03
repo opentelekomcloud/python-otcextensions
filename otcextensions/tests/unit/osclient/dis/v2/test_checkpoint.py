@@ -11,22 +11,21 @@
 # under the License.
 #
 import mock
+from openstackclient.tests.unit import utils as tests_utils
 
 from otcextensions.osclient.dis.v2 import checkpoint
 from otcextensions.sdk.dis.v2 import checkpoint as sdk_checkpoint
 from otcextensions.tests.unit.osclient.dis.v2 import fakes
 
-from openstackclient.tests.unit import utils as tests_utils
-
 
 class TestCreateCheckpoint(fakes.TestDis):
 
     columns = (
-        'app_name',
-        'checkpoint_type',
-        'partition_id',
-        'sequence_number',
-        'stream_name',
+        "app_name",
+        "checkpoint_type",
+        "partition_id",
+        "sequence_number",
+        "stream_name",
     )
 
     def setUp(self):
@@ -36,32 +35,36 @@ class TestCreateCheckpoint(fakes.TestDis):
 
     def test_create(self):
         arglist = [
-            'test-stream',
-            'test-app',
-            '--partition-id', '1',
-            '--sequence-number', '1',
-            '--checkpoint-type', 'LAST_READ',
+            "test-stream",
+            "test-app",
+            "--partition-id",
+            "1",
+            "--sequence-number",
+            "1",
+            "--checkpoint-type",
+            "LAST_READ",
         ]
         verifylist = [
-            ('streamName', 'test-stream'),
-            ('appName', 'test-app'),
-            ('partition_id', '1'),
-            ('sequence_number', '1'),
-            ('checkpoint_type', 'LAST_READ'),
+            ("streamName", "test-stream"),
+            ("appName", "test-app"),
+            ("partition_id", "1"),
+            ("sequence_number", "1"),
+            ("checkpoint_type", "LAST_READ"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         attrs = {
-            'stream_name': 'test-stream',
-            'app_name': 'test-app',
-            'partition_id': '1',
-            'sequence_number': '1',
-            'checkpoint_type': 'LAST_READ'
+            "stream_name": "test-stream",
+            "app_name": "test-app",
+            "partition_id": "1",
+            "sequence_number": "1",
+            "checkpoint_type": "LAST_READ",
         }
 
         self.client.create_checkpoint = mock.Mock(
-            return_value=sdk_checkpoint.Checkpoint(**attrs))
+            return_value=sdk_checkpoint.Checkpoint(**attrs)
+        )
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -73,7 +76,7 @@ class TestCreateCheckpoint(fakes.TestDis):
 class TestShowCheckpoint(fakes.TestDis):
     _data = fakes.FakeCheckpoint.create_one()
 
-    columns = ('metadata', 'sequence_number')
+    columns = ("metadata", "sequence_number")
     data = fakes.gen_data(_data, columns)
 
     def setUp(self):
@@ -89,22 +92,29 @@ class TestShowCheckpoint(fakes.TestDis):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
-            'test-stream',
-            'test-app',
-            '--partition-id', '1',
-            '--checkpoint-type', 'LAST_READ',
+            "test-stream",
+            "test-app",
+            "--partition-id",
+            "1",
+            "--checkpoint-type",
+            "LAST_READ",
         ]
 
         verifylist = [
-            ('streamName', 'test-stream'),
-            ('appName', 'test-app'),
-            ('partition_id', '1'),
-            ('checkpoint_type', 'LAST_READ'),
+            ("streamName", "test-stream"),
+            ("appName", "test-app"),
+            ("partition_id", "1"),
+            ("checkpoint_type", "LAST_READ"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -113,10 +123,10 @@ class TestShowCheckpoint(fakes.TestDis):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         self.client.get_checkpoint.assert_called_with(
-            stream_name='test-stream',
-            app_name='test-app',
-            partition_id='1',
-            checkpoint_type='LAST_READ'
+            stream_name="test-stream",
+            app_name="test-app",
+            partition_id="1",
+            checkpoint_type="LAST_READ",
         )
 
         self.assertEqual(self.columns, columns)
@@ -137,17 +147,19 @@ class TestDeleteCheckpoint(fakes.TestDis):
 
     def test_delete(self):
         arglist = [
-            'test-stream',
-            'test-app',
-            '--partition-id', '1',
-            '--checkpoint-type', 'LAST_READ',
+            "test-stream",
+            "test-app",
+            "--partition-id",
+            "1",
+            "--checkpoint-type",
+            "LAST_READ",
         ]
 
         verifylist = [
-            ('streamName', 'test-stream'),
-            ('appName', 'test-app'),
-            ('partition_id', '1'),
-            ('checkpoint_type', 'LAST_READ'),
+            ("streamName", "test-stream"),
+            ("appName", "test-app"),
+            ("partition_id", "1"),
+            ("checkpoint_type", "LAST_READ"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -156,10 +168,10 @@ class TestDeleteCheckpoint(fakes.TestDis):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.delete_checkpoint.assert_called_with(
-            stream_name='test-stream',
-            app_name='test-app',
-            partition_id='1',
-            checkpoint_type='LAST_READ'
+            stream_name="test-stream",
+            app_name="test-app",
+            partition_id="1",
+            checkpoint_type="LAST_READ",
         )
 
         self.assertIsNone(result)

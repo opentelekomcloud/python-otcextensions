@@ -13,11 +13,10 @@ import uuid
 
 from openstack import _log
 from openstack import resource
-
 from otcextensions.sdk.vpc.v1 import vpc
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestService(base.BaseFunctionalTest):
@@ -26,17 +25,14 @@ class TestService(base.BaseFunctionalTest):
 
     @property
     def seed(self):
-        if not hasattr(self, '_seed') or self._seed is None:
+        if not hasattr(self, "_seed") or self._seed is None:
             self._seed = uuid.uuid4().hex[:8]
         return self._seed
 
     def setUp(self):
         super().setUp()
 
-        attrs = {
-            'name': 'test-vpc-' + self.seed,
-            'cidr': '192.168.0.0/16'
-        }
+        attrs = {"name": "test-vpc-" + self.seed, "cidr": "192.168.0.0/16"}
         self.vpc = self.conn.vpc.create_vpc(**attrs)
         self.addCleanup(self.conn.vpc.delete_vpc, self.vpc)
 
@@ -46,11 +42,11 @@ class TestService(base.BaseFunctionalTest):
         gateway = gateway[:-2] + ".1"  # .0 -> .1
 
         attrs = {
-            'vpc_id': self.vpc.id,
-            'name': 'test-subnet-' + self.seed,
-            'cidr': cidr,
-            'gateway_ip': gateway,
-            'dns_list': [
+            "vpc_id": self.vpc.id,
+            "name": "test-subnet-" + self.seed,
+            "cidr": cidr,
+            "gateway_ip": gateway,
+            "dns_list": [
                 "100.125.4.25",
                 "100.125.129.199",
             ],
@@ -79,15 +75,15 @@ class TestService(base.BaseFunctionalTest):
         subnet = self._create_subnet()
 
         new_attrs = {
-            'name': 'test-updated-' + self.seed,
-            'dns_list': [
+            "name": "test-updated-" + self.seed,
+            "dns_list": [
                 "100.125.4.25",
                 "8.8.8.8",
             ],
         }
         updated = self.conn.vpc.update_subnet(subnet, **new_attrs)
-        self.assertEqual(updated.name, new_attrs['name'])
-        self.assertEqual(updated.dns_list, new_attrs['dns_list'])
+        self.assertEqual(updated.name, new_attrs["name"])
+        self.assertEqual(updated.dns_list, new_attrs["dns_list"])
 
     def test_delete_subnet(self):
         subnet = self._create_subnet(False)
@@ -108,11 +104,11 @@ class TestService(base.BaseFunctionalTest):
         gateway = gateway[:-2] + ".1"  # .0 -> .1
 
         attrs = {
-            'vpc_id': self.vpc.id,
-            'name': 'test-subnet-' + self.seed,
-            'cidr': cidr,
-            'gateway_ip': gateway,
-            'dns_list': [
+            "vpc_id": self.vpc.id,
+            "name": "test-subnet-" + self.seed,
+            "cidr": cidr,
+            "gateway_ip": gateway,
+            "dns_list": [
                 "100.125.4.25",
                 "100.125.129.199",
             ],

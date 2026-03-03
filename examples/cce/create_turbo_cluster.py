@@ -13,10 +13,11 @@
 """
 Create CCE Cluster
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
@@ -41,14 +42,11 @@ attrs = {
             "eniSubnetId": "417dcc1f-95d7-43e7-8533-ab078d266303",
             "eniSubnetCIDR": "10.0.0.0/14",
         },
-        "authentication": {
-            "mode": "rbac",
-            "authenticatingProxy": {}
-        },
+        "authentication": {"mode": "rbac", "authenticatingProxy": {}},
         "billingMode": 0,
         "kubernetesSvcIpRange": "10.247.0.0/16",
-        "kubeProxyMode": "iptables"
-    }
+        "kubeProxyMode": "iptables",
+    },
 }
 
 conn.cce.create_cluster(**attrs)

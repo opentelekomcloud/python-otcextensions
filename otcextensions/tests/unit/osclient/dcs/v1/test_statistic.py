@@ -19,23 +19,32 @@ class TestListStatistic(fakes.TestDCS):
 
     objects = fakes.FakeStatistic.create_multiple(3)
 
-    columns = ('instance_id', 'max_memory', 'used_memory',
-               'cmd_get_count', 'cmd_set_count', 'used_cpu',
-               'input_kbps', 'output_kbps')
+    columns = (
+        "instance_id",
+        "max_memory",
+        "used_memory",
+        "cmd_get_count",
+        "cmd_set_count",
+        "used_cpu",
+        "input_kbps",
+        "output_kbps",
+    )
 
     data = []
 
     for s in objects:
-        data.append((
-            s.instance_id,
-            s.max_memory,
-            s.used_memory,
-            s.cmd_get_count,
-            s.cmd_set_count,
-            s.used_cpu,
-            s.input_kbps,
-            s.output_kbps
-        ))
+        data.append(
+            (
+                s.instance_id,
+                s.max_memory,
+                s.used_memory,
+                s.cmd_get_count,
+                s.cmd_set_count,
+                s.used_cpu,
+                s.input_kbps,
+                s.output_kbps,
+            )
+        )
 
     def setUp(self):
         super(TestListStatistic, self).setUp()
@@ -45,25 +54,20 @@ class TestListStatistic(fakes.TestDCS):
         self.client.statistics = mock.Mock()
 
     def test_list(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.statistics.side_effect = [
-            self.objects
-        ]
+        self.client.statistics.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.statistics.assert_called_once_with(
-        )
+        self.client.statistics.assert_called_once_with()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))

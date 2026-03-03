@@ -13,15 +13,16 @@
 """
 Create a Queue
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'name': 'test-queue',
-    'queue_mode': 'NORMAL',
-    'description': 'No need for a description',
+    "name": "test-queue",
+    "queue_mode": "NORMAL",
+    "description": "No need for a description",
 }
 for raw in conn.dms.create_queue(**attrs):
     print(raw)

@@ -13,14 +13,12 @@
 """
 Update public inbound access
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "bandwidth_size": "7",
-    "bandwidth_charging_mode": "bandwidth"
-}
+attrs = {"bandwidth_size": "7", "bandwidth_charging_mode": "bandwidth"}
 
-conn.apig.update_ingress('gateway_id', **attrs)
+conn.apig.update_ingress("gateway_id", **attrs)

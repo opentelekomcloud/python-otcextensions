@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.kms.v1 import quota
 
 
@@ -19,8 +18,8 @@ class TestQuota(base.TestCase):
 
     def test_basic(self):
         sot = quota.Quota()
-        self.assertEqual('quotas.resources', sot.resources_key)
-        self.assertEqual('/quota', sot.base_path)
+        self.assertEqual("quotas.resources", sot.resources_key)
+        self.assertEqual("/quota", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)

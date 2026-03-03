@@ -13,35 +13,32 @@
 """
 Update Distributed Cache Service Instance
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 params = [
     {
-        'param_id': '1',
-        'param_name': 'timeout',
-        'default_value': '0',
-        'value_range': '0-7200',
-        'value_type': 'Interger',
-        'param_value': '11'
+        "param_id": "1",
+        "param_name": "timeout",
+        "default_value": "0",
+        "value_range": "0-7200",
+        "value_type": "Interger",
+        "param_value": "11",
     },
     {
-        'param_id': '2',
-        'param_name': 'maxmemory-policy',
-        'default_value': 'noeviction',
-        'value_range':
-            'volatile-lru,allkeys-lru,volatile-random,'
-            'allkeys-random,volatile-ttl,noeviction',
-        'value_type': 'Enum',
-        'param_value': 'allkeys-random'
-    }
+        "param_id": "2",
+        "param_name": "maxmemory-policy",
+        "default_value": "noeviction",
+        "value_range": "volatile-lru,allkeys-lru,volatile-random,"
+        "allkeys-random,volatile-ttl,noeviction",
+        "value_type": "Enum",
+        "param_value": "allkeys-random",
+    },
 ]
-instance = 'name_or_id'
+instance = "name_or_id"
 instance = conn.dcs.find_instance(instance)
-conn.dcs.update_instance_params(
-    instance=instance,
-    params=params
-)
+conn.dcs.update_instance_params(instance=instance, params=params)

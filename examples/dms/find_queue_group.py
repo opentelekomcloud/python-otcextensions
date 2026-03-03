@@ -13,13 +13,14 @@
 """
 Find a Queue Group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-queue = 'name_or_id'
+queue = "name_or_id"
 queue = conn.dms.find_queue(name_or_id=queue)
-group = 'name_or_id'
+group = "name_or_id"
 raw = conn.dms.find_group(queue=queue, name_or_id=group)
 print(raw)

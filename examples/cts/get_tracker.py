@@ -13,10 +13,11 @@
 """
 Get Cloud Trace Service Tracker by id or class Tracker
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 tracker_name_or_id = "system"

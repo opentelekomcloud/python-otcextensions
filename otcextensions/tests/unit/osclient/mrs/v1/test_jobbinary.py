@@ -19,11 +19,7 @@ from otcextensions.tests.unit.osclient.mrs.v1 import fakes
 class TestListJobbinary(fakes.TestMrs):
     objects = fakes.FakeJobbinary.create_multiple(3)
 
-    columns = (
-        'id', 'name', 'url',
-        'description', 'is_public',
-        'is_protected'
-    )
+    columns = ("id", "name", "url", "description", "is_public", "is_protected")
 
     data = []
 
@@ -39,24 +35,19 @@ class TestListJobbinary(fakes.TestMrs):
         self.client.api_mock = self.client.jobbinaries
 
     def test_default(self):
-        arglist = [
-        ]
-        verifylist = [
-        ]
+        arglist = []
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with(
-        )
+        self.client.api_mock.assert_called_once_with()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -66,9 +57,14 @@ class TestShowJobbinary(fakes.TestMrs):
     object = fakes.FakeJobbinary.create_one()
 
     columns = (
-        'created_at', 'description', 'id',
-        'is_protected', 'is_public', 'name',
-        'updated_at', 'url'
+        "created_at",
+        "description",
+        "id",
+        "is_protected",
+        "is_public",
+        "name",
+        "updated_at",
+        "url",
     )
 
     data = fakes.gen_data(object, columns)
@@ -81,26 +77,20 @@ class TestShowJobbinary(fakes.TestMrs):
         self.client.find_jobbinary = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'jobbin'
-        ]
-        verifylist = [
-        ]
+        arglist = ["jobbin"]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_jobbinary.side_effect = [
-            self.object
-        ]
+        self.client.find_jobbinary.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_jobbinary.assert_called_once_with(
-            'jobbin',
-            ignore_missing=False
+            "jobbin", ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)
@@ -117,9 +107,7 @@ class TestDeleteJobbinary(fakes.TestMrs):
         self.client.delete_jobbinary = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'jobbinary'
-        ]
+        arglist = ["jobbinary"]
         verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -131,9 +119,7 @@ class TestDeleteJobbinary(fakes.TestMrs):
         self.cmd.take_action(parsed_args)
 
         delete_calls = [
-            mock.call(
-                'jobbinary',
-                ignore_missing=False),
+            mock.call("jobbinary", ignore_missing=False),
         ]
 
         self.client.delete_jobbinary.assert_has_calls(delete_calls)
@@ -144,9 +130,14 @@ class TestCreateJobbinary(fakes.TestMrs):
     object = fakes.FakeJobbinary.create_one()
 
     columns = (
-        'created_at', 'description', 'id',
-        'is_protected', 'is_public', 'name',
-        'updated_at', 'url'
+        "created_at",
+        "description",
+        "id",
+        "is_protected",
+        "is_public",
+        "name",
+        "updated_at",
+        "url",
     )
 
     data = fakes.gen_data(object, columns)
@@ -161,32 +152,33 @@ class TestCreateJobbinary(fakes.TestMrs):
 
     def test_default(self):
         arglist = [
-            '--name', 'test_jb',
-            '--url', '/simple/mapreduce/program',
-            '--description', 'test',
+            "--name",
+            "test_jb",
+            "--url",
+            "/simple/mapreduce/program",
+            "--description",
+            "test",
         ]
         verifylist = [
-            ('name', 'test_jb'),
-            ('url', '/simple/mapreduce/program'),
-            ('description', 'test'),
+            ("name", "test_jb"),
+            ("url", "/simple/mapreduce/program"),
+            ("description", "test"),
         ]
 
         # Verify cmd is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_jobbinary.side_effect = [
-            self.object
-        ]
+        self.client.create_jobbinary.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_jobbinary.assert_called_once_with(
-            name='test_jb',
-            url='/simple/mapreduce/program',
-            description='test',
-            is_public='false'
+            name="test_jb",
+            url="/simple/mapreduce/program",
+            description="test",
+            is_public="false",
         )
 
         self.assertEqual(self.columns, columns)
@@ -197,9 +189,17 @@ class TestUpdateJobbinary(fakes.TestMrs):
     object = fakes.FakeJob.create_one()
 
     columns = (
-        'created_at', 'description', 'id',
-        'interface', 'is_protected', 'is_public',
-        'libs', 'mains', 'name', 'type', 'updated_at'
+        "created_at",
+        "description",
+        "id",
+        "interface",
+        "is_protected",
+        "is_public",
+        "libs",
+        "mains",
+        "name",
+        "type",
+        "updated_at",
     )
 
     data = fakes.gen_data(object, columns)
@@ -214,33 +214,30 @@ class TestUpdateJobbinary(fakes.TestMrs):
 
     def test_default(self):
         arglist = [
-            'jobbinary_id',
-            '--name', 'test_jb',
+            "jobbinary_id",
+            "--name",
+            "test_jb",
         ]
         verifylist = [
-            ('jobbinary', 'jobbinary_id'),
-            ('name', 'test_jb'),
+            ("jobbinary", "jobbinary_id"),
+            ("name", "test_jb"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_jobbinary.side_effect = [
-            self.object
-        ]
+        self.client.update_jobbinary.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_jobbinary.assert_called_with(
-            'jobbinary_id',
-            ignore_missing=False)
+            "jobbinary_id", ignore_missing=False
+        )
 
         self.client.update_jobbinary.assert_called_once_with(
-            jobbinary=mock.ANY,
-            name='test_jb',
-            is_public='false'
+            jobbinary=mock.ANY, name="test_jb", is_public="false"
         )
 
         self.assertEqual(self.columns, columns)

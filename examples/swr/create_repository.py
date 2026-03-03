@@ -13,18 +13,19 @@
 """
 Create new repository
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    'namespace': 'new_org',
-    'repository': 'new_repo',
-    'category': 'linux',
-    'description': 'this is example test repository',
-    'is_public': True,
+    "namespace": "new_org",
+    "repository": "new_repo",
+    "category": "linux",
+    "description": "this is example test repository",
+    "is_public": True,
 }
 repo = conn.swr.create_repository(**attrs)

@@ -13,11 +13,11 @@
 """
 List Excluded Request Throttling Configurations
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-exc = list(conn.apig.throttling_excluded_policies(
-    policy="policy_id",
-    gateway="gateway_id"
-))
+conn = openstack.connect(cloud="otc")
+exc = list(
+    conn.apig.throttling_excluded_policies(policy="policy_id", gateway="gateway_id")
+)

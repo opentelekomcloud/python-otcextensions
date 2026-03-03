@@ -13,12 +13,12 @@
 """
 List RDS backup download links
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-backup = 'backup_id'
+backup = "backup_id"
 for link in conn.rds.backup_download_links(backup):
     print(link)

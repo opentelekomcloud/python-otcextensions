@@ -13,26 +13,22 @@
 """
 Confirm Messages
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-queue_name_or_id = 'queue_name_or_id'
+queue_name_or_id = "queue_name_or_id"
 queue = conn.dms.find_queue(name_or_id=queue_name_or_id)
-group_name_or_id = 'group_name_or_id'
+group_name_or_id = "group_name_or_id"
 group = conn.dms.find_group(queue, name_or_id=group_name_or_id)
 
 
 attrs = {
-    'queue': queue,
-    'group': group,
-    'messages': [
-        {
-            'handler': 'handler_id',
-            'status': 'success'
-        }
-    ]
+    "queue": queue,
+    "group": group,
+    "messages": [{"handler": "handler_id", "status": "success"}],
 }
 for raw in conn.dms.ack_message(**attrs):
     print(raw)

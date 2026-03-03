@@ -11,12 +11,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Delete bandwidth
+Delete bandwidth
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='test-dmd')
+conn = openstack.connect(cloud="test-dmd")
 
 conn.vpc.delete_bandwidth(bandwidth="bandwidth-id")

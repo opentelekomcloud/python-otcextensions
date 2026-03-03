@@ -10,13 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-
 from otcextensions.sdk.elb.v2 import _base_tag
 
 
 class Tag(_base_tag.Resource):
-    base_path = '/loadbalancers/%(loadbalancer_id)s/tags'
+    base_path = "/loadbalancers/%(loadbalancer_id)s/tags"
 
     # Properties
     #: Specifies load balancer
-    loadbalancer_id = resource.URI('loadbalancer_id')
+    loadbalancer_id = resource.URI("loadbalancer_id")

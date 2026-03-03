@@ -13,11 +13,12 @@
 """
 Delete Auto-Scaling Configuration by id or instance of class Config
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-config_id = '1234567-ad7a-48ce-8f92-b55c651439d2'
+config_id = "1234567-ad7a-48ce-8f92-b55c651439d2"
 conn.auto_scaling.delete_config(config_id)

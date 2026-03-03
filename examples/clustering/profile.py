@@ -29,7 +29,7 @@ def list_profiles(conn):
     for profile in conn.clustering.profiles():
         print(profile.to_dict())
 
-    for profile in conn.clustering.profiles(sort='name:asc'):
+    for profile in conn.clustering.profiles(sort="name:asc"):
         print(profile.to_dict())
 
 
@@ -37,17 +37,15 @@ def create_profile(conn):
     print("Create Profile:")
 
     spec = {
-        'profile': 'os.nova.server',
-        'version': 1.0,
-        'name': 'os_server',
-        'properties': {
-            'name': SERVER_NAME,
-            'flavor': FLAVOR_NAME,
-            'image': IMAGE_NAME,
-            'networks': {
-                'network': NETWORK_NAME
-            }
-        }
+        "profile": "os.nova.server",
+        "version": 1.0,
+        "name": "os_server",
+        "properties": {
+            "name": SERVER_NAME,
+            "flavor": FLAVOR_NAME,
+            "image": IMAGE_NAME,
+            "networks": {"network": NETWORK_NAME},
+        },
     }
 
     profile = conn.clustering.create_profile(spec)
@@ -57,27 +55,27 @@ def create_profile(conn):
 def get_profile(conn):
     print("Get Profile:")
 
-    profile = conn.clustering.get_profile('os_server')
+    profile = conn.clustering.get_profile("os_server")
     print(profile.to_dict())
 
 
 def find_profile(conn):
     print("Find Profile:")
 
-    profile = conn.clustering.find_profile('os_server')
+    profile = conn.clustering.find_profile("os_server")
     print(profile.to_dict())
 
 
 def update_profile(conn):
     print("Update Profile:")
 
-    profile = conn.clustering.update_profile('os_server', name='old_server')
+    profile = conn.clustering.update_profile("os_server", name="old_server")
     print(profile.to_dict())
 
 
 def delete_profile(conn):
     print("Delete Profile:")
 
-    conn.clustering.delete_profile('os_server')
+    conn.clustering.delete_profile("os_server")
 
     print("Profile deleted.")

@@ -12,6 +12,7 @@
 # under the License.
 #
 """List all Visualization Jobs."""
+
 import openstack
 
 openstack.enable_logging(True)

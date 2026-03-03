@@ -10,12 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import _log
+
 # from openstack import exceptions
 from otcextensions.tests.functional import base
 
 # from otcextensions.i18n import _
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestMisc(base.BaseFunctionalTest):

@@ -25,21 +25,21 @@ class TestListServices(fakes.TestVpcep):
     objects = fakes.FakeService.create_multiple(3)
 
     column_list_headers = (
-        'Id',
-        'Service Name',
-        'Service Type',
-        'Server Type',
-        'Connection Count',
-        'Status',
+        "Id",
+        "Service Name",
+        "Service Type",
+        "Server Type",
+        "Connection Count",
+        "Status",
     )
 
     columns = (
-        'id',
-        'service_name',
-        'service_type',
-        'server_type',
-        'connection_count',
-        'status',
+        "id",
+        "service_name",
+        "service_type",
+        "server_type",
+        "connection_count",
+        "status",
     )
 
     data = []
@@ -85,30 +85,30 @@ class TestListServices(fakes.TestVpcep):
 
     def test_list_args(self):
         arglist = [
-            '--id',
-            '1',
-            '--name',
-            '2',
-            '--status',
-            '3',
-            '--sort-key',
-            'created_at',
-            '--sort-dir',
-            'desc',
-            '--limit',
-            '6',
-            '--offset',
-            '7',
+            "--id",
+            "1",
+            "--name",
+            "2",
+            "--status",
+            "3",
+            "--sort-key",
+            "created_at",
+            "--sort-dir",
+            "desc",
+            "--limit",
+            "6",
+            "--offset",
+            "7",
         ]
 
         verifylist = [
-            ('id', '1'),
-            ('name', '2'),
-            ('status', '3'),
-            ('sort_key', 'created_at'),
-            ('sort_dir', 'desc'),
-            ('limit', 6),
-            ('offset', 7),
+            ("id", "1"),
+            ("name", "2"),
+            ("status", "3"),
+            ("sort_key", "created_at"),
+            ("sort_dir", "desc"),
+            ("limit", 6),
+            ("offset", 7),
         ]
 
         # Verify cm is triggered with default parameters
@@ -121,11 +121,11 @@ class TestListServices(fakes.TestVpcep):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            id='1',
-            name='2',
-            status='3',
-            sort_key='created_at',
-            sort_dir='desc',
+            id="1",
+            name="2",
+            status="3",
+            sort_key="created_at",
+            sort_dir="desc",
             limit=6,
             offset=7,
         )
@@ -136,18 +136,18 @@ class TestCreateService(fakes.TestVpcep):
     _data = fakes.FakeService.create_one()
 
     columns = (
-        'created_at',
-        'id',
-        'is_approval_enabled',
-        'pool_id',
-        'port_id',
-        'ports',
-        'project_id',
-        'router_id',
-        'server_type',
-        'service_name',
-        'service_type',
-        'status',
+        "created_at",
+        "id",
+        "is_approval_enabled",
+        "pool_id",
+        "port_id",
+        "ports",
+        "project_id",
+        "router_id",
+        "server_type",
+        "service_name",
+        "service_type",
+        "status",
     )
 
     data = fakes.gen_data(_data, columns, formatters=service._formatters)
@@ -162,45 +162,45 @@ class TestCreateService(fakes.TestVpcep):
 
     def test_create(self):
         arglist = [
-            'test-endpoint-service',
-            '--port-id',
-            'test-port-uuid',
-            '--pool-id',
-            'test-pool-uuid',
-            '--router-id',
-            'test-router-uuid',
-            '--disable-approval',
-            '--server-type',
-            'VM',
-            '--service-type',
-            'Interface',
-            '--ports',
-            'client_port=80,server_port=80,protocol=TCP',
-            '--tags',
-            'key=tag-key,value=tag-value',
-            '--tcp-proxy',
-            'open',
+            "test-endpoint-service",
+            "--port-id",
+            "test-port-uuid",
+            "--pool-id",
+            "test-pool-uuid",
+            "--router-id",
+            "test-router-uuid",
+            "--disable-approval",
+            "--server-type",
+            "VM",
+            "--service-type",
+            "Interface",
+            "--ports",
+            "client_port=80,server_port=80,protocol=TCP",
+            "--tags",
+            "key=tag-key,value=tag-value",
+            "--tcp-proxy",
+            "open",
         ]
         verifylist = [
-            ('name', 'test-endpoint-service'),
-            ('port_id', 'test-port-uuid'),
-            ('pool_id', 'test-pool-uuid'),
-            ('vpc_id', 'test-router-uuid'),
-            ('disable_approval', True),
-            ('server_type', 'VM'),
-            ('service_type', 'interface'),
+            ("name", "test-endpoint-service"),
+            ("port_id", "test-port-uuid"),
+            ("pool_id", "test-pool-uuid"),
+            ("vpc_id", "test-router-uuid"),
+            ("disable_approval", True),
+            ("server_type", "VM"),
+            ("service_type", "interface"),
             (
-                'ports',
+                "ports",
                 [
                     {
-                        'client_port': '80',
-                        'server_port': '80',
-                        'protocol': 'TCP',
+                        "client_port": "80",
+                        "server_port": "80",
+                        "protocol": "TCP",
                     }
                 ],
             ),
-            ('tags', [{'key': 'tag-key', 'value': 'tag-value'}]),
-            ('tcp_proxy', 'open'),
+            ("tags", [{"key": "tag-key", "value": "tag-value"}]),
+            ("tcp_proxy", "open"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -208,18 +208,16 @@ class TestCreateService(fakes.TestVpcep):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'service_name': 'test-endpoint-service',
-            'port_id': 'test-port-uuid',
-            'pool_id': 'test-pool-uuid',
-            'vpc_id': 'test-router-uuid',
-            'approval_enabled': False,
-            'server_type': 'VM',
-            'service_type': 'interface',
-            'ports': [
-                {'client_port': 80, 'server_port': 80, 'protocol': 'TCP'}
-            ],
-            'tags': [{'key': 'tag-key', 'value': 'tag-value'}],
-            'tcp_proxy': 'open',
+            "service_name": "test-endpoint-service",
+            "port_id": "test-port-uuid",
+            "pool_id": "test-pool-uuid",
+            "vpc_id": "test-router-uuid",
+            "approval_enabled": False,
+            "server_type": "VM",
+            "service_type": "interface",
+            "ports": [{"client_port": 80, "server_port": 80, "protocol": "TCP"}],
+            "tags": [{"key": "tag-key", "value": "tag-value"}],
+            "tcp_proxy": "open",
         }
 
         self.client.create_service.assert_called_with(**attrs)
@@ -231,18 +229,18 @@ class TestShowService(fakes.TestVpcep):
     _data = fakes.FakeService.create_one()
 
     columns = (
-        'created_at',
-        'id',
-        'is_approval_enabled',
-        'pool_id',
-        'port_id',
-        'ports',
-        'project_id',
-        'router_id',
-        'server_type',
-        'service_name',
-        'service_type',
-        'status',
+        "created_at",
+        "id",
+        "is_approval_enabled",
+        "pool_id",
+        "port_id",
+        "ports",
+        "project_id",
+        "router_id",
+        "server_type",
+        "service_name",
+        "service_type",
+        "status",
     )
 
     data = fakes.gen_data(_data, columns, formatters=service._formatters)
@@ -274,7 +272,7 @@ class TestShowService(fakes.TestVpcep):
         ]
 
         verifylist = [
-            ('service', self._data.id),
+            ("service", self._data.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -289,25 +287,25 @@ class TestShowService(fakes.TestVpcep):
 
     def test_show_non_existent(self):
         arglist = [
-            'non-existing-service',
+            "non-existing-service",
         ]
 
         verifylist = [
-            ('service', 'non-existing-service'),
+            ("service", "non-existing-service"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
+        find_mock_result = exceptions.CommandError("Resource Not Found")
         self.client.find_service = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
-        self.client.find_service.assert_called_with('non-existing-service')
+            self.assertEqual("Resource Not Found", str(e))
+        self.client.find_service.assert_called_with("non-existing-service")
 
 
 class TestUpdateService(fakes.TestVpcep):
@@ -315,18 +313,18 @@ class TestUpdateService(fakes.TestVpcep):
     _data = fakes.FakeService.create_one()
 
     columns = (
-        'created_at',
-        'id',
-        'is_approval_enabled',
-        'pool_id',
-        'port_id',
-        'ports',
-        'project_id',
-        'router_id',
-        'server_type',
-        'service_name',
-        'service_type',
-        'status',
+        "created_at",
+        "id",
+        "is_approval_enabled",
+        "pool_id",
+        "port_id",
+        "ports",
+        "project_id",
+        "router_id",
+        "server_type",
+        "service_name",
+        "service_type",
+        "status",
     )
 
     data = fakes.gen_data(_data, columns, formatters=service._formatters)
@@ -342,32 +340,32 @@ class TestUpdateService(fakes.TestVpcep):
     def test_update(self):
         arglist = [
             self._data.name,
-            '--name',
-            'test-endpoint-service',
-            '--ports',
-            'client_port=80,server_port=80,protocol=TCP',
-            '--port-id',
-            'test-port-uuid',
-            '--tcp-proxy',
-            'open',
-            '--enable-approval',
+            "--name",
+            "test-endpoint-service",
+            "--ports",
+            "client_port=80,server_port=80,protocol=TCP",
+            "--port-id",
+            "test-port-uuid",
+            "--tcp-proxy",
+            "open",
+            "--enable-approval",
         ]
         verifylist = [
-            ('service', self._data.name),
-            ('service_name', 'test-endpoint-service'),
+            ("service", self._data.name),
+            ("service_name", "test-endpoint-service"),
             (
-                'ports',
+                "ports",
                 [
                     {
-                        'client_port': '80',
-                        'server_port': '80',
-                        'protocol': 'TCP',
+                        "client_port": "80",
+                        "server_port": "80",
+                        "protocol": "TCP",
                     }
                 ],
             ),
-            ('port_id', 'test-port-uuid'),
-            ('tcp_proxy', 'open'),
-            ('enable_approval', True),
+            ("port_id", "test-port-uuid"),
+            ("tcp_proxy", "open"),
+            ("enable_approval", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -378,13 +376,11 @@ class TestUpdateService(fakes.TestVpcep):
         self.client.find_service.assert_called_with(self._data.name)
 
         attrs = {
-            'service_name': 'test-endpoint-service',
-            'port_id': 'test-port-uuid',
-            'ports': [
-                {'client_port': 80, 'server_port': 80, 'protocol': 'TCP'}
-            ],
-            'tcp_proxy': 'open',
-            'approval_enabled': True,
+            "service_name": "test-endpoint-service",
+            "port_id": "test-port-uuid",
+            "ports": [{"client_port": 80, "server_port": 80, "protocol": "TCP"}],
+            "tcp_proxy": "open",
+            "approval_enabled": True,
         }
         self.client.update_service.assert_called_with(self._data, **attrs)
         self.assertEqual(self.columns, columns)
@@ -408,7 +404,7 @@ class TestDeleteService(fakes.TestVpcep):
         ]
 
         verifylist = [
-            ('service', [self._data[0].name]),
+            ("service", [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -428,7 +424,7 @@ class TestDeleteService(fakes.TestVpcep):
             arglist.append(data.name)
 
         verifylist = [
-            ('service', arglist),
+            ("service", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -449,10 +445,10 @@ class TestDeleteService(fakes.TestVpcep):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._data[0].name,
-            'non-existing-service',
+            "non-existing-service",
         ]
         verifylist = [
-            ('service', arglist),
+            ("service", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -466,9 +462,9 @@ class TestDeleteService(fakes.TestVpcep):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual(
-                '1 of 2 Vpc Endpoint Services(s) failed to delete.', str(e)
+                "1 of 2 Vpc Endpoint Services(s) failed to delete.", str(e)
             )
 
         self.client.find_service.assert_any_call(self._data[0].name)
-        self.client.find_service.assert_any_call('non-existing-service')
+        self.client.find_service.assert_any_call("non-existing-service")
         self.client.delete_service.assert_called_once_with(self._data[0].id)

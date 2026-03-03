@@ -19,14 +19,14 @@ import warnings
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'reno.sphinxext',
-    'otcdocstheme',
+    "reno.sphinxext",
+    "otcdocstheme",
 ]
 
 # openstackdocstheme options
-otcdocs_repo = 'opentelekomcloud/python-otcextensions'
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
-html_theme = 'otcdocs'
+otcdocs_repo = "opentelekomcloud/python-otcextensions"
+html_last_updated_fmt = "%Y-%m-%d %H:%M"
+html_theme = "otcdocs"
 
 # TODO(shade) Set this to true once the build-openstack-sphinx-docs job is
 # updated to use sphinx-build.
@@ -38,8 +38,8 @@ enforcer_warnings_as_errors = False
 # execute "export SPHINX_DEBUG=1" in your terminal to disable
 
 # General information about the project.
-project = u'python-otcextensions'
-copyright = u'2021, Various members of the OpenTelekomCloud'
+project = "python-otcextensions"
+copyright = "2021, Various members of the OpenTelekomCloud"
 
 # A few variables have to be set for the log-a-bug feature.
 #   gitsha: The SHA checksum of the bug description. Extracted from git log.
@@ -48,7 +48,7 @@ copyright = u'2021, Various members of the OpenTelekomCloud'
 # These variables are passed to the logabug code via html_context.
 git_cmd = "/usr/bin/git log | head -n1 | cut -f2 -d' '"
 try:
-    gitsha = os.popen(git_cmd).read().strip('\n')
+    gitsha = os.popen(git_cmd).read().strip("\n")
 except Exception:
     warnings.warn("Can not get git sha.")
     gitsha = "unknown"
@@ -56,8 +56,7 @@ except Exception:
 otcdocs_bug_tag = "docs"
 pwd = os.getcwd()
 # html_context allows us to pass arbitrary values into the html template
-html_context = {"pwd": pwd,
-                "gitsha": gitsha}
+html_context = {"pwd": pwd, "gitsha": gitsha}
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
@@ -67,7 +66,7 @@ add_function_parentheses = True
 add_module_names = True
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'native'
+pygments_style = "native"
 
 autodoc_member_order = "bysource"
 
@@ -80,20 +79,23 @@ exclude_patterns = []
 theme_include_auto_toc = False
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = '%sdoc' % project
+htmlhelp_basename = "%sdoc" % project
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index',
-     '%s.tex' % project,
-     u'%s Documentation' % project,
-     u'OpenTelekomCloud', 'manual'),
+    (
+        "index",
+        "%s.tex" % project,
+        "%s Documentation" % project,
+        "OpenTelekomCloud",
+        "manual",
+    ),
 ]
 
 html_theme_options = {
-    'display_toc': False,
+    "display_toc": False,
 }
 
 # Include both the class and __init__ docstrings when describing the class

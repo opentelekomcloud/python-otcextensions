@@ -15,9 +15,9 @@ from openstack import utils
 
 
 class Peering(resource.Resource):
-    resources_key = 'peerings'
-    resource_key = 'peering'
-    base_path = '/v2.0/vpc/peerings'
+    resources_key = "peerings"
+    resource_key = "peering"
+    base_path = "/v2.0/vpc/peerings"
 
     # capabilities
     allow_create = True
@@ -27,28 +27,34 @@ class Peering(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'marker', 'limit', 'name', 'router_id',
-        'status', 'project_id', project_id='tenant_id',
-        router_id='vpc_id'
+        "id",
+        "marker",
+        "limit",
+        "name",
+        "router_id",
+        "status",
+        "project_id",
+        project_id="tenant_id",
+        router_id="vpc_id",
     )
 
     # Properties
     #: Specifies information about the local VPC.
     #: *Type: dict*
-    peer_vpc_info = resource.Body('accept_vpc_info', type=dict)
+    peer_vpc_info = resource.Body("accept_vpc_info", type=dict)
     #: Specifies information about the local VPC.
     #: *Type: dict*
-    local_vpc_info = resource.Body('request_vpc_info', type=dict)
+    local_vpc_info = resource.Body("request_vpc_info", type=dict)
     #: Specifies the status.
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Provides supplementary information about the VPC peering connection.
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Specifies the time (UTC) when the VPC peering connection is created.
     #:  Format is *yyyy-mm-dd hh:mm:ss*.
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Specifies the time (UTC) when the VPC peering connection is updated.
     #:  Format is *yyyy-mm-dd hh:mm:ss*.
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")
 
     def _set_peering(self, session, set_status):
         """Accept/Reject Peering Request"""

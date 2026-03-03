@@ -14,10 +14,9 @@ import time
 import uuid
 
 import openstack
-
 from otcextensions.tests.functional import base
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 # Module-level cache for shared ELB
 _shared_load_balancer = None
@@ -32,14 +31,16 @@ def _cleanup_shared_elb():
         try:
             from openstack import connection
             from otcextensions import sdk
+
             conn = connection.Connection(config=base.TEST_CLOUD_REGION)
             sdk.register_otc_extensions(conn)
             conn.vlb.delete_load_balancer(_shared_load_balancer.id)
             conn.vlb.wait_for_delete_load_balancer(
-                _shared_load_balancer.id, interval=5, wait=300)
-            _logger.info('Deleted shared ELB')
+                _shared_load_balancer.id, interval=5, wait=300
+            )
+            _logger.info("Deleted shared ELB")
         except Exception as e:
-            _logger.warning(f'Error deleting shared ELB: {e}')
+            _logger.warning(f"Error deleting shared ELB: {e}")
         finally:
             _shared_load_balancer = None
 
@@ -74,7 +75,7 @@ class TestVpcep(base.NetworkBaseFunctionalTest):
         self.subnet_id = _shared_subnet_id
 
         if not self.load_balancer:
-            self.skipTest('ELB not available')
+            self.skipTest("ELB not available")
 
     def _ensure_load_balancer(self):
         """Lazily create shared ELB if not exists."""
@@ -88,37 +89,36 @@ class TestVpcep(base.NetworkBaseFunctionalTest):
             return
 
         azs = list(self.conn.vlb.availability_zones())
-        az = azs[0].code if azs else 'eu-de-01'
+        az = azs[0].code if azs else "eu-de-01"
 
-        lb_name = 'sdk-vpcep-elb-' + uuid.uuid4().hex[:8]
+        lb_name = "sdk-vpcep-elb-" + uuid.uuid4().hex[:8]
 
         attrs = {
-            'name': lb_name,
-            'description': 'ELB for VPCEP functional tests',
-            'vip_subnet_cidr_id': _shared_subnet_id,
-            'vpc_id': _shared_vpc_id,
-            'availability_zone_list': [az],
-            'guaranteed': True,
-            'provider': 'vlb',
+            "name": lb_name,
+            "description": "ELB for VPCEP functional tests",
+            "vip_subnet_cidr_id": _shared_subnet_id,
+            "vpc_id": _shared_vpc_id,
+            "availability_zone_list": [az],
+            "guaranteed": True,
+            "provider": "vlb",
         }
 
-        _logger.info(f'Creating ELB with attrs: {attrs}')
+        _logger.info(f"Creating ELB with attrs: {attrs}")
         _shared_load_balancer = self.conn.vlb.create_load_balancer(**attrs)
-        _logger.info(f'Created ELB: {_shared_load_balancer.id}')
+        _logger.info(f"Created ELB: {_shared_load_balancer.id}")
 
         self.conn.vlb.wait_for_load_balancer(
-            _shared_load_balancer.id,
-            status='ACTIVE',
-            interval=5,
-            wait=300
+            _shared_load_balancer.id, status="ACTIVE", interval=5, wait=300
         )
 
         _shared_load_balancer = self.conn.vlb.get_load_balancer(
             _shared_load_balancer.id
         )
         _shared_vpc_id = _shared_load_balancer.vpc_id
-        _logger.info(f'ELB active, port_id: {_shared_load_balancer.port_id}, '
-                     f'vpc_id: {_shared_vpc_id}')
+        _logger.info(
+            f"ELB active, port_id: {_shared_load_balancer.port_id}, "
+            f"vpc_id: {_shared_vpc_id}"
+        )
 
     def _find_existing_network(self):
         """Find existing VPC and subnet for ELB creation."""
@@ -126,37 +126,36 @@ class TestVpcep(base.NetworkBaseFunctionalTest):
 
         vpcs = list(self.conn.vpc.vpcs())
         if not vpcs:
-            _logger.warning('No VPCs found')
+            _logger.warning("No VPCs found")
             return
 
         for vpc in vpcs:
             subnets = list(self.conn.vpc.subnets(vpc_id=vpc.id))
             for subnet in subnets:
-                if subnet.status == 'ACTIVE' and subnet.neutron_subnet_id:
+                if subnet.status == "ACTIVE" and subnet.neutron_subnet_id:
                     _shared_vpc_id = vpc.id
                     _shared_subnet_id = subnet.neutron_subnet_id
                     _logger.info(
-                        f'Using VPC {vpc.name} ({vpc.id}) '
-                        f'subnet {subnet.name} ({subnet.neutron_subnet_id})'
+                        f"Using VPC {vpc.name} ({vpc.id}) "
+                        f"subnet {subnet.name} ({subnet.neutron_subnet_id})"
                     )
                     return
 
-        _logger.warning('No suitable VPC/subnet found')
+        _logger.warning("No suitable VPC/subnet found")
 
     def create_service_helper(self, name=None, approval=False):
         """Create a VPCEP service using the shared ELB and wait for it."""
         if not name:
-            name = 'svc' + uuid.uuid4().hex[:8]
+            name = "svc" + uuid.uuid4().hex[:8]
 
         attrs = {
-            'service_name': name,
-            'port_id': self.load_balancer.port_id,
-            'vpc_id': self.vpc_id,
-            'server_type': 'LB',
-            'ports': [{'client_port': 80, 'server_port': 80,
-                       'protocol': 'TCP'}],
-            'approval_enabled': approval,
-            'service_type': 'interface'
+            "service_name": name,
+            "port_id": self.load_balancer.port_id,
+            "vpc_id": self.vpc_id,
+            "server_type": "LB",
+            "ports": [{"client_port": 80, "server_port": 80, "protocol": "TCP"}],
+            "approval_enabled": approval,
+            "service_type": "interface",
         }
 
         service = self.client.create_service(**attrs)
@@ -164,10 +163,10 @@ class TestVpcep(base.NetworkBaseFunctionalTest):
 
         for _ in range(40):
             service = self.client.get_service(service.id)
-            if service.status == 'available':
+            if service.status == "available":
                 return service
             time.sleep(3)
-        raise Exception(f'Service {service.id} not available')
+        raise Exception(f"Service {service.id} not available")
 
     def _cleanup_service(self, service_id):
         """Delete service with retries (endpoints may still be deleting)."""
@@ -176,8 +175,8 @@ class TestVpcep(base.NetworkBaseFunctionalTest):
                 self.client.delete_service(service_id, ignore_missing=True)
                 return
             except Exception as e:
-                if 'EndPoint.300' in str(e):
+                if "EndPoint.300" in str(e):
                     time.sleep(3)
                 else:
-                    _logger.warning(f'Error deleting service {service_id}:{e}')
+                    _logger.warning(f"Error deleting service {service_id}:{e}")
                     return

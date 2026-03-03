@@ -13,12 +13,12 @@
 """
 Set a RDS instance backup_policy
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-instance = 'instance_id'
+instance = "instance_id"
 policy = conn.rds.get_instance_backup_policy(instance)
 print(policy)

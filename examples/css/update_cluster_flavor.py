@@ -19,9 +19,9 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'asomogyi_0506_updated'
+cluster_name_or_id = "asomogyi_0506_updated"
 
-new_flavor = 'd9dc06ae-b9c4-4ef4-acd8-953ef4205e27'
+new_flavor = "d9dc06ae-b9c4-4ef4-acd8-953ef4205e27"
 
 cluster = conn.css.find_cluster(cluster_name_or_id)
 

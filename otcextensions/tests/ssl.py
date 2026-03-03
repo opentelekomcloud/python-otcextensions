@@ -9,13 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import datetime
+
 from cryptography import x509
-from cryptography.x509.oid import NameOID
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-import datetime
+from cryptography.x509.oid import NameOID
 
 
 class SelfSignedCertificateGenerator:
@@ -34,9 +35,7 @@ class SelfSignedCertificateGenerator:
         Generates an RSA private key.
         """
         self.private_key = rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=key_size,
-            backend=default_backend()
+            public_exponent=65537, key_size=key_size, backend=default_backend()
         )
         return self.private_key
 
@@ -49,27 +48,31 @@ class SelfSignedCertificateGenerator:
                 "Generate a private key first using generate_private_key()."
             )
 
-        subject = issuer = x509.Name([
-            x509.NameAttribute(NameOID.COMMON_NAME, self.domain_name),
-        ])
+        subject = issuer = x509.Name(
+            [
+                x509.NameAttribute(NameOID.COMMON_NAME, self.domain_name),
+            ]
+        )
 
-        self.certificate = x509.CertificateBuilder().subject_name(
-            subject
-        ).issuer_name(
-            issuer
-        ).public_key(
-            self.private_key.public_key()
-        ).serial_number(
-            x509.random_serial_number()
-        ).not_valid_before(
-            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
-        ).not_valid_after(
-            datetime.datetime.now(datetime.UTC) + datetime.timedelta(
-                days=self.valid_days)
-        ).add_extension(
-            x509.SubjectAlternativeName([x509.DNSName(self.domain_name)]),
-            critical=False,
-        ).sign(self.private_key, hashes.SHA256(), default_backend())
+        self.certificate = (
+            x509.CertificateBuilder()
+            .subject_name(subject)
+            .issuer_name(issuer)
+            .public_key(self.private_key.public_key())
+            .serial_number(x509.random_serial_number())
+            .not_valid_before(
+                datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
+            )
+            .not_valid_after(
+                datetime.datetime.now(datetime.UTC)
+                + datetime.timedelta(days=self.valid_days)
+            )
+            .add_extension(
+                x509.SubjectAlternativeName([x509.DNSName(self.domain_name)]),
+                critical=False,
+            )
+            .sign(self.private_key, hashes.SHA256(), default_backend())
+        )
 
         return self.certificate
 
@@ -81,16 +84,20 @@ class SelfSignedCertificateGenerator:
         if self.private_key is None:
             raise ValueError("Private key not generated yet.")
 
-        encryption = (serialization.NoEncryption() if password is None
-                      else serialization.BestAvailableEncryption(
-            password.encode()))
+        encryption = (
+            serialization.NoEncryption()
+            if password is None
+            else serialization.BestAvailableEncryption(password.encode())
+        )
 
         with open(filename, "wb") as key_file:
-            key_file.write(self.private_key.private_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PrivateFormat.TraditionalOpenSSL,
-                encryption_algorithm=encryption
-            ))
+            key_file.write(
+                self.private_key.private_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PrivateFormat.TraditionalOpenSSL,
+                    encryption_algorithm=encryption,
+                )
+            )
         print(f"Private key saved to {filename}")
 
     def save_certificate(self, filename):
@@ -101,8 +108,7 @@ class SelfSignedCertificateGenerator:
             raise ValueError("Certificate not generated yet.")
 
         with open(filename, "wb") as cert_file:
-            cert_file.write(self.certificate.public_bytes(
-                serialization.Encoding.PEM))
+            cert_file.write(self.certificate.public_bytes(serialization.Encoding.PEM))
         print(f"Certificate saved to {filename}")
 
     def get_private_key(self):
@@ -115,9 +121,9 @@ class SelfSignedCertificateGenerator:
         key_bytes = self.private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PrivateFormat.TraditionalOpenSSL,
-            encryption_algorithm=serialization.NoEncryption()
+            encryption_algorithm=serialization.NoEncryption(),
         )
-        return key_bytes.decode('utf-8')
+        return key_bytes.decode("utf-8")
 
     def get_certificate(self):
         """
@@ -126,6 +132,5 @@ class SelfSignedCertificateGenerator:
         if self.certificate is None:
             raise ValueError("Certificate not generated yet.")
 
-        key_bytes = self.certificate.public_bytes(
-            serialization.Encoding.PEM)
-        return key_bytes.decode('utf-8')
+        key_bytes = self.certificate.public_bytes(serialization.Encoding.PEM)
+        return key_bytes.decode("utf-8")

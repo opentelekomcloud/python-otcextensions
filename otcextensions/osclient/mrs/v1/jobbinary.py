@@ -10,7 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-'''MRS clusters v1 action implementations'''
+"""MRS clusters v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -30,24 +31,21 @@ def _get_columns(item):
 
 
 class ListJobbinary(command.Lister):
-    _description = _('List Sahara jobbinary')
-    columns = (
-        'id', 'name', 'url', 'description',
-        'is_public', 'is_protected'
-    )
+    _description = _("List Sahara jobbinary")
+    columns = ("id", "name", "url", "description", "is_public", "is_protected")
 
     def get_parser(self, prog_name):
         parser = super(ListJobbinary, self).get_parser(prog_name)
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
-            help=_('Number of entries to display.')
+            help=_("Number of entries to display."),
         )
         parser.add_argument(
-            '--marker',
-            metavar='<marker>',
-            help=_('ID of the last record on the previous page.')
+            "--marker",
+            metavar="<marker>",
+            help=_("ID of the last record on the previous page."),
         )
         return parser
 
@@ -57,30 +55,30 @@ class ListJobbinary(command.Lister):
         query = {}
 
         if parsed_args.limit:
-            query['limit'] = parsed_args.limit
+            query["limit"] = parsed_args.limit
         if parsed_args.marker:
-            query['marker'] = parsed_args.marker
+            query["marker"] = parsed_args.marker
 
         data = client.jobbinaries(**query)
 
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns, formatters=_formatters
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_item_properties(s, self.columns, formatters=_formatters)
+                for s in data
+            ),
+        )
         return table
 
 
 class DeleteJobbinary(command.Command):
-    _description = _('Delete Jobbinaries')
+    _description = _("Delete Jobbinaries")
 
     def get_parser(self, prog_name):
         parser = super(DeleteJobbinary, self).get_parser(prog_name)
 
         parser.add_argument(
-            'id',
-            metavar='<id>',
-            nargs='+',
-            help=_('UUID or name of the jb.')
+            "id", metavar="<id>", nargs="+", help=_("UUID or name of the jb.")
         )
 
         return parser
@@ -93,43 +91,33 @@ class DeleteJobbinary(command.Command):
 
 
 class CreateJobbinary(command.ShowOne):
-    _description = _('Create jobbinary')
+    _description = _("Create jobbinary")
 
-    columns = ('id', 'name', 'url', 'description',
-               'is_public', 'is_protected')
+    columns = ("id", "name", "url", "description", "is_public", "is_protected")
 
     def get_parser(self, prog_name):
         parser = super(CreateJobbinary, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--name',
-            metavar='<name>',
-            required=True,
-            help=_('Binary object name')
+            "--name", metavar="<name>", required=True, help=_("Binary object name")
         )
         parser.add_argument(
-            '--is_public',
-            action='store_const',
-            default='false',
-            const='false',
-            dest='is_public'
+            "--is_public",
+            action="store_const",
+            default="false",
+            const="false",
+            dest="is_public",
         )
         parser.add_argument(
-            '--is_protected',
-            action='store_const',
-            const='false',
-            dest='is_protected'
+            "--is_protected", action="store_const", const="false", dest="is_protected"
         )
         parser.add_argument(
-            '--url',
-            metavar='<url>',
-            required=True,
-            help=_('Binary object URL')
+            "--url", metavar="<url>", required=True, help=_("Binary object URL")
         )
         parser.add_argument(
-            '--description',
-            metavar='<description>',
-            help=_('Binary object description')
+            "--description",
+            metavar="<description>",
+            help=_("Binary object description"),
         )
 
         return parser
@@ -141,18 +129,16 @@ class CreateJobbinary(command.ShowOne):
         attrs = {}
 
         if parsed_args.name:
-            attrs['name'] = parsed_args.name
+            attrs["name"] = parsed_args.name
         if parsed_args.url:
-            attrs['url'] = parsed_args.url
+            attrs["url"] = parsed_args.url
         if parsed_args.description:
-            attrs['description'] = parsed_args.description
+            attrs["description"] = parsed_args.description
         if parsed_args.is_public:
-            attrs['is_public'] = parsed_args.is_public
+            attrs["is_public"] = parsed_args.is_public
         if parsed_args.is_protected:
-            attrs['is_protected'] = parsed_args.is_protected
-        obj = client.create_jobbinary(
-            **attrs
-        )
+            attrs["is_protected"] = parsed_args.is_protected
+        obj = client.create_jobbinary(**attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -161,46 +147,32 @@ class CreateJobbinary(command.ShowOne):
 
 
 class UpdateJobbinary(command.ShowOne):
-    _description = _('Create jobbinary')
+    _description = _("Create jobbinary")
 
-    columns = ('id', 'name', 'url', 'description',
-               'is_public', 'is_protected')
+    columns = ("id", "name", "url", "description", "is_public", "is_protected")
 
     def get_parser(self, prog_name):
         parser = super(UpdateJobbinary, self).get_parser(prog_name)
 
         parser.add_argument(
-            'jobbinary',
-            metavar='<jobbinary>',
-            help=_('Binary object name or ID')
+            "jobbinary", metavar="<jobbinary>", help=_("Binary object name or ID")
+        )
+        parser.add_argument("--name", metavar="<name>", help=_("Binary object name"))
+        parser.add_argument(
+            "--is_public",
+            action="store_const",
+            default="false",
+            const="false",
+            dest="is_public",
         )
         parser.add_argument(
-            '--name',
-            metavar='<name>',
-            help=_('Binary object name')
+            "--is_protected", action="store_const", const="false", dest="is_protected"
         )
+        parser.add_argument("--url", metavar="<url>", help=_("Binary object URL"))
         parser.add_argument(
-            '--is_public',
-            action='store_const',
-            default='false',
-            const='false',
-            dest='is_public'
-        )
-        parser.add_argument(
-            '--is_protected',
-            action='store_const',
-            const='false',
-            dest='is_protected'
-        )
-        parser.add_argument(
-            '--url',
-            metavar='<url>',
-            help=_('Binary object URL')
-        )
-        parser.add_argument(
-            '--description',
-            metavar='<description>',
-            help=_('Binary object description')
+            "--description",
+            metavar="<description>",
+            help=_("Binary object description"),
         )
 
         return parser
@@ -212,26 +184,20 @@ class UpdateJobbinary(command.ShowOne):
         attrs = {}
 
         if parsed_args.name:
-            attrs['name'] = parsed_args.name
+            attrs["name"] = parsed_args.name
         if parsed_args.url:
-            attrs['url'] = parsed_args.url
+            attrs["url"] = parsed_args.url
         if parsed_args.description:
-            attrs['description'] = parsed_args.description
+            attrs["description"] = parsed_args.description
         if parsed_args.is_public:
-            attrs['is_public'] = parsed_args.is_public
+            attrs["is_public"] = parsed_args.is_public
         if parsed_args.is_protected:
-            attrs['is_protected'] = parsed_args.is_protected
+            attrs["is_protected"] = parsed_args.is_protected
 
-        jobbinary = client.find_jobbinary(
-            parsed_args.jobbinary,
-            ignore_missing=False
-        )
+        jobbinary = client.find_jobbinary(parsed_args.jobbinary, ignore_missing=False)
 
         if attrs:
-            obj = client.update_jobbinary(
-                jobbinary=jobbinary,
-                **attrs
-            )
+            obj = client.update_jobbinary(jobbinary=jobbinary, **attrs)
         else:
             obj = jobbinary
 
@@ -242,15 +208,13 @@ class UpdateJobbinary(command.ShowOne):
 
 
 class ShowJobbinary(command.ShowOne):
-    _description = _('Show the Jobbinary details')
+    _description = _("Show the Jobbinary details")
 
     def get_parser(self, prog_name):
         parser = super(ShowJobbinary, self).get_parser(prog_name)
 
         parser.add_argument(
-            'jobbinary',
-            metavar='<jobbinary>',
-            help=_('Name or ID of the jobbinary.')
+            "jobbinary", metavar="<jobbinary>", help=_("Name or ID of the jobbinary.")
         )
 
         return parser
@@ -258,10 +222,7 @@ class ShowJobbinary(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.mrs
 
-        obj = client.find_jobbinary(
-            parsed_args.jobbinary,
-            ignore_missing=False
-        )
+        obj = client.find_jobbinary(parsed_args.jobbinary, ignore_missing=False)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)

@@ -12,22 +12,18 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.apig.v2 import tag
 
-EXAMPLE_TAG = {
-    'tags': ['env:prod', 'team:backend'],
-    'size': 2,
-    'total': 10
-}
+EXAMPLE_TAG = {"tags": ["env:prod", "team:backend"], "size": 2, "total": 10}
 
 
 class TestTag(base.TestCase):
 
     def test_basic(self):
         sot = tag.Tag()
-        self.assertEqual('apigw/instances/%(gateway_id)s/tags', sot.base_path)
+        self.assertEqual("apigw/instances/%(gateway_id)s/tags", sot.base_path)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
         sot = tag.Tag(**EXAMPLE_TAG)
-        self.assertEqual(['env:prod', 'team:backend'], sot.tags)
+        self.assertEqual(["env:prod", "team:backend"], sot.tags)
         self.assertEqual(2, sot.size)
         self.assertEqual(10, sot.total)

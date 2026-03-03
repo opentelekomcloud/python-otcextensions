@@ -13,11 +13,12 @@
 """
 Delete Auto-Scaling Policy by id or instance of class Policy.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-policy_id = '1234567-ad7a-48ce-8f92-b55c651439d2'
+policy_id = "1234567-ad7a-48ce-8f92-b55c651439d2"
 conn.auto_scaling.delete_policy(policy_id)

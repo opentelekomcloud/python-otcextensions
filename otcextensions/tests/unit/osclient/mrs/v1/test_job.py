@@ -19,10 +19,7 @@ from otcextensions.tests.unit.osclient.mrs.v1 import fakes
 class TestListJob(fakes.TestMrs):
     objects = fakes.FakeCluster.create_multiple(3)
 
-    columns = (
-        'id', 'name', 'type', 'description',
-        'is_public', 'is_protected'
-    )
+    columns = ("id", "name", "type", "description", "is_public", "is_protected")
 
     data = []
 
@@ -38,24 +35,19 @@ class TestListJob(fakes.TestMrs):
         self.client.api_mock = self.client.jobs
 
     def test_default(self):
-        arglist = [
-        ]
-        verifylist = [
-        ]
+        arglist = []
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with(
-        )
+        self.client.api_mock.assert_called_once_with()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -65,9 +57,17 @@ class TestShowJob(fakes.TestMrs):
     object = fakes.FakeJob.create_one()
 
     columns = (
-        'created_at', 'description', 'id',
-        'interface', 'is_protected', 'is_public',
-        'libs', 'mains', 'name', 'type', 'updated_at'
+        "created_at",
+        "description",
+        "id",
+        "interface",
+        "is_protected",
+        "is_public",
+        "libs",
+        "mains",
+        "name",
+        "type",
+        "updated_at",
     )
 
     data = fakes.gen_data(object, columns)
@@ -80,27 +80,19 @@ class TestShowJob(fakes.TestMrs):
         self.client.find_job = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'job'
-        ]
-        verifylist = [
-        ]
+        arglist = ["job"]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_job.side_effect = [
-            self.object
-        ]
+        self.client.find_job.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_job.assert_called_once_with(
-            'job',
-            ignore_missing=False
-        )
+        self.client.find_job.assert_called_once_with("job", ignore_missing=False)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -116,9 +108,7 @@ class TestDeleteJob(fakes.TestMrs):
         self.client.delete_job = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'job'
-        ]
+        arglist = ["job"]
         verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -130,9 +120,7 @@ class TestDeleteJob(fakes.TestMrs):
         self.cmd.take_action(parsed_args)
 
         delete_calls = [
-            mock.call(
-                'job',
-                ignore_missing=False),
+            mock.call("job", ignore_missing=False),
         ]
 
         self.client.delete_job.assert_has_calls(delete_calls)
@@ -143,9 +131,17 @@ class TestCreateJob(fakes.TestMrs):
     object = fakes.FakeJob.create_one()
 
     columns = (
-        'created_at', 'description', 'id',
-        'interface', 'is_protected', 'is_public',
-        'libs', 'mains', 'name', 'type', 'updated_at'
+        "created_at",
+        "description",
+        "id",
+        "interface",
+        "is_protected",
+        "is_public",
+        "libs",
+        "mains",
+        "name",
+        "type",
+        "updated_at",
     )
 
     data = fakes.gen_data(object, columns)
@@ -160,33 +156,33 @@ class TestCreateJob(fakes.TestMrs):
 
     def test_default(self):
         arglist = [
-            'test_job',
-            '--type', 'MapReduce',
-            '--description', 'test',
+            "test_job",
+            "--type",
+            "MapReduce",
+            "--description",
+            "test",
         ]
         verifylist = [
-            ('name', 'test_job'),
-            ('type', 'MapReduce'),
-            ('description', 'test'),
+            ("name", "test_job"),
+            ("type", "MapReduce"),
+            ("description", "test"),
         ]
 
         # Verify cmd is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_job.side_effect = [
-            self.object
-        ]
+        self.client.create_job.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_job.assert_called_once_with(
-            type='MapReduce',
-            name='test_job',
-            description='test',
-            is_public='false',
-            is_protected='false'
+            type="MapReduce",
+            name="test_job",
+            description="test",
+            is_public="false",
+            is_protected="false",
         )
 
         self.assertEqual(self.columns, columns)
@@ -197,9 +193,17 @@ class TestUpdateJob(fakes.TestMrs):
     object = fakes.FakeJob.create_one()
 
     columns = (
-        'created_at', 'description', 'id',
-        'interface', 'is_protected', 'is_public',
-        'libs', 'mains', 'name', 'type', 'updated_at'
+        "created_at",
+        "description",
+        "id",
+        "interface",
+        "is_protected",
+        "is_public",
+        "libs",
+        "mains",
+        "name",
+        "type",
+        "updated_at",
     )
 
     data = fakes.gen_data(object, columns)
@@ -214,39 +218,38 @@ class TestUpdateJob(fakes.TestMrs):
 
     def test_default(self):
         arglist = [
-            'job_id',
-            '--name', 'test_job',
-            '--type', 'Hive',
-            '--description', 'updated',
+            "job_id",
+            "--name",
+            "test_job",
+            "--type",
+            "Hive",
+            "--description",
+            "updated",
         ]
         verifylist = [
-            ('job', 'job_id'),
-            ('name', 'test_job'),
-            ('type', 'Hive'),
-            ('description', 'updated'),
+            ("job", "job_id"),
+            ("name", "test_job"),
+            ("type", "Hive"),
+            ("description", "updated"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_job.side_effect = [
-            self.object
-        ]
+        self.client.update_job.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_job.assert_called_with(
-            'job_id',
-            ignore_missing=False)
+        self.client.find_job.assert_called_with("job_id", ignore_missing=False)
 
         self.client.update_job.assert_called_once_with(
             job=mock.ANY,
-            name='test_job',
-            type='Hive',
-            description='updated',
-            is_public='false'
+            name="test_job",
+            type="Hive",
+            description="updated",
+            is_public="false",
         )
 
         self.assertEqual(self.columns, columns)

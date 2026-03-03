@@ -13,14 +13,12 @@
 """
 Consume Messages
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    'queue': 'queue_id',
-    'group': 'group_id'
-}
+attrs = {"queue": "queue_id", "group": "group_id"}
 for raw in conn.dms.consume_message(**attrs):
     print(raw)

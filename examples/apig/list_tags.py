@@ -13,9 +13,10 @@
 """
 List tags for API gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 tags = list(conn.apig.tags(gateway="gateway_id"))
 print("Tags:", tags)

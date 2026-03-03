@@ -15,9 +15,9 @@ from openstack import utils
 
 
 class IpAddressGroup(resource.Resource):
-    resource_key = 'ipgroup'
-    resources_key = 'ipgroups'
-    base_path = '/elb/ipgroups'
+    resource_key = "ipgroup"
+    resources_key = "ipgroups"
+    base_path = "/elb/ipgroups"
 
     # capabilities
     allow_create = True
@@ -27,26 +27,26 @@ class IpAddressGroup(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'project_id', 'description', 'name', 'ip_list'
+        "project_id", "description", "name", "ip_list"
     )
 
     # Properties
     #: Provides the IP address group.
-    id = resource.Body('id', type=str)
+    id = resource.Body("id", type=str)
     #: Provides supplementary information about the IP address group.
-    description = resource.Body('description', type=str)
+    description = resource.Body("description", type=str)
     #: Specifies the project ID of the IP address group.
-    project_id = resource.Body('project_id')
+    project_id = resource.Body("project_id")
     #: Specifies the IP address group name.
-    name = resource.Body('name', type=str)
+    name = resource.Body("name", type=str)
     #: The ID of the project this load balancer is associated with.
-    ip_list = resource.Body('ip_list', type=list, list_type=dict)
+    ip_list = resource.Body("ip_list", type=list, list_type=dict)
     #: Lists the IDs of listeners.
-    listeners = resource.Body('listeners', type=list, list_type=dict)
+    listeners = resource.Body("listeners", type=list, list_type=dict)
     #: Specifies the time when the ip address group was created.
-    created_at = resource.Body('created_at', type=str)
+    created_at = resource.Body("created_at", type=str)
     #: Specifies the time when the ip address group was updated.
-    updated_at = resource.Body('updated_at', type=str)
+    updated_at = resource.Body("updated_at", type=str)
 
     def update_ip_addresses(self, session, **attrs):
         """Method to update ip addresses in ip address group
@@ -55,11 +55,8 @@ class IpAddressGroup(resource.Resource):
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param kwargs attrs: Dictionary to update ip address group
         """
-        url = utils.urljoin(self.base_path, self.id,
-                            '/iplist/create-or-update')
-        body = {
-            'ipgroup': attrs
-        }
+        url = utils.urljoin(self.base_path, self.id, "/iplist/create-or-update")
+        body = {"ipgroup": attrs}
         response = session.post(url, json=body)
         return self._to_object(session, response)
 
@@ -70,10 +67,8 @@ class IpAddressGroup(resource.Resource):
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param kwargs attrs: Dictionary to delete ip address group
         """
-        url = utils.urljoin(self.base_path, self.id, '/iplist/batch-delete')
-        body = {
-            'ipgroup': attrs
-        }
+        url = utils.urljoin(self.base_path, self.id, "/iplist/batch-delete")
+        body = {"ipgroup": attrs}
         response = session.post(url, json=body)
         return self._to_object(session, response)
 

@@ -13,17 +13,17 @@
 """
 Set a DNS Floating IP PTR record
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 fip = conn.dns.set_floating_ip(
-    floating_ip='floating_ip_id',
-    ptrdname='test.domain.',
-    description='My Floating IP PTR record',
-    ttl=300
+    floating_ip="floating_ip_id",
+    ptrdname="test.domain.",
+    description="My Floating IP PTR record",
+    ttl=300,
 )
 print(fip)
