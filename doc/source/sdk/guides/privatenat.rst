@@ -1,0 +1,35 @@
+Network Address Translation (NAT)
+=================================
+
+.. contents:: Table of Contents
+   :local:
+
+NAT Gateway
+-----------
+
+The NAT Gateway service provides the network address translation (NAT)
+function for servers, such as Elastic Cloud Servers (ECSs), Bare Metal
+Servers (BMSs), and Workspace desktops, in a Virtual Private Cloud (VPC)
+or servers that connect to a VPC through Direct Connect or Virtual
+Private Network (VPN) in local data centers, allowing these servers to
+share elastic IP addresses (EIPs) to access the Internet or to provide
+services accessible from the Internet.
+
+List Private NAT Gateways
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query Private NAT gateway list and to filter
+the output with query parameters.
+:class:`~otcextensions.sdk.natv3.v3.gateway.Gateway`.
+
+.. literalinclude:: ../examples/natv3/list_private_gateways.py
+   :lines: 16-23
+
+Get Private NAT Gateway
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to get a Private NAT gateway by ID
+:class:`~otcextensions.sdk.natv3.v3.gateway.Gateway`.
+
+.. literalinclude:: ../examples/natv3/get_private_gateway.py
+   :lines: 16-24

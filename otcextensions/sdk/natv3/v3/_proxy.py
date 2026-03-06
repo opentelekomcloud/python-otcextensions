@@ -30,3 +30,15 @@ class Proxy(proxy.Proxy):
         :returns: A generator of private NAT gateway objects.
         """
         return self._list(_gateway.PrivateNatGateway, **query)
+
+    def get_private_nat_gateway(self, gateway):
+        """Get a single Private Nat gateway
+
+        :param gateway: The value can be the ID of a NAT Gatway
+
+        :returns: One :class:`~otcextensions.sdk.natv3.v3.gateway.PrivateNatGateway`
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        return self._get(_gateway.PrivateNatGateway, gateway)

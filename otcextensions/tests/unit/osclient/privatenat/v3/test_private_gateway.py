@@ -11,6 +11,8 @@
 # under the License.
 #
 import mock
+from openstackclient.tests.unit import utils as tests_utils
+from osc_lib import exceptions
 
 from otcextensions.osclient.privatenat.v3 import private_nat_gateway
 from otcextensions.tests.unit.osclient.privatenat.v3 import fakes
@@ -137,4 +139,77 @@ class TestListPrivateNatGateways(fakes.TestPrivateNat):
             vpc_id=["v1"],
             virsubnet_id=["s1"],
             enterprise_project_id=["ep1"],
+        )
+
+
+class TestGetPrivateNatGateway(fakes.TestPrivateNat):
+
+    _data = fakes.FakePrivateNatGateway.create_one()
+
+    columns = (
+        "id",
+        "name",
+        "spec",
+        "status",
+        "project_id",
+        "enterprise_project_id",
+    )
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestGetPrivateNatGateway, self).setUp()
+
+        self.cmd = private_nat_gateway.ShowPrivateNatGateway(self.app, None)
+
+        self.client.get_private_nat_gateway = mock.Mock(return_value=self._data)
+
+    def test_get_no_options(self):
+        arglist = []
+        verifylist = []
+
+        # Testing that a call without the required argument will fail and
+        # throw a "ParserExecption"
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
+
+    def test_get(self):
+        arglist = [
+            self._data.id,
+        ]
+
+        verifylist = [
+            ("gateway", self._data.id),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        self.client.get_private_nat_gateway.assert_called_with(self._data.id)
+
+        self.assertEqual(tuple(sorted(self.columns)), tuple(sorted(columns)))
+        self.assertEqual(tuple(sorted(self.data)), tuple(sorted(data)))
+
+    def test_get_non_existing(self):
+        arglist = ["unexist_nat_gateway"]
+        verifylist = [("gateway", "unexist_nat_gateway")]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self.client.get_private_nat_gateway.side_effect = exceptions.CommandError(
+            "Resource Not Found"
+        )
+
+        with self.assertRaises(exceptions.CommandError):
+            self.cmd.take_action(parsed_args)
+
+        self.client.get_private_nat_gateway.assert_called_once_with(
+            "unexist_nat_gateway"
         )

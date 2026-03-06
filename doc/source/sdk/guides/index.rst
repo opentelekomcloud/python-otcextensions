@@ -28,6 +28,7 @@ Open Telekom Cloud related User Guides
    modelarts
    nat
    obs
+   privatenat
    rds
    sfsturbo
    smn
