@@ -20,19 +20,21 @@ _logger = openstack._log.setup_logging("openstack")
 
 
 def _get_access_policy():
-    return json.dumps({
-        "Version": "2016-09-07",
-        "Id": "__default_policy_ID",
-        "Statement": [
-            {
-                "Sid": "__user_pub_0",
-                "Effect": "Allow",
-                "Principal": {"CSP": ["*"]},
-                "Action": ["SMN:Publish", "SMN:QueryTopicDetail"],
-                "Resource": "*",
-            }
-        ],
-    })
+    return json.dumps(
+        {
+            "Version": "2016-09-07",
+            "Id": "__default_policy_ID",
+            "Statement": [
+                {
+                    "Sid": "__user_pub_0",
+                    "Effect": "Allow",
+                    "Principal": {"CSP": ["*"]},
+                    "Action": ["SMN:Publish", "SMN:QueryTopicDetail"],
+                    "Resource": "*",
+                }
+            ],
+        }
+    )
 
 
 class TestTopicAttribute(base.BaseFunctionalTest):
