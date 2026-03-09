@@ -13,7 +13,6 @@ import json
 import uuid
 
 import openstack
-
 from otcextensions.tests.functional import base
 
 _logger = openstack._log.setup_logging("openstack")
