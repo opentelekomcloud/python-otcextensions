@@ -1,0 +1,11 @@
+---
+fixes:
+  - |
+    Fixed ``SMN`` topic attribute operations (``update_topic_attribute``,
+    ``delete_topic_attribute``) which were failing due to incorrect
+    argument passing to underlying SDK methods. Renamed ``value``
+    body attribute to ``attr_value`` in ``TopicAttribute`` resource
+    to avoid naming conflict. Added custom ``delete_all`` method
+    for deleting all attributes without ID.
+  - |
+    Added functional tests for ``SMN`` topic attribute operations.

@@ -116,7 +116,7 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         topic = self._get_resource(_topic.Topic, topic)
-        return self._list(_topic.TopicAttribute, topic_id=topic.id, **query)
+        return self._list(_topic.TopicAttribute, topic_urn=topic.id, **query)
 
     def update_topic_attribute(self, topic, name="access_policy", **attrs):
         """Update SMN topic attributes
@@ -134,7 +134,7 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         topic = self._get_resource(_topic.Topic, topic)
-        return self._update(_topic.TopicAttribute, id=name, topic_id=topic.id, **attrs)
+        return self._update(_topic.TopicAttribute, name, topic_urn=topic.id, **attrs)
 
     def delete_topic_attribute(self, topic, name=None):
         """Delete all attributes of a topic
@@ -150,8 +150,8 @@ class Proxy(proxy.Proxy):
         """
         topic = self._get_resource(_topic.Topic, topic)
         if name:
-            return self._delete(_topic.TopicAttribute, id=name, topic_id=topic.id)
-        return self._delete(_topic.TopicAttribute, topic_id=topic.id, requires_id=False)
+            return self._delete(_topic.TopicAttribute, name, topic_urn=topic.id)
+        return _topic.TopicAttribute().delete_all(self, topic_urn=topic.id)
 
     # ======== Subscription ========
     def create_subscription(self, topic, **attrs):
