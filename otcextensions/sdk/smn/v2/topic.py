@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import resource
 
 
@@ -73,4 +74,15 @@ class TopicAttribute(resource.Resource):
     #: Unique Request ID
     attributes = resource.Body("attributes", type=AttributeSpec)
     #: Values of topic attributes
-    value = resource.Body("value")
+    attr_value = resource.Body("value")
+
+    def delete_all(self, session, topic_urn):
+        """Delete all attributes of a topic.
+
+        The API supports DELETE without ID which is not
+        standard REST, so we handle it explicitly.
+        """
+        url = self.base_path % {"topic_urn": topic_urn}
+        response = session.delete(url)
+        exceptions.raise_from_response(response)
+        return response
