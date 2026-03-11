@@ -16,4 +16,4 @@ Private NAT Gateway Operations
 
 .. autoclass:: otcextensions.sdk.natv3.v3._proxy.Proxy
   :noindex:
-  :members: private_nat_gateways
+  :members: private_nat_gateways, get_private_nat_gateway

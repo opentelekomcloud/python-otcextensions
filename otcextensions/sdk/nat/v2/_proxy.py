@@ -58,7 +58,7 @@ class Proxy(proxy.Proxy):
         wait=300,
         attribute="status",
     ):
-        """Wait for an gateway to be in a particular status.
+        """Wait for a gateway to be in a particular status.
 
         :param gateway:
             The :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`

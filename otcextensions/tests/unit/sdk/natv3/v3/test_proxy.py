@@ -24,3 +24,6 @@ class TestNatv3Proxy(test_proxy_base.TestProxyBase):
 class TestPrivateNatGateway(TestNatv3Proxy):
     def test_private_nat_gateways(self):
         self.verify_list(self.proxy.private_nat_gateways, gateway.PrivateNatGateway)
+
+    def test_get_private_nat_gateway(self):
+        self.verify_get(self.proxy.get_private_nat_gateway, gateway.PrivateNatGateway)
