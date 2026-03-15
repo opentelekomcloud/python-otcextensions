@@ -1,4 +1,4 @@
-OTC Extensions
+T Cloud Public Extensions
 ==============
 
 .. image:: https://zuul.otc-service.com/api/tenant/eco/badge?project=opentelekomcloud/python-otcextensions&pipeline=check&branch=master
@@ -8,7 +8,7 @@ OTC Extensions
     :target: http://python-otcextensions.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-The OTC Extensions augment the OpenStack SDK of features and services
+The T Cloud Public Extensions augment the OpenStack SDK of features and services
 provided by the Open Telekom Cloud. If installed as a Python package,
 they add several extra commands to the OpenStack Client CLI. Therefore
 the project interacts closely with the
@@ -28,7 +28,7 @@ Installation
 
 `Installation Page <https://docs.otc.t-systems.com/python-otcextensions/install/index.html>`_
 
-The OTC Extensions are hosted as the package `otcextensions` on PyPI
+The T Cloud Public Extensions are hosted as the package `otcextensions` on PyPI
 and can be installed by pip as
 
 .. code-block: console
@@ -46,7 +46,7 @@ Configuration
 
 `Configuration Page <https://docs.otc.t-systems.com/python-otcextensions/install/configuration.html>`_
 
-Acessing the Open Telekom Cloud APIs requires authentication and
+Acessing the T Cloud Public APIs requires authentication and
 authorization. For both there are several options available:
 
 * **Configuration files** (recommended): A file called `clouds.yaml`
@@ -128,12 +128,12 @@ https://docs.openstack.org/python-openstackclient/latest/cli/authentication.html
 or
 https://developer.openstack.org/sdks/python/openstacksdk/users/config
 
-OTC Extensions CLI Usage
+T Cloud Public Extensions CLI Usage
 ------------------------
 
 `OTCE CLI Command Overview <https://docs.otc.t-systems.com/python-otcextensions/cli/index.html>`_
 
-OTC Extensions SDK Guides
+T Cloud Public Extensions SDK Guides
 -------------------------
 
 `OTCE SDK Guides <https://docs.otc.t-systems.com/python-otcextensions/sdk/guides/index.html>`_
