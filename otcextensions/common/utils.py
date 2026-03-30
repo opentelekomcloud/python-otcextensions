@@ -173,20 +173,11 @@ def extract_url_parts(url: str, project_id: str) -> list:
 
 
 def normalize_tags(tags):
-    """Convert list of KEY=VALUE strings to API tag dicts."""
     result = []
-
     for tag in tags:
-        if "=" not in tag:
-            raise ValueError("Invalid tag '%s'. Expected format key=value" % tag)
-
-        key, value = tag.split("=", 1)
-        key = key.strip()
-        value = value.strip()
-
-        if not key:
-            raise ValueError("Tag key cannot be empty")
-
-        result.append({"key": key, "value": value})
-
+        try:
+            tag = tag.split("=")
+            result.append({"key": tag[0], "value": tag[1]})
+        except IndexError:
+            result.append({"key": tag[0], "value": ""})
     return result
