@@ -19,6 +19,7 @@ from osc_lib import utils
 from osc_lib.cli import parseractions
 from osc_lib.command import command
 
+from otcextensions.common.utils import normalize_tags
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
@@ -114,17 +115,6 @@ def _add_associated_resources_to_vault_obj(data, columns):
         columns = columns + (name,)
         i += 1
     return return_data, columns
-
-
-def _normalize_tags(tags):
-    result = []
-    for tag in tags:
-        try:
-            tag = tag.split("=")
-            result.append({"key": tag[0], "value": tag[1]})
-        except IndexError:
-            result.append({"key": tag[0], "value": ""})
-    return result
 
 
 class ListVaults(command.Lister):
@@ -428,7 +418,7 @@ class CreateVault(command.ShowOne):
             attrs["backup_policy_id"] = parsed_args.backup_policy
         if parsed_args.bind_rule:
             attrs["bind_rules"] = {"tags": []}
-            attrs["bind_rules"]["tags"] = _normalize_tags(parsed_args.bind_rule)
+            attrs["bind_rules"]["tags"] = normalize_tags(parsed_args.bind_rule)
         if parsed_args.description:
             attrs["description"] = parsed_args.description
         if parsed_args.enterprise_project_id:
@@ -436,7 +426,7 @@ class CreateVault(command.ShowOne):
         if parsed_args.auto_bind:
             attrs["auto_bind"] = parsed_args.auto_bind
         if parsed_args.tag:
-            attrs["tags"] = _normalize_tags(parsed_args.tag)
+            attrs["tags"] = normalize_tags(parsed_args.tag)
 
         client = self.app.client_manager.cbr
         obj = client.create_vault(**attrs)
@@ -547,7 +537,7 @@ class UpdateVault(command.ShowOne):
             attrs["auto_bind"] = parsed_args.auto_bind
         if parsed_args.bind_rule:
             attrs["bind_rules"] = {"tags": []}
-            attrs["bind_rules"]["tags"] = _normalize_tags(parsed_args.bind_rule)
+            attrs["bind_rules"]["tags"] = normalize_tags(parsed_args.bind_rule)
         if parsed_args.auto_expand:
             attrs["auto_expand"] = parsed_args.auto_expand
         if parsed_args.smn_notify:

@@ -39,6 +39,7 @@ class PrivateNatGateway(resource.Resource):
 
     allow_list = True
     allow_fetch = True
+    allow_create = True
 
     _query_mapping = resource.QueryParameters(
         "description",

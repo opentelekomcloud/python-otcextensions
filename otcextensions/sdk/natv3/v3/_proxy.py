@@ -42,3 +42,16 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         return self._get(_gateway.PrivateNatGateway, gateway)
+
+    def create_private_nat_gateway(self, **attrs):
+        """Create a new Private gateway from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`,
+            comprised of the properties on the Gateway class.
+
+        :returns: The results of the Gateway Creation
+
+        :rtype: :class:`~otcextensions.sdk.nat.v3.gateway.PrivateNatGateway`
+        """
+        return self._create(_gateway.PrivateNatGateway, **attrs)

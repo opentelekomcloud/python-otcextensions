@@ -38,10 +38,29 @@ class FakePrivateNatGateway(test_base.Fake):
         object_info = {
             "id": "id-" + uuid.uuid4().hex,
             "name": "name-" + uuid.uuid4().hex,
+            "description": "private_nat_gateway_description",
             "spec": "Small",
             "status": "ACTIVE",
             "project_id": "project-" + uuid.uuid4().hex,
             "enterprise_project_id": "ep-" + uuid.uuid4().hex,
+            "created_at": "2024-01-01T10:00:00",
+            "updated_at": "2024-01-01T10:00:00",
+            "rule_max": 20,
+            "transit_ip_pool_size_max": 1,
+            "downlink_vpcs": [
+                {
+                    "vpc_id": "vpc-" + uuid.uuid4().hex,
+                    "virsubnet_id": "subnet-" + uuid.uuid4().hex,
+                    "ngport_ip_address": "192.168.10.10",
+                }
+            ],
+            "tags": [
+                {
+                    "key": "key1",
+                    "value": "value1",
+                }
+            ],
         }
 
-        return gateway.PrivateNatGateway(**object_info)
+        obj = gateway.PrivateNatGateway.existing(**object_info)
+        return obj
