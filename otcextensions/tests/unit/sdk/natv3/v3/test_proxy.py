@@ -33,3 +33,8 @@ class TestPrivateNatGateway(TestNatv3Proxy):
         self.verify_create(
             self.proxy.create_private_nat_gateway, gateway.PrivateNatGateway
         )
+
+    def test_delete_private_nat_gateway(self):
+        self.verify_delete(
+            self.proxy.delete_private_nat_gateway, gateway.PrivateNatGateway
+        )

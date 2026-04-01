@@ -55,3 +55,11 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.nat.v3.gateway.PrivateNatGateway`
         """
         return self._create(_gateway.PrivateNatGateway, **attrs)
+
+    def delete_private_nat_gateway(self, gateway):
+        """Delete a Private Nat gateway
+        :param gateway: The value can be the ID`
+        :returns: None
+        """
+
+        return self._delete(_gateway.PrivateNatGateway, gateway)
