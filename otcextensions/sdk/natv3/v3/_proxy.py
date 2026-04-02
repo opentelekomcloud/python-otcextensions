@@ -56,10 +56,18 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_gateway.PrivateNatGateway, **attrs)
 
-    def delete_private_nat_gateway(self, gateway):
+    def delete_private_nat_gateway(self, gateway, ignore_missing=True):
         """Delete a Private Nat gateway
-        :param gateway: The value can be the ID`
+        :param gateway: The value can be the ID or a
+            :class:`~otcextensions.sdk.natv3.v3.gateway.PrivateNatGateway` instance.`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the gateway does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent gateway.
         :returns: None
         """
 
-        return self._delete(_gateway.PrivateNatGateway, gateway)
+        return self._delete(
+            _gateway.PrivateNatGateway, gateway, ignore_missing=ignore_missing
+        )
