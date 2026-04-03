@@ -20,7 +20,7 @@ _logger = openstack._log.setup_logging("openstack")
 class TestZone(TestDns):
     def setUp(self):
         super(TestZone, self).setUp()
-        self._cleanup_stale_routers()
+        self._cleanup_routers()
         self.zone = None
         self.networks = []
 
