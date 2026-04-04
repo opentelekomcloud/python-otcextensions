@@ -42,3 +42,12 @@ This interface is used to create a Private NAT gateway
 
 .. literalinclude:: ../examples/natv3/create_private_gateway.py
    :lines: 16-35
+
+Delete Private NAT Gateway
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete the Private NAT gateway
+:class:`~otcextensions.sdk.natv3.v3.gateway.Gateway`.
+
+.. literalinclude:: ../examples/natv3/delete_private_gateway.py
+   :lines: 16-24
