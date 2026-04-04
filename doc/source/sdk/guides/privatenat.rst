@@ -51,3 +51,12 @@ This interface is used to delete the Private NAT gateway
 
 .. literalinclude:: ../examples/natv3/delete_private_gateway.py
    :lines: 16-24
+
+Update Private NAT Gateway
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to update a Private NAT gateway
+:class:`~otcextensions.sdk.natv3.v3.gateway.Gateway`.
+
+.. literalinclude:: ../examples/natv3/update_private_gateway.py
+   :lines: 16-27

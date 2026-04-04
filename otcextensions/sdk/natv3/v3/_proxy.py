@@ -56,6 +56,20 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_gateway.PrivateNatGateway, **attrs)
 
+    def update_private_nat_gateway(self, gateway, **attrs):
+        """Update a Private Nat gateway
+
+        :param gateway: The value can be either the ID of a gateway or a
+            :class:`~otcextensions.sdk.natv3.v3.gateway.PrivateNatGateway` instance.
+        :param dict attrs: The attributes to update on the gateway represented
+            by ``gateway``.
+
+        :returns: The updated gateway.
+
+        :rtype: :class:`~otcextensions.sdk.natv3.v3.gateway.PrivateNatGateway`
+        """
+        return self._update(_gateway.PrivateNatGateway, gateway, **attrs)
+
     def delete_private_nat_gateway(self, gateway, ignore_missing=True):
         """Delete a Private Nat gateway
         :param gateway: The value can be the ID or a

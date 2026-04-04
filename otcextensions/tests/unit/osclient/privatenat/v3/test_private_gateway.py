@@ -325,6 +325,68 @@ class TestCreatePrivateNatGateway(fakes.TestPrivateNat):
         self.assertEqual(self.data, data)
 
 
+class TestUpdatePrivateNatGateway(fakes.TestPrivateNat):
+
+    _data = fakes.FakePrivateNatGateway.create_one()
+
+    columns = (
+        "id",
+        "name",
+        "description",
+        "spec",
+        "status",
+        "project_id",
+        "enterprise_project_id",
+        "created_at",
+        "updated_at",
+        "rule_max",
+        "transit_ip_pool_size_max",
+        "downlink_vpcs",
+        "tags",
+    )
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestUpdatePrivateNatGateway, self).setUp()
+
+        self.cmd = private_nat_gateway.UpdatePrivateNatGateway(self.app, None)
+
+        self.client.get_private_nat_gateway = mock.Mock(return_value=self._data)
+        self.client.update_private_nat_gateway = mock.Mock(return_value=self._data)
+
+    def test_update(self):
+        arglist = [
+            self._data.id,
+            "--name",
+            "test-private-nat-gateway-updated",
+            "--description",
+            "Private nat gateway updated",
+            "--spec",
+            "Medium",
+        ]
+        verifylist = [
+            ("gateway", self._data.id),
+            ("name", "test-private-nat-gateway-updated"),
+            ("description", "Private nat gateway updated"),
+            ("spec", "Medium"),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.get_private_nat_gateway.assert_called_with(self._data.id)
+        self.client.update_private_nat_gateway.assert_called_with(
+            self._data.id,
+            name="test-private-nat-gateway-updated",
+            description="Private nat gateway updated",
+            spec="Medium",
+        )
+        self.assertEqual(sorted(self.columns), sorted(columns))
+
+
 class TestDeletePrivateNatGateway(fakes.TestPrivateNat):
 
     def setUp(self):
