@@ -345,6 +345,66 @@ class CreatePrivateNatGateway(command.ShowOne):
         return columns, data
 
 
+class UpdatePrivateNatGateway(command.ShowOne):
+    _description = _("Update a Private NAT Gateway.")
+
+    columns = (
+        "id",
+        "name",
+        "description",
+        "spec",
+        "status",
+        "project_id",
+        "enterprise_project_id",
+        "created_at",
+        "updated_at",
+        "rule_max",
+        "transit_ip_pool_size_max",
+        "downlink_vpcs",
+        "tags",
+    )
+
+    def get_parser(self, prog_name):
+        parser = super(UpdatePrivateNatGateway, self).get_parser(prog_name)
+        parser.add_argument(
+            "gateway",
+            metavar="<gateway>",
+            help=_("Specifies the Name or ID of the Private NAT Gateway."),
+        )
+        parser.add_argument(
+            "--name",
+            metavar="<name>",
+            help=_("Specifies the name of the Private NAT Gateway."),
+        )
+        parser.add_argument(
+            "--description",
+            metavar="<description>",
+            help=_("Provides supplementary information about the Private NAT gateway."),
+        )
+        parser.add_argument(
+            "--spec",
+            metavar="<spec>",
+            help=_("Specifies the type of the Private NAT Gateway."),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+        args_list = ["name", "description", "spec"]
+        attrs = {}
+        for arg in args_list:
+            if getattr(parsed_args, arg):
+                attrs[arg] = getattr(parsed_args, arg)
+        nat_gateway = client.get_private_nat_gateway(parsed_args.gateway)
+
+        obj = client.update_private_nat_gateway(nat_gateway.id, **attrs)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+
+        return display_columns, data
+
+
 class DeletePrivateNatGateway(command.Command):
     _description = _("Delete Private NAT Gateway")
 
