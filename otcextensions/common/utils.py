@@ -170,3 +170,14 @@ def extract_url_parts(url: str, project_id: str) -> list:
 
     # Strip out empty or None segments and return
     return [part for part in url_parts if part]
+
+
+def normalize_tags(tags):
+    result = []
+    for tag in tags:
+        try:
+            tag = tag.split("=")
+            result.append({"key": tag[0], "value": tag[1]})
+        except IndexError:
+            result.append({"key": tag[0], "value": ""})
+    return result

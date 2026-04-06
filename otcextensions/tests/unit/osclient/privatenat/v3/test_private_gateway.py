@@ -213,3 +213,113 @@ class TestGetPrivateNatGateway(fakes.TestPrivateNat):
         self.client.get_private_nat_gateway.assert_called_once_with(
             "unexist_nat_gateway"
         )
+
+
+class TestCreatePrivateNatGateway(fakes.TestPrivateNat):
+
+    object = fakes.FakePrivateNatGateway.create_one()
+
+    columns = (
+        "id",
+        "name",
+        "description",
+        "spec",
+        "project_id",
+        "enterprise_project_id",
+        "status",
+        "created_at",
+        "updated_at",
+        "rule_max",
+        "transit_ip_pool_size_max",
+    )
+
+    flat_data = private_nat_gateway._flatten_private_nat_gateway(object)
+
+    data = (
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["description"],
+        flat_data["spec"],
+        flat_data["project_id"],
+        flat_data["enterprise_project_id"],
+        flat_data["status"],
+        flat_data["created_at"],
+        flat_data["updated_at"],
+        flat_data["rule_max"],
+        flat_data["transit_ip_pool_size_max"],
+    )
+
+    def setUp(self):
+        super(TestCreatePrivateNatGateway, self).setUp()
+
+        self.cmd = private_nat_gateway.CreatePrivateNatGateway(self.app, None)
+        self.client.create_gateway = mock.Mock()
+        self.client.create_gateway.side_effect = [self.object]
+
+    def test_create(self):
+        arglist = [
+            "--name",
+            "test-private-gateway",
+            "--description",
+            "test description",
+            "--spec",
+            "Small",
+            "--enterprise-project-id",
+            "test-eps-id",
+            "--downlink-vpc",
+            "virsubnet_id=test-subnet-id,ngport_ip_address=192.168.10.10",
+            "--tags",
+            "key1=value1",
+        ]
+        verifylist = [
+            ("name", "test-private-gateway"),
+            ("description", "test description"),
+            ("spec", "Small"),
+            ("enterprise_project_id", "test-eps-id"),
+            (
+                "downlink_vpcs",
+                [
+                    {
+                        "virsubnet_id": "test-subnet-id",
+                        "ngport_ip_address": "192.168.10.10",
+                    }
+                ],
+            ),
+            ("tags", ["key1=value1"]),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self.client.create_private_nat_gateway.side_effect = [self.object]
+
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_private_nat_gateway.assert_called_once_with(
+            name="test-private-gateway",
+            description="test description",
+            spec="Small",
+            enterprise_project_id="test-eps-id",
+            downlink_vpcs=[
+                {
+                    "virsubnet_id": "test-subnet-id",
+                    "ngport_ip_address": "192.168.10.10",
+                }
+            ],
+            tags=[
+                {
+                    "key": "key1",
+                    "value": "value1",
+                }
+            ],
+        )
+
+        self.data, self.columns = private_nat_gateway._add_downlink_vpcs_to_obj(
+            self.object, self.data, self.columns
+        )
+
+        self.data, self.columns = private_nat_gateway._add_tags_to_obj(
+            self.object, self.data, self.columns
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)

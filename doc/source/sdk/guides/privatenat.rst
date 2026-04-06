@@ -33,3 +33,12 @@ This interface is used to get a Private NAT gateway by ID
 
 .. literalinclude:: ../examples/natv3/get_private_gateway.py
    :lines: 16-24
+
+Create Private NAT Gateway
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create a Private NAT gateway
+:class:`~otcextensions.sdk.natv3.v3.gateway.Gateway`.
+
+.. literalinclude:: ../examples/natv3/create_private_gateway.py
+   :lines: 16-35

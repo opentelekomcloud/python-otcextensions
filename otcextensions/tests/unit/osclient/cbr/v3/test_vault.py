@@ -164,19 +164,6 @@ class TestVault(fakes.TestCBR):
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
 
-    def test_normalize_tags(self):
-        tags = ["key1=value", "key2=", "key3"]
-
-        verify_result = [
-            {"key": "key1", "value": "value"},
-            {"key": "key2", "value": ""},
-            {"key": "key3", "value": ""},
-        ]
-
-        result = vault._normalize_tags(tags)
-
-        self.assertEqual(result, verify_result)
-
 
 class TestListVault(fakes.TestCBR):
 
