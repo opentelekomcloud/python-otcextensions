@@ -323,3 +323,27 @@ class TestCreatePrivateNatGateway(fakes.TestPrivateNat):
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
+
+
+class TestDeletePrivateNatGateway(fakes.TestPrivateNat):
+
+    def setUp(self):
+        super(TestDeletePrivateNatGateway, self).setUp()
+        self.gateway = fakes.FakePrivateNatGateway.create_one()
+        self.cmd = private_nat_gateway.DeletePrivateNatGateway(self.app, None)
+
+    def test_delete(self):
+        args = [self.gateway.id]
+
+        verifyargs = [("gateway", self.gateway.id)]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, args, verifyargs)
+
+        self.client.get_private_nat_gateway = mock.Mock(return_value=self.gateway.id)
+
+        # Trigger the action
+        result = self.cmd.take_action(parsed_args)
+
+        self.client.delete_private_nat_gateway.assert_called_with(self.gateway.id)
+        self.assertIsNone(result)

@@ -277,7 +277,6 @@ class CreatePrivateNatGateway(command.ShowOne):
         parser.add_argument(
             "--enterprise-project-id",
             metavar="<enterprise_project_id>",
-            default=0,
             help=_(
                 "Specifies the ID of the enterprise project"
                 " that is associated with the private NAT gateway"
@@ -344,3 +343,27 @@ class CreatePrivateNatGateway(command.ShowOne):
             data, columns = _add_tags_to_obj(obj, data, columns)
 
         return columns, data
+
+
+class DeletePrivateNatGateway(command.Command):
+    _description = _("Delete Private NAT Gateway")
+
+    def get_parser(self, prog_name):
+        parser = super(DeletePrivateNatGateway, self).get_parser(prog_name)
+        parser.add_argument(
+            "gateway",
+            metavar="<gateway>",
+            help=_("Nat Gateway to delete"),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+        gateway = client.get_private_nat_gateway(parsed_args.gateway)
+        try:
+            client.delete_private_nat_gateway(gateway)
+        except Exception as e:
+            LOG.error(
+                _("Failed to delete Private Nat Gateway with ID '%(gateway)': %(e)"),
+                {"gateway": gateway, "e": e},
+            )
