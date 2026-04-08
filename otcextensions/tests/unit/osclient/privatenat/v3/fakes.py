@@ -11,10 +11,12 @@
 # under the License.
 #
 import uuid
+from datetime import datetime
 
 import mock
 from openstackclient.tests.unit import utils
 
+from otcextensions.sdk.natv3.v3 import dnat
 from otcextensions.sdk.natv3.v3 import gateway
 from otcextensions.tests.unit.osclient import test_base
 
@@ -63,4 +65,36 @@ class FakePrivateNatGateway(test_base.Fake):
         }
 
         obj = gateway.PrivateNatGateway.existing(**object_info)
+        return obj
+
+
+class FakePrivateDnatRule(test_base.Fake):
+    """Fake one or more Private DNAT Rules"""
+
+    @classmethod
+    def generate(cls):
+        """Create a fake Private DNAT Rule.
+
+        :return:
+            A FakeResource object, with id, status and so on
+        """
+        # Set default attributes.
+        object_info = {
+            "id": "id-" + uuid.uuid4().hex,
+            "project_id": "da261828016849188f4dcc2ef94d9da9",
+            "description": "test_dnat_rule_description",
+            "gateway_id": "private-gw-id-" + uuid.uuid4().hex,
+            "transit_ip_id": uuid.uuid4().hex,
+            "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+            "network_interface_id": "dae9393a-b536-491c-a5a2-72edc1104707",
+            "type": "COMPUTE",
+            "protocol": "any",
+            "internal_service_port": 0,
+            "transit_service_port": 0,
+            "private_ip_address": uuid.uuid4().hex,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
+            "status": "ACTIVE",
+        }
+
+        obj = dnat.PrivateDnat.existing(**object_info)
         return obj

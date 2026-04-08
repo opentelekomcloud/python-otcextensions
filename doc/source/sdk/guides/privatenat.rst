@@ -60,3 +60,20 @@ This interface is used to update a Private NAT gateway
 
 .. literalinclude:: ../examples/natv3/update_private_gateway.py
    :lines: 16-27
+
+DNAT
+----
+
+The DNAT function enables servers that share the same EIPs in
+a VPC to provide services accessible from the Internet through
+the IP address mapping and port mapping.
+
+List Private DNAT Rules
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query an DNAT rule list and to filter
+the output with query parameters.
+:class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`.
+
+.. literalinclude:: ../examples/natv3/list_private_dnat_rules.py
+   :lines: 16-23

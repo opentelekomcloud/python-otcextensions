@@ -11,6 +11,7 @@
 # under the License.
 from openstack import proxy
 from otcextensions.common.utils import extract_url_parts
+from otcextensions.sdk.natv3.v3 import dnat as _dnat
 from otcextensions.sdk.natv3.v3 import gateway as _gateway
 
 
@@ -85,3 +86,23 @@ class Proxy(proxy.Proxy):
         return self._delete(
             _gateway.PrivateNatGateway, gateway, ignore_missing=ignore_missing
         )
+
+    # ======== DNAT rules ========
+
+    def private_dnat_rules(self, **query):
+        """Query DNAT rules of a private NAT gateway.
+
+        This API is used to query DNAT rules.
+
+        :param kwargs query: Optional query parameters to filter the results.
+            Supported parameters include:
+            limit, marker, page_reverse, id, project_id,
+            enterprise_project_id, description, gateway_id,
+            transit_ip_id, external_ip_address, network_interface_id,
+            type, private_ip_address, protocol,
+            internal_service_port, transit_service_port,
+            created_at, updated_at
+
+        :returns: A generator of :class:`~otcextensions.sdk.nat_gateway.v3.dnat.Dnat`
+        """
+        return self._list(_dnat.PrivateDnat, **query)
