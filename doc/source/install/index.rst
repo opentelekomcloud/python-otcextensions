@@ -3,7 +3,7 @@ Installation
 
 There are several install options for OTC Extensions to enhance the
 native `OpenStack Client`_ and to extend the `OpenStack SDK`_. Once
-installed, they cover additional `Open Telekom Cloud`_ services and
+installed, they cover additional `T Cloud Public`_ services and
 provide extra functionality on top of the stock OpenStack SDK and CLI.
 
 .. toctree::
@@ -31,7 +31,7 @@ of OpenStack SDK and OTC Extensions into a CLI tool. If installed, it
 requires the SDK.
 
 **OTC Extensions:** An addition to OpenStack SDK with enhanced
-functionality that is specific for the Open Telekom Cloud. This is the
+functionality that is specific for the T Cloud Public. This is the
 package you are currently looking at. It requires the SDK since it
 extends its interfaces. If it is installed as a Python package it is
 detected and integrated automatically by the other two packages

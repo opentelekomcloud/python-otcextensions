@@ -9,7 +9,7 @@ OTC Extensions
     :alt: Documentation Status
 
 The OTC Extensions augment the OpenStack SDK of features and services
-provided by the Open Telekom Cloud. If installed as a Python package,
+provided by the T Cloud Public (former Open Telekom Cloud). If installed as a Python package,
 they add several extra commands to the OpenStack Client CLI. Therefore
 the project interacts closely with the
 
@@ -46,7 +46,7 @@ Configuration
 
 `Configuration Page <https://docs.otc.t-systems.com/python-otcextensions/install/configuration.html>`_
 
-Acessing the Open Telekom Cloud APIs requires authentication and
+Acessing the T Cloud Public APIs requires authentication and
 authorization. For both there are several options available:
 
 * **Configuration files** (recommended): A file called `clouds.yaml`

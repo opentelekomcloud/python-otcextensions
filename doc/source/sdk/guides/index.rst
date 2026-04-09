@@ -1,7 +1,7 @@
 Guides for SDK
 ==============
 
-Open Telekom Cloud related User Guides
+T Cloud Public related User Guides
 --------------------------------------
 
 .. toctree::
@@ -42,9 +42,9 @@ Open Telekom Cloud related User Guides
 User Guides
 -----------
 
-The Open Telekom Cloud services are covering OpenStack native services and
+The T Cloud Public services are covering OpenStack native services and
 enhanced ones covering additional functionalities. All user guides related
-to Open Telekom Cloud are listed above. The links links to the most important
+to T Cloud Public are listed above. The links links to the most important
 OpenStack native services are listed below.
 
 OpenStack native User Guides
