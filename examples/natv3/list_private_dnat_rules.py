@@ -19,5 +19,5 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-for dnat_rule in conn.privatenat.private_dnat_rules():
+for dnat_rule in conn.natv3.private_dnat_rules():
     print(dnat_rule)
