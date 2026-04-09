@@ -86,3 +86,12 @@ This interface is used to create a DNAT rule.
 
 .. literalinclude:: ../examples/natv3/create_private_dnat_rules.py
    :lines: 16-32
+
+Get Private DNAT Rule
+^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query details about a specified DNAT rule.
+:class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`.
+
+.. literalinclude:: ../examples/natv3/get_private_dnat_rule.py
+   :lines: 16-22

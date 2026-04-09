@@ -21,3 +21,11 @@ class TestPrivateDnat(base.BaseFunctionalTest):
     def test_list_dnat_rules(self):
         self.dnat_rules = list(self.conn.natv3.private_dnat_rules())
         self.assertGreaterEqual(len(self.dnat_rules), 0)
+
+    def test_get_private_dnat_rule(self):
+        dnat_rules = list(self.conn.natv3.private_dnat_rules(limit=1))
+        if not dnat_rules:
+            self.skipTest("No private DNAT rules available for fetch test")
+
+        dnat_rule = self.conn.natv3.get_private_dnat_rule(dnat_rules[0].id)
+        self.assertEqual(dnat_rule.id, dnat_rules[0].id)

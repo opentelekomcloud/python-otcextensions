@@ -21,6 +21,18 @@ class TestPrivateDnat(base.TestCase):
     def setUp(self):
         super(TestPrivateDnat, self).setUp()
 
-    def test_nat_dnat_rule_list(self):
-        json_output = json.loads(self.openstack("nat dnat rule list -f json "))
+    def test_privatenat_dnat_rule_list(self):
+        json_output = json.loads(self.openstack("privatenat dnat rule list -f json "))
         self.assertIsNotNone(json_output)
+
+    def test_privatenat_dnat_rule_show(self):
+        json_output = json.loads(self.openstack("privatenat dnat rule list -f json "))
+        if not json_output:
+            self.skipTest("No private DNAT rules available for show test")
+
+        dnat_rule_id = json_output[0]["id"]
+        json_output = json.loads(
+            self.openstack("privatenat dnat rule show -f json " + dnat_rule_id)
+        )
+        self.assertIsNotNone(json_output)
+        self.assertEqual(json_output["id"], dnat_rule_id)
