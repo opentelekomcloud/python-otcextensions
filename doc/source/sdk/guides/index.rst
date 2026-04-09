@@ -2,7 +2,7 @@ Guides for SDK
 ==============
 
 T Cloud Public related User Guides
---------------------------------------
+----------------------------------
 
 .. toctree::
    :maxdepth: 1

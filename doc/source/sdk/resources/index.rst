@@ -2,7 +2,7 @@ Resources and Attributes
 ========================
 
 T Cloud Public Resources
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1

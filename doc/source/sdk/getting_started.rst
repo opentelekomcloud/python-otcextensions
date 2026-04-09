@@ -77,7 +77,7 @@ The output represents all existent OpenStack servers in your Cloud
 environment.
 
 OTC Extensions specific Example for T Cloud Public
-------------------------------------------------------
+--------------------------------------------------
 
 The following script uses the OTC Extensions to list all existent CCE Clusters
 in your account.
