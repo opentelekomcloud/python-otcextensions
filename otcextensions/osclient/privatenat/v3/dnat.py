@@ -14,12 +14,19 @@
 
 import logging
 
+from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
 
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
+
+
+def _get_columns(item):
+    column_map = {}
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class ListPrivateDnatRules(command.Lister):
@@ -240,3 +247,123 @@ class ListPrivateDnatRules(command.Lister):
                 for s in data
             ),
         )
+
+
+class CreatePrivateDnatRule(command.ShowOne):
+
+    _description = _("Create a private DNAT rule.")
+
+    def get_parser(self, prog_name):
+        parser = super(CreatePrivateDnatRule, self).get_parser(prog_name)
+
+        parser.add_argument(
+            "--gateway-id",
+            metavar="<gateway_id>",
+            required=True,
+            help=_("Specifies the private NAT gateway ID."),
+        )
+        parser.add_argument(
+            "--transit-ip-id",
+            metavar="<transit_ip_id>",
+            required=True,
+            help=_("Specifies the transit IP address ID."),
+        )
+        parser.add_argument(
+            "--type",
+            metavar="<type>",
+            choices=["COMPUTE", "VIP", "ELB", "ELBv3", "CUSTOMIZE"],
+            help=_(
+                "Specifies the backend resource type. "
+                "Supported values: COMPUTE, VIP, ELB, ELBv3, CUSTOMIZE."
+            ),
+        )
+        parser.add_argument(
+            "--network-interface-id",
+            metavar="<network_interface_id>",
+            help=_("Specifies the port ID of the backend resource."),
+        )
+        parser.add_argument(
+            "--private-ip-address",
+            metavar="<private_ip_address>",
+            help=_("Specifies the backend private IP address."),
+        )
+        parser.add_argument(
+            "--protocol",
+            metavar="<protocol>",
+            choices=["tcp", "udp", "any", "TCP", "UDP", "ANY"],
+            help=_("Specifies the protocol type. " "Supported values: tcp, udp, any."),
+        )
+        parser.add_argument(
+            "--internal-service-port",
+            metavar="<internal_service_port>",
+            type=int,
+            help=_("Specifies the port number of the backend resource."),
+        )
+        parser.add_argument(
+            "--transit-service-port",
+            metavar="<transit_service_port>",
+            type=int,
+            help=_("Specifies the port number of the transit IP address."),
+        )
+        parser.add_argument(
+            "--description",
+            metavar="<description>",
+            help=_("Provides supplementary information about the DNAT rule."),
+        )
+        parser.add_argument(
+            "--enterprise-project-id",
+            metavar="<enterprise_project_id>",
+            help=_("Specifies the enterprise project ID."),
+        )
+        return parser
+
+    def _build_attrs(self, parsed_args):
+        attrs = {
+            "gateway_id": parsed_args.gateway_id,
+            "transit_ip_id": parsed_args.transit_ip_id,
+        }
+        optional_attrs = (
+            "type",
+            "protocol",
+            "network_interface_id",
+            "private_ip_address",
+            "internal_service_port",
+            "transit_service_port",
+            "description",
+            "enterprise_project_id",
+        )
+
+        if parsed_args.network_interface_id and parsed_args.private_ip_address:
+            raise exceptions.CommandError(
+                _(
+                    "Specify either --network-interface-id or "
+                    "--private-ip-address, but not both."
+                )
+            )
+
+        if not parsed_args.network_interface_id and not parsed_args.private_ip_address:
+            raise exceptions.CommandError(
+                _(
+                    "One of --network-interface-id or --private-ip-address "
+                    "must be specified."
+                )
+            )
+
+        for key in optional_attrs:
+            value = getattr(parsed_args, key, None)
+            if value is not None:
+                if key == "protocol":
+                    attrs["protocol"] = value.lower()
+                else:
+                    attrs[key] = value
+
+        return attrs
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+        attrs = self._build_attrs(parsed_args)
+        obj = client.create_private_dnat_rule(**attrs)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+        return display_columns, data

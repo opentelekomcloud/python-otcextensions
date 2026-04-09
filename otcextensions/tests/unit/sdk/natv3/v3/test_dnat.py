@@ -41,6 +41,7 @@ class TestPrivateDnat(base.TestCase):
         self.assertEqual("dnat_rule", sot.resource_key)
         self.assertEqual("dnat_rules", sot.resources_key)
         self.assertEqual("/private-nat/dnat-rules", sot.base_path)
+        self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):

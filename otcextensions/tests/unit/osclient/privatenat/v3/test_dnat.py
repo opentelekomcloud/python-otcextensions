@@ -12,6 +12,8 @@
 
 from unittest import mock
 
+from osc_lib import exceptions
+
 from otcextensions.osclient.privatenat.v3 import dnat
 from otcextensions.tests.unit.osclient.privatenat.v3 import fakes
 
@@ -158,3 +160,105 @@ class TestListPrivateDnatRules(fakes.TestPrivateNat):
         )
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
+
+
+class TestCreatePrivateDnatRule(fakes.TestPrivateNat):
+    _data = fakes.FakePrivateDnatRule.create_one()
+
+    def setUp(self):
+        super(TestCreatePrivateDnatRule, self).setUp()
+        self.cmd = dnat.CreatePrivateDnatRule(self.app, None)
+        self.client.create_private_dnat_rule = mock.Mock(return_value=self._data)
+
+    def test_create_with_network_interface(self):
+        arglist = [
+            "--gateway-id",
+            self._data.gateway_id,
+            "--transit-ip-id",
+            self._data.transit_ip_id,
+            "--type",
+            "COMPUTE",
+            "--network-interface-id",
+            self._data.network_interface_id,
+            "--protocol",
+            "TCP",
+            "--internal-service-port",
+            "80",
+            "--transit-service-port",
+            "8080",
+            "--description",
+            self._data.description,
+            "--enterprise-project-id",
+            self._data.enterprise_project_id,
+        ]
+        verifylist = [
+            ("gateway_id", self._data.gateway_id),
+            ("transit_ip_id", self._data.transit_ip_id),
+            ("type", "COMPUTE"),
+            ("network_interface_id", self._data.network_interface_id),
+            ("protocol", "TCP"),
+            ("internal_service_port", 80),
+            ("transit_service_port", 8080),
+            ("description", self._data.description),
+            ("enterprise_project_id", self._data.enterprise_project_id),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_private_dnat_rule.assert_called_once_with(
+            gateway_id=self._data.gateway_id,
+            transit_ip_id=self._data.transit_ip_id,
+            type="COMPUTE",
+            network_interface_id=self._data.network_interface_id,
+            protocol="tcp",
+            internal_service_port=80,
+            transit_service_port=8080,
+            description=self._data.description,
+            enterprise_project_id=self._data.enterprise_project_id,
+        )
+        self.assertEqual(len(columns), len(data))
+        self.assertIn("id", columns)
+
+    def test_create_requires_interface_or_private_ip(self):
+        arglist = [
+            "--gateway-id",
+            self._data.gateway_id,
+            "--transit-ip-id",
+            self._data.transit_ip_id,
+        ]
+        verifylist = [
+            ("gateway_id", self._data.gateway_id),
+            ("transit_ip_id", self._data.transit_ip_id),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        with self.assertRaises(exceptions.CommandError):
+            self.cmd.take_action(parsed_args)
+
+    def test_create_rejects_mixed_args(self):
+        arglist = [
+            "--gateway-id",
+            self._data.gateway_id,
+            "--transit-ip-id",
+            self._data.transit_ip_id,
+            "--type",
+            "COMPUTE",
+            "--network-interface-id",
+            self._data.network_interface_id,
+            "--private-ip-address",
+            self._data.private_ip_address,
+        ]
+        verifylist = [
+            ("gateway_id", self._data.gateway_id),
+            ("transit_ip_id", self._data.transit_ip_id),
+            ("type", "COMPUTE"),
+            ("network_interface_id", self._data.network_interface_id),
+            ("private_ip_address", self._data.private_ip_address),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        with self.assertRaises(exceptions.CommandError):
+            self.cmd.take_action(parsed_args)
