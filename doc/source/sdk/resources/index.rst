@@ -1,8 +1,8 @@
 Resources and Attributes
 ========================
 
-Open Telekom Cloud Resources
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+T Cloud Public Resources
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
