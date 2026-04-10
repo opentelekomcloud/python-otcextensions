@@ -84,5 +84,5 @@ https://build.opensuse.org/project/show/Cloud:OTC:Tools:OpenStack.
 
 .. _OpenStack SDK: https://docs.openstack.org/openstacksdk/
 .. _OpenStack Client: https://docs.openstack.org/python-openstackclient/
-.. _Open Telekom Cloud: https://open-telekom-cloud.com/
+.. _T Cloud Public: https://public.t-cloud.com/
 .. _Python Package Index (PyPI): https://pypi.org/
