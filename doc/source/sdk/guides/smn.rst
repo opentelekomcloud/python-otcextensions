@@ -1,7 +1,7 @@
 Simple Message Notification Service (SMN)
 =========================================
 
-The Simple Message Notification service in the Open Telekom Cloud offers
+The Simple Message Notification service in the T Cloud Public offers
 three APIs for creating topics (a combination of a message and a logical
 access point), adding message subscribers and sending out messages. The
 SMN services includes the two roles publisher and subscriber. In

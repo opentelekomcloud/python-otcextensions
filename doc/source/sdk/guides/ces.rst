@@ -1,8 +1,8 @@
 Cloud Eye Service (CES)
-=========================
+=======================
 
 Cloud Eye (CES) is a high-performance monitoring service with integrated
-alarm functions. Open Telekom Cloud users benefit from a dashboard with
+alarm functions. T Cloud Public users benefit from a dashboard with
 a basic overview of resources and their current status. Users can
 configure the alarm function in such a way that they receive
 notifications via SMS or email. Monitoring with the Cloud Eye Service
