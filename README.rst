@@ -9,7 +9,8 @@ OTC Extensions
     :alt: Documentation Status
 
 The OTC Extensions augment the OpenStack SDK of features and services
-provided by the T Cloud Public (former Open Telekom Cloud). If installed as a Python package,
+provided by the T Cloud Public (former Open Telekom Cloud).
+If installed as a Python package,
 they add several extra commands to the OpenStack Client CLI. Therefore
 the project interacts closely with the
 
