@@ -131,3 +131,17 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         return self._get(_dnat.PrivateDnat, dnat_rule)
+
+    def update_private_dnat_rule(self, dnat_rule, **attrs):
+        """Update a private DNAT rule.
+
+        :param dnat_rule: The value can be either the ID of a private DNAT
+            rule or a :class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`
+            instance.
+        :param dict attrs: The attributes to update on the DNAT rule.
+
+        :returns: The updated private DNAT rule.
+
+        :rtype: :class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`
+        """
+        return self._update(_dnat.PrivateDnat, dnat_rule, **attrs)

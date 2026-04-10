@@ -303,3 +303,46 @@ class TestShowPrivateDnatRule(fakes.TestPrivateNat):
         self.assertEqual(tuple(sorted(self.columns)), tuple(sorted(columns)))
         self.assertEqual(len(self.data), len(data))
         self.assertIn(self._data.id, data)
+
+
+class TestUpdatePrivateDnatRule(fakes.TestPrivateNat):
+    _data = fakes.FakePrivateDnatRule.create_one()
+
+    def setUp(self):
+        super(TestUpdatePrivateDnatRule, self).setUp()
+
+        self.cmd = dnat.UpdatePrivateDnatRule(self.app, None)
+        self.client.update_private_dnat_rule = mock.Mock(return_value=self._data)
+
+    def test_update(self):
+        arglist = [
+            self._data.id,
+            "--description",
+            "updated-description",
+            "--protocol",
+            "TCP",
+            "--internal-service-port",
+            "443",
+            "--transit-service-port",
+            "8443",
+        ]
+        verifylist = [
+            ("dnat_rule", self._data.id),
+            ("description", "updated-description"),
+            ("protocol", "TCP"),
+            ("internal_service_port", 443),
+            ("transit_service_port", 8443),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.update_private_dnat_rule.assert_called_once_with(
+            self._data.id,
+            description="updated-description",
+            protocol="tcp",
+            internal_service_port=443,
+            transit_service_port=8443,
+        )
+        self.assertEqual(len(columns), len(data))
+        self.assertIn(self._data.id, data)
