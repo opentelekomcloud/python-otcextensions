@@ -8,7 +8,7 @@ simplifies building applications to work with OpenStack clouds. The
 `OpenStack Client`_ is its equivalent on the command line.
 
 **This project, OTC Extensions,** adds extra functionality to the SDK
-and the CLI offered by the `Open Telekom Cloud`_. Technically, the OTC
+and the CLI offered by the `T Cloud Public`_. Technically, the OTC
 Extensions provide Python classes and methods to attach your own code
 to the cloud. They also integrate seamless into the OpenStack Client,
 providing many extra commands.
@@ -46,7 +46,7 @@ configured conveniently in a few files.
 Working with the CLI tool
 -------------------------
 
-Users who want to access Open Telekom Cloud specific services with
+Users who want to access T Cloud Public specific services with
 :doc:`command line tools <cli/index>` for a shell like Bash find
 documentation of all of their operations and properties in this
 section.
@@ -93,4 +93,4 @@ available:
 .. _OpenStack SDK: https://docs.openstack.org/openstacksdk/
 .. _OpenStack Client: https://docs.openstack.org/python-openstackclient/
 .. _Ansible modules: https://github.com/OpenTelekomCloud/ansible-collections/
-.. _Open Telekom Cloud: https://open-telekom-cloud.com/
+.. _T Cloud Public: https://public.t-cloud.com/

@@ -5,7 +5,7 @@ Relational Database Service (RDS)
    :local:
 
 The Relational Database Service offers a demand-oriented use of databases in
-the Open Telekom Cloud. The RDS includes twelve flavors for implementing
+the T Cloud Public. The RDS includes twelve flavors for implementing
 databases for a wide range of requirements. The current versions of mySQL,
 PostgreSQL and MS SQL are available as relational database software. The RDS
 offers an automatic backup function and point-in-time recovery for the

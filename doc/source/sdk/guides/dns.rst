@@ -12,10 +12,10 @@ work in public clouds. It enables users to integrate cloud resources in their
 own company networks with ease – they then see the services as part of their
 internal network. Moreover, using domain names instead of IP addresses also
 facilitates administrative tasks and makes clouds more user-friendly.
-The Open Telekom Cloud also offers a Domain Name Service (DNS). DNS is
-available via the Open Telekom Cloud console and features anti-DDoS
+The T Cloud Public also offers a Domain Name Service (DNS). DNS is
+available via the T Cloud Public console and features anti-DDoS
 protection. In addition to references to external IP addresses, the solution
-can also be used for services within the Open Telekom Cloud. Pricing of the
+can also be used for services within the T Cloud Public. Pricing of the
 Domain Name Service is based on scaled prices depending on the number of
 domains stored. If a domain is created and remains configured for more than
 24 hours, it is billed once for the entire month. A usage-based payment is

@@ -4,8 +4,8 @@ Key Management Service (KMS)
 .. contents:: Table of Contents
    :local:
 
-The Key Management Service (KMS) of the Open Telekom Cloud generates and
-stores public keys for accessing data in the Open Telekom Cloud and
+The Key Management Service (KMS) of the T Cloud Public generates and
+stores public keys for accessing data in the T Cloud Public and
 makes them available to the respective user. It combines the essential
 security requirements placed on a cloud with high usability, as users can
 manage their keys directly via the console.
@@ -17,7 +17,7 @@ management of key security.
 The KMS does not store the data encryption keys (DEK) directly; instead
 users receive their DEKs via customer master keys. The hardware security
 modules serve to handle encryption and decryption processes, while a
-dedicated API is used to access the service. The Open Telekom Cloud also
+dedicated API is used to access the service. The T Cloud Public also
 allows users to deploy their own keys (“bring your own key”). Another
 available function is “grant master key,” which allows owners of tenants to
 issue temporary permissions for access to encrypted data.

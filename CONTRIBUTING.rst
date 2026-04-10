@@ -2,7 +2,7 @@ Contributing to OTC Extensions
 ==============================
 
 OTC Extension are developed as a community effort initiated by
-T-Systems International GmbH for the Open Telekom Cloud under an Open
+T-Systems International GmbH for the T Cloud Public (former Open Telekom Cloud) under an Open
 Source license. All code is licensed under the Apache 2.0 license.
 
 We are happily accepting pull requests. Please reach out to the
