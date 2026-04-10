@@ -14,7 +14,7 @@ The Distributed Cache Service is ideal for use as a cache server (e.g. in
 order to accelerate the loading times of websites), for real-time analyses,
 high-speed transactions, and message queuing. Clusters made up of individual
 DCS instances can be used for applications with extremely high performance
-requirements. Redis is available in the Open Telekom Cloud as the Distributed
+requirements. Redis is available in the T Cloud Public as the Distributed
 Cache Service. Via the console, the database can be defined in three variants:
 as a single-node database for temporary data storage, as a master/standby
 database for higher availability, and as a cluster for high performance.
@@ -25,7 +25,7 @@ Instances
 ---------
 
 A Distributed Cache Service Instance is a Redis instance on top of
-Open Telekom Cloud.
+T Cloud Public.
 
 List Instances
 ^^^^^^^^^^^^^^
