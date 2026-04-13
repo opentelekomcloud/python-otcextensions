@@ -71,9 +71,18 @@ the IP address mapping and port mapping.
 List Private DNAT Rules
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-This interface is used to query an DNAT rule list and to filter
+This interface is used to query a DNAT rule list and to filter
 the output with query parameters.
 :class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`.
 
 .. literalinclude:: ../examples/natv3/list_private_dnat_rules.py
    :lines: 16-23
+
+Create Private DNAT Rules
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create a DNAT rule.
+:class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`.
+
+.. literalinclude:: ../examples/natv3/create_private_dnat_rules.py
+   :lines: 16-32

@@ -106,3 +106,16 @@ class Proxy(proxy.Proxy):
         :returns: A generator of :class:`~otcextensions.sdk.nat_gateway.v3.dnat.Dnat`
         """
         return self._list(_dnat.PrivateDnat, **query)
+
+    def create_private_dnat_rule(self, **attrs):
+        """Create a private DNAT rule from attributes.
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`,
+            comprised of the properties on the PrivateDnat class.
+
+        :returns: The result of private DNAT rule creation.
+
+        :rtype: :class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`
+        """
+        return self._create(_dnat.PrivateDnat, **attrs)

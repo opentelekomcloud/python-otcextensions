@@ -18,6 +18,7 @@ class PrivateDnat(resource.Resource):
     base_path = "/private-nat/dnat-rules"
 
     # capabilities
+    allow_create = True
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
