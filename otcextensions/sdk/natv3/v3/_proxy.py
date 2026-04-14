@@ -145,3 +145,18 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`
         """
         return self._update(_dnat.PrivateDnat, dnat_rule, **attrs)
+
+    def delete_private_dnat_rule(self, dnat_rule, ignore_missing=True):
+        """Delete a private DNAT rule.
+
+        :param dnat_rule: The value can be the ID of a private DNAT rule or a
+            :class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat` instance.
+        :param bool ignore_missing: When set to ``False``,
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the private DNAT rule does not exist. When set to ``True``, no
+            exception will be raised when attempting to delete a nonexistent
+            private DNAT rule.
+
+        :returns: ``None``
+        """
+        return self._delete(_dnat.PrivateDnat, dnat_rule, ignore_missing=ignore_missing)

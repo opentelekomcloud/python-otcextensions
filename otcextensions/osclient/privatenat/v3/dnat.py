@@ -472,3 +472,28 @@ class UpdatePrivateDnatRule(command.ShowOne):
         data = utils.get_item_properties(obj, columns)
 
         return display_columns, data
+
+
+class DeletePrivateDnatRule(command.Command):
+    _description = _("Delete a private DNAT rule.")
+
+    def get_parser(self, prog_name):
+        parser = super(DeletePrivateDnatRule, self).get_parser(prog_name)
+        parser.add_argument(
+            "dnat_rule",
+            metavar="<dnat_rule>",
+            help=_("Specifies the private DNAT rule ID."),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+        try:
+            obj = client.get_private_dnat_rule(parsed_args.dnat_rule)
+            client.delete_private_dnat_rule(obj.id)
+        except Exception as e:
+            msg = (
+                f"Failed to delete private DNAT rule with ID "
+                f"'{parsed_args.dnat_rule}': {e}"
+            )
+            raise exceptions.CommandError(msg)

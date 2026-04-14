@@ -43,6 +43,7 @@ class TestPrivateDnat(base.TestCase):
         self.assertEqual("/private-nat/dnat-rules", sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_commit)
+        self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_list)
 

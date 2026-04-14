@@ -104,3 +104,12 @@ This interface is used to update a specified DNAT rule.
 
 .. literalinclude:: ../examples/natv3/update_private_dnat_rule.py
    :lines: 16-22
+
+Delete Private DNAT Rule
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a specified DNAT rule.
+:class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`.
+
+.. literalinclude:: ../examples/natv3/delete_private_dnat_rule.py
+   :lines: 16-21
