@@ -346,3 +346,36 @@ class TestUpdatePrivateDnatRule(fakes.TestPrivateNat):
         )
         self.assertEqual(len(columns), len(data))
         self.assertIn(self._data.id, data)
+
+
+class TestDeletePrivateDnatRule(fakes.TestPrivateNat):
+
+    def setUp(self):
+        super(TestDeletePrivateDnatRule, self).setUp()
+        self.cmd = dnat.DeletePrivateDnatRule(self.app, None)
+        self.rule = fakes.FakePrivateDnatRule.create_one()
+        self.client.get_private_dnat_rule = mock.Mock(return_value=self.rule)
+        self.client.delete_private_dnat_rule = mock.Mock()
+
+    def test_delete(self):
+        arglist = [self.rule.id]
+        verifylist = [("dnat_rule", self.rule.id)]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        result = self.cmd.take_action(parsed_args)
+
+        self.client.get_private_dnat_rule.assert_called_once_with(self.rule.id)
+        self.client.delete_private_dnat_rule.assert_called_once_with(self.rule.id)
+        self.assertIsNone(result)
+
+    def test_delete_failure(self):
+        self.client.get_private_dnat_rule.side_effect = Exception("boom")
+
+        arglist = [self.rule.id]
+        verifylist = [("dnat_rule", self.rule.id)]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
+
+        self.client.get_private_dnat_rule.assert_called_once_with(self.rule.id)
+        self.client.delete_private_dnat_rule.assert_not_called()
