@@ -389,3 +389,86 @@ class ShowPrivateDnatRule(command.ShowOne):
         data = utils.get_item_properties(obj, columns)
 
         return display_columns, data
+
+
+class UpdatePrivateDnatRule(command.ShowOne):
+    _description = _("Update a private DNAT rule.")
+
+    def get_parser(self, prog_name):
+        parser = super(UpdatePrivateDnatRule, self).get_parser(prog_name)
+        parser.add_argument(
+            "dnat_rule",
+            metavar="<dnat_rule>",
+            help=_("Specifies the private DNAT rule ID."),
+        )
+        parser.add_argument(
+            "--description",
+            metavar="<description>",
+            help=_("Provides supplementary information about the DNAT rule."),
+        )
+        parser.add_argument(
+            "--transit-ip-id",
+            metavar="<transit_ip_id>",
+            help=_("Specifies the transit IP address ID."),
+        )
+        parser.add_argument(
+            "--network-interface-id",
+            metavar="<network_interface_id>",
+            help=_("Specifies the port ID of the backend resource."),
+        )
+        parser.add_argument(
+            "--private-ip-address",
+            metavar="<private_ip_address>",
+            help=_("Specifies the backend private IP address."),
+        )
+        parser.add_argument(
+            "--protocol",
+            metavar="<protocol>",
+            choices=["tcp", "udp", "any", "TCP", "UDP", "ANY"],
+            help=_("Specifies the protocol type. Supported values: tcp, udp, any."),
+        )
+        parser.add_argument(
+            "--internal-service-port",
+            metavar="<internal_service_port>",
+            type=int,
+            help=_("Specifies the port number of the backend resource."),
+        )
+        parser.add_argument(
+            "--transit-service-port",
+            metavar="<transit_service_port>",
+            type=int,
+            help=_("Specifies the port number of the transit IP address."),
+        )
+        return parser
+
+    def _build_attrs(self, parsed_args):
+        attrs = {}
+        optional_attrs = (
+            "description",
+            "transit_ip_id",
+            "network_interface_id",
+            "private_ip_address",
+            "protocol",
+            "internal_service_port",
+            "transit_service_port",
+        )
+        for key in optional_attrs:
+            value = getattr(parsed_args, key, None)
+            if value is None:
+                continue
+            if key == "protocol":
+                attrs[key] = value.lower()
+            else:
+                attrs[key] = value
+
+        return attrs
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+        attrs = self._build_attrs(parsed_args)
+        obj = client.update_private_dnat_rule(parsed_args.dnat_rule, **attrs)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+
+        return display_columns, data

@@ -56,3 +56,6 @@ class TestPrivateDnat(TestNatv3Proxy):
 
     def test_get_private_dnat_rule(self):
         self.verify_get(self.proxy.get_private_dnat_rule, dnat.PrivateDnat)
+
+    def test_update_private_dnat_rule(self):
+        self.verify_update(self.proxy.update_private_dnat_rule, dnat.PrivateDnat)
