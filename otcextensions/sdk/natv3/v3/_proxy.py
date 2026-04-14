@@ -119,3 +119,15 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`
         """
         return self._create(_dnat.PrivateDnat, **attrs)
+
+    def get_private_dnat_rule(self, dnat_rule):
+        """Get a single private DNAT rule.
+
+        :param dnat_rule: The value can be the ID of a private DNAT rule.
+
+        :returns: One :class:`~otcextensions.sdk.natv3.v3.dnat.PrivateDnat`
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        return self._get(_dnat.PrivateDnat, dnat_rule)

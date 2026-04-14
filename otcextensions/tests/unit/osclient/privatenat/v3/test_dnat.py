@@ -262,3 +262,44 @@ class TestCreatePrivateDnatRule(fakes.TestPrivateNat):
 
         with self.assertRaises(exceptions.CommandError):
             self.cmd.take_action(parsed_args)
+
+
+class TestShowPrivateDnatRule(fakes.TestPrivateNat):
+    _data = fakes.FakePrivateDnatRule.create_one()
+
+    columns = (
+        "created_at",
+        "description",
+        "enterprise_project_id",
+        "gateway_id",
+        "id",
+        "internal_service_port",
+        "network_interface_id",
+        "private_ip_address",
+        "project_id",
+        "protocol",
+        "status",
+        "transit_ip_id",
+        "transit_service_port",
+        "type",
+    )
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestShowPrivateDnatRule, self).setUp()
+
+        self.cmd = dnat.ShowPrivateDnatRule(self.app, None)
+        self.client.get_private_dnat_rule = mock.Mock(return_value=self._data)
+
+    def test_show(self):
+        arglist = [self._data.id]
+        verifylist = [("dnat_rule", self._data.id)]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.get_private_dnat_rule.assert_called_once_with(self._data.id)
+        self.assertEqual(tuple(sorted(self.columns)), tuple(sorted(columns)))
+        self.assertEqual(len(self.data), len(data))
+        self.assertIn(self._data.id, data)
