@@ -13,7 +13,6 @@
 import openstack
 from openstack import exceptions as sdk_exceptions
 from openstack import resource
-
 from otcextensions.tests.functional import base
 from otcextensions.tests.functional.privatenat import PrivateNatEnvironmentMixin
 
@@ -55,14 +54,18 @@ class TestGateway(PrivateNatEnvironmentMixin, base.BaseFunctionalTest):
 
         fetched = self.conn.natv3.get_private_nat_gateway(gateway.id)
         self.assertEqual(gateway.id, fetched.id)
-        self.assertEqual(env["stack"]["subnet"].id, fetched.downlink_vpcs[0].virsubnet_id)
+        self.assertEqual(
+            env["stack"]["subnet"].id, fetched.downlink_vpcs[0].virsubnet_id
+        )
 
     def test_get_private_nat_gateway(self):
         env = self._prepare_private_nat_gateway_environment("sdk-private-nat-get")
         gateway = self.conn.natv3.get_private_nat_gateway(env["gateway"].id)
 
         self.assertEqual(env["gateway"].id, gateway.id)
-        self.assertEqual(env["stack"]["subnet"].id, gateway.downlink_vpcs[0].virsubnet_id)
+        self.assertEqual(
+            env["stack"]["subnet"].id, gateway.downlink_vpcs[0].virsubnet_id
+        )
 
     def test_update_private_nat_gateway(self):
         env = self._prepare_private_nat_gateway_environment("sdk-private-nat-update")

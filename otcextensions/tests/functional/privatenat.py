@@ -14,7 +14,6 @@ import uuid
 
 from openstack import exceptions as sdk_exceptions
 from openstack import resource
-
 from otcextensions.tests.functional import base
 
 

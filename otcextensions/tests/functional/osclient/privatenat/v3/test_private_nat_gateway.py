@@ -13,11 +13,11 @@
 import json
 import uuid
 
+from openstackclient.tests.functional import base
+
 from openstack import connection
 from openstack import exceptions as sdk_exceptions
 from openstack import resource
-from openstackclient.tests.functional import base
-
 from otcextensions import sdk
 from otcextensions.tests.functional import base as sdk_base
 from otcextensions.tests.functional.privatenat import PrivateNatEnvironmentMixin
@@ -78,7 +78,9 @@ class TestPrivateNatGateway(PrivateNatEnvironmentMixin, base.TestCase):
         env = self._create_gateway("cli-private-nat-show", "cli-private-nat-show")
         gateway_id = env["gateway"]["id"]
 
-        shown = json.loads(self.openstack("privatenat gateway show -f json " + gateway_id))
+        shown = json.loads(
+            self.openstack("privatenat gateway show -f json " + gateway_id)
+        )
         self.assertEqual(gateway_id, shown["id"])
         self.assertEqual("cli-private-nat-show", shown["description"])
 
@@ -98,7 +100,9 @@ class TestPrivateNatGateway(PrivateNatEnvironmentMixin, base.TestCase):
         self.assertEqual(gateway_id, updated["id"])
         self.assertEqual("cli-private-nat-after-update", updated["description"])
 
-        shown = json.loads(self.openstack("privatenat gateway show -f json " + gateway_id))
+        shown = json.loads(
+            self.openstack("privatenat gateway show -f json " + gateway_id)
+        )
         self.assertEqual("cli-private-nat-after-update", shown["description"])
 
     def test_private_nat_gateway_delete(self):
