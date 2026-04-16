@@ -14,6 +14,7 @@ from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.natv3.v3 import _proxy
 from otcextensions.sdk.natv3.v3 import dnat
 from otcextensions.sdk.natv3.v3 import gateway
+from otcextensions.sdk.natv3.v3 import snat
 
 
 class TestNatv3Proxy(test_proxy_base.TestProxyBase):
@@ -62,3 +63,9 @@ class TestPrivateDnat(TestNatv3Proxy):
 
     def test_delete_private_dnat_rule(self):
         self.verify_delete(self.proxy.delete_private_dnat_rule, dnat.PrivateDnat)
+
+
+class TestPrivateSnat(TestNatv3Proxy):
+
+    def test_private_snat_rules(self):
+        self.verify_list(self.proxy.private_snat_rules, snat.PrivateSnat)
