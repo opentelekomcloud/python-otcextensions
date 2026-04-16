@@ -20,7 +20,7 @@ _logger = openstack._log.setup_logging("openstack")
 class TestZone(TestDns):
     def setUp(self):
         super(TestZone, self).setUp()
-        self._cleanup_routers()
+        self.cleanup_stale_routers("sdk-dns-test-add-router-")
         self.zone = None
         self.networks = []
 
@@ -51,32 +51,6 @@ class TestZone(TestDns):
                 )
 
         super(TestZone, self).tearDown()
-
-    def _cleanup_routers(self):
-        """Clean up router resources if they are not deleted for any reason."""
-        for router in self.conn.network.routers():
-            if router.name and router.name.startswith("sdk-dns-test-add-router-"):
-                try:
-                    ports = list(self.conn.network.ports(device_id=router.id))
-                    for port in ports:
-                        fixed_ips = getattr(port, "fixed_ips", []) or []
-                        for fixed_ip in fixed_ips:
-                            subnet_id = fixed_ip.get("subnet_id")
-                            if subnet_id:
-                                try:
-                                    self.conn.network.remove_interface_from_router(
-                                        router, subnet_id=subnet_id
-                                    )
-                                except openstack.exceptions.SDKException:
-                                    pass
-
-                    self.conn.network.delete_router(router, ignore_missing=True)
-                except openstack.exceptions.SDKException as e:
-                    _logger.warning(
-                        "Failed to cleanup stale router %s: %s",
-                        router.id,
-                        str(e),
-                    )
 
     def _create_zone(self, zone_name, router_id=None, zone_type="public"):
         attrs = {"name": zone_name}

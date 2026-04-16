@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import logging
 import os
 import uuid
 
@@ -17,6 +18,7 @@ import openstack.config
 from keystoneauth1 import exceptions as _exceptions
 
 from openstack import connection
+from openstack import exceptions as sdk_exceptions
 from openstack.tests import base
 from otcextensions import sdk
 
@@ -37,6 +39,7 @@ def _get_resource_value(resource_key, default):
 
 IMAGE_NAME = _get_resource_value("image_name", "cirros-0.3.5-x86_64-disk")
 FLAVOR_NAME = _get_resource_value("flavor_name", "m1.small")
+_logger = logging.getLogger(__name__)
 
 
 class BaseFunctionalTest(base.TestCase):
@@ -75,6 +78,31 @@ class BaseFunctionalTest(base.TestCase):
                     service_type=service_type
                 )
             )
+
+    def cleanup_stale_routers(self, prefix):
+        """Clean up stale Neutron routers created by functional tests."""
+        for router in self.conn.network.routers():
+            if not router.name or not router.name.startswith(prefix):
+                continue
+            try:
+                ports = list(self.conn.network.ports(device_id=router.id))
+                for port in ports:
+                    fixed_ips = getattr(port, "fixed_ips", []) or []
+                    for fixed_ip in fixed_ips:
+                        subnet_id = fixed_ip.get("subnet_id")
+                        if not subnet_id:
+                            continue
+                        try:
+                            self.conn.network.remove_interface_from_router(
+                                router, subnet_id=subnet_id
+                            )
+                        except sdk_exceptions.SDKException:
+                            pass
+                self.conn.network.delete_router(router, ignore_missing=True)
+            except sdk_exceptions.SDKException as e:
+                _logger.warning(
+                    "Failed to cleanup stale router %s: %s", router.id, str(e)
+                )
 
 
 class NetworkBaseFunctionalTest(BaseFunctionalTest):
