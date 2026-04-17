@@ -27,6 +27,7 @@ class PrivateSnat(resource.Resource):
     base_path = "/private-nat/snat-rules"
 
     # capabilities
+    allow_fetch = True
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
