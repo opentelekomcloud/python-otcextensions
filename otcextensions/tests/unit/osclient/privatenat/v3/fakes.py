@@ -18,6 +18,7 @@ from openstackclient.tests.unit import utils
 
 from otcextensions.sdk.natv3.v3 import dnat
 from otcextensions.sdk.natv3.v3 import gateway
+from otcextensions.sdk.natv3.v3 import snat
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -97,4 +98,32 @@ class FakePrivateDnatRule(test_base.Fake):
         }
 
         obj = dnat.PrivateDnat.existing(**object_info)
+        return obj
+
+
+class FakePrivateSnatRule(test_base.Fake):
+    """Fake one or more Private SNAT Rules"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "id": "id-" + uuid.uuid4().hex,
+            "project_id": "da261828016849188f4dcc2ef94d9da9",
+            "description": "test_snat_rule_description",
+            "gateway_id": "private-gw-id-" + uuid.uuid4().hex,
+            "cidr": "10.0.0.0/24",
+            "virsubnet_id": "subnet-" + uuid.uuid4().hex,
+            "transit_ip_associations": [
+                {
+                    "transit_ip_id": "tip-" + uuid.uuid4().hex,
+                    "transit_ip_address": "172.20.1.10",
+                }
+            ],
+            "enterprise_project_id": "ep-" + uuid.uuid4().hex,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
+            "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
+            "status": "ACTIVE",
+        }
+
+        obj = snat.PrivateSnat.existing(**object_info)
         return obj

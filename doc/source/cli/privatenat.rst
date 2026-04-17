@@ -17,3 +17,11 @@ Private NAT Gateway Operations
 
 .. autoprogram-cliff:: openstack.privatenat.v3
    :command: privatenat gateway *
+
+.. _private_snat:
+
+Private SNAT Rule Operations
+----------------------------
+
+.. autoprogram-cliff:: openstack.privatenat.v3
+   :command: privatenat snat rule *

@@ -113,3 +113,19 @@ This interface is used to delete a specified DNAT rule.
 
 .. literalinclude:: ../examples/natv3/delete_private_dnat_rule.py
    :lines: 16-22
+
+SNAT
+----
+
+The SNAT function enables servers in a VPC or connected networks to use
+transit IP addresses for outbound private address translation.
+
+List Private SNAT Rules
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query an SNAT rule list and to filter
+the output with query parameters.
+:class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`.
+
+.. literalinclude:: ../examples/natv3/list_private_snat_rules.py
+   :lines: 16-23
