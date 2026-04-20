@@ -44,6 +44,7 @@ class TestPrivateSnat(base.TestCase):
         self.assertEqual("/private-nat/snat-rules", sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_commit)
+        self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
