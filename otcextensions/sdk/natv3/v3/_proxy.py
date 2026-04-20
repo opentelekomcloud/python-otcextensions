@@ -204,3 +204,17 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`
         """
         return self._create(_snat.PrivateSnat, **attrs)
+
+    def update_private_snat_rule(self, snat_rule, **attrs):
+        """Update a private SNAT rule.
+
+        :param snat_rule: The value can be either the ID of a private SNAT
+            rule or a :class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`
+            instance.
+        :param dict attrs: The attributes to update on the SNAT rule.
+
+        :returns: The updated private SNAT rule.
+
+        :rtype: :class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`
+        """
+        return self._update(_snat.PrivateSnat, snat_rule, **attrs)

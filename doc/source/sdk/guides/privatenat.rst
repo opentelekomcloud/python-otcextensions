@@ -147,3 +147,12 @@ This interface is used to create an SNAT rule.
 
 .. literalinclude:: ../examples/natv3/create_private_snat_rule.py
    :lines: 16-28
+
+Update Private SNAT Rule
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to update a specified SNAT rule.
+:class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`.
+
+.. literalinclude:: ../examples/natv3/update_private_snat_rule.py
+   :lines: 16-24
