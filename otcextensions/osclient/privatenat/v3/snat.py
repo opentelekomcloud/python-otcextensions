@@ -14,12 +14,19 @@
 
 import logging
 
+from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
 
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
+
+
+def _get_columns(item):
+    column_map = {}
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 def _get_transit_ip_addresses(rule):
@@ -190,3 +197,84 @@ class ListPrivateSnatRules(command.Lister):
                 for s in data
             ),
         )
+
+
+class CreatePrivateSnatRule(command.ShowOne):
+
+    _description = _("Create a private SNAT rule.")
+
+    def get_parser(self, prog_name):
+        parser = super(CreatePrivateSnatRule, self).get_parser(prog_name)
+
+        parser.add_argument(
+            "--gateway-id",
+            metavar="<gateway_id>",
+            required=True,
+            help=_("Specifies the private NAT gateway ID."),
+        )
+        parser.add_argument(
+            "--cidr",
+            metavar="<cidr>",
+            help=_("Specifies the CIDR block that matches the SNAT rule."),
+        )
+        parser.add_argument(
+            "--virsubnet-id",
+            metavar="<virsubnet_id>",
+            help=_("Specifies the ID of the subnet that matches the SNAT rule."),
+        )
+        parser.add_argument(
+            "--description",
+            metavar="<description>",
+            help=_("Provides supplementary information about the SNAT rule."),
+        )
+        parser.add_argument(
+            "--transit-ip-id",
+            metavar="<transit_ip_id>",
+            action="append",
+            dest="transit_ip_ids",
+            required=True,
+            help=_(
+                "Specifies the transit IP address ID. "
+                "Repeat to associate multiple transit IPs."
+            ),
+        )
+        return parser
+
+    def _build_attrs(self, parsed_args):
+        attrs = {
+            "gateway_id": parsed_args.gateway_id,
+            "transit_ip_ids": parsed_args.transit_ip_ids,
+        }
+
+        if len(parsed_args.transit_ip_ids) > 20:
+            raise exceptions.CommandError(
+                _("A maximum number of 20 --transit-ip-id values is allowed.")
+            )
+
+        if parsed_args.cidr and parsed_args.virsubnet_id:
+            raise exceptions.CommandError(
+                _("Specify either --cidr or --virsubnet-id, but not both.")
+            )
+
+        if not parsed_args.cidr and not parsed_args.virsubnet_id:
+            raise exceptions.CommandError(
+                _("One of --cidr or --virsubnet-id must be specified.")
+            )
+
+        if parsed_args.cidr:
+            attrs["cidr"] = parsed_args.cidr
+        if parsed_args.virsubnet_id:
+            attrs["virsubnet_id"] = parsed_args.virsubnet_id
+        if parsed_args.description is not None:
+            attrs["description"] = parsed_args.description
+
+        return attrs
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+        attrs = self._build_attrs(parsed_args)
+        obj = client.create_private_snat_rule(**attrs)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+        return display_columns, data

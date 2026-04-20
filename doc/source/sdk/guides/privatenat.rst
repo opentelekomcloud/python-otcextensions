@@ -129,3 +129,12 @@ the output with query parameters.
 
 .. literalinclude:: ../examples/natv3/list_private_snat_rules.py
    :lines: 16-23
+
+Create Private SNAT Rule
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create an SNAT rule.
+:class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`.
+
+.. literalinclude:: ../examples/natv3/create_private_snat_rule.py
+   :lines: 16-28

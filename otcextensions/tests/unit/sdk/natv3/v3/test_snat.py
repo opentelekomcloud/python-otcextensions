@@ -42,6 +42,7 @@ class TestPrivateSnat(base.TestCase):
         self.assertEqual("snat_rule", sot.resource_key)
         self.assertEqual("snat_rules", sot.resources_key)
         self.assertEqual("/private-nat/snat-rules", sot.base_path)
+        self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
@@ -52,6 +53,7 @@ class TestPrivateSnat(base.TestCase):
         self.assertEqual(EXAMPLE["gateway_id"], sot.gateway_id)
         self.assertEqual(EXAMPLE["cidr"], sot.cidr)
         self.assertEqual(EXAMPLE["virsubnet_id"], sot.virsubnet_id)
+        self.assertIsNone(sot.transit_ip_ids)
         self.assertEqual(1, len(sot.transit_ip_associations))
         self.assertIsInstance(sot.transit_ip_associations[0], snat.AssociatedTransitIp)
         self.assertEqual(

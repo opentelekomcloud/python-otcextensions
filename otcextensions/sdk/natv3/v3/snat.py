@@ -27,6 +27,7 @@ class PrivateSnat(resource.Resource):
     base_path = "/private-nat/snat-rules"
 
     # capabilities
+    allow_create = True
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
@@ -61,6 +62,10 @@ class PrivateSnat(resource.Resource):
 
     #: Provides supplementary information about the SNAT rule.
     description = resource.Body("description")
+
+    #: Specifies the IDs of associated transit IP addresses.
+    #: Accepted on create and update requests.
+    transit_ip_ids = resource.Body("transit_ip_ids", type=list)
 
     #: Specifies the list of details of associated transit IP addresses.
     transit_ip_associations = resource.Body(

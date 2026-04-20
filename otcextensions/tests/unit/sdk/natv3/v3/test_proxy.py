@@ -69,3 +69,6 @@ class TestPrivateSnat(TestNatv3Proxy):
 
     def test_private_snat_rules(self):
         self.verify_list(self.proxy.private_snat_rules, snat.PrivateSnat)
+
+    def test_create_private_snat_rule(self):
+        self.verify_create(self.proxy.create_private_snat_rule, snat.PrivateSnat)
