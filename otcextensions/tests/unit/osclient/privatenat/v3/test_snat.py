@@ -257,3 +257,39 @@ class TestCreatePrivateSnatRule(fakes.TestPrivateNat):
 
         with self.assertRaises(exceptions.CommandError):
             self.cmd.take_action(parsed_args)
+
+
+class TestUpdatePrivateSnatRule(fakes.TestPrivateNat):
+    _data = fakes.FakePrivateSnatRule.create_one()
+
+    def setUp(self):
+        super(TestUpdatePrivateSnatRule, self).setUp()
+        self.cmd = snat.UpdatePrivateSnatRule(self.app, None)
+        self.client.update_private_snat_rule = mock.Mock(return_value=self._data)
+
+    def test_update(self):
+        arglist = [
+            self._data.id,
+            "--description",
+            "updated-description",
+            "--transit-ip-id",
+            "tip-1",
+            "--transit-ip-id",
+            "tip-2",
+        ]
+        verifylist = [
+            ("snat_rule", self._data.id),
+            ("description", "updated-description"),
+            ("transit_ip_ids", ["tip-1", "tip-2"]),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.update_private_snat_rule.assert_called_once_with(
+            self._data.id,
+            description="updated-description",
+            transit_ip_ids=["tip-1", "tip-2"],
+        )
+        self.assertEqual(len(columns), len(data))
+        self.assertIn("id", columns)

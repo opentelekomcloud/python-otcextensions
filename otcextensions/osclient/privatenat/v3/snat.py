@@ -278,3 +278,51 @@ class CreatePrivateSnatRule(command.ShowOne):
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
         return display_columns, data
+
+
+class UpdatePrivateSnatRule(command.ShowOne):
+
+    _description = _("Update a private SNAT rule.")
+
+    def get_parser(self, prog_name):
+        parser = super(UpdatePrivateSnatRule, self).get_parser(prog_name)
+        parser.add_argument(
+            "snat_rule",
+            metavar="<snat_rule>",
+            help=_("Specifies the private SNAT rule ID."),
+        )
+        parser.add_argument(
+            "--description",
+            metavar="<description>",
+            help=_("Provides supplementary information about the SNAT rule."),
+        )
+        parser.add_argument(
+            "--transit-ip-id",
+            metavar="<transit_ip_id>",
+            action="append",
+            dest="transit_ip_ids",
+            help=_(
+                "Specifies the transit IP address ID. "
+                "Repeat to associate multiple transit IPs."
+            ),
+        )
+        return parser
+
+    def _build_attrs(self, parsed_args):
+        attrs = {}
+
+        if parsed_args.description is not None:
+            attrs["description"] = parsed_args.description
+        if parsed_args.transit_ip_ids is not None:
+            attrs["transit_ip_ids"] = parsed_args.transit_ip_ids
+
+        return attrs
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+        attrs = self._build_attrs(parsed_args)
+        obj = client.update_private_snat_rule(parsed_args.snat_rule, **attrs)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+        return display_columns, data
