@@ -191,3 +191,16 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         return self._get(_snat.PrivateSnat, snat_rule)
+
+    def create_private_snat_rule(self, **attrs):
+        """Create a private SNAT rule from attributes.
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`,
+            comprised of the properties on the PrivateSnat class.
+
+        :returns: The result of private SNAT rule creation.
+
+        :rtype: :class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`
+        """
+        return self._create(_snat.PrivateSnat, **attrs)

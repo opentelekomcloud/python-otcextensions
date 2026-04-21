@@ -119,6 +119,7 @@ class FakePrivateSnatRule(test_base.Fake):
                     "transit_ip_address": "172.20.1.10",
                 }
             ],
+            "transit_ip_ids": [],
             "enterprise_project_id": "ep-" + uuid.uuid4().hex,
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
             "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),

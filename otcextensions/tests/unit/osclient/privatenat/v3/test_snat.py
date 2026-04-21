@@ -12,6 +12,8 @@
 
 from unittest import mock
 
+from osc_lib import exceptions
+
 from otcextensions.osclient.privatenat.v3 import snat
 from otcextensions.tests.unit.osclient.privatenat.v3 import fakes
 
@@ -166,3 +168,130 @@ class TestShowPrivateSnatRule(fakes.TestPrivateNat):
         self.assertEqual(tuple(sorted(self.columns)), tuple(sorted(columns)))
         self.assertEqual(len(self.data), len(data))
         self.assertIn(self._data.id, data)
+
+
+class TestCreatePrivateSnatRule(fakes.TestPrivateNat):
+    _data = fakes.FakePrivateSnatRule.create_one()
+
+    def setUp(self):
+        super(TestCreatePrivateSnatRule, self).setUp()
+        self.cmd = snat.CreatePrivateSnatRule(self.app, None)
+        self.client.create_private_snat_rule = mock.Mock(return_value=self._data)
+
+    def test_create_with_virsubnet(self):
+        arglist = [
+            "--gateway-id",
+            self._data.gateway_id,
+            "--virsubnet-id",
+            self._data.virsubnet_id,
+            "--transit-ip-id",
+            "tip-1",
+            "--transit-ip-id",
+            "tip-2",
+            "--description",
+            self._data.description,
+        ]
+        verifylist = [
+            ("gateway_id", self._data.gateway_id),
+            ("virsubnet_id", self._data.virsubnet_id),
+            ("transit_ip_ids", ["tip-1", "tip-2"]),
+            ("description", self._data.description),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_private_snat_rule.assert_called_once_with(
+            gateway_id=self._data.gateway_id,
+            virsubnet_id=self._data.virsubnet_id,
+            transit_ip_ids=["tip-1", "tip-2"],
+            description=self._data.description,
+        )
+        self.assertEqual(len(columns), len(data))
+        self.assertIn("id", columns)
+
+    def test_create_with_cidr(self):
+        arglist = [
+            "--gateway-id",
+            self._data.gateway_id,
+            "--cidr",
+            "10.1.1.64/30",
+            "--transit-ip-id",
+            "tip-1",
+        ]
+        verifylist = [
+            ("gateway_id", self._data.gateway_id),
+            ("cidr", "10.1.1.64/30"),
+            ("transit_ip_ids", ["tip-1"]),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        self.cmd.take_action(parsed_args)
+
+        self.client.create_private_snat_rule.assert_called_once_with(
+            gateway_id=self._data.gateway_id,
+            cidr="10.1.1.64/30",
+            transit_ip_ids=["tip-1"],
+        )
+
+    def test_create_requires_cidr_or_virsubnet(self):
+        arglist = [
+            "--gateway-id",
+            self._data.gateway_id,
+            "--transit-ip-id",
+            "tip-1",
+        ]
+        verifylist = [
+            ("gateway_id", self._data.gateway_id),
+            ("transit_ip_ids", ["tip-1"]),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        with self.assertRaises(exceptions.CommandError):
+            self.cmd.take_action(parsed_args)
+
+    def test_create_both_cidr_and_virsubnet(self):
+        arglist = [
+            "--gateway-id",
+            self._data.gateway_id,
+            "--cidr",
+            "10.1.1.64/30",
+            "--virsubnet-id",
+            self._data.virsubnet_id,
+            "--transit-ip-id",
+            "tip-1",
+        ]
+        verifylist = [
+            ("gateway_id", self._data.gateway_id),
+            ("cidr", "10.1.1.64/30"),
+            ("virsubnet_id", self._data.virsubnet_id),
+            ("transit_ip_ids", ["tip-1"]),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        with self.assertRaises(exceptions.CommandError):
+            self.cmd.take_action(parsed_args)
+
+    def test_create_more_than_20_transit_ip_ids(self):
+        arglist = [
+            "--gateway-id",
+            self._data.gateway_id,
+            "--virsubnet-id",
+            self._data.virsubnet_id,
+        ]
+        verifylist = [
+            ("gateway_id", self._data.gateway_id),
+            ("virsubnet_id", self._data.virsubnet_id),
+        ]
+
+        for i in range(21):
+            arglist.extend(["--transit-ip-id", "tip-%s" % i])
+
+        verifylist.append(("transit_ip_ids", ["tip-%s" % i for i in range(21)]))
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        with self.assertRaises(exceptions.CommandError):
+            self.cmd.take_action(parsed_args)

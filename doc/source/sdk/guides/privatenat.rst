@@ -138,3 +138,12 @@ This interface is used to query details about a specified SNAT rule.
 
 .. literalinclude:: ../examples/natv3/get_private_snat_rule.py
    :lines: 16-22
+
+Create Private SNAT Rule
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create an SNAT rule.
+:class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`.
+
+.. literalinclude:: ../examples/natv3/create_private_snat_rule.py
+   :lines: 16-28
