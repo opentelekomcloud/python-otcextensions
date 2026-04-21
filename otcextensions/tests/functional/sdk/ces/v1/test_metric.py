@@ -19,7 +19,7 @@ class TestMetric(base.BaseFunctionalTest):
 
     def test_list(self):
         metrics = list(self.conn.ces.metrics())
-        assert len(metrics) > 0
+        self.assertGreater(len(metrics), 0)
 
     def test_list_with_non_existing_params(self):
         metrics = list(
@@ -27,7 +27,7 @@ class TestMetric(base.BaseFunctionalTest):
                 namespace="SYS.ECS", metric_name="totally_fake_metric_xyz"
             )
         )
-        assert len(metrics) == 0
+        self.assertEqual(len(metrics), 0)
 
     def test_list_with_existing_metric(self):
         metrics = list(
@@ -35,4 +35,4 @@ class TestMetric(base.BaseFunctionalTest):
                 namespace="SYS.ECS",
             )
         )
-        assert len(metrics) > 0
+        self.assertIsNotNone(metrics)
