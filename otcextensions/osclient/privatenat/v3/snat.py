@@ -198,7 +198,7 @@ class ListPrivateSnatRules(command.Lister):
             ),
         )
 
- 
+
 class ShowPrivateSnatRule(command.ShowOne):
     _description = _("Show private SNAT rule details.")
 
@@ -299,3 +299,5 @@ class CreatePrivateSnatRule(command.ShowOne):
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
+
+        return display_columns, data

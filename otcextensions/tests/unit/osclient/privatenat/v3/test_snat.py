@@ -131,7 +131,7 @@ class TestListPrivateSnatRules(fakes.TestPrivateNat):
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
 
-        
+
 class TestShowPrivateSnatRule(fakes.TestPrivateNat):
     _data = fakes.FakePrivateSnatRule.create_one()
 

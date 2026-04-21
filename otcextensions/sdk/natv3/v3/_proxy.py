@@ -179,7 +179,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`
         """
         return self._list(_snat.PrivateSnat, **query)
-    
+
     def get_private_snat_rule(self, snat_rule):
         """Get a single private SNAT rule.
 
@@ -191,7 +191,7 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         return self._get(_snat.PrivateSnat, snat_rule)
-      
+
     def create_private_snat_rule(self, **attrs):
         """Create a private SNAT rule from attributes.
 
