@@ -23,12 +23,16 @@ class TestMetric(base.BaseFunctionalTest):
 
     def test_list_with_non_existing_params(self):
         metrics = list(
-            self.conn.ces.metrics(namespace='SYS.ECS',
-                                  metric_name='totally_fake_metric_xyz'))
+            self.conn.ces.metrics(
+                namespace="SYS.ECS", metric_name="totally_fake_metric_xyz"
+            )
+        )
         assert len(metrics) == 0
 
     def test_list_with_existing_metric(self):
         metrics = list(
-            self.conn.ces.metrics(namespace='SYS.ECS',)
+            self.conn.ces.metrics(
+                namespace="SYS.ECS",
+            )
         )
         assert len(metrics) > 0

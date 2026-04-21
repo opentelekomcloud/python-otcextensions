@@ -9,7 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource, exceptions
+from openstack import exceptions
+from openstack import resource
 
 
 class DimensionsSpec(resource.Resource):
@@ -46,8 +47,14 @@ class Metric(resource.Resource):
     unit = resource.Body("unit")
 
     @classmethod
-    def list(cls, session, paginated=True, base_path=None,
-             allow_unknown_params=False, **params):
+    def list(
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        **params
+    ):
         if base_path is None:
             base_path = cls.base_path
         query_params = cls._query_mapping._transpose(params, cls)
