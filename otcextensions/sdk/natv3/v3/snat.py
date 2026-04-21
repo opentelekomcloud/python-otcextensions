@@ -28,6 +28,7 @@ class PrivateSnat(resource.Resource):
 
     # capabilities
     allow_create = True
+    allow_fetch = True
     allow_list = True
 
     _query_mapping = resource.QueryParameters(

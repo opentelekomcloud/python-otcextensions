@@ -43,6 +43,7 @@ class TestPrivateSnat(base.TestCase):
         self.assertEqual("snat_rules", sot.resources_key)
         self.assertEqual("/private-nat/snat-rules", sot.base_path)
         self.assertTrue(sot.allow_create)
+        self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):

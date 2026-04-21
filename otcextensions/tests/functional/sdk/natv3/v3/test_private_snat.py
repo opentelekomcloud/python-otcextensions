@@ -21,3 +21,11 @@ class TestPrivateSnat(base.BaseFunctionalTest):
     def test_list_snat_rules(self):
         snat_rules = list(self.conn.natv3.private_snat_rules())
         self.assertGreaterEqual(len(snat_rules), 0)
+
+    def test_get_private_snat_rule(self):
+        snat_rules = list(self.conn.natv3.private_snat_rules(limit=1))
+        if not snat_rules:
+            self.skipTest("No private SNAT rules available for fetch test")
+
+        snat_rule = self.conn.natv3.get_private_snat_rule(snat_rules[0].id)
+        self.assertEqual(snat_rule.id, snat_rules[0].id)
