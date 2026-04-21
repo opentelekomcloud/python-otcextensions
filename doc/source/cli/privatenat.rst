@@ -25,3 +25,9 @@ Private SNAT Rule Operations
 
 .. autoprogram-cliff:: openstack.privatenat.v3
    :command: privatenat snat rule *
+
+Private Transit IP Address Operations
+-------------------------------------
+
+.. autoprogram-cliff:: openstack.privatenat.v3
+   :command: privatenat transit ip *

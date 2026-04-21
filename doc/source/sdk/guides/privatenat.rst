@@ -165,3 +165,19 @@ This interface is used to delete a specified SNAT rule.
 
 .. literalinclude:: ../examples/natv3/delete_private_snat_rule.py
    :lines: 16-22
+
+Transit IP Addresses
+--------------------
+
+Transit IP addresses are used by private NAT gateways for private network
+address translation.
+
+List Private Transit IP Addresses
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query transit IP addresses and to filter
+the output with query parameters.
+:class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`.
+
+.. literalinclude:: ../examples/natv3/list_private_transit_ips.py
+   :lines: 16-23

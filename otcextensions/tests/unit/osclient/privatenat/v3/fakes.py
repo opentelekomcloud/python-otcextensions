@@ -19,6 +19,7 @@ from openstackclient.tests.unit import utils
 from otcextensions.sdk.natv3.v3 import dnat
 from otcextensions.sdk.natv3.v3 import gateway
 from otcextensions.sdk.natv3.v3 import snat
+from otcextensions.sdk.natv3.v3 import transit_ip
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -127,4 +128,32 @@ class FakePrivateSnatRule(test_base.Fake):
         }
 
         obj = snat.PrivateSnat.existing(**object_info)
+        return obj
+
+
+class FakePrivateTransitIp(test_base.Fake):
+    """Fake one or more private transit IP addresses."""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "id": "id-" + uuid.uuid4().hex,
+            "project_id": "da261828016849188f4dcc2ef94d9da9",
+            "network_interface_id": "net-" + uuid.uuid4().hex,
+            "ip_address": "172.20.1.10",
+            "gateway_id": "private-gw-id-" + uuid.uuid4().hex,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
+            "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
+            "tags": [
+                {
+                    "key": "env",
+                    "value": "test",
+                }
+            ],
+            "virsubnet_id": "subnet-" + uuid.uuid4().hex,
+            "status": "ACTIVE",
+            "enterprise_project_id": "ep-" + uuid.uuid4().hex,
+        }
+
+        obj = transit_ip.PrivateTransitIp.existing(**object_info)
         return obj

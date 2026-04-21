@@ -14,6 +14,7 @@ from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.natv3.v3 import dnat as _dnat
 from otcextensions.sdk.natv3.v3 import gateway as _gateway
 from otcextensions.sdk.natv3.v3 import snat as _snat
+from otcextensions.sdk.natv3.v3 import transit_ip as _transit_ip
 
 
 class Proxy(proxy.Proxy):
@@ -233,3 +234,20 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._delete(_snat.PrivateSnat, snat_rule, ignore_missing=ignore_missing)
+
+    # ======== Transit IP addresses ========
+
+    def private_transit_ips(self, **query):
+        """Query private NAT transit IP addresses.
+
+        :param kwargs query: Optional query parameters to filter the results.
+            Supported parameters include:
+            limit, marker, page_reverse, id, project_id,
+            network_interface_id, ip_address, gateway_id,
+            enterprise_project_id, virsubnet_id, transit_subnet_id,
+            description
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`
+        """
+        return self._list(_transit_ip.PrivateTransitIp, **query)
