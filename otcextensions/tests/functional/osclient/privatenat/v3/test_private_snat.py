@@ -24,3 +24,15 @@ class TestPrivateSnat(base.TestCase):
     def test_privatenat_snat_rule_list(self):
         json_output = json.loads(self.openstack("privatenat snat rule list -f json "))
         self.assertIsNotNone(json_output)
+
+    def test_privatenat_snat_rule_show(self):
+        json_output = json.loads(self.openstack("privatenat snat rule list -f json "))
+        if not json_output:
+            self.skipTest("No private SNAT rules available for show test")
+
+        snat_rule_id = json_output[0]["id"]
+        json_output = json.loads(
+            self.openstack("privatenat snat rule show -f json " + snat_rule_id)
+        )
+        self.assertIsNotNone(json_output)
+        self.assertEqual(json_output["id"], snat_rule_id)
