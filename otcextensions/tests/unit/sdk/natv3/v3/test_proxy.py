@@ -15,6 +15,7 @@ from otcextensions.sdk.natv3.v3 import _proxy
 from otcextensions.sdk.natv3.v3 import dnat
 from otcextensions.sdk.natv3.v3 import gateway
 from otcextensions.sdk.natv3.v3 import snat
+from otcextensions.sdk.natv3.v3 import transit_ip
 
 
 class TestNatv3Proxy(test_proxy_base.TestProxyBase):
@@ -70,6 +71,9 @@ class TestPrivateSnat(TestNatv3Proxy):
     def test_private_snat_rules(self):
         self.verify_list(self.proxy.private_snat_rules, snat.PrivateSnat)
 
+    def test_get_private_snat_rule(self):
+        self.verify_get(self.proxy.get_private_snat_rule, snat.PrivateSnat)
+
     def test_create_private_snat_rule(self):
         self.verify_create(self.proxy.create_private_snat_rule, snat.PrivateSnat)
 
@@ -79,5 +83,8 @@ class TestPrivateSnat(TestNatv3Proxy):
     def test_delete_private_snat_rule(self):
         self.verify_delete(self.proxy.delete_private_snat_rule, snat.PrivateSnat)
 
-    def test_get_private_snat_rule(self):
-        self.verify_get(self.proxy.get_private_snat_rule, snat.PrivateSnat)
+
+class TestPrivateTransitIp(TestNatv3Proxy):
+
+    def test_private_transit_ips(self):
+        self.verify_list(self.proxy.private_transit_ips, transit_ip.PrivateTransitIp)
