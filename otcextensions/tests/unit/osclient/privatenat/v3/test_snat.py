@@ -331,3 +331,24 @@ class TestUpdatePrivateSnatRule(fakes.TestPrivateNat):
         )
         self.assertEqual(len(columns), len(data))
         self.assertIn("id", columns)
+
+
+class TestDeletePrivateSnatRule(fakes.TestPrivateNat):
+
+    def setUp(self):
+        super(TestDeletePrivateSnatRule, self).setUp()
+        self.cmd = snat.DeletePrivateSnatRule(self.app, None)
+        self.rule = fakes.FakePrivateSnatRule.create_one()
+        self.client.get_private_snat_rule = mock.Mock(return_value=self.rule)
+        self.client.delete_private_snat_rule = mock.Mock()
+
+    def test_delete(self):
+        arglist = [self.rule.id]
+        verifylist = [("snat_rule", self.rule.id)]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        result = self.cmd.take_action(parsed_args)
+
+        self.client.get_private_snat_rule.assert_called_once_with(self.rule.id)
+        self.client.delete_private_snat_rule.assert_called_once_with(self.rule.id)
+        self.assertIsNone(result)

@@ -349,3 +349,28 @@ class UpdatePrivateSnatRule(command.ShowOne):
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
         return display_columns, data
+
+
+class DeletePrivateSnatRule(command.Command):
+    _description = _("Delete a private SNAT rule.")
+
+    def get_parser(self, prog_name):
+        parser = super(DeletePrivateSnatRule, self).get_parser(prog_name)
+        parser.add_argument(
+            "snat_rule",
+            metavar="<snat_rule>",
+            help=_("Specifies the private SNAT rule ID."),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+        try:
+            obj = client.get_private_snat_rule(parsed_args.snat_rule)
+            client.delete_private_snat_rule(obj.id)
+        except Exception as e:
+            msg = (
+                f"Failed to delete private SNAT rule with ID "
+                f"'{parsed_args.snat_rule}': {e}"
+            )
+            raise exceptions.CommandError(msg)

@@ -29,6 +29,7 @@ class PrivateSnat(resource.Resource):
     # capabilities
     allow_create = True
     allow_commit = True
+    allow_delete = True
     allow_fetch = True
     allow_list = True
 

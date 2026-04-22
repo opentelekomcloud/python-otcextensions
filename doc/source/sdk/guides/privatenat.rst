@@ -156,3 +156,12 @@ This interface is used to update a specified SNAT rule.
 
 .. literalinclude:: ../examples/natv3/update_private_snat_rule.py
    :lines: 16-24
+
+Delete Private SNAT Rule
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a specified SNAT rule.
+:class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`.
+
+.. literalinclude:: ../examples/natv3/delete_private_snat_rule.py
+   :lines: 16-22

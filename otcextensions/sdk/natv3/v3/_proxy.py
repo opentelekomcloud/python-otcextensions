@@ -218,3 +218,18 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat`
         """
         return self._update(_snat.PrivateSnat, snat_rule, **attrs)
+
+    def delete_private_snat_rule(self, snat_rule, ignore_missing=True):
+        """Delete a private SNAT rule.
+
+        :param snat_rule: The value can be the ID of a private SNAT rule or a
+            :class:`~otcextensions.sdk.natv3.v3.snat.PrivateSnat` instance.
+        :param bool ignore_missing: When set to ``False``,
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the private SNAT rule does not exist. When set to ``True``, no
+            exception will be raised when attempting to delete a nonexistent
+            private SNAT rule.
+
+        :returns: ``None``
+        """
+        return self._delete(_snat.PrivateSnat, snat_rule, ignore_missing=ignore_missing)
