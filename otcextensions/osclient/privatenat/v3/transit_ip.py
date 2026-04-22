@@ -17,9 +17,15 @@ import logging
 from osc_lib import utils
 from osc_lib.command import command
 
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
+
+
+def _get_columns(item):
+    column_map = {}
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class ListPrivateTransitIps(command.Lister):
@@ -176,3 +182,25 @@ class ListPrivateTransitIps(command.Lister):
                 for t in data
             ),
         )
+
+
+class ShowPrivateTransitIp(command.ShowOne):
+    _description = _("Show private transit IP address details.")
+
+    def get_parser(self, prog_name):
+        parser = super(ShowPrivateTransitIp, self).get_parser(prog_name)
+        parser.add_argument(
+            "transit_ip",
+            metavar="<transit_ip>",
+            help=_("Specifies the transit IP address ID."),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+        obj = client.get_private_transit_ip(parsed_args.transit_ip)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+
+        return display_columns, data

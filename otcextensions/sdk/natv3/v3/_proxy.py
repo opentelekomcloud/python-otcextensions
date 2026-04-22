@@ -251,3 +251,16 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`
         """
         return self._list(_transit_ip.PrivateTransitIp, **query)
+
+    def get_private_transit_ip(self, transit_ip):
+        """Get a single private NAT transit IP address.
+
+        :param transit_ip: The value can be the ID of a transit IP address.
+
+        :returns: One
+            :class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        return self._get(_transit_ip.PrivateTransitIp, transit_ip)
