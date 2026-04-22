@@ -30,6 +30,7 @@ class PrivateSnat(resource.Resource):
     allow_create = True
     allow_commit = True
     allow_delete = True
+    allow_fetch = True
     allow_list = True
 
     _query_mapping = resource.QueryParameters(

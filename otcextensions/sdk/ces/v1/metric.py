@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import resource
 
 
@@ -44,3 +45,34 @@ class Metric(resource.Resource):
     namespace = resource.Body("namespace")
     #: Indicates the metric unit
     unit = resource.Body("unit")
+
+    @classmethod
+    def list(
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        **params
+    ):
+        if base_path is None:
+            base_path = cls.base_path
+        query_params = cls._query_mapping._transpose(params, cls)
+        uri = base_path.format(**params)
+        response = session.get(
+            uri,
+            headers={"Accept": "application/json"},
+            params=query_params,
+        )
+        exceptions.raise_from_response(response)
+        data = response.json()
+        resources = data.get(cls.resources_key) or []
+        for raw in resources:
+            if not isinstance(raw, dict):
+                continue
+            raw.pop("self", None)
+            yield cls.existing(
+                microversion=None,
+                connection=session._get_connection(),
+                **raw,
+            )

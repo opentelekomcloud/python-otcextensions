@@ -132,6 +132,44 @@ class TestListPrivateSnatRules(fakes.TestPrivateNat):
         self.assertEqual(self.data, list(data))
 
 
+class TestShowPrivateSnatRule(fakes.TestPrivateNat):
+    _data = fakes.FakePrivateSnatRule.create_one()
+
+    columns = (
+        "cidr",
+        "created_at",
+        "description",
+        "enterprise_project_id",
+        "gateway_id",
+        "id",
+        "project_id",
+        "status",
+        "transit_ip_associations",
+        "updated_at",
+        "virsubnet_id",
+    )
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestShowPrivateSnatRule, self).setUp()
+
+        self.cmd = snat.ShowPrivateSnatRule(self.app, None)
+        self.client.get_private_snat_rule = mock.Mock(return_value=self._data)
+
+    def test_show(self):
+        arglist = [self._data.id]
+        verifylist = [("snat_rule", self._data.id)]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.get_private_snat_rule.assert_called_once_with(self._data.id)
+        self.assertEqual(tuple(sorted(self.columns)), tuple(sorted(columns)))
+        self.assertEqual(len(self.data), len(data))
+        self.assertIn(self._data.id, data)
+
+
 class TestCreatePrivateSnatRule(fakes.TestPrivateNat):
     _data = fakes.FakePrivateSnatRule.create_one()
 
