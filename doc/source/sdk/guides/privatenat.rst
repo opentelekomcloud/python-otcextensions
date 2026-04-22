@@ -189,4 +189,4 @@ This interface is used to query details about a specified transit IP address.
 :class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`.
 
 .. literalinclude:: ../examples/natv3/get_private_transit_ip.py
-   :lines: 16-24
+   :lines: 16-23
