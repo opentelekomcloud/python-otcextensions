@@ -128,3 +128,23 @@ class TestListPrivateTransitIps(fakes.TestPrivateNat):
         )
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
+
+
+class TestShowPrivateTransitIp(fakes.TestPrivateNat):
+    _data = fakes.FakePrivateTransitIp.create_one()
+
+    def setUp(self):
+        super(TestShowPrivateTransitIp, self).setUp()
+        self.cmd = transit_ip.ShowPrivateTransitIp(self.app, None)
+        self.client.get_private_transit_ip = mock.Mock(return_value=self._data)
+
+    def test_show(self):
+        arglist = [self._data.id]
+        verifylist = [("transit_ip", self._data.id)]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.get_private_transit_ip.assert_called_once_with(self._data.id)
+        self.assertEqual(len(columns), len(data))
+        self.assertIn("id", columns)
