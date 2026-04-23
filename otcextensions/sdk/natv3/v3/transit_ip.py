@@ -25,6 +25,7 @@ class PrivateTransitIp(resource.Resource):
     # capabilities
     allow_fetch = True
     allow_list = True
+    allow_create = True
 
     _query_mapping = resource.QueryParameters(
         "limit",

@@ -18,6 +18,7 @@ from osc_lib import utils
 from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
+from otcextensions.common.utils import normalize_tags
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
@@ -199,6 +200,63 @@ class ShowPrivateTransitIp(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.privatenat
         obj = client.get_private_transit_ip(parsed_args.transit_ip)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+
+        return display_columns, data
+
+
+class CreatePrivateTransitIp(command.ShowOne):
+    _description = _("Assign a private transit IP address.")
+
+    def get_parser(self, prog_name):
+        parser = super(CreatePrivateTransitIp, self).get_parser(prog_name)
+        parser.add_argument(
+            "--virsubnet-id",
+            metavar="<virsubnet_id>",
+            required=True,
+            help=_("Specifies the subnet ID of the current project."),
+        )
+        parser.add_argument(
+            "--ip-address",
+            metavar="<ip_address>",
+            help=_("Specifies the transit IP address."),
+        )
+        parser.add_argument(
+            "--enterprise-project-id",
+            metavar="<enterprise_project_id>",
+            help=_(
+                "Specifies the enterprise project ID associated with the "
+                "transit IP address."
+            ),
+        )
+        parser.add_argument(
+            "--tags",
+            metavar="<tags>",
+            action="append",
+            help=_(
+                "Specifies the tag list in KEY=VALUE format. "
+                "Repeat for multiple values."
+            ),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+
+        attrs = {
+            "virsubnet_id": parsed_args.virsubnet_id,
+        }
+
+        if parsed_args.ip_address:
+            attrs["ip_address"] = parsed_args.ip_address
+        if parsed_args.enterprise_project_id:
+            attrs["enterprise_project_id"] = parsed_args.enterprise_project_id
+        if parsed_args.tags:
+            attrs["tags"] = normalize_tags(parsed_args.tags)
+
+        obj = client.create_private_transit_ip(**attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)

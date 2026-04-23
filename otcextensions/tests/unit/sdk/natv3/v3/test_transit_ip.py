@@ -42,8 +42,9 @@ class TestPrivateTransitIp(base.TestCase):
         self.assertEqual("transit_ip", sot.resource_key)
         self.assertEqual("transit_ips", sot.resources_key)
         self.assertEqual("/private-nat/transit-ips", sot.base_path)
-        self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_list)
+        self.assertTrue(sot.allow_fetch)
+        self.assertTrue(sot.allow_create)
 
     def test_make_it(self):
         sot = transit_ip.PrivateTransitIp(**EXAMPLE)

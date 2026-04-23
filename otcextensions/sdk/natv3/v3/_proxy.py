@@ -264,3 +264,16 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         return self._get(_transit_ip.PrivateTransitIp, transit_ip)
+
+    def create_private_transit_ip(self, **attrs):
+        """Assign a private NAT transit IP address.
+
+        :param dict attrs: Keyword arguments which will be used to assign
+            a :class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`,
+            comprised of the properties on the PrivateTransitIp class.
+
+        :returns: The assigned private transit IP address.
+
+        :rtype: :class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`
+        """
+        return self._create(_transit_ip.PrivateTransitIp, **attrs)

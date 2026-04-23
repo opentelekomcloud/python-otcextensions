@@ -190,3 +190,12 @@ This interface is used to query details about a specified transit IP address.
 
 .. literalinclude:: ../examples/natv3/get_private_transit_ip.py
    :lines: 16-23
+
+Create Private Transit IP Address
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to assign a transit IP address.
+:class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`.
+
+.. literalinclude:: ../examples/natv3/create_private_transit_ip.py
+   :lines: 16-28
