@@ -203,3 +203,22 @@ class TestCreatePrivateTransitIp(fakes.TestPrivateNat):
         self.client.create_private_transit_ip.assert_called_once_with(
             virsubnet_id=self._data.virsubnet_id,
         )
+
+
+class TestDeletePrivateTransitIp(fakes.TestPrivateNat):
+
+    def setUp(self):
+        super(TestDeletePrivateTransitIp, self).setUp()
+        self.cmd = transit_ip.DeletePrivateTransitIp(self.app, None)
+        self.data = fakes.FakePrivateTransitIp.create_one()
+        self.client.delete_private_transit_ip = mock.Mock()
+
+    def test_delete(self):
+        arglist = [self.data.id]
+        verifylist = [("transit_ip", self.data.id)]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        result = self.cmd.take_action(parsed_args)
+
+        self.client.delete_private_transit_ip.assert_called_once_with(self.data.id)
+        self.assertIsNone(result)

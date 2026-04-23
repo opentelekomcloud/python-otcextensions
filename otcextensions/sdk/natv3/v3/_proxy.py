@@ -277,3 +277,21 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`
         """
         return self._create(_transit_ip.PrivateTransitIp, **attrs)
+
+    def delete_private_transit_ip(self, transit_ip, ignore_missing=True):
+        """Delete a private NAT transit IP address.
+
+        :param transit_ip: The value can be the ID of a transit IP address or a
+            :class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`
+            instance.
+        :param bool ignore_missing: When set to ``False``,
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the transit IP address does not exist. When set to ``True``, no
+            exception will be raised when attempting to delete a nonexistent
+            transit IP address.
+
+        :returns: ``None``
+        """
+        return self._delete(
+            _transit_ip.PrivateTransitIp, transit_ip, ignore_missing=ignore_missing
+        )

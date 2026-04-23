@@ -199,3 +199,12 @@ This interface is used to assign a transit IP address.
 
 .. literalinclude:: ../examples/natv3/create_private_transit_ip.py
    :lines: 16-28
+
+Delete Private Transit IP Address
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a transit IP address.
+:class:`~otcextensions.sdk.natv3.v3.transit_ip.PrivateTransitIp`.
+
+.. literalinclude:: ../examples/natv3/delete_private_transit_ip.py
+   :lines: 16-22

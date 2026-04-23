@@ -96,3 +96,8 @@ class TestPrivateTransitIp(TestNatv3Proxy):
         self.verify_create(
             self.proxy.create_private_transit_ip, transit_ip.PrivateTransitIp
         )
+
+    def test_delete_private_transit_ip(self):
+        self.verify_delete(
+            self.proxy.delete_private_transit_ip, transit_ip.PrivateTransitIp
+        )
