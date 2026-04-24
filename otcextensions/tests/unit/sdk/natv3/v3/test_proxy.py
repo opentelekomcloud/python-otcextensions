@@ -91,3 +91,8 @@ class TestPrivateTransitIp(TestNatv3Proxy):
 
     def test_get_private_transit_ip(self):
         self.verify_get(self.proxy.get_private_transit_ip, transit_ip.PrivateTransitIp)
+
+    def test_create_private_transit_ip(self):
+        self.verify_create(
+            self.proxy.create_private_transit_ip, transit_ip.PrivateTransitIp
+        )

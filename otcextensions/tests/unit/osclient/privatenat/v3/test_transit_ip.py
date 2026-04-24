@@ -148,3 +148,58 @@ class TestShowPrivateTransitIp(fakes.TestPrivateNat):
         self.client.get_private_transit_ip.assert_called_once_with(self._data.id)
         self.assertEqual(len(columns), len(data))
         self.assertIn("id", columns)
+
+
+class TestCreatePrivateTransitIp(fakes.TestPrivateNat):
+    _data = fakes.FakePrivateTransitIp.create_one()
+
+    def setUp(self):
+        super(TestCreatePrivateTransitIp, self).setUp()
+        self.cmd = transit_ip.CreatePrivateTransitIp(self.app, None)
+        self.client.create_private_transit_ip = mock.Mock(return_value=self._data)
+
+    def test_create(self):
+        arglist = [
+            "--virsubnet-id",
+            self._data.virsubnet_id,
+            "--ip-address",
+            self._data.ip_address,
+            "--enterprise-project-id",
+            self._data.enterprise_project_id,
+            "--tags",
+            "key1=value1",
+        ]
+        verifylist = [
+            ("virsubnet_id", self._data.virsubnet_id),
+            ("ip_address", self._data.ip_address),
+            ("enterprise_project_id", self._data.enterprise_project_id),
+            ("tags", ["key1=value1"]),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_private_transit_ip.assert_called_once_with(
+            virsubnet_id=self._data.virsubnet_id,
+            ip_address=self._data.ip_address,
+            enterprise_project_id=self._data.enterprise_project_id,
+            tags=[{"key": "key1", "value": "value1"}],
+        )
+        self.assertEqual(len(columns), len(data))
+        self.assertIn("id", columns)
+
+    def test_create_minimal(self):
+        arglist = [
+            "--virsubnet-id",
+            self._data.virsubnet_id,
+        ]
+        verifylist = [
+            ("virsubnet_id", self._data.virsubnet_id),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        self.cmd.take_action(parsed_args)
+
+        self.client.create_private_transit_ip.assert_called_once_with(
+            virsubnet_id=self._data.virsubnet_id,
+        )
