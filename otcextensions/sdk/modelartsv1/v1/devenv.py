@@ -353,7 +353,7 @@ class Devenv(resource.Resource):
             body = self._consume_body_attrs(body)
             self._body.attributes.update(body)
             self._body.clean()
-            if self.commit_jsonpatch:
+            if self.allow_patch:
                 # We need the original body to compare against
                 self._original_body = body.copy()
 

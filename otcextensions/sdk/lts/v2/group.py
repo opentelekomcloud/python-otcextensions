@@ -79,11 +79,6 @@ class Group(resource.Resource):
         if not self.requires_commit:
             return self
 
-        # Avoid providing patch unconditionally to avoid breaking subclasses
-        # without it.
-        if self.commit_jsonpatch:
-            kwargs["patch"] = True
-
         request = self._prepare_request(
             prepend_key=prepend_key,
             base_path=base_path,
