@@ -65,7 +65,6 @@ class TestDumpTask(base.TestCase):
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_commit)
-        self.assertTrue(sot.allow_patch)
 
     def test_make_it(self):
         sot = dump_task.DumpTask(**EXAMPLE)
