@@ -255,6 +255,7 @@ class Devenv(resource.Resource):
     allow_delete = True
     allow_fetch = True
     allow_patch = True
+    commit_method = 'PATCH'
 
     # Properties
 

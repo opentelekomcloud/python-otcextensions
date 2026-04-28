@@ -27,6 +27,7 @@ class CustomAuthorizer(resource.Resource):
     allow_patch = True
     allow_delete = True
     allow_commit = True
+    commit_method = 'PATCH'
 
     _query_mapping = resource.QueryParameters("limit", "offset", "id", "type", "name")
     gateway_id = resource.URI("gateway_id")
