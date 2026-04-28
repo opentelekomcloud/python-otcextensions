@@ -40,7 +40,6 @@ class DatasetImportTask(resource.Resource):
     allow_create = True
     allow_list = True
     allow_fetch = True
-    allow_patch = True
 
     # Properties
     #: Number of labeled samples.

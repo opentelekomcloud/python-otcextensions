@@ -24,7 +24,6 @@ class CustomAuthorizer(resource.Resource):
     allow_list = True
     allow_fetch = True
     allow_create = True
-    allow_patch = True
     allow_delete = True
     allow_commit = True
 
