@@ -58,7 +58,7 @@ class Resource(resource.Resource):
         if requires_id is None:
             requires_id = self.requires_id
 
-        body = self._prepare_request_body(patch, prepend_key)
+        body = self._prepare_request_body(prepend_key=prepend_key)
         headers = {}
 
         if base_path is None:
