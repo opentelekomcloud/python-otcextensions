@@ -34,7 +34,7 @@ class Proxy(proxy.Proxy):
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned. Valid parameters are:
         :returns: A generator of endpoint objects
-        :rtype: :class:`~otcextensions.sdk.vpcep.endpoint.Endpoint`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.endpoint.Endpoint`
         """
         if query.get("limit"):
             query.update(paginated=False)
@@ -44,11 +44,11 @@ class Proxy(proxy.Proxy):
         """Create a new endpoint from attributes
 
         :param dict attrs: Keyword arguments which will be used to create a
-            :class:`~otcextensions.sdk.vpcep.endpoint.Endpoint`,
+            :class:`~otcextensions.sdk.vpcep.v1.endpoint.Endpoint`,
             comprised of the properties on the Endpoint class.
 
         :returns: The results of endpoint creation
-        :rtype: :class:`~otcextensions.sdk.vpcep.endpoint.Endpoint`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.endpoint.Endpoint`
         """
         if attrs.get("ip") and attrs.get("port_ip"):
             raise TypeError(
@@ -63,10 +63,10 @@ class Proxy(proxy.Proxy):
         """Get a single endpoint
 
         :param endpoint: The value can be the ID of a endpoint or a
-            :class:`~otcextensions.sdk.vpcep.endpoint.Endpoint`
+            :class:`~otcextensions.sdk.vpcep.v1.endpoint.Endpoint`
             instance.
 
-        :returns: One :class:`~otcextensions.sdk.vpcep.endpoint.Endpoint`
+        :returns: One :class:`~otcextensions.sdk.vpcep.v1.endpoint.Endpoint`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
 
@@ -77,7 +77,7 @@ class Proxy(proxy.Proxy):
         """Delete a endpoint
 
         :param endpoint: The value can be either the ID of a endpoint or a
-            :class:`~otcextensions.sdk.vpcep.endpoint.Endpoint` instance.
+            :class:`~otcextensions.sdk.vpcep.v1.endpoint.Endpoint` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be
             raised when the endpoint does not exist.
@@ -97,7 +97,7 @@ class Proxy(proxy.Proxy):
             the resources being returned. Valid parameters are:
 
         :returns: A generator of endpoint service objects
-        :rtype: :class:`~otcextensions.sdk.vpcep.service.Service`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.service.Service`
         """
         if query.get("limit"):
             query.update(paginated=False)
@@ -107,11 +107,11 @@ class Proxy(proxy.Proxy):
         """Create a new endpoint service from attributes
 
         :param dict attrs: Keyword arguments which will be used to create a
-            :class:`~otcextensions.sdk.vpcep.service.Service`,
+            :class:`~otcextensions.sdk.vpcep.v1.service.Service`,
             comprised of the properties on the Service class.
 
         :returns: The results of endpoint service creation
-        :rtype: :class:`~otcextensions.sdk.vpcep.service.Service`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.service.Service`
         """
         return self._create(_service.Service, **attrs)
 
@@ -119,10 +119,10 @@ class Proxy(proxy.Proxy):
         """Get a single endpoint service
 
         :param service: The value can be the ID of a endpoint service or a
-            :class:`~otcextensions.sdk.vpcep.service.Service`
+            :class:`~otcextensions.sdk.vpcep.v1.service.Service`
             instance.
 
-        :returns: One :class:`~otcextensions.sdk.vpcep.service.Service`
+        :returns: One :class:`~otcextensions.sdk.vpcep.v1.service.Service`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
 
@@ -139,7 +139,7 @@ class Proxy(proxy.Proxy):
             When set to ``True``, None will be returned when
             attempting to find a nonexistent resource.
 
-        :returns: One :class:`~otcextensions.sdk.vpcep.service.Service`
+        :returns: One :class:`~otcextensions.sdk.vpcep.v1.service.Service`
             or None
         """
         return self._find(
@@ -152,12 +152,12 @@ class Proxy(proxy.Proxy):
         """Update a endpoint service
 
         :param service: The service can be either the ID or a
-            :class:`~otcextensions.sdk.vpcep.service.Service` instance.
+            :class:`~otcextensions.sdk.vpcep.v1.service.Service` instance.
         :param dict attrs: The attributes to update on the endpoint service
             represented by ``service``.
 
         :returns: The updated service
-        :rtype: :class:`~otcextensions.sdk.vpcep.service.Service`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.service.Service`
         """
         return self._update(_service.Service, service, **attrs)
 
@@ -165,7 +165,7 @@ class Proxy(proxy.Proxy):
         """Delete a endpoint service
 
         :param service: The service can be either the ID or a
-            :class:`~otcextensions.sdk.vpcep.service.Service` instance.
+            :class:`~otcextensions.sdk.vpcep.v1.service.Service` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the service does not exist.
@@ -186,12 +186,12 @@ class Proxy(proxy.Proxy):
         """Return a generator of service connections
 
         :param service: The service can be either the ID or a
-            :class:`~otcextensions.sdk.vpcep.service.Service` instance.
+            :class:`~otcextensions.sdk.vpcep.v1.service.Service` instance.
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned. Valid parameters are:
 
         :returns: A generator of connection objects.
-        :rtype: :class:`~otcextensions.sdk.vpcep.connection.Connection`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.connection.Connection`
         """
         if query.get("limit"):
             query.update(paginated=False)
@@ -204,7 +204,7 @@ class Proxy(proxy.Proxy):
         """Manage endpoint service connections
 
         :param service: The service can be either the ID or a
-            :class:`~otcextensions.sdk.vpcep.service.Service` instance.
+            :class:`~otcextensions.sdk.vpcep.v1.service.Service` instance.
         :param action: action can be ``accept`` or ``reject``.
         :param endpoints: List of VPC Endpoints Id.
 
@@ -228,12 +228,12 @@ class Proxy(proxy.Proxy):
         """Return a generator of service whitelist
 
         :param service: The service can be either the ID or a
-            :class:`~otcextensions.sdk.vpcep.service.Service` instance.
+            :class:`~otcextensions.sdk.vpcep.v1.service.Service` instance.
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned. Valid parameters are:
 
         :returns: A generator of whitelist objects.
-        :rtype: :class:`~otcextensions.sdk.vpcep.whitelist.Whitelist`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.whitelist.Whitelist`
         """
         if query.get("limit"):
             query.update(paginated=False)
@@ -246,12 +246,12 @@ class Proxy(proxy.Proxy):
         """Manage endpoint service whitelist
 
         :param service: The service can be either the ID or a
-            :class:`~otcextensions.sdk.vpcep.service.Service` instance.
+            :class:`~otcextensions.sdk.vpcep.v1.service.Service` instance.
         :param action: action can be ``add`` or ``remove``.
         :param domains: List of domains Ids to be added to whitelist.
 
         :returns: A generator of whitelist objects.
-        :rtype: :class:`~otcextensions.sdk.vpcep.whitelist.Whitelist`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.whitelist.Whitelist`
         """
         endpoint_service = self._get_resource(_service.Service, service)
         whitelist = self._get_resource(
@@ -274,7 +274,7 @@ class Proxy(proxy.Proxy):
             the resources being returned. Valid parameters are:
 
         :returns: A generator of public endpoint service objects
-        :rtype: :class:`~otcextensions.sdk.vpcep.public_service.PublicService`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.public_service.PublicService`
         """
         if query.get("limit"):
             query.update(paginated=False)
@@ -287,7 +287,7 @@ class Proxy(proxy.Proxy):
 
         :param name_or_id: The value can be the ID of a endpoint service,
             name of a endpoint service or a
-            :class:`~otcextensions.sdk.vpcep.target_service.TargetService`
+            :class:`~otcextensions.sdk.vpcep.v1.target_service.TargetService`
             instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be
@@ -296,7 +296,7 @@ class Proxy(proxy.Proxy):
             attempting to find a nonexistent resource.
 
         :returns: One
-            :class:`~otcextensions.sdk.vpcep.target_service.TargetService`
+            :class:`~otcextensions.sdk.vpcep.v1.target_service.TargetService`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
 
@@ -336,7 +336,7 @@ class Proxy(proxy.Proxy):
             type can be: ``endpoint`` or ``endpoint_service``
 
         :returns: A generator of quota objects.
-        :rtype: :class:`~otcextensions.sdk.vpcep.quota.Quota`
+        :rtype: :class:`~otcextensions.sdk.vpcep.v1.quota.Quota`
         """
         query = {}
         if type:
