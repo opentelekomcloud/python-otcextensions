@@ -82,6 +82,7 @@ class DumpTask(resource.Resource):
     allow_delete = True
     allow_fetch = True
     allow_patch = True
+    commit_method = 'PATCH'
 
     #: Name of the stream to which the dump task belongs.
     uri_stream_name = resource.URI("uri_stream_name")

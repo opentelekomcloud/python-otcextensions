@@ -48,9 +48,8 @@ class Group(resource.Resource):
 
     def _prepare_request_body(
         self,
-        patch,
-        prepend_key,
         *,
+        prepend_key,
         resource_request_key=None,
     ):
         body: ty.Union[ty.Dict[str, ty.Any], ty.List[ty.Any]]

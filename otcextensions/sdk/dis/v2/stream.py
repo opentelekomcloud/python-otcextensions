@@ -25,6 +25,7 @@ class Stream(resource.Resource):
     allow_delete = True
     allow_fetch = True
     allow_patch = True
+    commit_method = 'PATCH'
 
     _query_mapping = resource.QueryParameters("limit", "start_stream_name")
 
