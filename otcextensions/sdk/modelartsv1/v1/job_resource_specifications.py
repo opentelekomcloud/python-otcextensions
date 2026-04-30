@@ -19,7 +19,6 @@ class JobResourceSpecifications(resource.Resource):
 
     allow_list = True
     allow_fetch = True
-    allow_patch = True
 
     #: Job type
     job_type = resource.Body("job_type", type=str)

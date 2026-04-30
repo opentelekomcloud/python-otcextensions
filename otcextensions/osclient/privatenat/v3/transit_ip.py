@@ -14,6 +14,7 @@
 
 import logging
 
+from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
 
@@ -262,3 +263,27 @@ class CreatePrivateTransitIp(command.ShowOne):
         data = utils.get_item_properties(obj, columns)
 
         return display_columns, data
+
+
+class DeletePrivateTransitIp(command.Command):
+    _description = _("Delete a private transit IP address.")
+
+    def get_parser(self, prog_name):
+        parser = super(DeletePrivateTransitIp, self).get_parser(prog_name)
+        parser.add_argument(
+            "transit_ip",
+            metavar="<transit_ip>",
+            help=_("Specifies the transit IP address ID."),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.privatenat
+
+        try:
+            client.delete_private_transit_ip(parsed_args.transit_ip)
+        except Exception as e:
+            msg = _(
+                "Failed to delete private transit IP address with ID '%(id)s': %(e)s"
+            ) % {"id": parsed_args.transit_ip, "e": e}
+            raise exceptions.CommandError(msg)

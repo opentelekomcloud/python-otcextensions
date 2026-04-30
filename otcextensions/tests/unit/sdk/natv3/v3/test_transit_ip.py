@@ -45,6 +45,7 @@ class TestPrivateTransitIp(base.TestCase):
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
+        self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
         sot = transit_ip.PrivateTransitIp(**EXAMPLE)

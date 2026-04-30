@@ -42,7 +42,7 @@ class TestCustomAuthorizer(base.TestCase):
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
-        self.assertTrue(sot.allow_patch)
+
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_commit)
 

@@ -23,9 +23,10 @@ class PrivateTransitIp(resource.Resource):
     base_path = "/private-nat/transit-ips"
 
     # capabilities
-    allow_fetch = True
     allow_list = True
+    allow_fetch = True
     allow_create = True
+    allow_delete = True
 
     _query_mapping = resource.QueryParameters(
         "limit",

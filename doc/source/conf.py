@@ -79,6 +79,7 @@ add_module_names = True
 pygments_style = "native"
 
 autodoc_member_order = "bysource"
+autodoc_class_signature = "separated"
 
 # Locations to exclude when looking for source files.
 exclude_patterns = []
