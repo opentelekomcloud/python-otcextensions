@@ -9,9 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy
+from openstack import _log
+from otcextensions.tests.functional import base
+
+_logger = _log.setup_logging("openstack")
 
 
-class Proxy(proxy.Proxy):
+class TestService(base.BaseFunctionalTest):
 
-    skip_discovery = True
+    def test_initialize(self):
+        client = self.conn.ccn
+
+        self.assertIsNotNone(client)
