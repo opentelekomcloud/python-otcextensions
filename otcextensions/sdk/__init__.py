@@ -73,7 +73,7 @@ OTC_SERVICES = {
     "ccn": {
         "service_type": "ccn",
         "append_project_id": True,
-        "endpoint_service_type": "ccn",
+        "endpoint_service_type": "cc",
     },
     "ces": {
         "service_type": "ces",
