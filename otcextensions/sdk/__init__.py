@@ -255,6 +255,10 @@ OTC_SERVICES = {
         "endpoint_service_type": "rdsv3",
         "append_project_id": True,
     },
+    "rfs": {
+        "service_type": "rfs",
+        "endpoint_service_type": "rfs",
+    },
     "sdrs": {"service_type": "sdrs", "append_project_id": True},
     "sfsturbo": {
         "service_type": "sfsturbo",
