@@ -184,10 +184,10 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_policy.Policy, policy)
 
-    def find_policy(self, policy_id, ignore_missing=True):
+    def find_policy(self, name_or_id, ignore_missing=True):
         """Find a single CBR policy by ID
 
-        :param policy_id: The ID of a policy
+        :param name_or_id: The name or ID of a policy
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the policy does not exist.
@@ -196,7 +196,7 @@ class Proxy(proxy.Proxy):
 
         :returns: a :class:`~otcextensions.sdk.cbr.v3.policy.Policy` instance
         """
-        return self._find(_policy.Policy, policy_id, ignore_missing=ignore_missing)
+        return self._find(_policy.Policy, name_or_id, ignore_missing=ignore_missing)
 
     def create_policy(self, **attrs):
         """Creating a CBR policy using attributes
