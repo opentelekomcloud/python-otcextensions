@@ -1029,8 +1029,10 @@ class RetryClusterUpgradeJob(command.Command):
             "--retry-mode",
             metavar="<retry_mode>",
             default="abort",
-            help=_("""If this parameter is not left blank,
-                the impact of the task is terminated."""),
+            help=_(
+                """If this parameter is not left blank,
+                the impact of the task is terminated."""
+            ),
         )
         parser.add_argument(
             "--wait",

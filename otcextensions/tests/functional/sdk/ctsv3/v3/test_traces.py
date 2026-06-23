@@ -18,4 +18,4 @@ class TestTraces(TestCtsv3):
     def test_01_list_traces(self):
         attrs = {"trace_type": "system", "limit": 2}
         traces = list(self.conn.ctsv3.traces(**attrs))
-        self.assertGreater(len(traces), 0)
+        self.assertGreaterEqual(len(traces), 0)

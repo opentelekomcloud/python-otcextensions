@@ -234,8 +234,7 @@ class TestCreatePrivateDnatRule(fakes.TestPrivateNat):
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        with self.assertRaises(exceptions.CommandError):
-            self.cmd.take_action(parsed_args)
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
     def test_create_rejects_mixed_args(self):
         arglist = [
@@ -260,8 +259,7 @@ class TestCreatePrivateDnatRule(fakes.TestPrivateNat):
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        with self.assertRaises(exceptions.CommandError):
-            self.cmd.take_action(parsed_args)
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
 
 class TestShowPrivateDnatRule(fakes.TestPrivateNat):
