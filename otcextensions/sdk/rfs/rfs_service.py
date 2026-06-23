@@ -10,12 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.tests.functional.sdk.ctsv3 import TestCtsv3
+from openstack import service_description
+from otcextensions.sdk.ccn.v3 import _proxy
 
 
-class TestTraces(TestCtsv3):
+class RfsService(service_description.ServiceDescription):
+    """The Resource Formation service."""
 
-    def test_01_list_traces(self):
-        attrs = {"trace_type": "system", "limit": 2}
-        traces = list(self.conn.ctsv3.traces(**attrs))
-        self.assertGreaterEqual(len(traces), 0)
+    supported_versions = {"3": _proxy.Proxy}

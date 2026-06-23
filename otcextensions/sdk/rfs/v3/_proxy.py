@@ -9,13 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import proxy
 
-from otcextensions.tests.functional.sdk.ctsv3 import TestCtsv3
 
+class Proxy(proxy.Proxy):
 
-class TestTraces(TestCtsv3):
-
-    def test_01_list_traces(self):
-        attrs = {"trace_type": "system", "limit": 2}
-        traces = list(self.conn.ctsv3.traces(**attrs))
-        self.assertGreaterEqual(len(traces), 0)
+    skip_discovery = True

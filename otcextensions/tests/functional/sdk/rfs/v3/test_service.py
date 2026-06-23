@@ -9,13 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import _log
+from otcextensions.tests.functional import base
 
-from otcextensions.tests.functional.sdk.ctsv3 import TestCtsv3
+_logger = _log.setup_logging("openstack")
 
 
-class TestTraces(TestCtsv3):
+class TestService(base.BaseFunctionalTest):
 
-    def test_01_list_traces(self):
-        attrs = {"trace_type": "system", "limit": 2}
-        traces = list(self.conn.ctsv3.traces(**attrs))
-        self.assertGreaterEqual(len(traces), 0)
+    def test_initialize(self):
+        client = self.conn.rfs
+
+        self.assertIsNotNone(client)

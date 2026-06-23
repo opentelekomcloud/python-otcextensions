@@ -85,5 +85,8 @@ class TestPrivateTransitIp(PrivateNatEnvironmentMixin, base.TestCase):
 
         self.openstack("privatenat transit ip delete " + created["id"])
 
-        with self.assertRaises(sdk_exceptions.ResourceNotFound):
-            self.conn.natv3.get_private_transit_ip(created["id"])
+        self.assertRaises(
+            sdk_exceptions.ResourceNotFound,
+            self.conn.natv3.get_private_transit_ip,
+            created["id"],
+        )

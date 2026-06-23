@@ -88,5 +88,8 @@ class TestGateway(PrivateNatEnvironmentMixin, base.BaseFunctionalTest):
         self.conn.natv3.delete_private_nat_gateway(gateway, ignore_missing=False)
         resource.wait_for_delete(self.conn.natv3, gateway, 2, 120)
 
-        with self.assertRaises(sdk_exceptions.ResourceNotFound):
-            self.conn.natv3.get_private_nat_gateway(gateway.id)
+        self.assertRaises(
+            sdk_exceptions.ResourceNotFound,
+            self.conn.natv3.get_private_nat_gateway,
+            gateway.id,
+        )

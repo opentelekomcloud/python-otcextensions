@@ -211,7 +211,9 @@ class Container(_base.BaseResource):
             request.body = """<CreateBucketConfiguration>
                 <LocationConstraint>{region}</LocationConstraint>
                 </CreateBucketConfiguration>
-            """.format(region=requests_auth.aws_region)
+            """.format(
+                region=requests_auth.aws_region
+            )
         response = session.put(request.url, data=request.body, **req_args)
 
         self._translate_response(response)
