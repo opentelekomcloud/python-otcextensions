@@ -248,8 +248,7 @@ class TestCreatePrivateSnatRule(fakes.TestPrivateNat):
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        with self.assertRaises(exceptions.CommandError):
-            self.cmd.take_action(parsed_args)
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
     def test_create_both_cidr_and_virsubnet(self):
         arglist = [
@@ -271,8 +270,7 @@ class TestCreatePrivateSnatRule(fakes.TestPrivateNat):
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        with self.assertRaises(exceptions.CommandError):
-            self.cmd.take_action(parsed_args)
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
     def test_create_more_than_20_transit_ip_ids(self):
         arglist = [
@@ -293,8 +291,7 @@ class TestCreatePrivateSnatRule(fakes.TestPrivateNat):
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        with self.assertRaises(exceptions.CommandError):
-            self.cmd.take_action(parsed_args)
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
 
 class TestUpdatePrivateSnatRule(fakes.TestPrivateNat):

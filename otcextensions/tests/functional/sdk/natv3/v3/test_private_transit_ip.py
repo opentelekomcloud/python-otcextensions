@@ -59,5 +59,8 @@ class TestPrivateTransitIp(PrivateNatEnvironmentMixin, base.BaseFunctionalTest):
 
         self.conn.natv3.delete_private_transit_ip(transit_ip, ignore_missing=False)
 
-        with self.assertRaises(sdk_exceptions.ResourceNotFound):
-            self.conn.natv3.get_private_transit_ip(transit_ip.id)
+        self.assertRaises(
+            sdk_exceptions.ResourceNotFound,
+            self.conn.natv3.get_private_transit_ip,
+            transit_ip.id,
+        )

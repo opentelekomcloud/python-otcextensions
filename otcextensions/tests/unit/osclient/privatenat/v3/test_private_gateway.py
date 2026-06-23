@@ -207,8 +207,7 @@ class TestGetPrivateNatGateway(fakes.TestPrivateNat):
             "Resource Not Found"
         )
 
-        with self.assertRaises(exceptions.CommandError):
-            self.cmd.take_action(parsed_args)
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
         self.client.get_private_nat_gateway.assert_called_once_with(
             "unexist_nat_gateway"
