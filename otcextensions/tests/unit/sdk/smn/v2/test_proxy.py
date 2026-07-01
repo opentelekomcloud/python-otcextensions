@@ -182,8 +182,7 @@ class TestExtractName(TestSmnProxy):
 
     def test_extract_name_for_documented_endpoints(self):
         topic_urn = (
-            "urn:smn:regionId:8bad8a40e0f7462f8c1676e3f93a8183:"
-            "test_create_topic_v2"
+            "urn:smn:regionId:8bad8a40e0f7462f8c1676e3f93a8183:" "test_create_topic_v2"
         )
         subscription_urn = f"{topic_urn}:subscription_id"
         endpoints = [

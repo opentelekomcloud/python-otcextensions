@@ -24,8 +24,10 @@ def _is_collection_name(part):
 
 
 def _is_dynamic_path_part(part):
-    return part.startswith("urn:") or len(part) >= 16 and all(
-        char in "0123456789abcdefABCDEF-" for char in part
+    return (
+        part.startswith("urn:")
+        or len(part) >= 16
+        and all(char in "0123456789abcdefABCDEF-" for char in part)
     )
 
 

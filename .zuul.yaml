@@ -35,7 +35,7 @@
     check:
       jobs:
         - otc-tox-pep8
-        - otc-tox-py310
+        - otc-tox-py311
         - tox-functional-eu-de
         - tox-functional-eu-nl:
             voting: false
@@ -45,7 +45,7 @@
         - otce-upload-image
     gate:
       jobs:
-        - otc-tox-py310
+        - otc-tox-py311
         - otc-tox-pep8
         - tox-functional-eu-de
         - otce-upload-image
