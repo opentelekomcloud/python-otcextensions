@@ -130,3 +130,115 @@ class TestSmnSms(TestSmnProxy):
             method_kwargs={"endpoint": "+999999", "message": "Test SMS"},
             expected_kwargs={"endpoint": "+999999", "message": "Test SMS"},
         )
+
+
+class TestExtractName(TestSmnProxy):
+
+    def test_extract_name(self):
+        self.assertEqual(
+            ["topic"],
+            self.proxy._extract_name(
+                "/v2/123/notifications/topics/"
+                "urn:smn:regionId:8bad8a40e0f7462f8c1676e3f93a8183:"
+                "test_create_topic_v2",
+                project_id="123",
+            ),
+        )
+        self.assertEqual(
+            ["topics"],
+            self.proxy._extract_name(
+                "/v2/123/notifications/topics",
+                project_id="123",
+            ),
+        )
+        self.assertEqual(
+            ["topic", "attributes"],
+            self.proxy._extract_name(
+                "/v2/123/notifications/topics/"
+                "urn:smn:regionId:8bad8a40e0f7462f8c1676e3f93a8183:"
+                "test_create_topic_v2/attributes/access_policy",
+                project_id="123",
+            ),
+        )
+        self.assertEqual(
+            ["topic", "publish"],
+            self.proxy._extract_name(
+                "/v2/123/notifications/topics/"
+                "urn:smn:regionId:8bad8a40e0f7462f8c1676e3f93a8183:"
+                "test_create_topic_v2/publish",
+                project_id="123",
+            ),
+        )
+        self.assertEqual(
+            ["subscription"],
+            self.proxy._extract_name(
+                "/v2/123/notifications/subscriptions/"
+                "urn:smn:regionId:8bad8a40e0f7462f8c1676e3f93a8183:"
+                "test_create_topic_v2:subscription_id",
+                project_id="123",
+            ),
+        )
+        self.assertEqual([], self.proxy._extract_name("/", project_id="123"))
+
+    def test_extract_name_for_documented_endpoints(self):
+        topic_urn = (
+            "urn:smn:regionId:8bad8a40e0f7462f8c1676e3f93a8183:"
+            "test_create_topic_v2"
+        )
+        subscription_urn = f"{topic_urn}:subscription_id"
+        endpoints = [
+            ("/", []),
+            ("/v2", []),
+            ("/v2/123/notifications/topics", ["topics"]),
+            (f"/v2/123/notifications/topics/{topic_urn}", ["topic"]),
+            (
+                f"/v2/123/notifications/topics/{topic_urn}/attributes",
+                ["topic", "attributes"],
+            ),
+            (
+                f"/v2/123/notifications/topics/{topic_urn}/attributes/access_policy",
+                ["topic", "attributes"],
+            ),
+            (
+                f"/v2/123/notifications/topics/{topic_urn}/publish",
+                ["topic", "publish"],
+            ),
+            (
+                f"/v2/123/notifications/topics/{topic_urn}/subscriptions",
+                ["topic", "subscriptions"],
+            ),
+            ("/v2/123/notifications/subscriptions", ["subscriptions"]),
+            (
+                f"/v2/123/notifications/subscriptions/{subscription_urn}",
+                ["subscription"],
+            ),
+            ("/v2/123/notifications/message_template", ["message_template"]),
+            (
+                "/v2/123/notifications/message_template/"
+                "57ba8dcecda844878c5dd5815b65d10f",
+                ["message_template"],
+            ),
+            ("/v2/123/smn_topic/tags", ["smn_topic", "tags"]),
+            (
+                f"/v2/123/smn_topic/{topic_urn}/tags",
+                ["smn_topic", "tags"],
+            ),
+            (
+                f"/v2/123/smn_topic/{topic_urn}/tags/env.prod",
+                ["smn_topic", "tags"],
+            ),
+            (
+                f"/v2/123/smn_topic/{topic_urn}/tags/action",
+                ["smn_topic", "tags", "action"],
+            ),
+            (
+                "/v2/123/smn_topic/resource_instances/action",
+                ["smn_topic", "resource_instances", "action"],
+            ),
+        ]
+
+        for url, expected in endpoints:
+            with self.subTest(url=url):
+                self.assertEqual(
+                    expected, self.proxy._extract_name(url, project_id="123")
+                )

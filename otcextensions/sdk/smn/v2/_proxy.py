@@ -9,8 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from urllib import parse
+
 from openstack import proxy
-from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.smn.v2 import message as _message
 from otcextensions.sdk.smn.v2 import sms as _sms
 from otcextensions.sdk.smn.v2 import subscription as _subscription
@@ -18,11 +19,69 @@ from otcextensions.sdk.smn.v2 import template as _template
 from otcextensions.sdk.smn.v2 import topic as _topic
 
 
+def _is_collection_name(part):
+    return part.endswith("s") and not part.endswith("is")
+
+
+def _is_dynamic_path_part(part):
+    return part.startswith("urn:") or len(part) >= 16 and all(
+        char in "0123456789abcdefABCDEF-" for char in part
+    )
+
+
+def _normalize_collection_name(part):
+    if _is_collection_name(part):
+        return part[:-1]
+    return part
+
+
 class Proxy(proxy.Proxy):
     skip_discovery = True
 
     def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
+        url_path = parse.urlparse(url).path.strip()
+        if url_path.startswith("/"):
+            url_path = url_path[1:]
+
+        url_parts = [
+            part
+            for part in url_path.split("/")
+            if part
+            and part != project_id
+            and not (part.lower().startswith("v") and part[1:].isdigit())
+        ]
+
+        if url_parts and url_parts[0] == "notifications":
+            url_parts = url_parts[1:]
+
+        if not url_parts:
+            return []
+
+        first_part = url_parts[0]
+        if len(url_parts) > 1:
+            first_part = _normalize_collection_name(first_part)
+
+        name_parts = [first_part]
+        for idx, part in enumerate(url_parts[1:], start=1):
+            previous_part = url_parts[idx - 1]
+            next_part = url_parts[idx + 1] if idx + 1 < len(url_parts) else None
+
+            if part == "action" and idx == len(url_parts) - 1:
+                name_parts.append(part)
+                continue
+
+            if _is_collection_name(previous_part):
+                continue
+
+            if next_part and _is_collection_name(next_part):
+                continue
+
+            if _is_dynamic_path_part(part):
+                continue
+
+            name_parts.append(part)
+
+        return name_parts
 
     # ======== Topic ========
     def create_topic(self, **attrs):
