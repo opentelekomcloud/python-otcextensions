@@ -40,7 +40,16 @@ class Flavor(resource.Resource):
     vcpu = resource.Body("vCPU", type=int)
 
     @classmethod
-    def list(cls, session, paginated=True, base_path=None, **params):
+    def list(
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        *,
+        microversion=None,
+        **params
+    ):
         """This method is a generator which yields resource objects.
 
         This resource object list generator handles pagination and takes query
@@ -76,7 +85,9 @@ class Flavor(resource.Resource):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
         session = cls._get_session(session)
-        microversion = cls._get_microversion(session, action="list")
+
+        if microversion is None:
+            microversion = cls._get_microversion(session)
 
         if base_path is None:
             base_path = cls.base_path
