@@ -257,28 +257,27 @@ class Proxy(proxy.Proxy):
             return obj.cluster
         return obj
 
-    def wait_for_cluster(self, cluster, interval=5, wait=1800):
-        """Wait for a Cluster status to be `AVAILABLE`.
+    def wait_for_cluster(
+        self,
+        cluster,
+        interval=5,
+        wait=1800,
+        allow_redistribution=False,
+    ):
+        """Wait for a DWS cluster to reach a stable state.
 
-        :param cluster: The value can be the ID of a cluster
-            or a :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
-            instance.
-        :param int interval:
-            Number of seconds to wait before two consecutive checks.
-            Default is 5.
-        :param int wait:
-            Maximum number of seconds to wait for the status change.
-            Default is 1800.
-        :return: ``True`` on success.
-        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
-            transitions to a failure status.
-        :raises: :class:`~openstack.exceptions.ResourceTimeout` if the
-            transition to the desired status does not occur within
-            the specified time.
+        :param cluster: Cluster ID or Cluster instance.
+        :param interval: Polling interval in seconds.
+        :param wait: Maximum wait time in seconds.
+        :param allow_redistribution: If True, consider
+            WAITING_REDISTRIBUTION and REDISTRIBUTION_PAUSED as stable states.
+        :returns: True when the cluster reaches a stable state.
+        :raises ResourceFailure: If the cluster enters a failure state.
+        :raises ResourceTimeout: If the cluster does not stabilize in time.
         """
         end_time = time.time() + wait
 
-        task_status_list = (
+        waiting_task_statuses = {
             "CONFIGURING_EXT_DATASOURCE",
             "DELETING_EXT_DATASOURCE",
             "GROWING",
@@ -287,44 +286,78 @@ class Proxy(proxy.Proxy):
             "RESTORING",
             "SETTING_CONFIGURATION",
             "SNAPSHOTTING",
-        )
+        }
 
-        while time.time() < end_time:
+        failure_task_statuses = {
+            "REBOOT_FAILURE",
+            "RESIZE_FAILURE",
+        }
+
+        redistribution_task_statuses = {
+            "WAITING_REDISTRIBUTION",
+            "REDISTRIBUTION_PAUSED",
+        }
+
+        while True:
             obj = self._get(_cluster.Cluster, cluster)
-            status = obj.status
-            task_status = obj.task_status
-            action_progress = obj.action_progress
-            sub_status = obj.sub_status
 
-            if status == "CREATING":
-                LOG.debug(
-                    "Still waiting for resource %s to reach state %s, "
-                    "current state is %s",
-                    obj.name,
-                    "AVAILABLE",
-                    status,
+            status = obj.status
+            sub_status = obj.sub_status
+            task_status = obj.task_status
+            action_progress = obj.action_progress or {}
+
+            # Success
+            if status == "AVAILABLE" and sub_status == "NORMAL" and not action_progress:
+                if task_status is None:
+                    return True
+
+                if allow_redistribution and task_status in redistribution_task_statuses:
+                    return True
+
+            # Explicit failures
+            if task_status in failure_task_statuses:
+                raise exceptions.ResourceFailure(
+                    f"Cluster entered failure state: {task_status}"
                 )
-                time.sleep(interval)
-            elif task_status in task_status_list or action_progress:
+
+            if status == "CREATION FAILED":
+                raise exceptions.ResourceFailure("Cluster creation failed.")
+
+            if sub_status and "REDISTRIBUTION-FAILURE" in sub_status:
+                raise exceptions.ResourceFailure("Cluster redistribution failed.")
+
+            # Still progressing
+            if (
+                status == "CREATING"
+                or task_status in waiting_task_statuses
+                or action_progress
+            ):
                 LOG.debug(
-                    "Still waiting for resource %s task_status to complete, "
-                    "current task_status is %s",
+                    "Waiting for cluster %s: "
+                    "status=%s sub_status=%s task_status=%s action_progress=%s",
                     obj.name,
+                    status,
+                    sub_status,
+                    task_status,
+                    action_progress,
+                )
+            else:
+                LOG.debug(
+                    "Waiting for cluster %s: " "status=%s sub_status=%s task_status=%s",
+                    obj.name,
+                    status,
+                    sub_status,
                     task_status,
                 )
-                time.sleep(interval)
-            elif sub_status == "NORMAL" and status == "AVAILABLE":
-                return True
-            else:
-                raise exceptions.ResourceFailure(
-                    f"Failed! Cluster status: {status} "
-                    f"task_status: {task_status} "
-                    f"sub_status: {sub_status} "
-                    f"action_progress: {action_progress}"
+
+            if time.time() >= end_time:
+                raise exceptions.ResourceTimeout(
+                    f"Timeout waiting for cluster {obj.name} to reach a stable state. "
+                    f"status={status}, sub_status={sub_status}, "
+                    f"task_status={task_status}, action_progress={action_progress}"
                 )
-        raise exceptions.ResourceTimeout(
-            "Wait Timed Out. Cluster action still in progress."
-        )
+
+            time.sleep(interval)
 
     def wait_for_cluster_scale_out(self, cluster, interval=5, wait=1800):
         """Wait for a Cluster Scale Out Task to Complete.

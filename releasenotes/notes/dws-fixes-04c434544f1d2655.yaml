@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Fixed dws delete and list cluster functions
+    improved wait_for_cluster with new status checks
