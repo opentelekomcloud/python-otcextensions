@@ -120,7 +120,9 @@ class Cluster(resource.Resource):
     #: Public Domain from public_endpoints connection_info
     public_domain = resource.Computed("public_domain", default="")
 
-    def delete(self, session, keep_last_manual_snapshot=0, ignore_missing=False, params=None):
+    def delete(
+        self, session, keep_last_manual_snapshot=0, ignore_missing=False, params=None
+    ):
         """Delete a DWS Cluster.
 
         This function overrides default Resource.delete to enable params

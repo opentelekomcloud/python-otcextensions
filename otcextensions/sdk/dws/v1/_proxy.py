@@ -307,18 +307,11 @@ class Proxy(proxy.Proxy):
             action_progress = obj.action_progress or {}
 
             # Success
-            if (
-                status == "AVAILABLE"
-                and sub_status == "NORMAL"
-                and not action_progress
-            ):
+            if status == "AVAILABLE" and sub_status == "NORMAL" and not action_progress:
                 if task_status is None:
                     return True
 
-                if (
-                    allow_redistribution
-                    and task_status in redistribution_task_statuses
-                ):
+                if allow_redistribution and task_status in redistribution_task_statuses:
                     return True
 
             # Explicit failures
@@ -331,9 +324,7 @@ class Proxy(proxy.Proxy):
                 raise exceptions.ResourceFailure("Cluster creation failed.")
 
             if sub_status and "REDISTRIBUTION-FAILURE" in sub_status:
-                raise exceptions.ResourceFailure(
-                    "Cluster redistribution failed."
-                )
+                raise exceptions.ResourceFailure("Cluster redistribution failed.")
 
             # Still progressing
             if (
@@ -352,8 +343,7 @@ class Proxy(proxy.Proxy):
                 )
             else:
                 LOG.debug(
-                    "Waiting for cluster %s: "
-                    "status=%s sub_status=%s task_status=%s",
+                    "Waiting for cluster %s: " "status=%s sub_status=%s task_status=%s",
                     obj.name,
                     status,
                     sub_status,
