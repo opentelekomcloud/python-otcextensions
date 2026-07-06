@@ -17,7 +17,7 @@ This interface is used to create a share (scalable file system).
 :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`.
 
 .. literalinclude:: ../examples/sfsturbo/create_share.py
-   :lines: 16-36
+   :lines: 16-43
 
 Delete Share
 ^^^^^^^^^^^^
