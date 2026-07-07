@@ -141,11 +141,16 @@ class Resource(resource.Resource):
         # Overriden here to override prepend_key default value
         return super(Resource, self).create(session, prepend_key, base_path)
 
-    def delete(self, session, error_message=None):
+    def delete(self, session, error_message=None, **params):
         """Delete the remote resource based on this instance.
 
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param dict params: Additional arguments (e.g. ``params``,
+            ``microversion``, ``base_path``) as passed down by the calling
+            :class:`~openstack.proxy.Proxy`. Their exact set differs between
+            openstacksdk releases, so they are accepted generically and
+            forwarded as-is to ``_raw_delete``.
 
         :return: This :class:`Resource` instance.
         :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
@@ -154,7 +159,7 @@ class Resource(resource.Resource):
                  the resource was not found.
         """
 
-        response = self._raw_delete(session)
+        response = self._raw_delete(session, **params)
         kwargs = {}
         if error_message:
             kwargs["error_message"] = error_message
