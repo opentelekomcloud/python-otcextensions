@@ -22,7 +22,7 @@ class TestOrganization(TestSwr):
         super(TestOrganization, self).setUp()
 
         self.org_name = "sdk-swr-org-" + uuid.uuid4().hex
-        self.org = self.client.create_organization(namespace=self.org_name)
+        self.org = self._create_organization(self.org_name)
         if os.getenv("OS_SWR_PERMISSIONS_RUN"):
             self.permission = [
                 {

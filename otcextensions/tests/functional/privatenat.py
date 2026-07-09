@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import time
 import uuid
 
 from openstack import exceptions as sdk_exceptions
@@ -17,6 +18,25 @@ from openstack import resource
 
 
 class PrivateNatEnvironmentMixin(object):
+    def _wait_for_subnet_active(self, subnet, timeout=60, retries=3):
+        """Wait for a VPC subnet to become ACTIVE.
+
+        The OTC VPC subnet API is occasionally read-after-write
+        inconsistent: a GET right after creation can 404 even though a
+        previous GET already returned the resource. Retry the wait a
+        few times before giving up so such transient 404s don't fail
+        the test.
+        """
+        for attempt in range(retries):
+            try:
+                return resource.wait_for_status(
+                    self.conn.vpc, subnet, "ACTIVE", None, 2, timeout
+                )
+            except sdk_exceptions.ResourceNotFound:
+                if attempt == retries - 1:
+                    raise
+                time.sleep(2)
+
     def _delete_private_transit_ip(self, transit_ip_id):
         self.conn.natv3.delete_private_transit_ip(transit_ip_id, ignore_missing=True)
 
@@ -43,7 +63,7 @@ class PrivateNatEnvironmentMixin(object):
             gateway_ip=gw[:-2] + ".1",
             dns_list=["100.125.4.25", "100.125.129.199"],
         )
-        resource.wait_for_status(self.conn.vpc, subnet, "ACTIVE", None, 2, 60)
+        self._wait_for_subnet_active(subnet)
         return subnet
 
     def _delete_private_nat_subnet(self, subnet):
@@ -52,7 +72,7 @@ class PrivateNatEnvironmentMixin(object):
         except sdk_exceptions.ResourceNotFound:
             return
 
-        resource.wait_for_status(self.conn.vpc, subnet, "ACTIVE", None, 2, 60)
+        self._wait_for_subnet_active(subnet)
         self.conn.vpc.delete_subnet(subnet, ignore_missing=True)
         resource.wait_for_delete(self.conn.vpc, subnet, 2, 120)
 

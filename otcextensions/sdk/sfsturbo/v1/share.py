@@ -17,6 +17,24 @@ from openstack import utils
 LOG = _log.setup_logging(__name__)
 
 
+class Metadata(resource.Resource):
+
+    # Properties
+    #: The extension type. ``bandwidth`` creates an enhanced file system;
+    #: ``hpc`` creates an HPC file system (in which case ``hpc_bw`` is
+    #: mandatory).
+    #: *Type: str*
+    expand_type = resource.Body("expand_type")
+    #: The HPC file system bandwidth, e.g. ``250M``. Mandatory when
+    #: ``expand_type`` is ``hpc``.
+    #: *Type: str*
+    hpc_bw = resource.Body("hpc_bw")
+    #: The ID of a KMS professional key, used to create an encrypted file
+    #: system.
+    #: *Type: str*
+    crypt_key_id = resource.Body("crypt_key_id")
+
+
 class Share(resource.Resource):
 
     base_path = "/sfs-turbo/shares"
@@ -52,6 +70,10 @@ class Share(resource.Resource):
     #: For an enhanced file system, bandwidth is returned for this field.
     #: *Type: str*
     expand_type = resource.Body("expand_type")
+    #: Specifies the metadata used to create the file system, carrying
+    #: ``expand_type``, ``hpc_bw`` and ``crypt_key_id``. Sent only on creation.
+    #: *Type: :class:`Metadata`*
+    metadata = resource.Body("metadata", type=Metadata)
     #: Specifies the mount point of the SFS Turbo file system.
     #: *Type: str*
     export_location = resource.Body("export_location")

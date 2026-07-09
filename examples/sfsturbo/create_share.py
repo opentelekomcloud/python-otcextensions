@@ -25,11 +25,18 @@ attrs = {
     "name": "test_share_1",
     "share_proto": "NFS",
     "share_type": "STANDARD",
+    # For an HPC file system, size must be a multiple of 1.2 TiB (e.g. 3686)
+    # and hpc_bw one of "20M", "40M", "125M", "250M", "500M", "1000M".
     "size": 100,
     "availability_zone": "eu-de-01",
     "vpc_id": "vpc_uuid",
     "subnet_id": "subnet_uuid",
     "security_group_id": "security_group_uuid",
+    # Optional metadata. crypt_key_id creates an encrypted file system. To
+    # deploy an HPC file system set expand_type to "hpc" and provide hpc_bw
+    # (size must then be a multiple of 1.2 TiB, e.g. 3686); use "bandwidth"
+    # for an enhanced file system.
+    "metadata": {"crypt_key_id": "kms_key_uuid"},
 }
 
 share = conn.sfsturbo.create_share(**attrs)

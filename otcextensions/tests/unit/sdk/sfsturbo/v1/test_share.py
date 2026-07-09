@@ -39,6 +39,21 @@ EXAMPLE = {
     "vpc_id": "vpc_id",
 }
 
+METADATA_EXAMPLE = {
+    "expand_type": "hpc",
+    "hpc_bw": "250M",
+    "crypt_key_id": "crypt_key_id",
+}
+
+
+class TestMetadata(base.TestCase):
+
+    def test_make_it(self):
+        sot = _share.Metadata(**METADATA_EXAMPLE)
+        self.assertEqual(METADATA_EXAMPLE["expand_type"], sot.expand_type)
+        self.assertEqual(METADATA_EXAMPLE["hpc_bw"], sot.hpc_bw)
+        self.assertEqual(METADATA_EXAMPLE["crypt_key_id"], sot.crypt_key_id)
+
 
 class TestShare(base.TestCase):
 
@@ -114,3 +129,25 @@ class TestShare(base.TestCase):
             "sfs-turbo/shares/%s/action" % EXAMPLE["id"],
             json={"change_security_group": {"security_group_id": "secgroup-uuid"}},
         )
+
+    def test_create_body_includes_metadata(self):
+        metadata = {
+            "expand_type": "hpc",
+            "hpc_bw": "250M",
+            "crypt_key_id": "kms-key-uuid",
+        }
+        sot = _share.Share(
+            name="hpc-test",
+            share_proto="NFS",
+            share_type="PERFORMANCE",
+            size=3686,
+            availability_zone="eu-de-01",
+            vpc_id="vpc-uuid",
+            subnet_id="subnet-uuid",
+            security_group_id="secgroup-uuid",
+            metadata=metadata,
+        )
+
+        request = sot._prepare_request(requires_id=False, prepend_key=True)
+
+        self.assertEqual(metadata, request.body["share"]["metadata"])

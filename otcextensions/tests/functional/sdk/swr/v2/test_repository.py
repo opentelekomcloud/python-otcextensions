@@ -22,7 +22,7 @@ class TestRepository(TestSwr):
 
         self.org_name = "sdk-swr-org-" + uuid.uuid4().hex
         self.repo_name = "sdk-swr-repo-" + uuid.uuid4().hex
-        self.org = self.client.create_organization(namespace=self.org_name)
+        self.org = self._create_organization(self.org_name)
         self.repo = self.client.create_repository(
             namespace=self.org_name,
             repository=self.repo_name,
