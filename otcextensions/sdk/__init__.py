@@ -172,6 +172,10 @@ OTC_SERVICES = {
         "service_type": "enterprise-dashboard-v1",
         "endpoint_service_type": "enterprise-dashboard-v1",
     },
+    "eps": {
+        "service_type": "eps",
+        "endpoint_service_type": "eps",
+    },
     "er": {
         "service_type": "er",
         "append_project_id": True,
