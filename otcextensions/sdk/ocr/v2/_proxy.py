@@ -18,4 +18,7 @@ class Proxy(proxy.Proxy):
     skip_discovery = True
 
     def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
+        url_parts = extract_url_parts(url, project_id)
+        if url_parts and url_parts[0] == "ocr":
+            url_parts = url_parts[1:]
+        return url_parts

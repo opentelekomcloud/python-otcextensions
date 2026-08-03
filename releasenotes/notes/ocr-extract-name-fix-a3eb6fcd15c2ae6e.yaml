@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fix extract_name function for ocr.
