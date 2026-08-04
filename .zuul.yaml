@@ -5,13 +5,14 @@
 
 - job:
     name: otce-build-image
-    parent: build-docker-image
-    description: Build apimon container image
+    parent: otc-build-container-image
+    description: Build python-openstackclient container image
     timeout: 2700 # 45 minutes
     provides: otce-container-image
     vars: &otce_image_vars
-      docker_images:
+      container_images:
         - context: .
+          registry: quay.io
           repository: opentelekomcloud/python-openstackclient
           tags:
             # If zuul.tag is defined: [ '3', '3.19', '3.19.0' ].  Only works for 3-component tags.
@@ -20,7 +21,7 @@
 
 - job:
     name: otce-upload-image
-    parent: otcinfra-upload-image-quay
+    parent: otcinfra-upload-container-images
     provides: otce-container-image
     vars: *otce_image_vars
 
