@@ -12,6 +12,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
+#   Test
+#
 
 import oslo_i18n
 
@@ -19,4 +21,3 @@ _translators = oslo_i18n.TranslatorFactory(domain="otcextensions")
 
 # The primary translation function using the well-known name "_"
 _ = _translators.primary
-
