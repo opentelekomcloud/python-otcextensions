@@ -19,3 +19,4 @@ _translators = oslo_i18n.TranslatorFactory(domain="otcextensions")
 
 # The primary translation function using the well-known name "_"
 _ = _translators.primary
+
