@@ -15,8 +15,8 @@ from unittest.mock import MagicMock
 from openstack import exceptions
 from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.aksk_auth import AkskRequestsAuth
-from otcextensions.sdk.sfs3.v1 import _proxy
-from otcextensions.sdk.sfs3.v1 import file_system as _file_system
+from otcextensions.sdk.sfs3.v3 import _proxy
+from otcextensions.sdk.sfs3.v3 import file_system as _file_system
 
 ENDPOINT = "https://sfs3.eu-de.otc.t-systems.com"
 FS_ENDPOINT = "https://fs-name.sfs3.eu-de.otc.t-systems.com"
