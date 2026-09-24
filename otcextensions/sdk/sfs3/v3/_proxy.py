@@ -17,7 +17,7 @@ from openstack import exceptions
 from otcextensions.common.utils import extract_region_from_url
 from otcextensions.sdk import aksk_auth
 from otcextensions.sdk import sdk_proxy
-from otcextensions.sdk.sfs3.v1 import file_system as _file_system
+from otcextensions.sdk.sfs3.v3 import file_system as _file_system
 
 #: The number of seconds a temporary AK/SK is renewed before it expires
 TMP_AKSK_RENEWAL = 30
