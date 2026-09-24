@@ -10,11 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-from otcextensions.sdk.sfs3.v1 import _proxy
+from otcextensions.sdk.sfs3.v3 import _proxy
 
 
 class Sfs3Service(service_description.ServiceDescription):
     """The SFS3 (Scalable File Service 3.0, General Purpose File System)
     service."""
 
-    supported_versions = {"1": _proxy.Proxy}
+    supported_versions = {"3": _proxy.Proxy}

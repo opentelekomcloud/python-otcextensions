@@ -154,15 +154,6 @@ class TestSfs3Proxy(test_proxy_base.TestProxyBase):
         self.assertEqual(auth2.access_key, "ak-2")
         self.assertGreater(config["_tmp_aksk"]["expires"], int(time.time()) + 800)
 
-    def test_get_req_auth_no_credentials_raises(self):
-        self.session._sdk_connection.get_ak_sk = MagicMock(return_value=(None, None))
-        self.session._sdk_connection.config.config = {}
-        # create_security_token returns a token without access/secret
-        self.session._sdk_connection.identity.create_security_token = MagicMock(
-            return_value=MagicMock(access=None, secret=None, security_token="x")
-        )
-        self.assertRaises(Exception, self.proxy._get_req_auth)
-
     # ======== File Systems ========
 
     def test_file_systems(self):

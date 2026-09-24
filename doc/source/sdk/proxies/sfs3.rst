@@ -9,9 +9,9 @@ The SFS3 Class
 --------------
 
 The SFS3 high-level interface is available through the ``sfs3`` member of a
-:class:`~openstack.connection.Connection` object.  The ``sfs3`` member will only
-be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is
-called.
+:class:`~openstack.connection.Connection` object.
+The ``sfs3`` member will only be added if the
+``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
 
 File System Operations
 ^^^^^^^^^^^^^^^^^^^^^^
