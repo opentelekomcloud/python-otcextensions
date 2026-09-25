@@ -34,6 +34,7 @@ T Cloud Public Resources
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
    Shared File System Turbo (SFS Turbo) <sfsturbo/index>
+   General Purpose File System (SFS3) <sfs3/index>
    Simple Message Notification Service (SMN) <smn/index>
    Storage Disaster Recovery Service (SDRS) <sdrs/index>
    Software Repository for Containers Service (SWR) <swr/index>

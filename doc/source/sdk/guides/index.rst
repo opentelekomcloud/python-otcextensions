@@ -31,6 +31,7 @@ T Cloud Public related User Guides
    privatenat
    rds
    sfsturbo
+   sfs3
    smn
    vpc
    vpcep

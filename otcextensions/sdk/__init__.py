@@ -264,6 +264,11 @@ OTC_SERVICES = {
         "endpoint_service_type": "rfs",
     },
     "sdrs": {"service_type": "sdrs", "append_project_id": True},
+    "sfs3": {
+        "service_type": "sfs3",
+        "endpoint_service_type": "sfs3",
+        "set_endpoint_override": True,
+    },
     "sfsturbo": {
         "service_type": "sfsturbo",
         "endpoint_service_type": "sfsturbo",

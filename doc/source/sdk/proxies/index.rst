@@ -34,6 +34,7 @@ Service Proxies
    Relational Database Service RDS V1 (RDSv1) <rds_v1>
    Relational Database Service RDS V3 (RDS) <rds_v3>
    Shared File System Turbo (SFS Turbo) <sfsturbo>
+   General Purpose File System (SFS3) <sfs3>
    Simple Message Notification Service (SMN) <smn>
    Storage Disaster Recovery Service (SDRS) <sdrs>
    Software Repository for Containers Service (SWR) <swr>
