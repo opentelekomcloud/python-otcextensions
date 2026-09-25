@@ -76,12 +76,6 @@ class TestFileSystem(base.BaseFunctionalTest):
         self.fs = self.client.create_filesystem(name=self.fs_name)
         self.assertIsNotNone(self.fs)
         self.addCleanup(self.client.delete_filesystem, self.fs_name)
-        # A file system is an OBS bucket of type SFS. It only becomes usable
-        # (visible in the list and the UI) once its ACL authorizes a VPC --
-        # the "Authorization by vpc" field that is mandatory in the console.
-        # The create is signed with the native OBS V1 scheme (see
-        # :mod:`otcextensions.sdk.aksk_auth`), which is what makes the service
-        # create a type-SFS bucket; configure the ACL with the test VPC.
         self.client.create_acl(
             self.fs_name,
             [
