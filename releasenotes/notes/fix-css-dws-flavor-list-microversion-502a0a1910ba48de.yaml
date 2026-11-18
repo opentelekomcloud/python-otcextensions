@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fix CSS and DWS flavor listing compatibility with updated microversion handling.
