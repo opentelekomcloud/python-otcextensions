@@ -87,7 +87,10 @@ class Flavor(resource.Resource):
         session = cls._get_session(session)
 
         if microversion is None:
-            microversion = cls._get_microversion(session)
+            try:
+                microversion = cls._get_microversion(session, action="list")
+            except TypeError:
+                microversion = cls._get_microversion(session)
 
         if base_path is None:
             base_path = cls.base_path
