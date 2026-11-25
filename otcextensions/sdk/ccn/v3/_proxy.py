@@ -14,6 +14,7 @@ from urllib.parse import urljoin
 from urllib.parse import urlsplit
 
 from keystoneauth1.identity import v3 as identity_v3
+
 from openstack import proxy
 from otcextensions.sdk.ccn.v3 import quota as _quota
 
