@@ -72,7 +72,6 @@ OTC_SERVICES = {
     },
     "ccn": {
         "service_type": "ccn",
-        "append_project_id": True,
         "endpoint_service_type": "cc",
     },
     "ces": {
@@ -487,7 +486,8 @@ def register_single_service(conn, service_name, project_id=None, service=None):
         # service catalog - set endpoint_override
         ep = conn.endpoint_for(sd.service_type)
         if (
-            ep
+            project_id
+            and ep
             and not ep.rstrip("/").endswith("\\%(project_id)s")
             and not ep.rstrip("/").endswith("$(tenant_id)s")
             and not ep.rstrip("/").endswith(project_id)
