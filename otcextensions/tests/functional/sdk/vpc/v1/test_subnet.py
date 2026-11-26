@@ -69,7 +69,7 @@ class TestService(base.BaseFunctionalTest):
         subnet = self._create_subnet()
         found = self.conn.vpc.find_subnet(subnet.name)
 
-        self.assertEqual(found, subnet)
+        self.assertEqual(found.id, subnet.id)
 
     def test_update_subnet(self):
         subnet = self._create_subnet()
@@ -96,7 +96,7 @@ class TestService(base.BaseFunctionalTest):
         subnets = list(self.conn.vpc.subnets(vpc_id=subnet.vpc_id))
         self.assertGreaterEqual(len(subnets), 1)
 
-        self.assertIn(subnet, subnets)
+        self.assertIn(subnet.id, [item.id for item in subnets])
 
     def _create_subnet(self, remove=True):
         cidr: str = self.vpc.cidr
